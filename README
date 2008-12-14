@@ -1,3 +1,9 @@
 This Project has the target to create a compleatly open source Brushless Drive Controller.
 
+The controller uses an AT90PWM3 controller from Atmel.
+
+The Application notes used for designing the circuits can be found here:
+http://www.atmel.com/dyn/resources/prod_documents/doc7518.pdf
+http://www.atmel.com/dyn/resources/prod_documents/doc7658.pdf
+
 Cheers Piotr Esden-Tempski

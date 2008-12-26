@@ -1,0 +1,78 @@
+In this file we are collecting some documentation about the design
+decisions made during the process of Open-BLDC development.
+
+Everyone may add his thoughts and Ideas to this file to comment on the
+topics... we will see how it works out. ;)
+
+1 Schematics Design:
+--------------------
+
+1.1 Parts
+---------
+
+1.1.1 Microcontroller selection
+-------------------------------
+
+Esden (26.12.2008): 
+------------------- 
+
+The decision for using Atmega168 is not solely mine. First of all I
+wanted to use an Atmega. Most people know these embedded processors
+well and like it. It is used in the some BLDC controllers I know and
+they seem to have enough power to drive this application. So the first
+choice was to use an Atmega 8. Later I discussed the project with some
+guys in #uavp and MrSputnik said that I should take a look at at90pwm3
+because there are some really good application notes describing BLDC
+controllers built on the basis of at90pwm3. I redesigned everything
+based on the application notes. In the next step MarkusBec said that
+at90 is a bad choice because it is an old controller and as it was
+missing i2c bus hardwar support it was not worth using. (The reason is
+that the hardware support contained in at90pwm3 to make driving BLD's
+easier, is not conserving the amount of code that is needed to drive
+i2c by hand) So the schematics got redesigned to use the Atmega168. It
+has reasonably good pwm support, it has a comparator for commutation
+detection and i2c hardware support. Additionally it has more flash then
+it's smaller brothers and sisters, what is nice to have.
+
+2 Board Design:
+---------------
+
+2.1 Layer count
+---------------
+
+Esden (26.12.2008):
+-------------------
+
+The first board designs have only two layers because I don't know how
+and if it is even possible to do in the free version of Eagle. And
+making 2 layer prototypes is already expensive enough.
+
+Why not 1 layer? Because perhaps I think it is too complicated to
+layout the board in a reasonable size in 1 layer. Convince me
+otherwise! Your contributions are welcome! ^^
+
+2.2 Fets placement
+------------------
+
+Esden (26.12.2008):
+-------------------
+
+The version of the Open-BLDC board (as introduced in 3a84d6e) has it's
+low and high side fets distributed on the front and backside of the
+board. I tried to put all fets on one side of the board and the
+controll electronics on the other side. The problem is that the fets,
+supply lines and phase lines are using up completely all space on one
+side of the board (I tried it using the backside for fets placement)
+and some space on the other side. (I will add the one side version for
+reference soon) The problem is that placing the Atmega on the other
+side is already a big problem. There are many signal lines that are
+crossing each other that have to be connected to the Atmega. 
+
+It is damn difficult to untangle all that mess. If someone has the nerve
+and patience to resolve this issue and rewire everything that this
+design is feasbible please let me know. It may be a better to cool and
+smaller solution then the one I am using currently.
+
+Also a 3 or more layer design may be helpful here. It may be a nice
+thing to try in the future but I think a 2 layer design is expensive
+enough for the beginning. ^^

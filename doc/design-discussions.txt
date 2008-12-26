@@ -51,7 +51,38 @@ Why not 1 layer? Because perhaps I think it is too complicated to
 layout the board in a reasonable size in 1 layer. Convince me
 otherwise! Your contributions are welcome! ^^
 
-2.2 Fets placement
+2.2 Fet drivers
+---------------
+
+Esden (26.12.2008): 
+-------------------
+
+Why we are using fet drivers? I have to be honest that I don't exactly
+know why. But it has something to do with capacitance in the Fets we
+are using for the low side. And we use these because it is what makes
+the controllers higher quality. At least that is what electrical
+engineers tell me. Perhaps someone with such deeper knowledge about
+this topic can add a useful explanation?
+
+[TODO: add more useful reason]
+
+2.3 N-Channel MOSFETs VS. P- and N-Channel MOSFETs
+--------------------------------------------------
+
+Esden (26.12.2008):
+-------------------
+
+We use for the low and high side of the phase drivers N-Channel
+MOSFETs. In other designs they use N-Channel MOSFETs for the high side
+and P-Channel MOSFETs for the lowside.
+
+For the reason why we do it this way see the "Fet drivers" section. I
+really don't know. The reason is the same as for the
+drivers. Electrical engineers tell me that it is good. ;)
+
+[TODO: add more useful reason]
+
+2.4 Fets placement
 ------------------
 
 Esden (26.12.2008):

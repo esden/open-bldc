@@ -18,10 +18,7 @@
 
 #include <stm32/lib.h>
 
-#define CCR1_VAL 500;
-#define CCR2_VAL 375;
-#define CCR3_VAL 250;
-#define CCR4_VAL 125;
+#define PWM_VALUE 1023;
 
 void rcc_init(void){
     ErrorStatus err;
@@ -67,103 +64,124 @@ void rcc_init(void){
         while(RCC_GetSYSCLKSource() != 0x08);
     }
 
-    /* TIM3 clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-
-    /* GPIOA and GPIOB clock enable */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
-                           RCC_APB2Periph_GPIOB, ENABLE);
+    /* TIM1, GPIOA, GPIOB and GPIOC clock enable */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |
+                           RCC_APB2Periph_GPIOA |
+                           RCC_APB2Periph_GPIOB |
+                           RCC_APB2Periph_GPIOC, ENABLE);
 
 }
 
 void nvic_init(void){
+    NVIC_InitTypeDef nvic;
+
     /* Set the Vector Table base location at 0x08000000 */
     NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
+
+    /* Enable TIM1 interrupt */
+    nvic.NVIC_IRQChannel = TIM1_TRG_COM_IRQChannel;
+    nvic.NVIC_IRQChannelPreemptionPriority = 0;
+    nvic.NVIC_IRQChannelSubPriority = 1;
+    nvic.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&nvic);
+
+    /* Set SysTick handler */
+    NVIC_SystemHandlerPriorityConfig(SystemHandler_SysTick, 0, 0);
 }
 
 void gpio_init(void){
     GPIO_InitTypeDef gpio;
 
-    /* GPIOA Configuration: TIM3 channel 1 and 2 as alternate function
+    /* GPIOA: TIM1 channel 1, 2 and 3 as alternate function
        push-pull */
-    gpio.GPIO_Pin   = GPIO_Pin_6 | GPIO_Pin_7;
+    gpio.GPIO_Pin   = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
     gpio.GPIO_Mode  = GPIO_Mode_AF_PP;
     gpio.GPIO_Speed = GPIO_Speed_50MHz;
-
     GPIO_Init(GPIOA, &gpio);
 
-    /*GPIOB Configuration: TIM3 channel 3 and 4 as alternate function
-      push-pull */
-    gpio.GPIO_Pin =  GPIO_Pin_0 | GPIO_Pin_1;
-
+    /* GPIOB: TIM1 channel 1N, 2N and 3N as alternate function
+     * push-pull
+     */
+    gpio.GPIO_Pin   = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
     GPIO_Init(GPIOB, &gpio);
+
+    /* GPIOB: BKIN pin as floating input*/
+    gpio.GPIO_Pin   = GPIO_Pin_12;
+    gpio.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOB, &gpio);
+
+    /* GPIOC: LED pin as output push-pull */
+    GPIO_WriteBit(GPIOC,GPIO_Pin_12,Bit_SET);
+    gpio.GPIO_Pin =  GPIO_Pin_12;
+    gpio.GPIO_Mode = GPIO_Mode_Out_PP;
+    gpio.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOC, &gpio);
+}
+
+void sys_tick_init(void){
+    /* Select HCLK as clock source */
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
+    /* Generate SysTick interrupt every 100ms (with HCLK=72MHz) */
+    SysTick_SetReload(7200000);
+    SysTick_CounterCmd(SysTick_Counter_Enable);
+    SysTick_ITConfig(ENABLE);
 }
 
 int main(void){
     TIM_TimeBaseInitTypeDef tim_base;
     TIM_OCInitTypeDef       tim_oc;
+    TIM_BDTRInitTypeDef     tim_bdtr;
 
     rcc_init(); /* system clocks init */
     nvic_init(); /* interrupt vector unit init */
     gpio_init();
+    sys_tick_init();
 
-    /*
-     * TIM3 Configuration: generate 4 PWM signals with 4 different duty cycles:
-     * TIM3CLK = 36 MHz, Prescaler = 0x0, TIM3 counter clock = 36 MHz
-     * TIM3 ARR Register = 999 => TIM3 Frequency = TIM3 counter clock/(ARR + 1)
-     * TIM3 Frequency = 36 KHz.
-     * TIM3 Channel1 duty cycle = (TIM3_CCR1/ TIM3_ARR)* 100 = 50%
-     * TIM3 Channel2 duty cycle = (TIM3_CCR2/ TIM3_ARR)* 100 = 37.5%
-     * TIM3 Channel3 duty cycle = (TIM3_CCR3/ TIM3_ARR)* 100 = 25%
-     * TIM3 Channel4 duty cycle = (TIM3_CCR4/ TIM3_ARR)* 100 = 12.5%
-     */
 
     /* Time base configuration */
-    tim_base.TIM_Period = 999;
+    tim_base.TIM_Period = 1999;
     tim_base.TIM_Prescaler = 0;
     tim_base.TIM_ClockDivision = 0;
     tim_base.TIM_CounterMode = TIM_CounterMode_Up;
+    tim_base.TIM_RepetitionCounter = 0;
 
-    TIM_TimeBaseInit(TIM3, &tim_base);
+    TIM_TimeBaseInit(TIM1, &tim_base);
 
-    /* PWM1 Mode configuration: Channel1 */
-    tim_oc.TIM_OCMode      = TIM_OCMode_PWM1;
-    tim_oc.TIM_OutputState = TIM_OutputState_Enable;
-    tim_oc.TIM_Pulse       = CCR1_VAL;
-    tim_oc.TIM_OCPolarity  = TIM_OCPolarity_High;
+    /* TIM1 channel 1, 2 and 3 settings */
+    tim_oc.TIM_OCMode       = TIM_OCMode_Timing;
+    tim_oc.TIM_OutputState  = TIM_OutputState_Enable;
+    tim_oc.TIM_OutputNState = TIM_OutputNState_Enable;
+    tim_oc.TIM_Pulse        = 500;//PWM_VALUE;
+    tim_oc.TIM_OCPolarity   = TIM_OCPolarity_High;
+    tim_oc.TIM_OCNPolarity  = TIM_OCNPolarity_High;
+    tim_oc.TIM_OCIdleState  = TIM_OCIdleState_Set;
+    tim_oc.TIM_OCNIdleState = TIM_OCNIdleState_Set;
 
-    TIM_OC1Init(TIM3, &tim_oc);
+    TIM_OC1Init(TIM1, &tim_oc);
+    TIM_OC2Init(TIM1, &tim_oc);
+    TIM_OC3Init(TIM1, &tim_oc);
 
-    TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
+    /* Automatic Output enable, break, dead time and lock configuration */
+    tim_bdtr.TIM_OSSRState       = TIM_OSSRState_Enable;
+    tim_bdtr.TIM_OSSIState       = TIM_OSSIState_Enable;
+    tim_bdtr.TIM_LOCKLevel       = TIM_LOCKLevel_OFF;
+    tim_bdtr.TIM_DeadTime        = 1;
+    tim_bdtr.TIM_Break           = TIM_Break_Disable;
+    tim_bdtr.TIM_BreakPolarity   = TIM_BreakPolarity_High;
+    tim_bdtr.TIM_AutomaticOutput = TIM_AutomaticOutput_Enable;
 
-    /* PWM1 Mode configuration: Channel2 */
-    tim_oc.TIM_OutputState = TIM_OutputState_Enable;
-    tim_oc.TIM_Pulse       = CCR2_VAL;
+    TIM_BDTRConfig(TIM1, &tim_bdtr);
 
-    TIM_OC2Init(TIM3, &tim_oc);
+    TIM_CCPreloadControl(TIM1, ENABLE);
 
-    TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);
+    /* Enable COM interrupt */
+    TIM_ITConfig(TIM1, TIM_IT_COM, ENABLE);
 
-    /* PWM1 Mode configuration: Channel3 */
-    tim_oc.TIM_OutputState = TIM_OutputState_Enable;
-    tim_oc.TIM_Pulse       = CCR3_VAL;
+    /* TIM1 enable counter */
+    TIM_Cmd(TIM1, ENABLE);
 
-    TIM_OC3Init(TIM3, &tim_oc);
-
-    TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Enable);
-
-    /* PWM1 Mode configuration: Channel4 */
-    tim_oc.TIM_OutputState = TIM_OutputState_Enable;
-    tim_oc.TIM_Pulse       = CCR4_VAL;
-
-    TIM_OC4Init(TIM3, &tim_oc);
-
-    TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
-
-    TIM_ARRPreloadConfig(TIM3, ENABLE);
-
-    /* TIM3 enable counter */
-    TIM_Cmd(TIM3, ENABLE);
+    /* Main output enable */
+    TIM_CtrlPWMOutputs(TIM1, ENABLE);
 
     while(1);
 }

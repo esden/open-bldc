@@ -18,6 +18,9 @@
 
 #include "interrupts.h"
 
+int bldc_phase = 1;
+int led_state = 0;
+
 void nmi_exception(void){
 }
 
@@ -47,6 +50,15 @@ void pend_svc(void){
 }
 
 void sys_tick_handler(void){
+    /* generate a TIM1 COM event */
+    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+    if(led_state){
+        GPIOC->BRR |= 0x00001000;
+        led_state = 0;
+    }else{
+        GPIOC->BSRR |= 0x00001000;
+        led_state = 1;
+    }
 }
 
 void wwdg_irq_handler(void){
@@ -128,6 +140,118 @@ void tim1_up_irq_handler(void){
 }
 
 void tim1_trg_com_irq_handler(void){
+    TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
+
+    switch(bldc_phase){
+    case 1:
+        /* Next step: Step 2 Configuration ---------------------------- */
+        /*  Channel3 configuration */
+        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
+
+        /*  Channel1 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_OCMode_PWM1);
+        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
+
+        /*  Channel2 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_ForcedAction_InActive );
+        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Enable);
+
+        bldc_phase++;
+        break;
+    case 2:
+        /* Next step: Step 3 Configuration ---------------------------- */
+        /*  Channel2 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_ForcedAction_InActive);
+        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Enable);
+
+        /*  Channel3 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_OCMode_PWM1);
+        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
+
+        /*  Channel1 configuration */
+        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Disable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
+
+        bldc_phase++;
+        break;
+    case 3:
+        /* Next step: Step 4 Configuration ---------------------------- */
+        /*  Channel3 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_OCMode_PWM1);
+        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
+
+        /*  Channel2 configuration */
+        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Disable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
+
+        /*  Channel1 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_ForcedAction_InActive);
+        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Enable);
+
+        bldc_phase++;
+        break;
+    case 4:
+        /* Next step: Step 5 Configuration ---------------------------- */
+        /*  Channel3 configuration */
+        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
+
+        /*  Channel1 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_ForcedAction_InActive);
+        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Enable);
+
+        /*  Channel2 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_OCMode_PWM1);
+        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
+
+        bldc_phase++;
+        break;
+    case 5:
+        /* Next step: Step 6 Configuration ---------------------------- */
+        /*  Channel3 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_ForcedAction_InActive);
+        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Enable);
+
+        /*  Channel1 configuration */
+        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Disable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
+
+        /*  Channel2 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_OCMode_PWM1);
+        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
+
+        bldc_phase++;
+        break;
+    case 6:
+        /* Next step: Step 1 Configuration ---------------------------- */
+        /*  Channel1 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_OCMode_PWM1);
+        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
+
+        /*  Channel3 configuration */
+        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_ForcedAction_InActive);
+        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Enable);
+
+        /*  Channel2 configuration */
+        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Disable);
+        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
+
+        bldc_phase=1;
+        break;
+    }
 }
 
 void tim1_cc_irq_handler(void){

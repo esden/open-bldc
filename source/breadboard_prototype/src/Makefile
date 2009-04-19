@@ -71,7 +71,7 @@ flash: $(NAME).hex
 		 -c init \
 		 -c "reset halt" \
 		 -c "flash write_image erase open-bldc-bb.hex" \
-		 -c resume \
+		 -c reset \
 		 -c shutdown
 
 # Suffix rules

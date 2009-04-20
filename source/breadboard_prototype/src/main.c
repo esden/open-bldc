@@ -127,16 +127,10 @@ void sys_tick_init(void){
     SysTick_ITConfig(ENABLE);
 }
 
-int main(void){
+void pwm_init(void){
     TIM_TimeBaseInitTypeDef tim_base;
     TIM_OCInitTypeDef       tim_oc;
     TIM_BDTRInitTypeDef     tim_bdtr;
-
-    rcc_init(); /* system clocks init */
-    nvic_init(); /* interrupt vector unit init */
-    gpio_init();
-    sys_tick_init();
-
 
     /* Time base configuration */
     tim_base.TIM_Period = 1999;
@@ -182,6 +176,15 @@ int main(void){
 
     /* Main output enable */
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
+}
+
+int main(void){
+
+    rcc_init(); /* system clocks init */
+    nvic_init(); /* interrupt vector unit init */
+    gpio_init();
+    sys_tick_init();
+    pwm_init();
 
     while(1);
 }

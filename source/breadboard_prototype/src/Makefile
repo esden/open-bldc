@@ -38,7 +38,7 @@ OD	= $(PREFIX)-objdump
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-CFLAGS  =  -I. -Wall -ansi -std=c99 -c -fno-common -Os -g -mcpu=cortex-m3 -mthumb
+CFLAGS  =  -I. -Wall -ansi -std=c99 -c -fno-common -O0 -g -mcpu=cortex-m3 -mthumb
 ASFLAGS = -ahls -mapcs-32
 LDFLAGS = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR)
 LDLIBS  = -lstm32

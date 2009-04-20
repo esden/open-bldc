@@ -52,13 +52,6 @@ void pend_svc(void){
 void sys_tick_handler(void){
     /* generate a TIM1 COM event */
     TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
-    if(led_state){
-        GPIOC->BRR |= 0x00001000;
-        led_state = 0;
-    }else{
-        GPIOC->BSRR |= 0x00001000;
-        led_state = 1;
-    }
 }
 
 void wwdg_irq_handler(void){
@@ -291,6 +284,18 @@ void usart2_irq_handler(void){
 }
 
 void usart3_irq_handler(void){
+#if 0
+    if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
+        USART_SendData(USART3, 'A');
+        if(led_state){
+            GPIOC->BRR |= 0x00001000;
+            led_state = 0;
+        }else{
+            GPIOC->BSRR |= 0x00001000;
+            led_state = 1;
+        }
+    }
+#endif
 }
 
 void exti15_10_irq_handler(void){

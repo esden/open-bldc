@@ -68,8 +68,10 @@ void rcc_init(void){
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |
                            RCC_APB2Periph_GPIOA |
                            RCC_APB2Periph_GPIOB |
-                           RCC_APB2Periph_GPIOC, ENABLE);
+                           RCC_APB2Periph_GPIOC | 
+                           RCC_APB2Periph_AFIO, ENABLE);
 
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
 }
 
 void nvic_init(void){
@@ -87,6 +89,13 @@ void nvic_init(void){
 
     /* Set SysTick handler */
     NVIC_SystemHandlerPriorityConfig(SystemHandler_SysTick, 0, 0);
+
+    /* Enable the USART3 interrupts */
+    nvic.NVIC_IRQChannel = USART3_IRQChannel;
+    nvic.NVIC_IRQChannelPreemptionPriority = 0;
+    nvic.NVIC_IRQChannelSubPriority = 1;
+    nvic.NVIC_IRQChannelCmd = ENABLE;
+    //NVIC_Init(&nvic);
 }
 
 void gpio_init(void){
@@ -99,14 +108,14 @@ void gpio_init(void){
     gpio.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &gpio);
 
-    /* GPIOB: TIM1 channel 1N, 2N and 3N as alternate function
+    /* GPIOB: USART3 Tx and TIM1 channel 1N, 2N and 3N as alternate function
      * push-pull
      */
-    gpio.GPIO_Pin   = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+    gpio.GPIO_Pin   = GPIO_Pin_10 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
     GPIO_Init(GPIOB, &gpio);
 
-    /* GPIOB: BKIN pin as floating input*/
-    gpio.GPIO_Pin   = GPIO_Pin_12;
+    /* GPIOB: BKIN and USART3 Rx pin as floating input */
+    gpio.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_12;
     gpio.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOB, &gpio);
 
@@ -116,6 +125,27 @@ void gpio_init(void){
     gpio.GPIO_Mode = GPIO_Mode_Out_PP;
     gpio.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOC, &gpio);
+}
+
+void usart_init(void){
+    USART_InitTypeDef usart;
+
+    usart.USART_BaudRate            = 9600;
+    usart.USART_WordLength          = USART_WordLength_8b;
+    usart.USART_StopBits            = USART_StopBits_1;
+    usart.USART_Parity              = USART_Parity_No;
+    usart.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    usart.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
+
+    /* Configure USART3 */
+    USART_Init(USART3, &usart);
+
+    /* Enable USART3 Receive and Transmit interrupts */
+    USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
+    USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+
+    /* Enable the USART3 */
+    USART_Cmd(USART3, ENABLE);
 }
 
 void sys_tick_init(void){
@@ -178,13 +208,28 @@ void pwm_init(void){
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 
+void my_delay(unsigned long delay ){
+    while(delay){
+        delay--;
+    }
+}
+
 int main(void){
 
     rcc_init(); /* system clocks init */
     nvic_init(); /* interrupt vector unit init */
     gpio_init();
+    usart_init();
     sys_tick_init();
     pwm_init();
 
-    while(1);
+    while(1){
+#if 1
+        GPIOC->BRR |= 0x00001000;
+        my_delay(1000000);
+        USART_SendData(USART3, 'A');
+        GPIOC->BSRR |= 0x00001000;
+        my_delay(1000000);
+#endif
+    }
 }

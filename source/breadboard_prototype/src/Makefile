@@ -44,7 +44,7 @@ LDFLAGS = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR)
 LDLIBS  = -lstm32
 ODFLAGS	= -S
 
-OBJECTS = main.o interrupts.o vector_table.o
+OBJECTS = main.o pwm.o usart.o interrupts.o vector_table.o
 
 all: images
 

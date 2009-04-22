@@ -54,7 +54,7 @@ void pwm_gpio_init(void){
     gpio.GPIO_Pin   = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
     GPIO_Init(GPIOB, &gpio);
 
-    /* GPIOB: BKIN and USART3 Rx pin as floating input */
+    /* GPIOB: BKIN as floating input */
     gpio.GPIO_Pin   = GPIO_Pin_12;
     gpio.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOB, &gpio);

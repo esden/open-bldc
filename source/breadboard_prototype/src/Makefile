@@ -29,24 +29,30 @@ NAME   ?= open-bldc-bb
 
 PREFIX ?= arm-none-eabi
 
+OOCD_INTERFACE ?= jtagkey-tiny
+OOCD_TARGET    ?= olimex_stm32_h103
+
 CC      = $(PREFIX)-gcc
 LD      = $(PREFIX)-ld
 AR      = $(PREFIX)-ar
 AS      = $(PREFIX)-as
 CP      = $(PREFIX)-objcopy
 OD	= $(PREFIX)-objdump
+SIZE    = $(PREFIX)-size
+OOCD	= openocd
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-CFLAGS  =  -I. -Wall -ansi -std=c99 -c -fno-common -O0 -g -mcpu=cortex-m3 -mthumb
-ASFLAGS = -ahls -mapcs-32
-LDFLAGS = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR)
-LDLIBS  = -lstm32
-ODFLAGS	= -S
+CFLAGS   =  -I. -Wall -ansi -std=c99 -c -fno-common -O0 -g -mcpu=cortex-m3 -mthumb
+ASFLAGS  = -ahls -mapcs-32
+LDFLAGS  = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR)
+LDLIBS   = -lstm32
+ODFLAGS	 = -S
+SIZEFLAGS = -A -x
 
 OBJECTS = main.o pwm.o usart.o interrupts.o vector_table.o
 
-all: images
+all: gccversion images size
 
 .SUFFIXES: .elf .bin .hex .srec .list
 
@@ -66,13 +72,20 @@ clean:
 
 flash: $(NAME).hex
 	@echo -e "  OOCD\t$<"
-	@openocd -f interface/jtagkey-tiny.cfg \
-		 -f board/olimex_stm32_h103.cfg \
+	@$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+		 -f board/$(OOCD_TARGET).cfg \
 		 -c init \
 		 -c "reset halt" \
 		 -c "flash write_image erase open-bldc-bb.hex" \
 		 -c reset \
 		 -c shutdown
+
+gccversion:
+	@$(CC) --version
+
+size: $(NAME).elf
+	@echo
+	@$(SIZE) $(SIZEFLAGS) $<
 
 # Suffix rules
 

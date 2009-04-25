@@ -20,6 +20,8 @@
 
 int bldc_phase = 1;
 int led_state = 0;
+int comm_timer = 0;
+volatile int comm_timer_reload = 1000;
 
 void nmi_exception(void){
 }
@@ -51,7 +53,12 @@ void pend_svc(void){
 
 void sys_tick_handler(void){
     /* generate a TIM1 COM event */
-    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+    if(comm_timer < comm_timer_reload){
+	    comm_timer++;
+    }else{
+        comm_timer = 0;
+        TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+    }
 #if 0
     if(led_state){
 	    GPIOC->BRR |= 0x00001000;
@@ -303,6 +310,18 @@ void usart2_irq_handler(void){
 }
 
 void usart3_irq_handler(void){
+    char buff;
+    if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
+        buff = USART_ReceiveData(USART3);
+	switch(buff){
+            case 'a':
+                if(comm_timer_reload > 0) comm_timer_reload-=10;
+                break;
+            case 'b':
+                if(comm_timer_reload < 1000) comm_timer_reload+=10;
+                break;
+	}
+    }
 #if 0
     if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
         USART_SendData(USART3, 'A');

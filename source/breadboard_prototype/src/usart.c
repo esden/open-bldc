@@ -32,7 +32,7 @@ void usart_nvic_init(void){
     nvic.NVIC_IRQChannelPreemptionPriority = 0;
     nvic.NVIC_IRQChannelSubPriority = 1;
     nvic.NVIC_IRQChannelCmd = ENABLE;
-    //NVIC_Init(&nvic);
+    NVIC_Init(&nvic);
 }
 
 void usart_gpio_init(void){
@@ -67,7 +67,7 @@ void usart_init(void){
 
     /* Enable USART3 Receive and Transmit interrupts */
     USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
-    USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+    //USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
 
     /* Enable the USART3 */
     USART_Cmd(USART3, ENABLE);

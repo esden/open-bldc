@@ -110,6 +110,7 @@ void sys_tick_init(void){
 }
 
 void my_delay(unsigned long delay ){
+
     while(delay){
         delay--;
     }
@@ -125,7 +126,7 @@ int main(void){
     pwm_init();
 
     while(1){
-#if 1
+#if 0
         GPIOC->BRR |= 0x00001000;
         my_delay(1000000);
         USART_SendData(USART3, 'A');

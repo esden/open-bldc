@@ -52,6 +52,15 @@ void pend_svc(void){
 void sys_tick_handler(void){
     /* generate a TIM1 COM event */
     TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+#if 0
+    if(led_state){
+	    GPIOC->BRR |= 0x00001000;
+	    led_state = 0;
+    }else{
+	    GPIOC->BSRR |= 0x00001000;
+	    led_state = 1;
+    }
+#endif
 }
 
 void wwdg_irq_handler(void){
@@ -134,6 +143,16 @@ void tim1_up_irq_handler(void){
 
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
+
+#if 1
+    if(led_state){
+	    GPIOC->BRR |= 0x00001000;
+	    led_state = 0;
+    }else{
+	    GPIOC->BSRR |= 0x00001000;
+	    led_state = 1;
+    }
+#endif
 
     switch(bldc_phase){
     case 1:

@@ -19,6 +19,8 @@
 #ifndef __INTERRUPTS_H
 #define __INTERRUPTS_H
 
+extern volatile int comm_timer_reload;
+
 void nmi_exception(void);
 void hard_fault_exception(void);
 void mem_manage_exception(void);
@@ -67,7 +69,7 @@ void spi1_irq_handler(void);
 void spi2_irq_handler(void);
 void usart1_irq_handler(void);
 void usart2_irq_handler(void);
-void usart3_irq_handler(void);
+//void usart3_irq_handler(void); // moved to usart module
 void exti15_10_irq_handler(void);
 void rtc_alarm_irq_handler(void);
 void usb_wake_up_irq_handler(void);

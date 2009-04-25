@@ -18,8 +18,6 @@
 
 #include <stm32/lib.h>
 
-#include "pwm.h"
-
 #include "interrupts.h"
 
 int led_state = 0;
@@ -185,39 +183,6 @@ void usart1_irq_handler(void){
 }
 
 void usart2_irq_handler(void){
-}
-
-void usart3_irq_handler(void){
-    char buff;
-    if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
-        buff = USART_ReceiveData(USART3);
-	switch(buff){
-        case 'a':
-            if(comm_timer_reload > 0) comm_timer_reload-=1;
-            break;
-        case 'b':
-            if(comm_timer_reload < 1000) comm_timer_reload+=1;
-            break;
-        case 'c':
-            if(pwm_val > 0) pwm_val-=10;
-            break;
-        case 'd':
-            if(pwm_val < 1989) pwm_val+=10;
-            break;
-	}
-    }
-#if 0
-    if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
-        USART_SendData(USART3, 'A');
-        if(led_state){
-            GPIOC->BRR |= 0x00001000;
-            led_state = 0;
-        }else{
-            GPIOC->BSRR |= 0x00001000;
-            led_state = 1;
-        }
-    }
-#endif
 }
 
 void exti15_10_irq_handler(void){

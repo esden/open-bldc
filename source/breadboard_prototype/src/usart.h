@@ -23,5 +23,6 @@ void usart_rcc_init(void);
 void usart_nvic_init(void);
 void usart_gpio_init(void);
 void usart_init(void);
+void usart3_irq_handler(void);
 
 #endif /* __USART_H */

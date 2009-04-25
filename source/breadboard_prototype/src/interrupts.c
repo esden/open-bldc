@@ -353,10 +353,10 @@ void usart3_irq_handler(void){
         buff = USART_ReceiveData(USART3);
 	switch(buff){
             case 'a':
-                if(comm_timer_reload > 0) comm_timer_reload-=10;
+                if(comm_timer_reload > 0) comm_timer_reload-=1;
                 break;
             case 'b':
-                if(comm_timer_reload < 1000) comm_timer_reload+=10;
+                if(comm_timer_reload < 1000) comm_timer_reload+=1;
                 break;
 	}
     }

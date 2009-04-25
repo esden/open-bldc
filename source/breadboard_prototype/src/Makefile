@@ -43,10 +43,11 @@ OOCD	= openocd
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-CFLAGS   =  -I. -Wall -ansi -std=c99 -c -fno-common -O0 -g -mcpu=cortex-m3 -mthumb
+CFLAGS   =  -I. -Wall -ansi -std=c99 -c -fno-common -Os -g -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections
 ASFLAGS  = -ahls -mapcs-32
-LDFLAGS  = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR)
+LDFLAGS  = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os --gc-sections
 LDLIBS   = -lstm32
+CPFLAGS  = -j .isr_vector -j .text -j .data
 ODFLAGS	 = -S
 SIZEFLAGS = -A -x
 
@@ -91,15 +92,15 @@ size: $(NAME).elf
 
 .elf.bin:
 	@echo -e "  CP\t$@"
-	@$(CP) -Obinary $< $@
+	@$(CP) $(CPFLAGS) -Obinary $< $@
 
 .elf.hex:
 	@echo -e "  CP\t$@"
-	@$(CP) -Oihex $< $@
+	@$(CP) $(CPFLAGS) -Oihex $< $@
 
 .elf.srec:
 	@echo -e "  CP\t$@"
-	@$(CP) -Osrec $< $@
+	@$(CP) $(CPFLAGS) -Osrec $< $@
 
 .elf.list:
 	@echo -e "  OD\t$@"

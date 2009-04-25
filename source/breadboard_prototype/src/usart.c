@@ -18,7 +18,6 @@
 
 #include <stm32/lib.h>
 
-#include "interrupts.h"
 #include "pwm.h"
 #include "soft_timer.h"
 

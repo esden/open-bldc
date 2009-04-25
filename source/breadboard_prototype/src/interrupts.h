@@ -19,8 +19,6 @@
 #ifndef __INTERRUPTS_H
 #define __INTERRUPTS_H
 
-#include <stm32/lib.h>
-
 void nmi_exception(void);
 void hard_fault_exception(void);
 void mem_manage_exception(void);
@@ -56,7 +54,7 @@ void can_sce_irq_handler(void);
 void exti9_5_irq_handler(void);
 void tim1_brk_irq_handler(void);
 void tim1_up_irq_handler(void);
-void tim1_trg_com_irq_handler(void);
+// void tim1_trg_com_irq_handler(void); // moved to pwm module
 void tim1_cc_irq_handler(void);
 void tim2_irq_handler(void);
 void tim3_irq_handler(void);

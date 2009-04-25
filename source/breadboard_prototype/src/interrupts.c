@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stm32/lib.h>
+
+#include "pwm.h"
+
 #include "interrupts.h"
 
-int bldc_phase = 1;
 int led_state = 0;
 int comm_timer = 0;
 volatile int comm_timer_reload = 1000;
-volatile u16 pwm_val = 500;
-
-#define PHASE_TRIGGER 2
 
 void nmi_exception(void){
 }
@@ -151,171 +151,6 @@ void tim1_brk_irq_handler(void){
 void tim1_up_irq_handler(void){
 }
 
-void tim1_trg_com_irq_handler(void){
-    TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
-
-#if 0
-    if(led_state){
-	    GPIOC->BRR |= 0x00001000;
-	    led_state = 0;
-    }else{
-	    GPIOC->BSRR |= 0x00001000;
-	    led_state = 1;
-    }
-#endif
-
-    TIM_SetCompare1(TIM1, pwm_val);
-    TIM_SetCompare2(TIM1, pwm_val);
-    TIM_SetCompare3(TIM1, pwm_val);
-
-    switch(bldc_phase){
-    case 1:
-#if PHASE_TRIGGER == 1
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PHASE_TRIGGER == 2
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 2 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
-
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
-
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_ForcedAction_InActive );
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Enable);
-
-        bldc_phase++;
-        break;
-    case 2:
-#if PHASE_TRIGGER == 2
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PHASE_TRIGGER == 3
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 3 Configuration ---------------------------- */
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Enable);
-
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
-
-        /*  Channel1 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
-
-        bldc_phase++;
-        break;
-    case 3:
-#if PHASE_TRIGGER == 3
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PHASE_TRIGGER == 4
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 4 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
-
-        /*  Channel2 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
-
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Enable);
-
-        bldc_phase++;
-        break;
-    case 4:
-#if PHASE_TRIGGER == 4
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PHASE_TRIGGER == 5
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 5 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
-
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Enable);
-
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
-
-        bldc_phase++;
-        break;
-    case 5:
-#if PHASE_TRIGGER == 5
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PHASE_TRIGGER == 6
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 6 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Enable);
-
-        /*  Channel1 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
-
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
-
-        bldc_phase++;
-        break;
-    case 6:
-#if PHASE_TRIGGER == 6
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PHASE_TRIGGER == 1
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 1 Configuration ---------------------------- */
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
-
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Enable);
-
-        /*  Channel2 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
-
-        bldc_phase=1;
-        break;
-    }
-}
-
 void tim1_cc_irq_handler(void){
 }
 
@@ -367,7 +202,7 @@ void usart3_irq_handler(void){
             if(pwm_val > 0) pwm_val-=10;
             break;
         case 'd':
-            if(pwm_val < 1999) pwm_val+=10;
+            if(pwm_val < 1989) pwm_val+=10;
             break;
 	}
     }

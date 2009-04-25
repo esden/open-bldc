@@ -19,9 +19,12 @@
 #ifndef __PWM_H
 #define __PWM_H
 
+extern volatile u16 pwm_val;
+
 void pwm_rcc_init(void);
 void pwm_nvic_init(void);
 void pwm_gpio_init(void);
 void pwm_init(void);
+void tim1_trg_com_irq_handler(void);
 
 #endif /* __PWM_H */

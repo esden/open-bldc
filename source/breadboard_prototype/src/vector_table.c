@@ -17,7 +17,9 @@
  */
 
 #include <stm32/lib.h>
+
 #include "interrupts.h"
+#include "pwm.h"
 
 /* addresses defined in the linker script */
 extern unsigned long _etext; /* end addr of .text section */

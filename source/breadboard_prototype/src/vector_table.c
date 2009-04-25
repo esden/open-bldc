@@ -18,11 +18,14 @@
 
 #include <stm32/lib.h>
 
+#include "main.h"
 #include "interrupts.h"
 #include "pwm.h"
 #include "usart.h"
 #include "soft_timer.h"
 #include "exceptions.h"
+
+#include "vector_table.h"
 
 /* addresses defined in the linker script */
 extern unsigned long _etext; /* end addr of .text section */
@@ -35,7 +38,6 @@ extern void _estack; /* stack pointer init value */
 
 void reset_handler_stage1(void) __attribute__((__interrupt__));
 void reset_handler_stage2(void);
-extern int main(void);
 
 /* interrupt vector */
 __attribute__ ((section(".isr_vector")))

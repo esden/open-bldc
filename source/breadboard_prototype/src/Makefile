@@ -106,6 +106,6 @@ size: $(NAME).elf
 	@echo -e "  OD\t$@"
 	@$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
 
-.c.o:
+%.o: %.c %.h
 	@echo -e "  CC\t$@"
 	@$(CC) $(CFLAGS) -c $<

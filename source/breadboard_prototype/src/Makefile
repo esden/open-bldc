@@ -55,9 +55,9 @@ OBJECTS = main.o pwm.o usart.o interrupts.o vector_table.o
 
 all: gccversion images size
 
-.SUFFIXES: .elf .bin .hex .srec .list
+.SUFFIXES: .elf .bin .hex .srec .lst
 
-images: $(NAME).bin $(NAME).hex $(NAME).srec $(NAME).list
+images: $(NAME).bin $(NAME).hex $(NAME).srec $(NAME).lst
 
 
 $(NAME).elf: $(OBJECTS)
@@ -65,7 +65,7 @@ $(NAME).elf: $(OBJECTS)
 	@$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
 
 clean:
-	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).list $(NAME).srec; \
+	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; \
 	do \
 		echo -e "  CLEAN\t$$i"; \
 		rm -f $$i; \
@@ -102,9 +102,9 @@ size: $(NAME).elf
 	@echo -e "  CP\t$@"
 	@$(CP) $(CPFLAGS) -Osrec $< $@
 
-.elf.list:
+.elf.lst:
 	@echo -e "  OD\t$@"
-	@$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).list
+	@$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
 
 .c.o:
 	@echo -e "  CC\t$@"

@@ -85,8 +85,11 @@ void pwm_init(void){
     tim_oc.TIM_OCNIdleState = TIM_OCNIdleState_Set;
 
     TIM_OC1Init(TIM1, &tim_oc);
+    TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable);
     TIM_OC2Init(TIM1, &tim_oc);
+    TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);
     TIM_OC3Init(TIM1, &tim_oc);
+    TIM_OC3PreloadConfig(TIM1, TIM_OCPreload_Enable);
 
     /* Automatic Output enable, break, dead time and lock configuration */
     tim_bdtr.TIM_OSSRState       = TIM_OSSRState_Enable;

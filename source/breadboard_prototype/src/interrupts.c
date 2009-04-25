@@ -22,6 +22,7 @@ int bldc_phase = 1;
 int led_state = 0;
 int comm_timer = 0;
 volatile int comm_timer_reload = 1000;
+volatile u16 pwm_val = 500;
 
 #define PHASE_TRIGGER 2
 
@@ -162,6 +163,10 @@ void tim1_trg_com_irq_handler(void){
 	    led_state = 1;
     }
 #endif
+
+    TIM_SetCompare1(TIM1, pwm_val);
+    TIM_SetCompare2(TIM1, pwm_val);
+    TIM_SetCompare3(TIM1, pwm_val);
 
     switch(bldc_phase){
     case 1:
@@ -352,12 +357,18 @@ void usart3_irq_handler(void){
     if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
         buff = USART_ReceiveData(USART3);
 	switch(buff){
-            case 'a':
-                if(comm_timer_reload > 0) comm_timer_reload-=1;
-                break;
-            case 'b':
-                if(comm_timer_reload < 1000) comm_timer_reload+=1;
-                break;
+        case 'a':
+            if(comm_timer_reload > 0) comm_timer_reload-=1;
+            break;
+        case 'b':
+            if(comm_timer_reload < 1000) comm_timer_reload+=1;
+            break;
+        case 'c':
+            if(pwm_val > 0) pwm_val-=10;
+            break;
+        case 'd':
+            if(pwm_val < 1999) pwm_val+=10;
+            break;
 	}
     }
 #if 0

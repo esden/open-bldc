@@ -23,6 +23,8 @@ int led_state = 0;
 int comm_timer = 0;
 volatile int comm_timer_reload = 1000;
 
+#define PHASE_TRIGGER 2
+
 void nmi_exception(void){
 }
 
@@ -151,7 +153,7 @@ void tim1_up_irq_handler(void){
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
 
-#if 1
+#if 0
     if(led_state){
 	    GPIOC->BRR |= 0x00001000;
 	    led_state = 0;
@@ -163,6 +165,12 @@ void tim1_trg_com_irq_handler(void){
 
     switch(bldc_phase){
     case 1:
+#if PHASE_TRIGGER == 1
+        GPIOC->BRR |= 0x00001000;
+#endif
+#if PHASE_TRIGGER == 2
+        GPIOC->BSRR |= 0x00001000;
+#endif
         /* Next step: Step 2 Configuration ---------------------------- */
         /*  Channel3 configuration */
         TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
@@ -181,6 +189,12 @@ void tim1_trg_com_irq_handler(void){
         bldc_phase++;
         break;
     case 2:
+#if PHASE_TRIGGER == 2
+        GPIOC->BRR |= 0x00001000;
+#endif
+#if PHASE_TRIGGER == 3
+        GPIOC->BSRR |= 0x00001000;
+#endif
         /* Next step: Step 3 Configuration ---------------------------- */
         /*  Channel2 configuration */
         TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_ForcedAction_InActive);
@@ -199,6 +213,12 @@ void tim1_trg_com_irq_handler(void){
         bldc_phase++;
         break;
     case 3:
+#if PHASE_TRIGGER == 3
+        GPIOC->BRR |= 0x00001000;
+#endif
+#if PHASE_TRIGGER == 4
+        GPIOC->BSRR |= 0x00001000;
+#endif
         /* Next step: Step 4 Configuration ---------------------------- */
         /*  Channel3 configuration */
         TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_OCMode_PWM1);
@@ -217,6 +237,12 @@ void tim1_trg_com_irq_handler(void){
         bldc_phase++;
         break;
     case 4:
+#if PHASE_TRIGGER == 4
+        GPIOC->BRR |= 0x00001000;
+#endif
+#if PHASE_TRIGGER == 5
+        GPIOC->BSRR |= 0x00001000;
+#endif
         /* Next step: Step 5 Configuration ---------------------------- */
         /*  Channel3 configuration */
         TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
@@ -235,6 +261,12 @@ void tim1_trg_com_irq_handler(void){
         bldc_phase++;
         break;
     case 5:
+#if PHASE_TRIGGER == 5
+        GPIOC->BRR |= 0x00001000;
+#endif
+#if PHASE_TRIGGER == 6
+        GPIOC->BSRR |= 0x00001000;
+#endif
         /* Next step: Step 6 Configuration ---------------------------- */
         /*  Channel3 configuration */
         TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_ForcedAction_InActive);
@@ -253,6 +285,12 @@ void tim1_trg_com_irq_handler(void){
         bldc_phase++;
         break;
     case 6:
+#if PHASE_TRIGGER == 6
+        GPIOC->BRR |= 0x00001000;
+#endif
+#if PHASE_TRIGGER == 1
+        GPIOC->BSRR |= 0x00001000;
+#endif
         /* Next step: Step 1 Configuration ---------------------------- */
         /*  Channel1 configuration */
         TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_OCMode_PWM1);

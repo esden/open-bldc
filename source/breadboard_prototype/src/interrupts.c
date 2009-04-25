@@ -21,8 +21,6 @@
 #include "interrupts.h"
 
 int led_state = 0;
-int comm_timer = 0;
-volatile int comm_timer_reload = 1000;
 
 void nmi_exception(void){
 }
@@ -50,25 +48,6 @@ void svc_handler(void){
 }
 
 void pend_svc(void){
-}
-
-void sys_tick_handler(void){
-    /* generate a TIM1 COM event */
-    if(comm_timer < comm_timer_reload){
-	    comm_timer++;
-    }else{
-        comm_timer = 0;
-        TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
-    }
-#if 0
-    if(led_state){
-	    GPIOC->BRR |= 0x00001000;
-	    led_state = 0;
-    }else{
-	    GPIOC->BSRR |= 0x00001000;
-	    led_state = 1;
-    }
-#endif
 }
 
 void wwdg_irq_handler(void){

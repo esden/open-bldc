@@ -19,8 +19,6 @@
 #ifndef __INTERRUPTS_H
 #define __INTERRUPTS_H
 
-extern volatile int comm_timer_reload;
-
 void nmi_exception(void);
 void hard_fault_exception(void);
 void mem_manage_exception(void);
@@ -29,7 +27,7 @@ void usage_fault_exception(void);
 void debug_monitor(void);
 void svc_handler(void);
 void pend_svc(void);
-void sys_tick_handler(void);
+//void sys_tick_handler(void); // moved to soft_timer module
 void wwdg_irq_handler(void);
 void pvd_irq_handler(void);
 void tamper_irq_handler(void);

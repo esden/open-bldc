@@ -20,6 +20,7 @@
 
 #include "interrupts.h"
 #include "pwm.h"
+#include "soft_timer.h"
 
 #include "usart.h"
 

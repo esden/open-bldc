@@ -19,11 +19,11 @@
 #ifndef __INTERRUPTS_H
 #define __INTERRUPTS_H
 
-void nmi_exception(void);
-void hard_fault_exception(void);
-void mem_manage_exception(void);
-void bus_fault_exception(void);
-void usage_fault_exception(void);
+//void nmi_exception(void); // moved to exceptions module
+//void hard_fault_exception(void); // moved to exceptions module
+//void mem_manage_exception(void); // moved to exceptions module
+//void bus_fault_exception(void); // moved to exceptions module
+//void usage_fault_exception(void); // moved to exceptions module
 void debug_monitor(void);
 void svc_handler(void);
 void pend_svc(void);

@@ -22,6 +22,7 @@
 #include "pwm.h"
 #include "usart.h"
 #include "soft_timer.h"
+#include "exceptions.h"
 
 /* addresses defined in the linker script */
 extern unsigned long _etext; /* end addr of .text section */

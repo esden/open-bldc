@@ -22,25 +22,6 @@
 
 int led_state = 0;
 
-void nmi_exception(void){
-}
-
-void hard_fault_exception(void){
-    while(1);
-}
-
-void mem_manage_exception(void){
-    while(1);
-}
-
-void bus_fault_exception(void){
-    while(1);
-}
-
-void usage_fault_exception(void){
-    while(1);
-}
-
 void debug_monitor(void){
 }
 

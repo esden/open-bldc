@@ -86,13 +86,13 @@ void usart3_irq_handler(void){
             if(comm_timer_reload > 0) comm_timer_reload-=1;
             break;
         case 'b':
-            if(comm_timer_reload < 1000) comm_timer_reload+=1;
+            if(comm_timer_reload < 20000) comm_timer_reload+=1;
             break;
         case 'c':
-            if(pwm_val > 0) pwm_val-=10;
+            if(pwm_val > 0) pwm_val-=1;
             break;
         case 'd':
-            if(pwm_val < 1989) pwm_val+=10;
+            if(pwm_val < 1989) pwm_val+=1;
             break;
 	}
     }

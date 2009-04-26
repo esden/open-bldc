@@ -21,7 +21,8 @@
 #include "soft_timer.h"
 
 int comm_timer = 0;
-volatile int comm_timer_reload = 1000;
+volatile int comm_timer_reload = 3000;
+int cnt = 100;
 
 void sys_tick_handler(void){
     /* generate a TIM1 COM event */

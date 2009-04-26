@@ -20,12 +20,12 @@
 
 #include "pwm.h"
 
-#define PWM_VALUE 1023;
+#define PWM_VALUE 200;
 
 int pwm_phase = 1;
-volatile u16 pwm_val = 500;
+volatile u16 pwm_val = 200;
 
-#define PWM_PHASE_TRIGGER 2
+#define PWM_PHASE_TRIGGER 6
 
 void pwm_rcc_init(void){
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,
@@ -83,7 +83,7 @@ void pwm_init(void){
     tim_oc.TIM_OCMode       = TIM_OCMode_Timing;
     tim_oc.TIM_OutputState  = TIM_OutputState_Enable;
     tim_oc.TIM_OutputNState = TIM_OutputNState_Enable;
-    tim_oc.TIM_Pulse        = 500;//PWM_VALUE;
+    tim_oc.TIM_Pulse        = PWM_VALUE;
     tim_oc.TIM_OCPolarity   = TIM_OCPolarity_High;
     tim_oc.TIM_OCNPolarity  = TIM_OCNPolarity_High;
     tim_oc.TIM_OCIdleState  = TIM_OCIdleState_Set;
@@ -100,7 +100,7 @@ void pwm_init(void){
     tim_bdtr.TIM_OSSRState       = TIM_OSSRState_Enable;
     tim_bdtr.TIM_OSSIState       = TIM_OSSIState_Enable;
     tim_bdtr.TIM_LOCKLevel       = TIM_LOCKLevel_OFF;
-    tim_bdtr.TIM_DeadTime        = 1;
+    tim_bdtr.TIM_DeadTime        = 10;
     tim_bdtr.TIM_Break           = TIM_Break_Disable;
     tim_bdtr.TIM_BreakPolarity   = TIM_BreakPolarity_High;
     tim_bdtr.TIM_AutomaticOutput = TIM_AutomaticOutput_Enable;

@@ -24,6 +24,7 @@
 
 int pwm_phase = 1;
 volatile u16 pwm_val = 200;
+volatile int pwm_free_wheeling = 0;
 
 #define PWM_PHASE_TRIGGER 6
 
@@ -119,165 +120,116 @@ void pwm_init(void){
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 
+#define PWM_PHASE_A TIM_Channel_1
+#define PWM_PHASE_B TIM_Channel_2
+#define PWM_PHASE_C TIM_Channel_3
+
+#define PWM_SET_____HI(PHASE)                              \
+    TIM_SelectOCxM(TIM1, PHASE, TIM_ForcedAction_Active ); \
+    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);               \
+    TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable)
+
+#define PWM_SET_____LO(PHASE)                                   \
+    TIM_SelectOCxM(TIM1, PHASE, TIM_ForcedAction_InActive );    \
+    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);                    \
+    TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable)
+
+#define PWM_SET_PWM_HI(PHASE)                       \
+    TIM_SelectOCxM(TIM1, PHASE, TIM_OCMode_PWM1);   \
+    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);        \
+    if(pwm_free_wheeling){                          \
+        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable);  \
+    }else{                                          \
+        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Disable); \
+    } ((void)0)
+
+#define PWM_SET_PWM_LO(PHASE)                       \
+    TIM_SelectOCxM(TIM1, PHASE, TIM_OCMode_PWM2);   \
+    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);        \
+    if(pwm_free_wheeling){                          \
+        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable);  \
+    }else{                                          \
+        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Disable); \
+    } ((void)0)
+
+
+#define PWM_SET____OFF(PHASE)                              \
+    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Disable);   \
+    TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Disable)
+
+#define PWM_TRIGGER(ZONE)                       \
+    if(PWM_PHASE_TRIGGER == ZONE){              \
+        GPIOC->BRR |= 0x00001000;               \
+    }                                           \
+    if(PWM_PHASE_TRIGGER == ZONE + 1){          \
+        GPIOC->BSRR |= 0x00001000;              \
+    }
+
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
-
-#if 0
-    if(led_state){
-	    GPIOC->BRR |= 0x00001000;
-	    led_state = 0;
-    }else{
-	    GPIOC->BSRR |= 0x00001000;
-	    led_state = 1;
-    }
-#endif
 
     TIM_SetCompare1(TIM1, pwm_val);
     TIM_SetCompare2(TIM1, pwm_val);
     TIM_SetCompare3(TIM1, pwm_val);
 
     switch(pwm_phase){
-    case 1:
-#if PWM_PHASE_TRIGGER == 1
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PWM_PHASE_TRIGGER == 2
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 2 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
+    case 1: // 000º
+        PWM_TRIGGER(1);
 
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
-
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_ForcedAction_InActive );
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Enable);
+        /* Configure step 2 */
+        PWM_SET_PWM_HI(PWM_PHASE_A);
+        PWM_SET_____LO(PWM_PHASE_B);
+        PWM_SET____OFF(PWM_PHASE_C);
 
         pwm_phase++;
         break;
-    case 2:
-#if PWM_PHASE_TRIGGER == 2
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PWM_PHASE_TRIGGER == 3
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 3 Configuration ---------------------------- */
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Enable);
+    case 2: // 060º
+        PWM_TRIGGER(2);
 
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
-
-        /*  Channel1 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
+        /* Configure step 3 */
+        PWM_SET____OFF(PWM_PHASE_A);
+        PWM_SET_____LO(PWM_PHASE_B);
+        PWM_SET_PWM_HI(PWM_PHASE_C);
 
         pwm_phase++;
         break;
-    case 3:
-#if PWM_PHASE_TRIGGER == 3
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PWM_PHASE_TRIGGER == 4
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 4 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
+    case 3: // 120º
+        PWM_TRIGGER(3);
 
-        /*  Channel2 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
-
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Enable);
+        /* Configure step 4 */
+        PWM_SET_____LO(PWM_PHASE_A);
+        PWM_SET____OFF(PWM_PHASE_B);
+        PWM_SET_PWM_HI(PWM_PHASE_C);
 
         pwm_phase++;
         break;
-    case 4:
-#if PWM_PHASE_TRIGGER == 4
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PWM_PHASE_TRIGGER == 5
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 5 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Disable);
+    case 4: // 180º
+        PWM_TRIGGER(4);
 
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Enable);
-
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
+        /* Configure step 4 */
+        PWM_SET_____LO(PWM_PHASE_A);
+        PWM_SET_PWM_HI(PWM_PHASE_B);
+        PWM_SET____OFF(PWM_PHASE_C);
 
         pwm_phase++;
         break;
-    case 5:
-#if PWM_PHASE_TRIGGER == 5
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PWM_PHASE_TRIGGER == 6
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 6 Configuration ---------------------------- */
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Enable);
+    case 5: // 220º
+        PWM_TRIGGER(5);
 
-        /*  Channel1 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
-
-        /*  Channel2 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_2, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
+        /* Configure step 4 */
+        PWM_SET____OFF(PWM_PHASE_A);
+        PWM_SET_PWM_HI(PWM_PHASE_B);
+        PWM_SET_____LO(PWM_PHASE_C);
 
         pwm_phase++;
         break;
-    case 6:
-#if PWM_PHASE_TRIGGER == 6
-        GPIOC->BRR |= 0x00001000;
-#endif
-#if PWM_PHASE_TRIGGER == 1
-        GPIOC->BSRR |= 0x00001000;
-#endif
-        /* Next step: Step 1 Configuration ---------------------------- */
-        /*  Channel1 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_1, TIM_OCMode_PWM1);
-        TIM_CCxCmd(TIM1, TIM_Channel_1, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_1, TIM_CCxN_Disable);
+    case 6: // 280º
+        PWM_TRIGGER(6);
 
-        /*  Channel3 configuration */
-        TIM_SelectOCxM(TIM1, TIM_Channel_3, TIM_ForcedAction_InActive);
-        TIM_CCxCmd(TIM1, TIM_Channel_3, TIM_CCx_Enable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_3, TIM_CCxN_Enable);
-
-        /*  Channel2 configuration */
-        TIM_CCxCmd(TIM1, TIM_Channel_2, TIM_CCx_Disable);
-        TIM_CCxNCmd(TIM1, TIM_Channel_2, TIM_CCxN_Disable);
+        /* Configure step 4 */
+        PWM_SET_PWM_HI(PWM_PHASE_A);
+        PWM_SET____OFF(PWM_PHASE_B);
+        PWM_SET_____LO(PWM_PHASE_C);
 
         pwm_phase=1;
         break;

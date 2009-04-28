@@ -20,6 +20,7 @@
 #define __PWM_H
 
 extern volatile u16 pwm_val;
+extern volatile int pwm_free_wheeling;
 
 void pwm_rcc_init(void);
 void pwm_nvic_init(void);

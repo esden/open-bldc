@@ -18,23 +18,15 @@
 
 #include <stm32/lib.h>
 
+#include "config.h"
+#include "pwm_schemes.h"
+
 #include "pwm.h"
 
 #define PWM_VALUE 200;
 
-int pwm_phase = 1;
 volatile u16 pwm_val = 200;
 volatile int pwm_free_wheeling = 0;
-
-#define PWM_PHASE_TRIGGER 6
-
-void pwm_set_____hi(u16 phase) __attribute__((always_inline));
-void pwm_set_____lo(u16 phase) __attribute__((always_inline));
-void pwm_set_pwm_hi(u16 phase) __attribute__((always_inline));
-void pwm_set_pwm_lo(u16 phase) __attribute__((always_inline));
-void pwm_set____off(u16 phase) __attribute__((always_inline));
-
-void pwm_trigger(u16 zone) __attribute__((always_inline));
 
 void pwm_rcc_init(void){
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,
@@ -128,56 +120,6 @@ void pwm_init(void){
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 
-#define PWM_PHASE_A TIM_Channel_1
-#define PWM_PHASE_B TIM_Channel_2
-#define PWM_PHASE_C TIM_Channel_3
-
-void pwm_set_____hi(u16 phase){
-    TIM_SelectOCxM(TIM1, phase, TIM_ForcedAction_Active );
-    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
-    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
-}
-
-void pwm_set_____lo(u16 phase){
-    TIM_SelectOCxM(TIM1, phase, TIM_ForcedAction_InActive );
-    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
-    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
-}
-
-void pwm_set_pwm_hi(u16 phase){
-    TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM1);
-    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
-    if(pwm_free_wheeling){
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
-    }else{
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
-    }
-}
-
-void pwm_set_pwm_lo(u16 phase){
-    TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM2);
-    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
-    if(pwm_free_wheeling){
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
-    }else{
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
-    }
-}
-
-void pwm_set____off(u16 phase){
-    TIM_CCxCmd(TIM1, phase, TIM_CCx_Disable);
-    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
-}
-
-void pwm_trigger(u16 zone){
-    if(PWM_PHASE_TRIGGER == zone){
-        GPIOC->BRR |= 0x00001000;
-    }
-    if(PWM_PHASE_TRIGGER == zone + 1){
-        GPIOC->BSRR |= 0x00001000;
-    }
-}
-
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
 
@@ -185,66 +127,5 @@ void tim1_trg_com_irq_handler(void){
     TIM_SetCompare2(TIM1, pwm_val);
     TIM_SetCompare3(TIM1, pwm_val);
 
-    switch(pwm_phase){
-    case 1: // 000º
-        pwm_trigger(1);
-
-        /* Configure step 2 */
-        pwm_set_pwm_hi(PWM_PHASE_A);
-        pwm_set_____lo(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
-
-        pwm_phase++;
-        break;
-    case 2: // 060º
-        pwm_trigger(2);
-
-        /* Configure step 3 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_____lo(PWM_PHASE_B);
-        pwm_set_pwm_hi(PWM_PHASE_C);
-
-        pwm_phase++;
-        break;
-    case 3: // 120º
-        pwm_trigger(3);
-
-        /* Configure step 4 */
-        pwm_set_____lo(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_pwm_hi(PWM_PHASE_C);
-
-        pwm_phase++;
-        break;
-    case 4: // 180º
-        pwm_trigger(4);
-
-        /* Configure step 4 */
-        pwm_set_____lo(PWM_PHASE_A);
-        pwm_set_pwm_hi(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
-
-        pwm_phase++;
-        break;
-    case 5: // 220º
-        pwm_trigger(5);
-
-        /* Configure step 4 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_pwm_hi(PWM_PHASE_B);
-        pwm_set_____lo(PWM_PHASE_C);
-
-        pwm_phase++;
-        break;
-    case 6: // 280º
-        pwm_trigger(6);
-
-        /* Configure step 4 */
-        pwm_set_pwm_hi(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_____lo(PWM_PHASE_C);
-
-        pwm_phase=1;
-        break;
-    }
+    PWM_SCHEME();
 }

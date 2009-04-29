@@ -20,9 +20,9 @@
 
 #include "pwm_utils.h"
 
-#include "pwm_scheme_6step_simple.h"
+#include "pwm_scheme_6step_h_pwm_l_on.h"
 
-void pwm_scheme_6step_simple(void){
+void pwm_scheme_6step_h_pwm_l_on(void){
     static int pwm_phase =1;
 
     switch(pwm_phase){

@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PWM_SCHEME_6STEP_SIMPLE
-#define __PWM_SCHEME_6STEP_SIMPLE
+#ifndef __PWM_SCHEME_6STEP_H_PWM_L_ON
+#define __PWM_SCHEME_6STEP_H_PWM_L_ON
 
-void pwm_scheme_6step_simple(void);
+void pwm_scheme_6step_h_pwm_l_on(void);
 
-#endif /* __PWM_SCHEME_6STEP_SIMLE */
+#endif /* __PWM_SCHEME_6STEP_H_PWM_L_ON */

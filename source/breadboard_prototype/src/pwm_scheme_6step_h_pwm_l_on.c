@@ -16,6 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * Table of the pwm scheme zone configurations:
+ *
+ *  | 1| 2| 3| 4| 5| 6|
+ * -+--+--+--+--+--+--+
+ * A|p+|p+|  |--|--|  |
+ * -+--+--+--+--+--+--+
+ * B|  |--|--|  |p+|p+|
+ * -+--+--+--+--+--+--+
+ * C|--|  |p+|p+|  |--|
+ * -+--+--+--+--+--+--+
+ *  |  |  |  |  |  |  '- 360º
+ *  |  |  |  |  |  '---- 300º
+ *  |  |  |  |  '------- 240º
+ *  |  |  |  '---------- 180º
+ *  |  |  '------------- 120º
+ *  |  '----------------  60º
+ *  '-------------------   0º
+ *
+ * Legend:
+ * p+: PWM on the high side
+ * p-: PWM on the low side
+ * --: Low side on
+ * ++: High side on
+ *   : Floating/NC
+ */
+
 #include <stm32/lib.h>
 
 #include "pwm_utils.h"

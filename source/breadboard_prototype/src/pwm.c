@@ -28,6 +28,14 @@ volatile int pwm_free_wheeling = 0;
 
 #define PWM_PHASE_TRIGGER 6
 
+void pwm_set_____hi(u16 phase) __attribute__((always_inline));
+void pwm_set_____lo(u16 phase) __attribute__((always_inline));
+void pwm_set_pwm_hi(u16 phase) __attribute__((always_inline));
+void pwm_set_pwm_lo(u16 phase) __attribute__((always_inline));
+void pwm_set____off(u16 phase) __attribute__((always_inline));
+
+void pwm_trigger(u16 zone) __attribute__((always_inline));
+
 void pwm_rcc_init(void){
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,
                            ENABLE);
@@ -124,46 +132,51 @@ void pwm_init(void){
 #define PWM_PHASE_B TIM_Channel_2
 #define PWM_PHASE_C TIM_Channel_3
 
-#define PWM_SET_____HI(PHASE)                              \
-    TIM_SelectOCxM(TIM1, PHASE, TIM_ForcedAction_Active ); \
-    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);               \
-    TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable)
+void pwm_set_____hi(u16 phase){
+    TIM_SelectOCxM(TIM1, phase, TIM_ForcedAction_Active );
+    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
+    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
+}
 
-#define PWM_SET_____LO(PHASE)                                   \
-    TIM_SelectOCxM(TIM1, PHASE, TIM_ForcedAction_InActive );    \
-    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);                    \
-    TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable)
+void pwm_set_____lo(u16 phase){
+    TIM_SelectOCxM(TIM1, phase, TIM_ForcedAction_InActive );
+    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
+    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
+}
 
-#define PWM_SET_PWM_HI(PHASE)                       \
-    TIM_SelectOCxM(TIM1, PHASE, TIM_OCMode_PWM1);   \
-    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);        \
-    if(pwm_free_wheeling){                          \
-        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable);  \
-    }else{                                          \
-        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Disable); \
-    } ((void)0)
-
-#define PWM_SET_PWM_LO(PHASE)                       \
-    TIM_SelectOCxM(TIM1, PHASE, TIM_OCMode_PWM2);   \
-    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Enable);        \
-    if(pwm_free_wheeling){                          \
-        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Enable);  \
-    }else{                                          \
-        TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Disable); \
-    } ((void)0)
-
-
-#define PWM_SET____OFF(PHASE)                              \
-    TIM_CCxCmd(TIM1, PHASE, TIM_CCx_Disable);   \
-    TIM_CCxNCmd(TIM1, PHASE, TIM_CCxN_Disable)
-
-#define PWM_TRIGGER(ZONE)                       \
-    if(PWM_PHASE_TRIGGER == ZONE){              \
-        GPIOC->BRR |= 0x00001000;               \
-    }                                           \
-    if(PWM_PHASE_TRIGGER == ZONE + 1){          \
-        GPIOC->BSRR |= 0x00001000;              \
+void pwm_set_pwm_hi(u16 phase){
+    TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM1);
+    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
+    if(pwm_free_wheeling){
+        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
+    }else{
+        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
     }
+}
+
+void pwm_set_pwm_lo(u16 phase){
+    TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM2);
+    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
+    if(pwm_free_wheeling){
+        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
+    }else{
+        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
+    }
+}
+
+void pwm_set____off(u16 phase){
+    TIM_CCxCmd(TIM1, phase, TIM_CCx_Disable);
+    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
+}
+
+void pwm_trigger(u16 zone){
+    if(PWM_PHASE_TRIGGER == zone){
+        GPIOC->BRR |= 0x00001000;
+    }
+    if(PWM_PHASE_TRIGGER == zone + 1){
+        GPIOC->BSRR |= 0x00001000;
+    }
+}
 
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
@@ -174,62 +187,62 @@ void tim1_trg_com_irq_handler(void){
 
     switch(pwm_phase){
     case 1: // 000º
-        PWM_TRIGGER(1);
+        pwm_trigger(1);
 
         /* Configure step 2 */
-        PWM_SET_PWM_HI(PWM_PHASE_A);
-        PWM_SET_____LO(PWM_PHASE_B);
-        PWM_SET____OFF(PWM_PHASE_C);
+        pwm_set_pwm_hi(PWM_PHASE_A);
+        pwm_set_____lo(PWM_PHASE_B);
+        pwm_set____off(PWM_PHASE_C);
 
         pwm_phase++;
         break;
     case 2: // 060º
-        PWM_TRIGGER(2);
+        pwm_trigger(2);
 
         /* Configure step 3 */
-        PWM_SET____OFF(PWM_PHASE_A);
-        PWM_SET_____LO(PWM_PHASE_B);
-        PWM_SET_PWM_HI(PWM_PHASE_C);
+        pwm_set____off(PWM_PHASE_A);
+        pwm_set_____lo(PWM_PHASE_B);
+        pwm_set_pwm_hi(PWM_PHASE_C);
 
         pwm_phase++;
         break;
     case 3: // 120º
-        PWM_TRIGGER(3);
+        pwm_trigger(3);
 
         /* Configure step 4 */
-        PWM_SET_____LO(PWM_PHASE_A);
-        PWM_SET____OFF(PWM_PHASE_B);
-        PWM_SET_PWM_HI(PWM_PHASE_C);
+        pwm_set_____lo(PWM_PHASE_A);
+        pwm_set____off(PWM_PHASE_B);
+        pwm_set_pwm_hi(PWM_PHASE_C);
 
         pwm_phase++;
         break;
     case 4: // 180º
-        PWM_TRIGGER(4);
+        pwm_trigger(4);
 
         /* Configure step 4 */
-        PWM_SET_____LO(PWM_PHASE_A);
-        PWM_SET_PWM_HI(PWM_PHASE_B);
-        PWM_SET____OFF(PWM_PHASE_C);
+        pwm_set_____lo(PWM_PHASE_A);
+        pwm_set_pwm_hi(PWM_PHASE_B);
+        pwm_set____off(PWM_PHASE_C);
 
         pwm_phase++;
         break;
     case 5: // 220º
-        PWM_TRIGGER(5);
+        pwm_trigger(5);
 
         /* Configure step 4 */
-        PWM_SET____OFF(PWM_PHASE_A);
-        PWM_SET_PWM_HI(PWM_PHASE_B);
-        PWM_SET_____LO(PWM_PHASE_C);
+        pwm_set____off(PWM_PHASE_A);
+        pwm_set_pwm_hi(PWM_PHASE_B);
+        pwm_set_____lo(PWM_PHASE_C);
 
         pwm_phase++;
         break;
     case 6: // 280º
-        PWM_TRIGGER(6);
+        pwm_trigger(6);
 
         /* Configure step 4 */
-        PWM_SET_PWM_HI(PWM_PHASE_A);
-        PWM_SET____OFF(PWM_PHASE_B);
-        PWM_SET_____LO(PWM_PHASE_C);
+        pwm_set_pwm_hi(PWM_PHASE_A);
+        pwm_set____off(PWM_PHASE_B);
+        pwm_set_____lo(PWM_PHASE_C);
 
         pwm_phase=1;
         break;

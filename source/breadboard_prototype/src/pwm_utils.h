@@ -16,16 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PWM_H
-#define __PWM_H
+#ifndef __PWM_UTILS_H
+#define __PWM_UTILS_H
 
-extern volatile u16 pwm_val;
-extern volatile int pwm_free_wheeling;
+#define PWM_PHASE_A TIM_Channel_1
+#define PWM_PHASE_B TIM_Channel_2
+#define PWM_PHASE_C TIM_Channel_3
 
-void pwm_rcc_init(void);
-void pwm_nvic_init(void);
-void pwm_gpio_init(void);
-void pwm_init(void);
-void tim1_trg_com_irq_handler(void);
+void pwm_trigger(u16 zone) __attribute__((always_inline));
+void pwm_set_____hi(u16 phase) __attribute__((always_inline));
+void pwm_set_____lo(u16 phase) __attribute__((always_inline));
+void pwm_set_pwm_hi(u16 phase) __attribute__((always_inline));
+void pwm_set_pwm_lo(u16 phase) __attribute__((always_inline));
+void pwm_set____off(u16 phase) __attribute__((always_inline));
 
-#endif /* __PWM_H */
+#endif /* __PWM_UTILS_H */

@@ -51,7 +51,7 @@ CPFLAGS  = -j .isr_vector -j .text -j .data
 ODFLAGS	 = -S
 SIZEFLAGS = -A -x
 
-OBJECTS = main.o exceptions.o soft_timer.o pwm.o usart.o vector_table.o
+OBJECTS = main.o exceptions.o soft_timer.o pwm.o pwm_utils.o pwm_scheme_6step_simple.o usart.o vector_table.o
 
 all: gccversion images size
 

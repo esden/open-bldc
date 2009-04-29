@@ -16,16 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PWM_H
-#define __PWM_H
+#ifndef __CONFIG_H
+#define __CONFIG_H
 
-extern volatile u16 pwm_val;
-extern volatile int pwm_free_wheeling;
+#define PWM_PHASE_TRIGGER 6
 
-void pwm_rcc_init(void);
-void pwm_nvic_init(void);
-void pwm_gpio_init(void);
-void pwm_init(void);
-void tim1_trg_com_irq_handler(void);
+#define PWM_SCHEME pwm_scheme_6step_simple
 
-#endif /* __PWM_H */
+#endif /* __CONFIG_H */

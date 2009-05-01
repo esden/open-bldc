@@ -26,7 +26,6 @@
 #define PWM_VALUE 200;
 
 volatile u16 pwm_val = 200;
-volatile int pwm_free_wheeling = 0;
 
 void pwm_rcc_init(void){
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,

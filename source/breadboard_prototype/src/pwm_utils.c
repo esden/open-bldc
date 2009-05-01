@@ -47,21 +47,14 @@ void pwm_set_____lo(u16 phase){
 void pwm_set_pwm_hi(u16 phase){
     TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM1);
     TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
-    if(pwm_free_wheeling){
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
-    }else{
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
-    }
+    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
 }
 
 void pwm_set_pwm_lo(u16 phase){
-    TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM2);
-    TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
-    if(pwm_free_wheeling){
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
-    }else{
-        TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
-    }
+    TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM1);
+    TIM_CCxCmd(TIM1, phase, TIM_CCx_Disable);
+    TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
+
 }
 
 void pwm_set____off(u16 phase){

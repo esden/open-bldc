@@ -94,10 +94,6 @@ void usart3_irq_handler(void){
         case 'd':
             if(pwm_val < 1989) pwm_val+=1;
             break;
-        case 'e':
-            if(pwm_free_wheeling) pwm_free_wheeling=0;
-            else pwm_free_wheeling=1;
-            break;
 	}
     }
 #if 0

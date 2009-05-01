@@ -84,15 +84,25 @@ void usart3_irq_handler(void){
 	switch(buff){
         case 'a':
             if(comm_timer_reload > 0) comm_timer_reload-=1;
+            SysTick_SetReload(comm_timer_reload);
             break;
         case 'b':
-            if(comm_timer_reload < 20000) comm_timer_reload+=1;
+            if(comm_timer_reload < 200000) comm_timer_reload+=1;
+            SysTick_SetReload(comm_timer_reload);
             break;
         case 'c':
             if(pwm_val > 0) pwm_val-=1;
             break;
         case 'd':
             if(pwm_val < 1989) pwm_val+=1;
+            break;
+        case 'e':
+            if(comm_timer_reload > 72*2) comm_timer_reload-=72*2;
+            SysTick_SetReload(comm_timer_reload);
+            break;
+        case 'f':
+            if(comm_timer_reload < 200000-72*2) comm_timer_reload+=72*2;
+            SysTick_SetReload(comm_timer_reload);
             break;
 	}
     }

@@ -21,17 +21,13 @@
 #include "soft_timer.h"
 
 int comm_timer = 0;
-volatile int comm_timer_reload = 3000;
+volatile int comm_timer_reload = 72*2*750;
 int cnt = 100;
 
 void sys_tick_handler(void){
     /* generate a TIM1 COM event */
-    if(comm_timer < comm_timer_reload){
-	    comm_timer++;
-    }else{
-        comm_timer = 0;
-        TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
-    }
+    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+
 #if 0
     if(led_state){
 	    GPIOC->BRR |= 0x00001000;

@@ -103,8 +103,12 @@ void gpio_init(void){
 void sys_tick_init(void){
     /* Select HCLK as clock source */
     SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
-    /* Generate SysTick interrupt every 1us (with HCLK=72MHz) */
-    SysTick_SetReload(72);
+    /* Generate SysTick interrupt every 1500us (with HCLK=72MHz)
+     *
+     * We are using the SysTick only to force commutations for now so we trigger
+     * the SysTick only when we need to commutate.
+     */
+    SysTick_SetReload(72*2*750);
     SysTick_CounterCmd(SysTick_Counter_Enable);
     SysTick_ITConfig(ENABLE);
 }

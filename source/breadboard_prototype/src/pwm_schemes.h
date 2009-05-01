@@ -21,8 +21,8 @@
 
 #include "pwm_scheme_6step_h_pwm_l_on.h"
 //#include "pwm_scheme_6step_h_on_l_pwm.h"  /* TODO: implement */
-//#include "pwm_scheme_6step_on_pwm.h"      /* TODO: implement */
+#include "pwm_scheme_6step_on_pwm.h"
 //#include "pwm_scheme_6step_pwm_on.h"      /* TODO: implement */
-//#include "pwm_scheme_12step_pwm_on_pwm.h" /* TODO: implement */
+#include "pwm_scheme_12step_pwm_on_pwm.h"
 
 #endif /* __PWM_SCHEMES_H */

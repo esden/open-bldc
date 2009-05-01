@@ -58,7 +58,9 @@ OBJECTS = main.o \
 	  vector_table.o \
 	  pwm.o \
 	  pwm_utils.o \
-	  pwm_scheme_6step_h_pwm_l_on.o
+	  pwm_scheme_6step_h_pwm_l_on.o \
+	  pwm_scheme_6step_on_pwm.o \
+	  pwm_scheme_12step_pwm_on_pwm.o
 
 all: gccversion images size
 

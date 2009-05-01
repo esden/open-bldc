@@ -16,15 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __CONFIG_H
-#define __CONFIG_H
+#ifndef __PWM_SCHEME_6STEP_ON_PWM
+#define __PWM_SCHEME_6STEP_ON_PWM
 
-#define PWM_PHASE_TRIGGER 6
+void pwm_scheme_6step_on_pwm(void);
 
-//#define PWM_SCHEME pwm_scheme_6step_h_pwm_l_on
-//#define PWM_SCHEME pwm_scheme_6step_h_on_l_pwm  /* TODO: implement */
-//#define PWM_SCHEME pwm_scheme_6step_on_pwm
-//#define PWM_SCHEME pwm_scheme_6step_pwm_on      /* TODO: implement */
-#define PWM_SCHEME pwm_scheme_12step_pwm_on_pwm
-
-#endif /* __CONFIG_H */
+#endif /* __PWM_SCHEME_6STEP_ON_PWM */

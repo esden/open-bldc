@@ -26,7 +26,7 @@ int cnt = 100;
 
 void sys_tick_handler(void){
     /* generate a TIM1 COM event */
-    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+    TIM_GenerateEvent(TIM1, TIM_EventSource_COM | TIM_EventSource_Update);
 
 #if 0
     if(led_state){

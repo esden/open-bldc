@@ -58,7 +58,7 @@ void usart_gpio_init(void){
 void usart_init(void){
     USART_InitTypeDef usart;
 
-    usart.USART_BaudRate            = 9600;
+    usart.USART_BaudRate            = 38400;
     usart.USART_WordLength          = USART_WordLength_8b;
     usart.USART_StopBits            = USART_StopBits_1;
     usart.USART_Parity              = USART_Parity_No;

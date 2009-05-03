@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PWM_SCHEMES_H
-#define __PWM_SCHEMES_H
+#ifndef __PWM_SCHEME_6STEP_PWM_ON
+#define __PWM_SCHEME_6STEP_PWM_ON
 
-#include "pwm_scheme_6step_h_pwm_l_on.h"
-#include "pwm_scheme_6step_h_on_l_pwm.h"
-#include "pwm_scheme_6step_on_pwm.h"
-#include "pwm_scheme_6step_pwm_on.h"
-#include "pwm_scheme_12step_pwm_on_pwm.h"
+void pwm_scheme_6step_pwm_on(void);
 
-#endif /* __PWM_SCHEMES_H */
+#endif /* __PWM_SCHEME_6STEP_PWM_ON */

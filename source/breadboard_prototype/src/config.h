@@ -22,9 +22,9 @@
 #define PWM_PHASE_TRIGGER 5
 
 //#define PWM_SCHEME pwm_scheme_6step_h_pwm_l_on
-#define PWM_SCHEME pwm_scheme_6step_h_on_l_pwm
+//#define PWM_SCHEME pwm_scheme_6step_h_on_l_pwm
 //#define PWM_SCHEME pwm_scheme_6step_on_pwm
-//#define PWM_SCHEME pwm_scheme_6step_pwm_on      /* TODO: implement */
+#define PWM_SCHEME pwm_scheme_6step_pwm_on
 //#define PWM_SCHEME pwm_scheme_12step_pwm_on_pwm
 
 #endif /* __CONFIG_H */

@@ -1,5 +1,5 @@
 /*
- * Open-BLDC - Open BruschLess DC Motor Controller
+ * Open-BLDC Tool - Open BruschLess DC Motor Controller PC Tool
  * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __SOFT_TIMER_H
-#define __SOFT_TIMER_H
+#ifndef TOOLS_H
+#define TOOLS_H
 
-extern volatile u32 comm_timer_reload;
+void hexdump(unsigned char *data, unsigned long count);
 
-void sys_tick_handler(void);
-
-#endif /* __SOFT_TIMER_H */
+#endif /* TOOLS_H */

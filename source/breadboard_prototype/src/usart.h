@@ -19,6 +19,20 @@
 #ifndef __USART_H
 #define __USART_H
 
+typedef struct {
+    u16 pwm_period;
+    u16 pwm_duty;
+    u32 comm_force_time;
+} out_data_t;
+
+typedef struct {
+    u16 pwm_period;
+    u16 pwm_duty;
+    u32 comm_force_time;
+} in_data_t;
+
+extern volatile out_data_t out_data;
+
 void usart_rcc_init(void);
 void usart_nvic_init(void);
 void usart_gpio_init(void);

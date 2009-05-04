@@ -21,7 +21,7 @@
 #include "soft_timer.h"
 
 int comm_timer = 0;
-volatile int comm_timer_reload = 72*2*750;
+volatile u32 comm_timer_reload = 72*2*750;
 int cnt = 100;
 
 void sys_tick_handler(void){

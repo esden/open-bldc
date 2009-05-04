@@ -23,6 +23,11 @@
 
 #include "usart.h"
 
+int out_data_counter = 0;
+volatile out_data_t out_data;
+volatile out_data_t *out_datap = &out_data;
+volatile in_data_t in_data;
+
 void usart_rcc_init(void){
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
 }
@@ -104,18 +109,29 @@ void usart3_irq_handler(void){
             if(comm_timer_reload < 200000-72*2) comm_timer_reload+=72*2;
             SysTick_SetReload(comm_timer_reload);
             break;
+        case 'g':
+            //USART_SendData(USART3, 'G');
+            out_data.pwm_period = 0;
+            out_data.pwm_duty = pwm_val;
+            out_data.comm_force_time = comm_timer_reload;
+            out_data_counter = 0;
+            USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+            break;
 	}
     }
-#if 0
+
     if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
-        USART_SendData(USART3, 'A');
-        if(led_state){
-            GPIOC->BRR |= 0x00001000;
-            led_state = 0;
+        if(out_data_counter < sizeof(out_data)+1){
+            if(out_data_counter==0)
+                USART_SendData(USART3, 'o');
+            else
+                USART_SendData(USART3,
+                               ((unsigned char*)out_datap)[out_data_counter-1]);
+            out_data_counter++;
         }else{
-            GPIOC->BSRR |= 0x00001000;
-            led_state = 1;
+                out_data_counter = 0;
+                USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
         }
     }
-#endif
+
 }

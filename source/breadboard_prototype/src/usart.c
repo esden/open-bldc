@@ -20,6 +20,7 @@
 
 #include "pwm.h"
 #include "soft_timer.h"
+#include "adc.h"
 
 #include "usart.h"
 
@@ -83,6 +84,7 @@ void usart_init(void){
 
 void usart3_irq_handler(void){
     char buff;
+    int i;
 
     if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
         buff = USART_ReceiveData(USART3);
@@ -114,6 +116,9 @@ void usart3_irq_handler(void){
             out_data.pwm_period = 0;
             out_data.pwm_duty = pwm_val;
             out_data.comm_force_time = comm_timer_reload;
+            for(i=0; i<32; i++){
+                out_data.adc[i]=adc_val[i];
+            }
             out_data_counter = 0;
             USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
             break;

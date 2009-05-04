@@ -16,29 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __USART_H
-#define __USART_H
+#ifndef __ADC_H
+#define __ADC_H
 
-typedef struct {
-    u16 pwm_period;
-    u16 pwm_duty;
-    u32 comm_force_time;
-    u16 adc[32];
-} out_data_t;
+extern vu16 adc_val[32];
 
-typedef struct {
-    u16 pwm_period;
-    u16 pwm_duty;
-    u32 comm_force_time;
-    u16 adc[32];
-} in_data_t;
+void adc_rcc_init(void);
+void adc_nvic_init(void);
+void adc_gpio_init(void);
+void adc_init(void);
 
-extern volatile out_data_t out_data;
-
-void usart_rcc_init(void);
-void usart_nvic_init(void);
-void usart_gpio_init(void);
-void usart_init(void);
-void usart3_irq_handler(void);
-
-#endif /* __USART_H */
+#endif /* __ADC_H */

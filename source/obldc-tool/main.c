@@ -30,12 +30,14 @@ typedef struct {
     uint16_t pwm_period;
     uint16_t pwm_duty;
     uint32_t comm_force_time;
+    uint16_t adc[32];
 } out_data_t;
 
 typedef struct {
     uint16_t pwm_period;
     uint16_t pwm_duty;
     uint32_t comm_force_time;
+    uint16_t adc[32];
 } in_data_t;
 
 in_data_t in_data;
@@ -44,6 +46,9 @@ unsigned char dat2[1];
 char msg[25];
 int rot_cnt = 0;
 char rot[2] = "/";
+int16_t adc_mean;
+int16_t adc_dev;
+int16_t adc_old;
 
 static WINDOW *mainwnd;
 static WINDOW *screen;
@@ -76,6 +81,8 @@ void inc_rot(){
 }
 
 static void update_display(void) {
+    int i;
+
     inc_rot();
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
@@ -86,6 +93,10 @@ static void update_display(void) {
     mvwprintw(screen,3,2,"PWM Period: %u", in_data.pwm_period);
     mvwprintw(screen,4,2,"PWM Duty: %u", in_data.pwm_duty);
     mvwprintw(screen,5,2,"Comm Force: %u", in_data.comm_force_time);
+    mvwprintw(screen,6,2,"ADC Mean: %u", adc_mean);
+    mvwprintw(screen,7,2,"ADC Dev: %u", adc_dev);
+    for(i=0; i<32; i++)
+        mvwprintw(screen,8+i,2,"ADC[%02u]: %u", i, in_data.adc[i]);
     wrefresh(screen);
     refresh();
 }
@@ -108,7 +119,7 @@ int main(int argc, char **argv){
     nodelay(mainwnd, TRUE);
     refresh();
     wrefresh(mainwnd);
-    screen = newwin(13, 27, 1, 1);
+    screen = newwin(9+32, 27, 1, 1);
     box(screen, ACS_VLINE, ACS_HLINE);
 
     ret = s_open("A6004kZx", 38400);
@@ -181,6 +192,15 @@ int main(int argc, char **argv){
             ((unsigned char *)in_datap)[i] = rx_buf[i+1];
 
         //hexdump(rx_buf, 7);
+
+        adc_mean = 0;
+        adc_old = in_data.adc[0];
+        adc_dev = 0;
+        for(i=0; i<32; i++){
+            adc_mean+=in_data.adc[i]/32;
+            if(adc_dev < abs(((int16_t)in_data.adc[i]) - adc_old))
+                adc_dev = abs(((int16_t)in_data.adc[i]) - adc_old);
+        }
 
         snprintf(msg, 25, "OK");
         update_display();

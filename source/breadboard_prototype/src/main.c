@@ -20,6 +20,7 @@
 
 #include "pwm.h"
 #include "usart.h"
+#include "adc.h"
 
 void rcc_init(void){
     ErrorStatus err;
@@ -73,6 +74,7 @@ void rcc_init(void){
 
     pwm_rcc_init();
     usart_rcc_init();
+    adc_rcc_init();
 }
 
 void nvic_init(void){
@@ -84,6 +86,7 @@ void nvic_init(void){
 
     pwm_nvic_init();
     usart_nvic_init();
+    adc_nvic_init();
 }
 
 void gpio_init(void){
@@ -98,6 +101,7 @@ void gpio_init(void){
 
     pwm_gpio_init();
     usart_gpio_init();
+    adc_gpio_init();
 }
 
 void sys_tick_init(void){
@@ -128,6 +132,7 @@ int main(void){
     usart_init();
     sys_tick_init();
     pwm_init();
+    adc_init();
 
     while(1){
 #if 0

@@ -19,11 +19,27 @@
 #ifndef __ADC_H
 #define __ADC_H
 
+#define ADC_CHANNEL_A ADC_Channel_1
+#define ADC_CHANNEL_B ADC_Channel_2
+#define ADC_CHANNEL_C ADC_Channel_3
+
+#define ADC_TRIG_CHANNEL_A ADC_ExternalTrigConv_T1_CC1
+#define ADC_TRIG_CHANNEL_B ADC_ExternalTrigConv_T1_CC2
+#define ADC_TRIG_CHANNEL_C ADC_ExternalTrigConv_T1_CC3
+
+#define ADC_FALLIN 0
+#define ADC_RISING 1
+
+#define ADC_NO_CLEAR_COMM 0
+#define ADC_CLEAR_COMM 1
+
 extern vu16 adc_val[32];
 
 void adc_rcc_init(void);
 void adc_nvic_init(void);
 void adc_gpio_init(void);
 void adc_init(void);
+void adc_set(u8 channel, u32 trig_channel, u8 rising, u8 clear_comm);
+void adc1_2_irq_handler(void);
 
 #endif /* __ADC_H */

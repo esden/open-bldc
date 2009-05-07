@@ -104,11 +104,11 @@ void usart3_irq_handler(void){
             if(pwm_val < 1989) pwm_val+=1;
             break;
         case 'e':
-            if(comm_timer_reload > 72*2) comm_timer_reload-=72*2;
+            if(comm_timer_reload > 72*2) comm_timer_reload-=72*2*2;
             SysTick_SetReload(comm_timer_reload);
             break;
         case 'f':
-            if(comm_timer_reload < 200000-72*2) comm_timer_reload+=72*2;
+            if(comm_timer_reload < 200000-72*2) comm_timer_reload+=72*2*2;
             SysTick_SetReload(comm_timer_reload);
             break;
         case 'g':
@@ -121,6 +121,10 @@ void usart3_irq_handler(void){
             }
             out_data_counter = 0;
             USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+            break;
+        case 'h':
+            if(soft_comm) soft_comm = 0;
+            else soft_comm = 1;
             break;
 	}
     }

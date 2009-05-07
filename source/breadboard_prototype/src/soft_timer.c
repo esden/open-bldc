@@ -18,16 +18,21 @@
 
 #include <stm32/lib.h>
 
+#include "adc.h"
+
 #include "soft_timer.h"
 
 int comm_timer = 0;
-volatile u32 comm_timer_reload = 72*2*750;
+volatile u32 comm_timer_reload = 72*2*750*2;
 int cnt = 100;
+vu8 soft_comm = 1;
 
 void sys_tick_handler(void){
     /* generate a TIM1 COM event */
-    TIM_GenerateEvent(TIM1, TIM_EventSource_COM | TIM_EventSource_Update);
-
+    //TIM_GenerateEvent(TIM1, TIM_EventSource_COM | TIM_EventSource_Update);
+    if(soft_comm)
+        TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+    //adc_val[((31-DMA_GetCurrDataCounter(DMA1_Channel1))%32)]|=0xF000;
 #if 0
     if(led_state){
 	    GPIOC->BRR |= 0x00001000;

@@ -22,6 +22,7 @@
 #include "pwm.h"
 #include "usart.h"
 #include "soft_timer.h"
+#include "adc.h"
 #include "exceptions.h"
 
 #include "vector_table.h"
@@ -73,7 +74,7 @@ void (* const vector_table[])(void) = {
     null_handler,             /* dma1_channel5_irq_handler */
     null_handler,             /* dma1_channel6_irq_handler */
     null_handler,             /* dma1_channel7_irq_handler */
-    null_handler,             /* adc1_2_irq_handler */
+    adc1_2_irq_handler,       /* adc1_2_irq_handler */
     null_handler,             /* usb_hp_can_tx_irq_handler */
     null_handler,             /* usb_lp_can_rx0_irq_handler */
     null_handler,             /* can_rx1_irq_handler */

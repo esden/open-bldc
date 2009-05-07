@@ -112,7 +112,7 @@ void sys_tick_init(void){
      * We are using the SysTick only to force commutations for now so we trigger
      * the SysTick only when we need to commutate.
      */
-    SysTick_SetReload(72*2*750);
+    SysTick_SetReload(72*2*750*2);
     SysTick_CounterCmd(SysTick_Counter_Enable);
     SysTick_ITConfig(ENABLE);
 }

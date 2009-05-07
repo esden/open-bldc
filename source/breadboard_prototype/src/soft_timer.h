@@ -20,6 +20,7 @@
 #define __SOFT_TIMER_H
 
 extern volatile u32 comm_timer_reload;
+extern vu8 soft_comm;
 
 void sys_tick_handler(void);
 

@@ -81,7 +81,8 @@ void inc_rot(){
 }
 
 static void update_display(void) {
-    int i;
+    int i, j;
+    static unsigned int a=0, b=0, c=0;
 
     inc_rot();
     wclear(screen);
@@ -95,8 +96,20 @@ static void update_display(void) {
     mvwprintw(screen,5,2,"Comm Force: %u", in_data.comm_force_time);
     mvwprintw(screen,6,2,"ADC Mean: %u", adc_mean);
     mvwprintw(screen,7,2,"ADC Dev: %u", adc_dev);
-    for(i=0; i<32; i++)
-        mvwprintw(screen,8+i,2,"ADC[%02u]: %u", i, in_data.adc[i]);
+    #if 0
+    #endif
+    i=0;
+    //while((! (in_data.adc[i] & 0xF000)) && i < 32) i++;
+    //for(j=0; j<32; j++){
+    //    if(in_data.adc[(i+j)%32] & 0xF000)
+    //        mvwprintw(screen,8+j,2,"ADC[%02u]*: %u", (i+j)%32, in_data.adc[(i+j)^32]&0xFFF);
+    //    else
+    //        mvwprintw(screen,8+j,2,"ADC[%02u] : %u", (i+j)%32, in_data.adc[(i+j)%32]);
+    //}
+    mvwprintw(screen,8,2,"ADC[0] : %u", in_data.adc[0]);
+    mvwprintw(screen,9,2,"ADC[1] : %u", in_data.adc[1]);
+    mvwprintw(screen,10,2,"ADC[2] : %u", in_data.adc[2]);
+    mvwprintw(screen,11,2,"ADC[3] : %u", in_data.adc[3]);
     wrefresh(screen);
     refresh();
 }
@@ -119,7 +132,7 @@ int main(int argc, char **argv){
     nodelay(mainwnd, TRUE);
     refresh();
     wrefresh(mainwnd);
-    screen = newwin(9+32, 27, 1, 1);
+    screen = newwin(9+4, 27, 1, 1);
     box(screen, ACS_VLINE, ACS_HLINE);
 
     ret = s_open("A6004kZx", 38400);
@@ -210,13 +223,17 @@ int main(int argc, char **argv){
         getch_ret = getch();
 
         if((getch_ret != ERR) && (getch_ret != dat1[0])){
-            dat2[0]=getch_ret;
-            s_write(dat2, 1);
+            if(getch_ret == 'p'){
+                while(getch() != 'p');
+            }else{
+                dat2[0]=getch_ret;
+                s_write(dat2, 1);
 
-            if(ret != 1){
-                printf("write error\n");
-                s_close();
-                return 0;
+                if(ret != 1){
+                    printf("write error\n");
+                    s_close();
+                    return 0;
+                }
             }
         }
 

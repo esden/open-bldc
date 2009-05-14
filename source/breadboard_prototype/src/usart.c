@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32/lib.h>
+#include <stm32/rcc.h>
+#include <stm32/misc.h>
+#include <stm32/usart.h>
+#include <stm32/gpio.h>
 
 #include "pwm.h"
 #include "soft_timer.h"
@@ -37,7 +40,7 @@ void usart_nvic_init(void){
     NVIC_InitTypeDef nvic;
 
     /* Enable the USART3 interrupts */
-    nvic.NVIC_IRQChannel = USART3_IRQChannel;
+    nvic.NVIC_IRQChannel = USART3_IRQn;
     nvic.NVIC_IRQChannelPreemptionPriority = 0;
     nvic.NVIC_IRQChannelSubPriority = 1;
     nvic.NVIC_IRQChannelCmd = ENABLE;
@@ -91,11 +94,11 @@ void usart3_irq_handler(void){
 	switch(buff){
         case 'a':
             if(comm_timer_reload > 0) comm_timer_reload-=1;
-            SysTick_SetReload(comm_timer_reload);
+            SysTick_Config(comm_timer_reload);
             break;
         case 'b':
             if(comm_timer_reload < 200000) comm_timer_reload+=1;
-            SysTick_SetReload(comm_timer_reload);
+            SysTick_Config(comm_timer_reload);
             break;
         case 'c':
             if(pwm_val > 0) pwm_val-=1;
@@ -105,11 +108,11 @@ void usart3_irq_handler(void){
             break;
         case 'e':
             if(comm_timer_reload > 72*2) comm_timer_reload-=72*2*2;
-            SysTick_SetReload(comm_timer_reload);
+            SysTick_Config(comm_timer_reload);
             break;
         case 'f':
             if(comm_timer_reload < 200000-72*2) comm_timer_reload+=72*2*2;
-            SysTick_SetReload(comm_timer_reload);
+            SysTick_Config(comm_timer_reload);
             break;
         case 'g':
             //USART_SendData(USART3, 'G');

@@ -49,7 +49,7 @@
  *   : Floating/NC
  */
 
-#include <stm32/lib.h>
+#include <stm32/tim.h>
 
 #include "pwm.h"
 #include "pwm_utils.h"

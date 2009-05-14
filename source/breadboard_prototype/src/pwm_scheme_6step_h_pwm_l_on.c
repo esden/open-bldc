@@ -43,7 +43,8 @@
  *   : Floating/NC
  */
 
-#include <stm32/lib.h>
+#include <stm32/tim.h>
+#include <stm32/adc.h>
 
 #include "pwm_utils.h"
 #include "adc.h"

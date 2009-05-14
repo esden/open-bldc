@@ -16,7 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32/lib.h>
+#include <stm32/rcc.h>
+#include <stm32/misc.h>
+#include <stm32/adc.h>
+#include <stm32/gpio.h>
+#include <stm32/tim.h>
 
 #include "config.h"
 #include "soft_timer.h"
@@ -43,7 +47,7 @@ void adc_nvic_init(void){
     NVIC_InitTypeDef nvic;
 
     /* Configure and enable ADC interrupt */
-    nvic.NVIC_IRQChannel = ADC1_2_IRQChannel;
+    nvic.NVIC_IRQChannel = ADC1_2_IRQn;
     nvic.NVIC_IRQChannelPreemptionPriority = 0;
     nvic.NVIC_IRQChannelSubPriority = 0;
     nvic.NVIC_IRQChannelCmd = ENABLE;

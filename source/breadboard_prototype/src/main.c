@@ -16,55 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32/lib.h>
+#include <stm32/rcc.h>
+#include <stm32/flash.h>
+#include <stm32/misc.h>
+#include <stm32/gpio.h>
 
 #include "pwm.h"
 #include "usart.h"
 #include "adc.h"
 
 void rcc_init(void){
-    ErrorStatus err;
-
-    /* RCC system reset(for debug purpose) */
-    RCC_DeInit();
-
-    /* Enable HSE */
-    RCC_HSEConfig(RCC_HSE_ON);
-
-    /* Wait till HSE is ready */
-    err = RCC_WaitForHSEStartUp();
-
-    if(err == SUCCESS){
-        /* Enable Prefetch Buffer */
-        FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
-
-        /* Flash 2 wait state */
-        FLASH_SetLatency(FLASH_Latency_2);
-
-        /* HCLK = SYSCLK */
-        RCC_HCLKConfig(RCC_SYSCLK_Div1);
-
-        /* PCLK2 = HCLK */
-        RCC_PCLK2Config(RCC_HCLK_Div1);
-
-        /* PCLK1 = HCLK/4 */
-        RCC_PCLK1Config(RCC_HCLK_Div4);
-
-        /* PLLCLK = 8MHz * 9 = 72 MHz */
-        RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
-
-        /* Enable PLL */
-        RCC_PLLCmd(ENABLE);
-
-        /* Wait till PLL is ready */
-        while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
-
-        /* Select PLL as system clock source */
-        RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-
-        /* Wait till PLL is used as system clock source */
-        while(RCC_GetSYSCLKSource() != 0x08);
-    }
+    /* Initialize the microcontroller system. Initialize clocks. */
+    SystemInit();
 
     /* TIM1, GPIOA, GPIOB and GPIOC clock enable */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
@@ -80,9 +43,6 @@ void rcc_init(void){
 void nvic_init(void){
     /* Set the Vector Table base location at 0x08000000 */
     NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
-
-    /* Set SysTick handler */
-    NVIC_SystemHandlerPriorityConfig(SystemHandler_SysTick, 0, 0);
 
     pwm_nvic_init();
     usart_nvic_init();
@@ -105,16 +65,17 @@ void gpio_init(void){
 }
 
 void sys_tick_init(void){
-    /* Select HCLK as clock source */
-    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
-    /* Generate SysTick interrupt every 1500us (with HCLK=72MHz)
+    /* Generate SysTick interrupt every ?us (with HCLK=72MHz)
      *
      * We are using the SysTick only to force commutations for now so we trigger
      * the SysTick only when we need to commutate.
      */
-    SysTick_SetReload(72*2*750*2);
-    SysTick_CounterCmd(SysTick_Counter_Enable);
-    SysTick_ITConfig(ENABLE);
+    if(SysTick_Config(72*2*750*2)){
+        while(1);
+    }
+
+    /* Set SysTick handler */
+    NVIC_SetPriority(SysTick_IRQn, 0x0);
 }
 
 void my_delay(unsigned long delay ){

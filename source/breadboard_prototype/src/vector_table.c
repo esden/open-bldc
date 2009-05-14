@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32/lib.h>
+#include <cmsis/stm32.h>
 
 #include "main.h"
 #include "pwm.h"
@@ -144,4 +144,7 @@ void reset_handler_stage2(void){
 }
 
 void null_handler(void){
+}
+
+void assert_param(void){
 }

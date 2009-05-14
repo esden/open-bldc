@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32/lib.h>
+#include <stm32/tim.h>
 
 #include "adc.h"
 

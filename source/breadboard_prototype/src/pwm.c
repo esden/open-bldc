@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32/lib.h>
+#include <stm32/rcc.h>
+#include <stm32/misc.h>
+#include <stm32/tim.h>
+#include <stm32/gpio.h>
 
 #include "config.h"
 #include "pwm_schemes.h"
@@ -36,7 +39,7 @@ void pwm_nvic_init(void){
     NVIC_InitTypeDef nvic;
 
     /* Enable TIM1 interrupt */
-    nvic.NVIC_IRQChannel = TIM1_TRG_COM_IRQChannel;
+    nvic.NVIC_IRQChannel = TIM1_TRG_COM_IRQn;
     nvic.NVIC_IRQChannelPreemptionPriority = 0;
     nvic.NVIC_IRQChannelSubPriority = 1;
     nvic.NVIC_IRQChannelCmd = ENABLE;

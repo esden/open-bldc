@@ -19,8 +19,8 @@
 #ifndef __SOFT_TIMER_H
 #define __SOFT_TIMER_H
 
-extern volatile u32 comm_timer_reload;
-extern vu8 soft_comm;
+extern volatile uint32_t comm_timer_reload;
+extern volatile uint8_t soft_comm;
 
 void sys_tick_handler(void);
 

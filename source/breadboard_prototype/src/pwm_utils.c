@@ -23,7 +23,7 @@
 
 #include "pwm_utils.h"
 
-void pwm_trigger(u16 zone){
+void pwm_trigger(uint16_t zone){
     if(PWM_PHASE_TRIGGER == zone){
         GPIOC->BRR |= 0x00001000;
     }
@@ -32,32 +32,32 @@ void pwm_trigger(u16 zone){
     }
 }
 
-void pwm_set_____hi(u16 phase){
+void pwm_set_____hi(uint16_t phase){
     TIM_SelectOCxM(TIM1, phase, TIM_ForcedAction_Active );
     TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
     TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
 }
 
-void pwm_set_____lo(u16 phase){
+void pwm_set_____lo(uint16_t phase){
     TIM_SelectOCxM(TIM1, phase, TIM_ForcedAction_InActive );
     TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
     TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
 }
 
-void pwm_set_pwm_hi(u16 phase){
+void pwm_set_pwm_hi(uint16_t phase){
     TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM1);
     TIM_CCxCmd(TIM1, phase, TIM_CCx_Enable);
     TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
 }
 
-void pwm_set_pwm_lo(u16 phase){
+void pwm_set_pwm_lo(uint16_t phase){
     TIM_SelectOCxM(TIM1, phase, TIM_OCMode_PWM1);
     TIM_CCxCmd(TIM1, phase, TIM_CCx_Disable);
     TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Enable);
 
 }
 
-void pwm_set____off(u16 phase){
+void pwm_set____off(uint16_t phase){
     TIM_CCxCmd(TIM1, phase, TIM_CCx_Disable);
     TIM_CCxNCmd(TIM1, phase, TIM_CCxN_Disable);
 }

@@ -23,11 +23,11 @@
 #define PWM_PHASE_B TIM_Channel_2
 #define PWM_PHASE_C TIM_Channel_3
 
-void pwm_trigger(u16 zone) __attribute__((always_inline));
-void pwm_set_____hi(u16 phase) __attribute__((always_inline));
-void pwm_set_____lo(u16 phase) __attribute__((always_inline));
-void pwm_set_pwm_hi(u16 phase) __attribute__((always_inline));
-void pwm_set_pwm_lo(u16 phase) __attribute__((always_inline));
-void pwm_set____off(u16 phase) __attribute__((always_inline));
+void pwm_trigger(uint16_t zone) __attribute__((always_inline));
+void pwm_set_____hi(uint16_t phase) __attribute__((always_inline));
+void pwm_set_____lo(uint16_t phase) __attribute__((always_inline));
+void pwm_set_pwm_hi(uint16_t phase) __attribute__((always_inline));
+void pwm_set_pwm_lo(uint16_t phase) __attribute__((always_inline));
+void pwm_set____off(uint16_t phase) __attribute__((always_inline));
 
 #endif /* __PWM_UTILS_H */

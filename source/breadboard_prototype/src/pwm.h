@@ -19,7 +19,7 @@
 #ifndef __PWM_H
 #define __PWM_H
 
-extern volatile u16 pwm_val;
+extern volatile uint16_t pwm_val;
 extern volatile int pwm_free_wheeling;
 
 void pwm_rcc_init(void);

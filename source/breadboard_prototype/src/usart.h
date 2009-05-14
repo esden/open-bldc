@@ -20,17 +20,17 @@
 #define __USART_H
 
 typedef struct {
-    u16 pwm_period;
-    u16 pwm_duty;
-    u32 comm_force_time;
-    u16 adc[32];
+    uint16_t pwm_period;
+    uint16_t pwm_duty;
+    uint32_t comm_force_time;
+    uint16_t adc[32];
 } out_data_t;
 
 typedef struct {
-    u16 pwm_period;
-    u16 pwm_duty;
-    u32 comm_force_time;
-    u16 adc[32];
+    uint16_t pwm_period;
+    uint16_t pwm_duty;
+    uint32_t comm_force_time;
+    uint16_t adc[32];
 } in_data_t;
 
 extern volatile out_data_t out_data;

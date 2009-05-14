@@ -33,13 +33,13 @@
 #define ADC_NO_CLEAR_COMM 0
 #define ADC_CLEAR_COMM 1
 
-extern vu16 adc_val[32];
+extern volatile uint16_t adc_val[32];
 
 void adc_rcc_init(void);
 void adc_nvic_init(void);
 void adc_gpio_init(void);
 void adc_init(void);
-void adc_set(u8 channel, u32 trig_channel, u8 rising, u8 clear_comm);
+void adc_set(uint8_t channel, uint32_t trig_channel, uint8_t rising, uint8_t clear_comm);
 void adc1_2_irq_handler(void);
 
 #endif /* __ADC_H */

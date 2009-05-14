@@ -27,13 +27,13 @@
 
 #include "adc.h"
 
-#define ADC1_DR_Address    ((u32)0x4001244C)
+#define ADC1_DR_Address    ((uint32_t)0x4001244C)
 
-vu16 adc_val[32];
-vu8 adc_rising = ADC_RISING;
-vu16 adc_old_value = 2;
-vu8 adc_count = 0;
-vu16 adc_delay_count = 0;
+volatile uint16_t adc_val[32];
+volatile uint8_t adc_rising = ADC_RISING;
+volatile uint16_t adc_old_value = 2;
+volatile uint8_t adc_count = 0;
+volatile uint16_t adc_delay_count = 0;
 
 void adc_rcc_init(void){
     /* enable DMA clock */
@@ -105,8 +105,8 @@ void adc_init(void){
 
 }
 
-void adc_set(u8 channel, u32 trig_channel, u8 rising, u8 clear_comm){
-    u32 tmpreg;
+void adc_set(uint8_t channel, uint32_t trig_channel, uint8_t rising, uint8_t clear_comm){
+    uint32_t tmpreg;
 
     adc_rising = rising;
 
@@ -135,7 +135,7 @@ void adc_set(u8 channel, u32 trig_channel, u8 rising, u8 clear_comm){
 }
 
 void adc1_2_irq_handler(void){
-    u16 new_value = ADC_GetConversionValue(ADC1);
+    uint16_t new_value = ADC_GetConversionValue(ADC1);
 
     if(adc_delay_count > 10){
         if(adc_rising){

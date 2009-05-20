@@ -32,6 +32,8 @@ PREFIX ?= arm-none-eabi
 OOCD_INTERFACE ?= jtagkey-tiny
 OOCD_TARGET    ?= olimex_stm32_h103
 
+VERBOSE ?= 0
+
 CC      = $(PREFIX)-gcc
 LD      = $(PREFIX)-ld
 AR      = $(PREFIX)-ar
@@ -74,7 +76,11 @@ images: $(NAME).bin $(NAME).hex $(NAME).srec $(NAME).lst
 
 $(NAME).elf: $(OBJECTS)
 	@echo -e "  LD\t$@"
+ifneq ($(VERBOSE), 0)
+	$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
+else
 	@$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
+endif
 
 clean:
 	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; \
@@ -85,6 +91,15 @@ clean:
 
 flash: $(NAME).hex
 	@echo -e "  OOCD\t$<"
+ifneq ($(VERBOSE), 0)
+	$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+		 -f board/$(OOCD_TARGET).cfg \
+		 -c init \
+		 -c "reset halt" \
+		 -c "flash write_image erase open-bldc-bb.hex" \
+		 -c reset \
+		 -c shutdown
+else
 	@$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		 -f board/$(OOCD_TARGET).cfg \
 		 -c init \
@@ -92,32 +107,57 @@ flash: $(NAME).hex
 		 -c "flash write_image erase open-bldc-bb.hex" \
 		 -c reset \
 		 -c shutdown
+endif
 
 gccversion:
 	@$(CC) --version
 
 size: $(NAME).elf
 	@echo
+ifneq ($(VERBOSE), 0)
+	$(SIZE) $(SIZEFLAGS) $<
+else
 	@$(SIZE) $(SIZEFLAGS) $<
+endif
 
 # Suffix rules
 
 .elf.bin:
 	@echo -e "  CP\t$@"
+ifneq ($(VERBOSE), 0)
+	$(CP) $(CPFLAGS) -Obinary $< $@
+else
 	@$(CP) $(CPFLAGS) -Obinary $< $@
+endif
 
 .elf.hex:
 	@echo -e "  CP\t$@"
+ifneq ($(VERBOSE), 0)
+	$(CP) $(CPFLAGS) -Oihex $< $@
+else
 	@$(CP) $(CPFLAGS) -Oihex $< $@
+endif
 
 .elf.srec:
 	@echo -e "  CP\t$@"
+ifneq ($(VERBOSE), 0)
+	$(CP) $(CPFLAGS) -Osrec $< $@
+else
 	@$(CP) $(CPFLAGS) -Osrec $< $@
+endif
 
 .elf.lst:
 	@echo -e "  OD\t$@"
+ifneq ($(VERBOSE), 0)
+	$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
+else
 	@$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
+endif
 
 %.o: %.c %.h
 	@echo -e "  CC\t$@"
+ifneq ($(VERBOSE), 0)
+	$(CC) $(CFLAGS) -c $<
+else
 	@$(CC) $(CFLAGS) -c $<
+endif

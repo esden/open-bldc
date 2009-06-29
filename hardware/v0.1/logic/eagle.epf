@@ -292,12 +292,6 @@ UsedLibrary="/Users/esdentem/Documents/eagle/ir2110_circuit/ir2112.lbr"
 UsedLibrary="/Users/esdentem/projects/open-bldc/open-bldc-git/hardware/lib/open-bldc.lbr"
 
 [Win_1]
-Type="Control Panel"
-Loc="186 314 1203 838"
-State=2
-Number=0
-
-[Win_2]
 Type="Schematic Editor"
 Loc="0 22 1919 1173"
 State=1
@@ -338,14 +332,14 @@ Layer=91
 Views=" 1: 378633 1259050 2325489 2568936"
 Sheet=1
 
-[Win_3]
+[Win_2]
 Type="Board Editor"
 Loc="0 22 1919 1173"
 State=1
 Number=3
 File="open-bldc-logic.brd"
-View="-54087 -25828 502887 226300"
-WireWidths=" 0 2540 3048 6096 8128 10160 12700 14224 16764 17780 19304 21844 25400 38100 64516 4064"
+View="-8408 -21002 455744 189104"
+WireWidths=" 0 3048 6096 8128 10160 12700 14224 16764 17780 19304 21844 25400 38100 64516 4064 2032"
 PadDiameters=" 2540 3048 4064 6096 8128 10160 12700 14224 16764 17780 19304 21844 25400 38100 64516 0"
 PadDrills=" 5000 6000 7000 9000 10000 11000 12000 13000 14000 15000 16000 20000 22000 28000 32000 8000"
 ViaDiameters=" 2540 3048 4064 6096 8128 10160 12700 14224 16764 17780 19304 21844 25400 38100 64516 0"
@@ -376,6 +370,12 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=16
+
+[Win_3]
+Type="Control Panel"
+Loc="186 314 1203 838"
+State=2
+Number=0
 
 [Desktop]
 Screen="1680 1050"

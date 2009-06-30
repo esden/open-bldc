@@ -1,5 +1,5 @@
 [Eagle]
-Version="05 03 00"
+Version="05 06 00"
 Platform="Mac OS X"
 Serial="62191E841E-LSR-WLM-1EL"
 Globals="Globals"
@@ -289,10 +289,10 @@ UsedLibrary="/Applications/EAGLE/lbr/zilog.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="540 323 1139 722"
+Loc="627 212 1232 796"
 State=2
 Number=0
 
 [Desktop]
-Screen="1680 1050"
+Screen="1920 1200"
 Window="Win_1"

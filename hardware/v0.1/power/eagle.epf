@@ -293,11 +293,11 @@ UsedLibrary="/Users/esdentem/projects/open-bldc/open-bldc-git/hardware/lib/open-
 
 [Win_1]
 Type="Board Editor"
-Loc="660 398 1259 797"
-State=0
+Loc="0 22 1919 1173"
+State=1
 Number=2
 File="open-bldc-power.brd"
-View="-18841 -9384 920985 465320"
+View="-9364 -13470 464276 460702"
 WireWidths=" 0 2540 3048 6096 8128 10160 12700 14224 16764 17780 19304 21844 25400 38100 64516 4064"
 PadDiameters=" 2540 3048 4064 6096 8128 10160 12700 14224 16764 17780 19304 21844 25400 38100 64516 0"
 PadDrills=" 5000 6000 7000 9000 10000 11000 12000 13000 14000 15000 16000 20000 22000 28000 32000 8000"
@@ -368,11 +368,12 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
+Views=" 1: -82754 -57354 3954242 2658826"
 Sheet=1
 
 [Win_3]
 Type="Control Panel"
-Loc="627 212 1232 796"
+Loc="828 478 1489 1039"
 State=2
 Number=0
 

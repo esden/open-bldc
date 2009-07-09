@@ -1,0 +1,9 @@
+
+Row {           
+  Col {
+  logic Rotate
+   }
+  Col {
+  power Rotate
+  }
+}

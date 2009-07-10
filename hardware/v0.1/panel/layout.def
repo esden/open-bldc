@@ -1,22 +1,12 @@
 
 Row {
   Col {
-    power Rotate
-    power Rotate
+    jtag_adapter
   }
   Col {
-    power Rotate
     power Rotate
   }
   Col {
     logic Rotate
-    logic Rotate
   }
-  Col {
-    logic Rotate
-    logic Rotate
-  }
-}
-Row {
-  jtag_adapter Rotate
 }

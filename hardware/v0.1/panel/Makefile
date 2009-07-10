@@ -10,7 +10,7 @@ _panel:
 
 
 _view:
-	$(GERBV) merged.*.ger
+	$(GERBV) merged.*.ger merged.*.xln
 
 
 

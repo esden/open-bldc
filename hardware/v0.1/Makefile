@@ -25,8 +25,9 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ##
 
-BRD_SRCS = logic/open-bldc-logic.brd \
-	   power/open-bldc-power.brd
+BRD_SRCS = logic/open-bldc-logic-teardrops.brd \
+	   power/open-bldc-power-teardrops.brd \
+	   ../jtag_adapter/jtag_adapter.brd
 
 DIRS = logic power
 

@@ -1,4 +1,4 @@
-##
+#
 # Open-BLDC - Open BruschLess DC Motor Controller
 # Copyright (c) 2009 Piotr Esden-Tempski <piotr@esden.net>
 #
@@ -23,7 +23,7 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-##
+#
 
 BRD_SRCS = logic/open-bldc-logic-teardrops.brd \
 	   power/open-bldc-power-teardrops.brd \
@@ -93,57 +93,55 @@ dirs :
 ### POSTSCRIPT AND PDF GENERATION
 
 
-%.pdf : %.ps 
+%.pdf : %.ps
 	ps2pdf $< $@
 
 %.schematics.ps : ../%.sch
-	eagle -X -N -d PS -x.4 -y.2 -o $@ $< Nets Busses Symbols Names Values 
+	eagle -X -N -d PS -x.4 -y.2 -o $@ $< Nets Busses Symbols Names Values
 
 %.top_layer.ps : ../%.brd
-	eagle -X -N -f- -m+ -d PS -h2 -w3 -o $@ $< Top Pad Via Dimension 
+	eagle -X -N -f- -m+ -d PS -h2 -w3 -o $@ $< Top Pad Via Dimension
 
 %.top_comp.ps : ../%.brd
 	eagle -X -N -f- -d PS -h2 -w2 -o $@ $< Pad Via Dimension tPlace tNames tDocu
 
 %.bottom_layer.ps : ../%.brd
-	eagle -X -N -f- -d PS -h2 -w3 -o $@ $< Bottom Pad Via Dimension 
+	eagle -X -N -f- -d PS -h2 -w3 -o $@ $< Bottom Pad Via Dimension
 
 %.bottom_comp.ps : ../%.brd
 	eagle -X -N -f- -m+ -c -d PS -h2 -w2 -o $@ $< Pad Via Dimension bPlace bNames bDocu
 
 
-
-
 clean:
-# gerber and excellon
-	find .. -name '*.cmp' -exec rm -f {} \; 
-	find .. -name '*.sol' -exec rm -f {} \; 
-	find .. -name '*.stc' -exec rm -f {} \; 
-	find .. -name '*.sts' -exec rm -f {} \; 
-	find .. -name '*.plc' -exec rm -f {} \; 
-	find .. -name '*.bor' -exec rm -f {} \; 
-	find .. -name '*.xln' -exec rm -f {} \; 
-	find .. -name '*.dri' -exec rm -f {} \; 
-	find .. -name '*.gpi' -exec rm -f {} \; 
-	find .. -name '*.l02' -exec rm -f {} \; 
-	find .. -name '*.l15' -exec rm -f {} \; 
-	find .. -name '*.all' -exec rm -f {} \; 
-# printable
-	find . -name '*.schematics.ps' -exec rm -f {} \; 
-	find . -name '*.schematics.pdf' -exec rm -f {} \; 
-	find . -name '*.top_layer.ps' -exec rm -f {} \; 
-	find . -name '*.top_layer.pdf' -exec rm -f {} \; 
-	find . -name '*.top_comp.ps' -exec rm -f {} \; 
-	find . -name '*.top_comp.pdf' -exec rm -f {} \; 
-	find . -name '*.bottom_layer.ps' -exec rm -f {} \; 
-	find . -name '*.bottom_layer.pdf' -exec rm -f {} \; 
-	find . -name '*.bottom_comp.ps' -exec rm -f {} \; 
-	find . -name '*.bottom_comp.pdf' -exec rm -f {} \; 
-# eagle error log
-	find .. -name '*.erc' -exec rm -f {} \; 
-# eagle autorouter log
-	find .. -name '*.pro' -exec rm -f {} \; 
-# eagle backups	
-	find .. -name '*#*' -exec rm -f {} \; 
-# emacs backups
-	find .. -name '*~' -exec rm -f {} \; 
+	@# gerber and excellon
+	find .. -name '*.cmp' -exec rm -f {} \;
+	find .. -name '*.sol' -exec rm -f {} \;
+	find .. -name '*.stc' -exec rm -f {} \;
+	find .. -name '*.sts' -exec rm -f {} \;
+	find .. -name '*.plc' -exec rm -f {} \;
+	find .. -name '*.bor' -exec rm -f {} \;
+	find .. -name '*.xln' -exec rm -f {} \;
+	find .. -name '*.dri' -exec rm -f {} \;
+	find .. -name '*.gpi' -exec rm -f {} \;
+	find .. -name '*.l02' -exec rm -f {} \;
+	find .. -name '*.l15' -exec rm -f {} \;
+	find .. -name '*.all' -exec rm -f {} \;
+	@# printable
+	find . -name '*.schematics.ps' -exec rm -f {} \;
+	find . -name '*.schematics.pdf' -exec rm -f {} \;
+	find . -name '*.top_layer.ps' -exec rm -f {} \;
+	find . -name '*.top_layer.pdf' -exec rm -f {} \;
+	find . -name '*.top_comp.ps' -exec rm -f {} \;
+	find . -name '*.top_comp.pdf' -exec rm -f {} \;
+	find . -name '*.bottom_layer.ps' -exec rm -f {} \;
+	find . -name '*.bottom_layer.pdf' -exec rm -f {} \;
+	find . -name '*.bottom_comp.ps' -exec rm -f {} \;
+	find . -name '*.bottom_comp.pdf' -exec rm -f {} \;
+	@# eagle error log
+	find .. -name '*.erc' -exec rm -f {} \;
+	@# eagle autorouter log
+	find .. -name '*.pro' -exec rm -f {} \;
+	@# eagle backups	
+	find .. -name '*#*' -exec rm -f {} \;
+	@# emacs backups
+	find .. -name '*~' -exec rm -f {} \;

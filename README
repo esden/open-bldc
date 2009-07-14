@@ -3,11 +3,31 @@ This project aims to create a fully open-source Brushless Drive Controller.
 Current design
 --------------
 The current design uses an STM32 microcontroller, Allegro halsensor based
-current sensors, irs2101 bridge drivers. This combination will allow:
+current sensors, IRS2101 bridge drivers. This combination will allow:
 
 - Vectorfield control for smooth and very exact torque and speed control
 - N-Mosfet only powerstage design to increase efficiency
 - Many different interfaces (PPM, I2C, CAN, USART, USB) for interfacing
+
+Targetted features
+------------------
+* 3/4C LiPo cell support
+* 20A constant power output or more ^^
+* Active Freewheeling
+* Adjustable timings
+* Active break with power pushback to the batteries?
+* Different interfaces: 
+** PPM
+** Serial
+** I2C
+** CAN
+* As small as possible (current design is 60x26mm (may and probably will change in the future)
+* Software license GPLv3
+* Hardware license CC-BY-SA
+* Rotation speed controller
+* Detatchable Powerstage
+* Vector control support
+* Hall sensor support
 
 Inspiration references
 ----------------------

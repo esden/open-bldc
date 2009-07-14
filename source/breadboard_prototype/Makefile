@@ -1,4 +1,4 @@
-##
+#
 # Open-BLDC - Open BruschLess DC Motor Controller
 # Copyright (c) 2009 Piotr Esden-Tempski <piotr@esden.net>
 #
@@ -23,14 +23,12 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-##
+#
 
-NAME   = open-bldc-bb
-
-PREFIX  = arm-none-eabi
-
-OOCD_INTERFACE = jtagkey-tiny
-OOCD_TARGET    = olimex_stm32_h103
+NAME		= open-bldc-bb
+PREFIX		= arm-none-eabi
+OOCD_INTERFACE	= jtagkey-tiny
+OOCD_TARGET	= olimex_stm32_h103
 
 all:
 	make -w -C src all

@@ -3,25 +3,27 @@ This example should make the diode on an Olimex STM32-H103 blink.
 If you move this directory away take care of changind the SEARCH_DIR setting in
 the stm_h103_blink_rom.cmd linker script.
 
-Compile:
+Compilation
+-----------
+
+ $ make
+
+Flashing
 --------
 
-Just run:
-make
+1) Run OpenOCD in the directory where the *.bin file is located:
 
-Flash:
-------
+ $ openocd -f /usr/lib/openocd/interface/jtagkey-tiny.cfg \
+           -f /usr/lib/openocd/board/olimex_stm32_h103.cfg
 
-1) Run openocd in the directory the *.bin file is located:
+NOTE: jtagkey-tiny.cfg is only an example. If you use another JTAG adapter
+      choose a different config file.
 
-> openocd -f /usr/lib/openocd/interface/jtagkey-tiny.cfg -f /usr/lib/openocd/board/olimex_stm32_h103.cfg
+2) Connect to OpenOCD, flash and reset the target:
 
-[NOTE: jtagkey-tiny.cfg is only an example. If you use other jtag adapter choose a different config file.]
+ $ telnet localhost 4444
+ > init
+ > reset halt
+ > flash write_image erase stm_h103_blink_rom.bin 0x08000000
+ > resume 0x08000000
 
-2) Connect to openocd, flash and reset the target:
-
-> telnet localhost 4444
-> init
-> reset halt
-> flash write_image erase stm_h103_blink_rom.bin 0x08000000
-> resume 0x08000000

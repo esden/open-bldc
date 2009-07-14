@@ -1,16 +1,16 @@
-This Project has the target to create a compleatly open source Brushless Drive Controller.
+This project aims to create a fully open-source Brushless Drive Controller.
 
 The controller in the current designs uses an Atmega168 microcontroller from
-Atmel. In near future this will be changed to STM32 from st.com.
+Atmel. In the near future this will be changed to STM32 from st.com.
 
-Some Application notes were consulted while designing the circuits of
-the Drive Conntrollers:
+Some application notes were consulted while designing the circuits of
+the drive conntrollers:
 
 http://www.atmel.com/dyn/resources/prod_documents/doc7518.pdf
 http://www.atmel.com/dyn/resources/prod_documents/doc7658.pdf
 
 Also some inspiration was taken from the brushless controllers designed by
-Holger Buss for the Mikrokopter project. (http://www.mikrokopter.de) But the
+Holger Buss for the Mikrokopter project (http://www.mikrokopter.de). But the
 design is constantly changing and moving away from designs that were considered
 as inspirations quickly.
 

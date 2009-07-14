@@ -1,4 +1,4 @@
-##
+#
 # Open-BLDC Tool - Open BruschLess DC Motor Controller PC Tool
 # Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
 #
@@ -14,12 +14,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-##
+#
 
-CC = gcc
+CC	= gcc
+CFLAGS	+= -Wall -ansi -std=c99 -I.
+LDFLAGS	+= -lftd2xx -lncurses
 
-CFLAGS += -Wall -ansi -std=c99 -I.
-LDFLAGS += -lftd2xx -lncurses
+# TODO: Port to libftdi, ftd2xx is closed-source.
 
 OBJECTS = main.o \
 	  serial.o \

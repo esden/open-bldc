@@ -1,4 +1,4 @@
-##
+#
 # Open-BLDC - Open BruschLess DC Motor Controller
 # Copyright (c) 2009 Piotr Esden-Tempski <piotr@esden.net>
 #
@@ -23,35 +23,35 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-##
+#
 
-NAME   ?= open-bldc-bb
+NAME		?= open-bldc-bb
+PREFIX		?= arm-none-eabi
+OOCD_INTERFACE	?= jtagkey-tiny
+OOCD_TARGET	?= olimex_stm32_h103
 
-PREFIX ?= arm-none-eabi
+VERBOSE		?= 0
 
-OOCD_INTERFACE ?= jtagkey-tiny
-OOCD_TARGET    ?= olimex_stm32_h103
-
-VERBOSE ?= 0
-
-CC      = $(PREFIX)-gcc
-LD      = $(PREFIX)-ld
-AR      = $(PREFIX)-ar
-AS      = $(PREFIX)-as
-CP      = $(PREFIX)-objcopy
-OD	= $(PREFIX)-objdump
-SIZE    = $(PREFIX)-size
-OOCD	= openocd
+CC		= $(PREFIX)-gcc
+LD		= $(PREFIX)-ld
+AR		= $(PREFIX)-ar
+AS		= $(PREFIX)-as
+CP		= $(PREFIX)-objcopy
+OD		= $(PREFIX)-objdump
+SIZE		= $(PREFIX)-size
+OOCD		= openocd
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-CFLAGS   =  -I. -Wall -ansi -std=c99 -c -fno-common -Os -g -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections
-ASFLAGS  = -ahls -mapcs-32
-LDFLAGS  = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os --gc-sections
-LDLIBS   = -lcmsis -lstm32
-CPFLAGS  = -j .isr_vector -j .text -j .data
-ODFLAGS	 = -S
-SIZEFLAGS = -A -x
+CFLAGS		= -I. -Wall -ansi -std=c99 -c -fno-common -Os -g \
+		  -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections
+ASFLAGS		= -ahls -mapcs-32
+LDFLAGS		= -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
+		  --gc-sections
+LDLIBS		= -lcmsis -lstm32
+CPFLAGS		= -j .isr_vector -j .text -j .data
+ODFLAGS		= -S
+SIZEFLAGS	= -A -x
 
 OBJECTS = main.o \
 	  exceptions.o \
@@ -73,7 +73,6 @@ all: gccversion images size
 
 images: $(NAME).bin $(NAME).hex $(NAME).srec $(NAME).lst
 
-
 $(NAME).elf: $(OBJECTS)
 	@echo -e "  LD\t$@"
 ifneq ($(VERBOSE), 0)
@@ -83,8 +82,7 @@ else
 endif
 
 clean:
-	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; \
-	do \
+	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; do \
 		echo -e "  CLEAN\t$$i"; \
 		rm -f $$i; \
 	done

@@ -12,8 +12,8 @@ current sensors, IRS2101 bridge drivers. This combination will allow:
 Targetted features
 ------------------
 * 3/4C LiPo cell support
-* 20A constant power output or more ^^
-* Active Freewheeling
+* 20A constant power output or more
+* Active freewheeling
 * Adjustable timings
 * Active break with power pushback to the batteries?
 * Different interfaces: 
@@ -21,11 +21,11 @@ Targetted features
 ** Serial
 ** I2C
 ** CAN
-* As small as possible (current design is 60x26mm (may and probably will change in the future)
-* Software license GPLv3
-* Hardware license CC-BY-SA
+* As small as possible; current design is 60x26mm (may and probably will change in the future)
+* Software license: GPL, version 3 or later
+* Hardware license: CC-BY-SA 3.0
 * Rotation speed controller
-* Detatchable Powerstage
+* Detatchable powerstage
 * Vector control support
 * Hall sensor support
 
@@ -48,8 +48,8 @@ too.
 
 Licensing
 ---------
-All sourcecode is licensed under GPL3, all circuitry designs and pcb layouts
-are available as original source files and licensed under CreativeCommons BY-SA
-3.0.
+All sourcecode is licensed under GPL version 3 or later, all circuitry designs
+and pcb layouts are available as original source files and licensed under
+CreativeCommons BY-SA 3.0.
 
-Feel free to use everything here as you whish! :)
+Feel free to use everything here as you wish! :)

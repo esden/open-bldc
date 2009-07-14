@@ -32,6 +32,11 @@ OOCD_TARGET	?= olimex_stm32_h103
 
 VERBOSE		?= 0
 
+# Use 'make VERBOSE=1' for more debug output.
+ifneq ($(VERBOSE),1)
+Q := @
+endif
+
 CC		= $(PREFIX)-gcc
 LD		= $(PREFIX)-ld
 AR		= $(PREFIX)-ar
@@ -75,11 +80,7 @@ images: $(NAME).bin $(NAME).hex $(NAME).srec $(NAME).lst
 
 $(NAME).elf: $(OBJECTS)
 	@echo -e "  LD\t$@"
-ifneq ($(VERBOSE), 0)
-	$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
-else
-	@$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
-endif
+	$(Q)$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
 
 clean:
 	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; do \
@@ -89,73 +90,39 @@ clean:
 
 flash: $(NAME).hex
 	@echo -e "  OOCD\t$<"
-ifneq ($(VERBOSE), 0)
-	$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
-		 -f board/$(OOCD_TARGET).cfg \
-		 -c init \
-		 -c "reset halt" \
-		 -c "flash write_image erase open-bldc-bb.hex" \
-		 -c reset \
-		 -c shutdown
-else
-	@$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
-		 -f board/$(OOCD_TARGET).cfg \
-		 -c init \
-		 -c "reset halt" \
-		 -c "flash write_image erase open-bldc-bb.hex" \
-		 -c reset \
-		 -c shutdown
-endif
+	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+		    -f board/$(OOCD_TARGET).cfg \
+		    -c init \
+		    -c "reset halt" \
+		    -c "flash write_image erase open-bldc-bb.hex" \
+		    -c reset \
+		    -c shutdown
 
 gccversion:
 	@$(CC) --version
 
 size: $(NAME).elf
 	@echo
-ifneq ($(VERBOSE), 0)
-	$(SIZE) $(SIZEFLAGS) $<
-else
-	@$(SIZE) $(SIZEFLAGS) $<
-endif
+	$(Q)$(SIZE) $(SIZEFLAGS) $<
 
 # Suffix rules
 
 .elf.bin:
 	@echo -e "  CP\t$@"
-ifneq ($(VERBOSE), 0)
-	$(CP) $(CPFLAGS) -Obinary $< $@
-else
-	@$(CP) $(CPFLAGS) -Obinary $< $@
-endif
+	$(Q)$(CP) $(CPFLAGS) -Obinary $< $@
 
 .elf.hex:
 	@echo -e "  CP\t$@"
-ifneq ($(VERBOSE), 0)
-	$(CP) $(CPFLAGS) -Oihex $< $@
-else
-	@$(CP) $(CPFLAGS) -Oihex $< $@
-endif
+	$(Q)$(CP) $(CPFLAGS) -Oihex $< $@
 
 .elf.srec:
 	@echo -e "  CP\t$@"
-ifneq ($(VERBOSE), 0)
-	$(CP) $(CPFLAGS) -Osrec $< $@
-else
-	@$(CP) $(CPFLAGS) -Osrec $< $@
-endif
+	$(Q)$(CP) $(CPFLAGS) -Osrec $< $@
 
 .elf.lst:
 	@echo -e "  OD\t$@"
-ifneq ($(VERBOSE), 0)
-	$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
-else
-	@$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
-endif
+	$(Q)$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
 
 %.o: %.c %.h
 	@echo -e "  CC\t$@"
-ifneq ($(VERBOSE), 0)
-	$(CC) $(CFLAGS) -c $<
-else
-	@$(CC) $(CFLAGS) -c $<
-endif
+	$(Q)$(CC) $(CFLAGS) -c $<

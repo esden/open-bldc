@@ -1,8 +1,16 @@
 This project aims to create a fully open-source Brushless Drive Controller.
 
-The controller in the current designs uses an Atmega168 microcontroller from
-Atmel. In the near future this will be changed to STM32 from st.com.
+Current design
+--------------
+The current design uses an STM32 microcontroller, Allegro halsensor based
+current sensors, irs2101 bridge drivers. This combination will allow:
 
+- Vectorfield control for smooth and very exact torque and speed control
+- N-Mosfet only powerstage design to increase efficiency
+- Many different interfaces (PPM, I2C, CAN, USART, USB) for interfacing
+
+Inspiration references
+----------------------
 Some application notes were consulted while designing the circuits of
 the drive conntrollers:
 
@@ -18,4 +26,10 @@ For more information take a look at http://open-bldc.org. A lot of progress
 reports are posted on http://www.esden.net, so this page may be worth a look
 too.
 
-Cheers Piotr Esden-Tempski
+Licensing
+---------
+All sourcecode is licensed under GPL3, all circuitry designs and pcb layouts
+are available as original source files and licensed under CreativeCommons BY-SA
+3.0.
+
+Feel free to use everything here as you whish! :)

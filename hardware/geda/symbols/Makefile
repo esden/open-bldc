@@ -16,7 +16,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-all: ir2101.sym acs712.sym lp2992.sym st662a.sym
+all: ir2101.sym acs712.sym lp2992.sym st662a.sym stm32f103xx_lqfp48.sym
 
 %.sym: %.src
 	@tragesym $< $@

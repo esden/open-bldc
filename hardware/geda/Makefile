@@ -56,9 +56,12 @@ bom:
 	@# gnetlist -g bom2 -o $(SCH).bom $(SCH).sch 
 
 clean:
+	$(MAKE) -C symbols clean
 	@rm -f $(SCH).sch~ $(SCH).ps $(SCH).pdf
 	@rm -f $(BOARD).net $(BOARD).cmd $(BOARD).fab.gbr $(BOARD).ps
 	@rm -f $(BOARD).new.pcb
 	@rm -f $(SCH).drc
 	@rm -f $(SCH).bom
+
+.PHONY: symbols
 

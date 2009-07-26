@@ -32,9 +32,9 @@ version=20060113 1
 name=IR2101
 device=IR2101
 refdes=IC?
-footprint=TODO
-description=TODO
-documentation=TODO
+footprint=SO8
+description=High and low side driver
+documentation=http://www.irf.com/product-info/datasheets/data/ir2101.pdf
 author=Uwe Hermann <uwe@hermann-uwe.de>
 dist-license=GPL
 use-license=unlimited
@@ -49,9 +49,9 @@ numslots=0
 2		io	line	l	none	HIN
 3		io	line	l	none	LIN
 4		pwr	line	l	GND	COM
-5		io	line	r	none	LO
-6		io	line	r	none	VS
-7		io	line	r	none	HO
 8		io	line	r	none	VB
+7		io	line	r	none	HO
+6		io	line	r	none	VS
+5		io	line	r	none	LO
 
 # TODO: What to use for 'net'?

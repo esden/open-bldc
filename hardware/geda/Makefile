@@ -23,8 +23,7 @@ GEDADIR = $(HOME)/geda
 SCHEMEDIR = $(GEDADIR)/share/gEDA/scheme
 
 # all: symbols sch-ps sch-pdf pcb-gerber pcb-ps pcb-png
-# all: symbols sch-ps sch-pdf
-all: sch-ps sch-pdf
+all: symbols sch-ps sch-pdf
 
 symbols:
 	$(MAKE) -C symbols

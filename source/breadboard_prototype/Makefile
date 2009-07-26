@@ -26,7 +26,6 @@
 #
 
 NAME		= open-bldc-bb
-PREFIX		= arm-none-eabi
 OOCD_INTERFACE	= jtagkey-tiny
 OOCD_TARGET	= olimex_stm32_h103
 

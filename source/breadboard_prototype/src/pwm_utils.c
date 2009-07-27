@@ -1,5 +1,5 @@
 /*
- * Open-BLDC - Open BruschLess DC Motor Controller
+ * Open-BLDC - Open BrushLess DC Motor Controller
  * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify

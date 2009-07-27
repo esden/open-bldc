@@ -25,7 +25,7 @@ sort_labels=no
 generate_pinseq=yes
 sym_width=900
 pinwidthvertical=200
-pinwidthhorizontal=400
+pinwidthhorizontal=200
 
 [geda_attr]
 version=20060113 1

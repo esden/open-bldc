@@ -23,9 +23,9 @@ wordswap=yes
 rotate_labels=no
 sort_labels=no
 generate_pinseq=yes
-sym_width=800
+sym_width=500
 pinwidthvertical=200
-pinwidthhorizontal=400
+pinwidthhorizontal=200
 
 [geda_attr]
 version=20060113 1

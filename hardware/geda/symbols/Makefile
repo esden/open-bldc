@@ -17,7 +17,7 @@
 ##
 
 SYMBOLS = ir2101.sym acs712.sym lp2992.sym st662a.sym stm32f103xx_lqfp48.sym \
-	  jtag_10pin.sym
+	  jtag_10pin.sym tinyconn10.sym
 
 all: $(SYMBOLS)
 

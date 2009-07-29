@@ -51,7 +51,7 @@ numslots=0
 4		io	line	l	none	PC15-OSC32_OUT
 5		io	line	l	none	PD0-OSC_IN
 6		io	line	l	none	PD1-OSC_OUT
-7		io	line	l	none	NRST
+7		io	dot	l	none	NRST
 8		io	line	l	none	VSSA
 9		io	line	l	none	VDDA
 

@@ -16,14 +16,15 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-SYMBOLS = ir2101.sym acs712.sym lp2992.sym st662a.sym stm32f103xx_lqfp48.sym \
-	  jtag_10pin.sym tinyconn10.sym tinyconn3.sym
+GENERATED_SYMBOLS = \
+	ir2101.sym acs712.sym lp2992.sym st662a.sym stm32f103xx_lqfp48.sym \
+	jtag_10pin.sym tinyconn10.sym tinyconn3.sym
 
-all: $(SYMBOLS)
+all: $(GENERATED_SYMBOLS)
 
 %.sym: %.src
 	@tragesym $< $@
 
 clean:
-	@rm -f *.sym
+	@rm -f $(GENERATED_SYMBOLS)
 

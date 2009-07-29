@@ -29,10 +29,11 @@ pinwidthhorizontal=200
 
 [geda_attr]
 version=20060113 1
-name=JTAG
+name=
 device=JTAG_10PIN
-refdes=CONN?
-footprint=SO10 # TODO
+refdes=JTAG
+# TODO
+footprint=SO10
 description=10pin JTAG connector
 documentation=None
 author=Uwe Hermann <uwe@hermann-uwe.de>

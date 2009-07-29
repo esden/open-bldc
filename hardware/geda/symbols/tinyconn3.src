@@ -16,14 +16,38 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-SYMBOLS = ir2101.sym acs712.sym lp2992.sym st662a.sym stm32f103xx_lqfp48.sym \
-	  jtag_10pin.sym tinyconn10.sym tinyconn3.sym
+# Template file for creating symbols with tragesym.
 
-all: $(SYMBOLS)
+[options]
+wordswap=yes
+rotate_labels=no
+sort_labels=no
+generate_pinseq=yes
+sym_width=200
+pinwidthvertical=200
+pinwidthhorizontal=200
 
-%.sym: %.src
-	@tragesym $< $@
+[geda_attr]
+version=20060113 1
+name=
+device=TINYCONN3
+refdes=CONN?
+# TODO
+footprint=SO3
+description=Tiny 3 pin connector
+documentation=N/A
+author=Uwe Hermann <uwe@hermann-uwe.de>
+dist-license=GPL
+use-license=unlimited
+numslots=0
+#slot=1
+#slotdef=1:
+#comment=
 
-clean:
-	@rm -f *.sym
+[pins]
+#pinnr	seq	type	style	posit.	net	label	
+1		io	line	r	none	1
+2		io	line	r	none	2
+3		io	line	r	none	3
 
+# TODO: What to use for 'net'?

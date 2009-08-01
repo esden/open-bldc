@@ -2,6 +2,6 @@
 * 1 oz. copper
 * All holes plated through
 * Drills shown as finished sizes
-* Board thickness 0.031"
+* Board thickness 0.062"
 
 

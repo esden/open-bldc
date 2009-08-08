@@ -21,6 +21,6 @@ NOTE: jtagkey-tiny.cfg is only an example. If you use another JTAG adapter
  $ telnet localhost 4444
  > init
  > reset halt
- > flash write_image erase stm_h103_blink_rom.hex
+ > flash write_image erase open-bldc-bb.hex
  > reset
 

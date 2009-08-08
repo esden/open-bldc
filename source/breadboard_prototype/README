@@ -1,7 +1,4 @@
-This example should make the diode on an Olimex STM32-H103 blink.
-
-If you move this directory away take care of changind the SEARCH_DIR setting in
-the stm_h103_blink_rom.cmd linker script.
+This is test firmware for the Open-BLDC (http://open-bldc.org) breadboard and smd prototypes.
 
 Compilation
 -----------
@@ -24,6 +21,6 @@ NOTE: jtagkey-tiny.cfg is only an example. If you use another JTAG adapter
  $ telnet localhost 4444
  > init
  > reset halt
- > flash write_image erase stm_h103_blink_rom.bin 0x08000000
- > resume 0x08000000
+ > flash write_image erase stm_h103_blink_rom.hex
+ > reset
 

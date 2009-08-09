@@ -22,6 +22,7 @@
 #include <stm32/gpio.h>
 
 #include "led.h"
+#include "usart.h"
 
 void system_init(void){
     /* Initialize the microcontroller system. Initialize clocks. */
@@ -39,15 +40,12 @@ int main(void){
 
     system_init();
     led_init();
+    usart_init();
 
     while(1){
         LED_ORANGE_ON();
         my_delay(1000000);
         LED_ORANGE_OFF();
-        my_delay(1000000);
-        LED_RED_ON();
-        my_delay(1000000);
-        LED_RED_OFF();
         my_delay(1000000);
         LED_GREEN_ON();
         my_delay(1000000);

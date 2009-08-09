@@ -23,6 +23,8 @@
 
 #include "vector_table.h"
 
+#include "usart.h"
+
 /* addresses defined in the linker script */
 extern unsigned long _etext; /* end addr of .text section */
 extern unsigned long _sidata; /* init values for .data section */
@@ -91,7 +93,7 @@ void (* const vector_table[])(void) = {
     null_handler,             /* spi2_irq_handler */
     null_handler,             /* usart1_irq_handler */
     null_handler,             /* usart2_irq_handler */
-    null_handler,	      /* usart3_irq_handler */
+    usart3_irq_handler,
     null_handler,             /* exti15_10_irq_handler */
     null_handler,             /* rtc_alarm_irq_handler */
     null_handler,             /* usb_wake_up_irq_handler */

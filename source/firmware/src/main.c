@@ -21,33 +21,11 @@
 #include <stm32/misc.h>
 #include <stm32/gpio.h>
 
-void rcc_init(void){
+#include "led.h"
+
+void system_init(void){
     /* Initialize the microcontroller system. Initialize clocks. */
     SystemInit();
-
-    /* TIM1, GPIOA, GPIOB and GPIOC clock enable */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
-                           RCC_APB2Periph_GPIOB |
-                           RCC_APB2Periph_AFIO, ENABLE);
-
-}
-
-void nvic_init(void){
-    /* Set the Vector Table base location at 0x08000000 */
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
-
-}
-
-void gpio_init(void){
-    GPIO_InitTypeDef gpio;
-
-    /* GPIOC: LED pin as output push-pull */
-    GPIO_WriteBit(GPIOB,GPIO_Pin_12,Bit_SET);
-    gpio.GPIO_Pin =  GPIO_Pin_12;
-    gpio.GPIO_Mode = GPIO_Mode_Out_PP;
-    gpio.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &gpio);
-
 }
 
 void my_delay(unsigned long delay ){
@@ -59,15 +37,25 @@ void my_delay(unsigned long delay ){
 
 int main(void){
 
-    rcc_init(); /* system clocks init */
-    nvic_init(); /* interrupt vector unit init */
-    gpio_init();
+    system_init();
+    led_init();
 
     while(1){
-        GPIOB->BRR |= 0x00001000;
+        LED_ORANGE_ON();
         my_delay(1000000);
-        //USART_SendData(USART3, 'A');
-        GPIOB->BSRR |= 0x00001000;
+        LED_ORANGE_OFF();
+        my_delay(1000000);
+        LED_RED_ON();
+        my_delay(1000000);
+        LED_RED_OFF();
+        my_delay(1000000);
+        LED_GREEN_ON();
+        my_delay(1000000);
+        LED_GREEN_OFF();
+        my_delay(1000000);
+        LED_BLUE_ON();
+        my_delay(1000000);
+        LED_BLUE_OFF();
         my_delay(1000000);
     }
 }

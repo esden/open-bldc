@@ -60,7 +60,8 @@ SIZEFLAGS	= -A -x
 
 OBJECTS = main.o \
 	  exceptions.o \
-	  vector_table.o
+	  vector_table.o \
+	  led.o
 
 all: gccversion images size
 

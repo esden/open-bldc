@@ -26,15 +26,11 @@
 #include "led.h"
 
 volatile char out_data;
-int led = 0;
 
 void usart_init(void){
     NVIC_InitTypeDef nvic;
     GPIO_InitTypeDef gpio;
     USART_InitTypeDef usart;
-
-    /* initialize internal structures */
-    led = 0;
 
     /* enable clock for USART3 peripherial*/
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
@@ -91,12 +87,6 @@ void usart3_irq_handler(void){
     if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
         USART_SendData(USART3, out_data);
         USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
-        if(led){
-            LED_RED_OFF();
-            led = 0;
-        }else{
-            LED_RED_ON();
-            led = 1;
-        }
+        LED_RED_TOGGLE();
     }
 }

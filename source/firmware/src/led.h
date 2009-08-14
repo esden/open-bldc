@@ -21,12 +21,43 @@
 
 #define LED_ORANGE_OFF() GPIOB->BSRR |= 0x00000004
 #define LED_ORANGE_ON() GPIOB->BRR |= 0x00000004
+#define LED_ORANGE_TOGGLE() {                   \
+        if(GPIOB->IDR & 0x00000004){            \
+            LED_ORANGE_ON();                    \
+        }else{                                  \
+            LED_ORANGE_OFF();                   \
+        }                                       \
+    }
+
 #define LED_RED_OFF() GPIOB->BSRR |= 0x00001000
 #define LED_RED_ON() GPIOB->BRR |= 0x00001000
+#define LED_RED_TOGGLE() {                      \
+        if(GPIOB->IDR & 0x00001000){            \
+            LED_ORANGE_ON();                    \
+        }else{                                  \
+            LED_ORANGE_OFF();                   \
+        }                                       \
+    }
+
 #define LED_GREEN_OFF() GPIOB->BSRR |= 0x00000001
 #define LED_GREEN_ON() GPIOB->BRR |= 0x00000001
+#define LED_GREEN_TOGGLE() {                    \
+    if(GPIOB->IDR & 0x00000001){                \
+        LED_ORANGE_ON();                        \
+    }else{                                      \
+        LED_ORANGE_OFF();                       \
+    }                                           \
+}
+
 #define LED_BLUE_OFF() GPIOA->BSRR |= 0x00000080
 #define LED_BLUE_ON() GPIOA->BRR |= 0x00000080
+#define LED_BLUE_TOGGLE() {                     \
+        if(GPIOB->IDR & 0x00000008){            \
+            LED_ORANGE_ON();                    \
+        }else{                                  \
+            LED_ORANGE_OFF();                   \
+        }                                       \
+    }
 
 void led_init(void);
 

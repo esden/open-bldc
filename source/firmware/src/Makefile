@@ -62,7 +62,14 @@ OBJECTS = main.o \
 	  exceptions.o \
 	  vector_table.o \
 	  led.o \
-	  usart.o
+	  usart.o \
+	  pwm_utils.o \
+	  pwm.o \
+	  pwm_scheme_6step_h_pwm_l_on.o \
+	  pwm_scheme_6step_h_on_l_pwm.o \
+	  pwm_scheme_6step_on_pwm.o \
+	  pwm_scheme_6step_pwm_on.o \
+	  pwm_scheme_12step_pwm_on_pwm.o
 
 all: gccversion images size
 

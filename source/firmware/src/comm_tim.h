@@ -16,44 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32/rcc.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/gpio.h>
+#ifndef __COMM_TIM_H
+#define __COMM_TIM_H
 
-#include "led.h"
-#include "usart.h"
-#include "pwm.h"
-#include "comm_tim.h"
+void comm_tim_init(void);
+void tim2_irq_handler(void);
 
-void system_init(void){
-    /* Initialize the microcontroller system. Initialize clocks. */
-    SystemInit();
-}
-
-void my_delay(unsigned long delay ){
-
-    while(delay){
-        delay--;
-    }
-}
-
-int main(void){
-
-    system_init();
-    led_init();
-    usart_init();
-    pwm_init();
-    comm_tim_init();
-
-    while(1){
-        LED_GREEN_ON();
-        my_delay(1000000);
-        LED_GREEN_OFF();
-        my_delay(1000000);
-        LED_BLUE_ON();
-        my_delay(1000000);
-        LED_BLUE_OFF();
-        my_delay(1000000);
-    }
-}
+#endif /* __COMM_TIM_H */

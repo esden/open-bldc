@@ -24,6 +24,8 @@
 #include "vector_table.h"
 
 #include "usart.h"
+#include "pwm.h"
+#include "comm_tim.h"
 
 /* addresses defined in the linker script */
 extern unsigned long _etext; /* end addr of .text section */
@@ -82,7 +84,7 @@ void (* const vector_table[])(void) = {
     null_handler,             /* tim1_up_irq_handler */
     tim1_trg_com_irq_handler,
     null_handler,             /* tim1_cc_irq_handler */
-    null_handler,             /* tim2_irq_handler */
+    tim2_irq_handler,
     null_handler,             /* tim3_irq_handler */
     null_handler,             /* tim4_irq_handler */
     null_handler,             /* i2c1_ev_irq_handler */

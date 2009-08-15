@@ -48,7 +48,7 @@ OOCD		= openocd
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-CFLAGS		= -I. -Wall -ansi -std=c99 -c -fno-common -O0 -g \
+CFLAGS		= -I. -Ipwm -Wall -ansi -std=c99 -c -fno-common -O0 -g \
 		  -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections
 ASFLAGS		= -ahls -mapcs-32
 LDFLAGS		= -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
@@ -63,13 +63,13 @@ OBJECTS = main.o \
 	  vector_table.o \
 	  led.o \
 	  usart.o \
-	  pwm_utils.o \
-	  pwm.o \
-	  pwm_scheme_6step_h_pwm_l_on.o \
-	  pwm_scheme_6step_h_on_l_pwm.o \
-	  pwm_scheme_6step_on_pwm.o \
-	  pwm_scheme_6step_pwm_on.o \
-	  pwm_scheme_12step_pwm_on_pwm.o \
+	  pwm/pwm_utils.o \
+	  pwm/pwm.o \
+	  pwm/pwm_scheme_6step_h_pwm_l_on.o \
+	  pwm/pwm_scheme_6step_h_on_l_pwm.o \
+	  pwm/pwm_scheme_6step_on_pwm.o \
+	  pwm/pwm_scheme_6step_pwm_on.o \
+	  pwm/pwm_scheme_12step_pwm_on_pwm.o \
 	  comm_tim.o
 
 all: gccversion images size
@@ -125,4 +125,4 @@ size: $(NAME).elf
 
 %.o: %.c %.h
 	@echo -e "  CC\t$@"
-	$(Q)$(CC) $(CFLAGS) -c $<
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@

@@ -23,12 +23,15 @@
 
 #include "config.h"
 #include "pwm_schemes.h"
+#include "pwm_utils.h"
 
 #include "pwm.h"
 
-#define PWM_VALUE 200;
+#include "led.h"
 
-volatile uint16_t pwm_val = 200;
+#define PWM_VALUE 130;
+
+volatile uint16_t pwm_val = 130;
 
 void pwm_init(void){
     NVIC_InitTypeDef nvic;
@@ -116,8 +119,20 @@ void pwm_init(void){
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 
+void pwm_comm(void){
+    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+}
+
+void pwm_off(void){
+    pwm_set_pwm_hi(PWM_PHASE_A);
+    pwm_set_____lo(PWM_PHASE_B);
+    pwm_set____off(PWM_PHASE_C);
+}
+
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
+
+    LED_ORANGE_TOGGLE();
 
     TIM_SetCompare1(TIM1, pwm_val);
     TIM_SetCompare2(TIM1, pwm_val);

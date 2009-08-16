@@ -20,10 +20,13 @@
 #include <stm32/misc.h>
 #include <stm32/usart.h>
 #include <stm32/gpio.h>
+#include <stm32/tim.h>
 
 #include "usart.h"
 
 #include "led.h"
+#include "pwm.h"
+#include "comm_tim.h"
 
 volatile char out_data;
 
@@ -79,6 +82,35 @@ void usart3_irq_handler(void){
     if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
         buff = USART_ReceiveData(USART3);
 
+        switch(buff){
+        case ' ':
+            comm_tim_off();
+            pwm_off();
+            pwm_comm();
+            break;
+        case 'a':
+            pwm_comm();
+            break;
+        case 'b':
+            comm_tim_on();
+            break;
+        case 'c':
+            comm_tim_off();
+            break;
+        case 'h':
+            pwm_val++;
+            break;
+        case 't':
+            pwm_val--;
+            break;
+        case 'n':
+            comm_tim_freq+=10;
+            break;
+        case 's':
+            comm_tim_freq-=10;
+            break;
+        }
+
         out_data = buff;
 
         USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
@@ -87,6 +119,6 @@ void usart3_irq_handler(void){
     if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
         USART_SendData(USART3, out_data);
         USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
-        LED_RED_TOGGLE();
+        LED_BLUE_TOGGLE();
     }
 }

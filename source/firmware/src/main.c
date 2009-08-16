@@ -20,6 +20,7 @@
 #include <stm32/flash.h>
 #include <stm32/misc.h>
 #include <stm32/gpio.h>
+#include <stm32/tim.h>
 
 #include "led.h"
 #include "usart.h"
@@ -47,13 +48,7 @@ int main(void){
     comm_tim_init();
 
     while(1){
-        LED_GREEN_ON();
-        my_delay(1000000);
-        LED_GREEN_OFF();
-        my_delay(1000000);
-        LED_BLUE_ON();
-        my_delay(1000000);
-        LED_BLUE_OFF();
-        my_delay(1000000);
+        LED_BLUE_TOGGLE();
+        my_delay(100000);
     }
 }

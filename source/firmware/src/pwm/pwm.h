@@ -23,6 +23,8 @@ extern volatile uint16_t pwm_val;
 extern volatile int pwm_free_wheeling;
 
 void pwm_init(void);
+void pwm_off(void);
+void pwm_comm(void);
 void tim1_trg_com_irq_handler(void);
 
 #endif /* __PWM_H */

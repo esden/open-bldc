@@ -23,12 +23,14 @@
 
 #include "pwm_utils.h"
 
+#include "led.h"
+
 void pwm_trigger(uint16_t zone){
     if(PWM_PHASE_TRIGGER == zone){
-        GPIOC->BRR |= 0x00001000;
+        LED_GREEN_OFF();
     }
     if(PWM_PHASE_TRIGGER == zone + 1){
-        GPIOC->BSRR |= 0x00001000;
+        LED_GREEN_ON();
     }
 }
 

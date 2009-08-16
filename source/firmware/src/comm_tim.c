@@ -24,7 +24,7 @@
 
 #include "led.h"
 
-uint16_t comm_tim_freq = 49152;
+volatile uint16_t comm_tim_freq = 49152;
 uint16_t comm_tim_capture = 0;
 
 void comm_tim_init(void){
@@ -68,8 +68,17 @@ void comm_tim_init(void){
     /* TIM1 IT enable */
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 
+    comm_tim_off();
+}
+
+void comm_tim_on(void){
     /* TIM2 enable counter */
     TIM_Cmd(TIM2, ENABLE);
+}
+
+void comm_tim_off(void){
+    /* TIM2 disable counter */
+    TIM_Cmd(TIM2, DISABLE);
 }
 
 void tim2_irq_handler(void){

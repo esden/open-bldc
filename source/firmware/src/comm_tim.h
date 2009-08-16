@@ -19,7 +19,11 @@
 #ifndef __COMM_TIM_H
 #define __COMM_TIM_H
 
+extern volatile uint16_t comm_tim_freq;
+
 void comm_tim_init(void);
+void comm_tim_on(void);
+void comm_tim_off(void);
 void tim2_irq_handler(void);
 
 #endif /* __COMM_TIM_H */

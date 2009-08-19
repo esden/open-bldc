@@ -83,7 +83,7 @@ void (* const vector_table[])(void) = {
     null_handler,             /* tim1_brk_irq_handler */
     null_handler,             /* tim1_up_irq_handler */
     tim1_trg_com_irq_handler,
-    null_handler,             /* tim1_cc_irq_handler */
+    tim1_cc_irq_handler,
     tim2_irq_handler,
     null_handler,             /* tim3_irq_handler */
     null_handler,             /* tim4_irq_handler */

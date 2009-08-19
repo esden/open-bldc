@@ -26,5 +26,6 @@ void pwm_init(void);
 void pwm_off(void);
 void pwm_comm(void);
 void tim1_trg_com_irq_handler(void);
+void tim1_cc_irq_handler(void);
 
 #endif /* __PWM_H */

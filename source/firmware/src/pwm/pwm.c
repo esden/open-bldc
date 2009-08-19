@@ -52,6 +52,13 @@ void pwm_init(void){
     nvic.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&nvic);
 
+    /* Enable TIM1 interrupt */
+    nvic.NVIC_IRQChannel = TIM1_CC_IRQn;
+    nvic.NVIC_IRQChannelPreemptionPriority = 0;
+    nvic.NVIC_IRQChannelSubPriority = 1;
+    nvic.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&nvic);
+
     /* GPIOA: TIM1 channel 1, 2 and 3 as alternate function
        push-pull */
     gpio.GPIO_Pin   = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
@@ -96,6 +103,11 @@ void pwm_init(void){
     TIM_OC3Init(TIM1, &tim_oc);
     TIM_OC3PreloadConfig(TIM1, TIM_OCPreload_Enable);
 
+    /* TIM1 configure channel 4 as adc trigger source */
+    tim_oc.TIM_OCMode       = TIM_OCMode_PWM2;
+    TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
+    TIM_OC4Init(TIM1, &tim_oc);
+
     /* Automatic Output enable, break, dead time and lock configuration */
     tim_bdtr.TIM_OSSRState       = TIM_OSSRState_Enable;
     tim_bdtr.TIM_OSSIState       = TIM_OSSIState_Enable;
@@ -109,8 +121,8 @@ void pwm_init(void){
 
     TIM_CCPreloadControl(TIM1, ENABLE);
 
-    /* Enable COM interrupt */
-    TIM_ITConfig(TIM1, TIM_IT_COM, ENABLE);
+    /* Enable COM and CC interrupt */
+    TIM_ITConfig(TIM1, TIM_IT_COM | TIM_IT_CC4, ENABLE);
 
     /* TIM1 enable counter */
     TIM_Cmd(TIM1, ENABLE);
@@ -132,11 +144,21 @@ void pwm_off(void){
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
 
-    LED_ORANGE_TOGGLE();
+    //LED_ORANGE_TOGGLE();
 
     TIM_SetCompare1(TIM1, pwm_val);
     TIM_SetCompare2(TIM1, pwm_val);
     TIM_SetCompare3(TIM1, pwm_val);
+    TIM_SetCompare4(TIM1, pwm_val);
 
     PWM_SCHEME();
+}
+
+void tim1_cc_irq_handler(void){
+    if(TIM_GetITStatus(TIM1, TIM_IT_CC4) != RESET){
+        TIM_ClearITPendingBit(TIM1, TIM_IT_CC4);
+
+        /* Toggling ORANGE LED ca. 22us after pwm duty cycle start of PWM1 */
+        LED_ORANGE_TOGGLE();
+    }
 }

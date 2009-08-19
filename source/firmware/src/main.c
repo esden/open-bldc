@@ -49,6 +49,7 @@ int main(void){
 
     while(1){
         LED_BLUE_TOGGLE();
-        my_delay(100000);
+        LED_RED_TOGGLE();
+        my_delay(5000000);
     }
 }

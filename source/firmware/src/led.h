@@ -52,7 +52,7 @@
 #define LED_BLUE_OFF() GPIOA->BSRR |= 0x00000080
 #define LED_BLUE_ON() GPIOA->BRR |= 0x00000080
 #define LED_BLUE_TOGGLE() {                     \
-        if(GPIOB->IDR & 0x00000008){            \
+        if(GPIOA->IDR & 0x00000080){            \
             LED_BLUE_ON();                      \
         }else{                                  \
             LED_BLUE_OFF();                     \

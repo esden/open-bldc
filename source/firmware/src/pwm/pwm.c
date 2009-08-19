@@ -72,11 +72,6 @@ void pwm_init(void){
     gpio.GPIO_Pin   = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
     GPIO_Init(GPIOB, &gpio);
 
-    /* GPIOB: BKIN as floating input */
-    gpio.GPIO_Pin   = GPIO_Pin_12;
-    gpio.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIOB, &gpio);
-
     /* Time base configuration */
     tim_base.TIM_Period = 1999;
     tim_base.TIM_Prescaler = 0;
@@ -115,7 +110,7 @@ void pwm_init(void){
     tim_bdtr.TIM_DeadTime        = 10;
     tim_bdtr.TIM_Break           = TIM_Break_Disable;
     tim_bdtr.TIM_BreakPolarity   = TIM_BreakPolarity_High;
-    tim_bdtr.TIM_AutomaticOutput = TIM_AutomaticOutput_Enable;
+    tim_bdtr.TIM_AutomaticOutput = TIM_AutomaticOutput_Disable;
 
     TIM_BDTRConfig(TIM1, &tim_bdtr);
 

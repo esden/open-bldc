@@ -40,6 +40,7 @@ void my_delay(unsigned long delay ){
 }
 
 int main(void){
+    int i,j;
 
     system_init();
     led_init();
@@ -48,8 +49,21 @@ int main(void){
     comm_tim_init();
 
     while(1){
-        LED_BLUE_TOGGLE();
-        LED_RED_TOGGLE();
-        my_delay(5000000);
+        for(j=0; j<20; j++){
+            for(i=0; i< 125; i++){
+                LED_RED_ON();
+                my_delay(50*j);
+                LED_RED_OFF();
+                my_delay(1200-50*j);
+            }
+        }
+        for(j=0; j<20; j++){
+            for(i=0; i< 125; i++){
+                LED_RED_OFF();
+                my_delay(200+50*j);
+                LED_RED_ON();
+                my_delay(1000-50*j);
+            }
+        }
     }
 }

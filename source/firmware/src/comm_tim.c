@@ -70,8 +70,6 @@ void comm_tim_init(void){
     /* TIM1 IT enable */
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 
-    comm_switch_off = 0;
-
     comm_tim_off();
 }
 

@@ -44,10 +44,10 @@
  */
 
 #include <stm32/tim.h>
-//#include <stm32/adc.h>
+#include <stm32/adc.h>
 
 #include "pwm_utils.h"
-//#include "adc.h"
+#include "adc.h"
 
 #include "pwm_scheme_6step_h_pwm_l_on.h"
 
@@ -58,7 +58,7 @@ void pwm_scheme_6step_h_pwm_l_on(void){
     case 1: // 000º
         pwm_trigger(1);
 
-        //adc_set(ADC_CHANNEL_B, ADC_TRIG_CHANNEL_A, ADC_FALLIN, ADC_CLEAR_COMM);
+        adc_set(ADC_CHANNEL_B, ADC_FALLIN);
 
         /* Configure step 2 */
         pwm_set_pwm_hi(PWM_PHASE_A);
@@ -70,7 +70,7 @@ void pwm_scheme_6step_h_pwm_l_on(void){
     case 2: // 060º
         pwm_trigger(2);
 
-        //adc_set(ADC_CHANNEL_C, ADC_TRIG_CHANNEL_A, ADC_RISING, ADC_CLEAR_COMM);
+        adc_set(ADC_CHANNEL_C, ADC_RISING);
 
         /* Configure step 3 */
         pwm_set____off(PWM_PHASE_A);
@@ -82,7 +82,7 @@ void pwm_scheme_6step_h_pwm_l_on(void){
     case 3: // 120º
         pwm_trigger(3);
 
-        //adc_set(ADC_CHANNEL_A, ADC_TRIG_CHANNEL_C, ADC_FALLIN, ADC_CLEAR_COMM);
+        adc_set(ADC_CHANNEL_A, ADC_FALLIN);
 
         /* Configure step 4 */
         pwm_set_____lo(PWM_PHASE_A);
@@ -94,7 +94,7 @@ void pwm_scheme_6step_h_pwm_l_on(void){
     case 4: // 180º
         pwm_trigger(4);
 
-        //adc_set(ADC_CHANNEL_B, ADC_TRIG_CHANNEL_C, ADC_RISING, ADC_CLEAR_COMM);
+        adc_set(ADC_CHANNEL_B, ADC_RISING);
 
         /* Configure step 4 */
         pwm_set_____lo(PWM_PHASE_A);
@@ -106,7 +106,7 @@ void pwm_scheme_6step_h_pwm_l_on(void){
     case 5: // 220º
         pwm_trigger(5);
 
-        //adc_set(ADC_CHANNEL_C, ADC_TRIG_CHANNEL_B, ADC_FALLIN, ADC_CLEAR_COMM);
+        adc_set(ADC_CHANNEL_C, ADC_FALLIN);
 
         /* Configure step 4 */
         pwm_set____off(PWM_PHASE_A);
@@ -118,7 +118,7 @@ void pwm_scheme_6step_h_pwm_l_on(void){
     case 6: // 280º
         pwm_trigger(6);
 
-        //adc_set(ADC_CHANNEL_A, ADC_TRIG_CHANNEL_B, ADC_RISING, ADC_CLEAR_COMM);
+        adc_set(ADC_CHANNEL_A, ADC_RISING);
 
         /* Configure step 4 */
         pwm_set_pwm_hi(PWM_PHASE_A);

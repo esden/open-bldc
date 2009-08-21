@@ -27,6 +27,7 @@
 #include "led.h"
 #include "pwm.h"
 #include "comm_tim.h"
+#include "adc.h"
 
 volatile char out_data;
 
@@ -84,9 +85,7 @@ void usart3_irq_handler(void){
 
         switch(buff){
         case ' ':
-            comm_tim_off();
-            pwm_off();
-            pwm_comm();
+            pwm_offset=190;
             break;
         case 'a':
             pwm_comm();
@@ -99,15 +98,40 @@ void usart3_irq_handler(void){
             break;
         case 'h':
             pwm_val++;
+            pwm_offset++;
             break;
         case 't':
             pwm_val--;
+            pwm_offset--;
             break;
         case 'n':
             comm_tim_freq+=10;
             break;
         case 's':
             comm_tim_freq-=10;
+            break;
+        case 'r':
+            pwm_offset+=10;
+            if(pwm_offset>1500)
+                pwm_offset=1500;
+            break;
+        case 'l':
+            pwm_offset-=10;
+            if(pwm_offset<pwm_val)
+                pwm_offset=pwm_val;
+            break;
+        case 'v':
+            adc_level+=10;
+            if(adc_level>3000)
+                adc_level=3000;
+            break;
+        case 'z':
+            adc_level-=10;
+            if(adc_level<10)
+                adc_level=10;
+            break;
+        case 'p':
+            adc_comm = 1;
             break;
         }
 

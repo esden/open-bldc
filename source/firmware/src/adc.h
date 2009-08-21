@@ -16,18 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PWM_H
-#define __PWM_H
+#ifndef __ADC_H
+#define __ADC_H
 
-extern volatile uint16_t pwm_val;
-extern volatile uint16_t pwm_offset;
-extern volatile int pwm_free_wheeling;
-extern volatile int pwm_trig_led;
+#define ADC_CHANNEL_A ADC_Channel_0
+#define ADC_CHANNEL_B ADC_Channel_1
+#define ADC_CHANNEL_C ADC_Channel_2
 
-void pwm_init(void);
-void pwm_off(void);
-void pwm_comm(void);
-void tim1_trg_com_irq_handler(void);
-void tim1_cc_irq_handler(void);
+#define ADC_FALLIN 0
+#define ADC_RISING 1
 
-#endif /* __PWM_H */
+extern volatile uint16_t adc_level;
+extern volatile int adc_comm;
+
+void adc_init(void);
+void adc_set(uint8_t channel, uint8_t rising);
+void adc1_2_irq_handler(void);
+
+#endif /* __ADC_H */

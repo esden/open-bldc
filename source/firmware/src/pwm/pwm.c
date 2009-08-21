@@ -30,8 +30,11 @@
 #include "led.h"
 
 #define PWM_VALUE 130;
+#define PWM_OFFSET 130;
 
 volatile uint16_t pwm_val = 130;
+volatile uint16_t pwm_offset = 500;
+volatile int pwm_trig_led = 0;
 
 void pwm_init(void){
     NVIC_InitTypeDef nvic;
@@ -100,6 +103,7 @@ void pwm_init(void){
 
     /* TIM1 configure channel 4 as adc trigger source */
     tim_oc.TIM_OCMode       = TIM_OCMode_PWM2;
+    tim_oc.TIM_Pulse        = PWM_OFFSET;
     TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
     TIM_OC4Init(TIM1, &tim_oc);
 
@@ -144,7 +148,7 @@ void tim1_trg_com_irq_handler(void){
     TIM_SetCompare1(TIM1, pwm_val);
     TIM_SetCompare2(TIM1, pwm_val);
     TIM_SetCompare3(TIM1, pwm_val);
-    TIM_SetCompare4(TIM1, pwm_val);
+    TIM_SetCompare4(TIM1, pwm_offset);
 
     PWM_SCHEME();
 }
@@ -154,6 +158,6 @@ void tim1_cc_irq_handler(void){
         TIM_ClearITPendingBit(TIM1, TIM_IT_CC4);
 
         /* Toggling ORANGE LED ca. 22us after pwm duty cycle start of PWM1 */
-        LED_ORANGE_TOGGLE();
+        if(pwm_trig_led) LED_ORANGE_TOGGLE();
     }
 }

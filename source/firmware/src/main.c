@@ -24,6 +24,7 @@
 
 #include "led.h"
 #include "usart.h"
+#include "adc.h"
 #include "pwm.h"
 #include "comm_tim.h"
 
@@ -45,6 +46,7 @@ int main(void){
     system_init();
     led_init();
     usart_init();
+    adc_init();
     pwm_init();
     comm_tim_init();
 

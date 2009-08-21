@@ -23,9 +23,11 @@
 #include "comm_tim.h"
 
 #include "led.h"
+#include "adc.h"
 
 volatile uint16_t comm_tim_freq = 49152;
 uint16_t comm_tim_capture = 0;
+volatile uint16_t comm_tim_memory=0;
 
 void comm_tim_init(void){
     NVIC_InitTypeDef nvic;
@@ -68,6 +70,8 @@ void comm_tim_init(void){
     /* TIM1 IT enable */
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 
+    comm_switch_off = 0;
+
     comm_tim_off();
 }
 
@@ -81,6 +85,33 @@ void comm_tim_off(void){
     TIM_Cmd(TIM2, DISABLE);
 }
 
+void comm_tim_set_next_comm(void){
+    uint16_t curr_time = TIM_GetCounter(TIM2);
+    uint16_t new_freq = (curr_time - comm_tim_capture) * 2;
+    static int inc_counter = 0;
+    static int dec_counter = 0;
+    
+    if(new_freq < (comm_tim_freq - 200)){
+        inc_counter = 0;
+        if(dec_counter < 10){
+            dec_counter++;
+            comm_tim_freq -= 100;
+        }
+    }else if(new_freq > (comm_tim_freq + 200)){
+        dec_counter = 0;
+        if(inc_counter < 10){
+            inc_counter++;
+            comm_tim_freq += 100;
+        }
+    }else{
+        inc_counter = 0;
+        dec_counter = 0;
+        comm_tim_freq = new_freq;
+    }
+
+    TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
+}
+
 void tim2_irq_handler(void){
 
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
@@ -88,11 +119,12 @@ void tim2_irq_handler(void){
     TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 
     /* Toggling ORANGE LED and triggering commutation with frequency = 73.24 Hz */
-    LED_ORANGE_TOGGLE();
-    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+    //LED_ORANGE_TOGGLE();
+    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);// | TIM_EventSource_Update);
 
     /* Preparing next comm time */
     comm_tim_capture = TIM_GetCapture1(TIM2);
+
     TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
   }
 }

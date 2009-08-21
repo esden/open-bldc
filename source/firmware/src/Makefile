@@ -63,6 +63,7 @@ OBJECTS = main.o \
 	  vector_table.o \
 	  led.o \
 	  usart.o \
+	  adc.o \
 	  pwm/pwm_utils.o \
 	  pwm/pwm.o \
 	  pwm/pwm_scheme_6step_h_pwm_l_on.o \

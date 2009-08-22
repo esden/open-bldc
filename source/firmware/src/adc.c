@@ -35,6 +35,7 @@ volatile uint16_t adc_delay_count = 0;
 volatile uint16_t adc_level = 10;
 volatile int adc_comm = 0;
 uint16_t adc_count = 0;
+uint16_t adc_filtered = 0;
 
 void adc_init(void){
     NVIC_InitTypeDef nvic;
@@ -61,6 +62,7 @@ void adc_init(void){
     GPIO_Init(GPIOA, &gpio);
 
     adc_comm = 0;
+    adc_filtered = 0;
 
     /* Configure ADC1 */
     adc.ADC_Mode = ADC_Mode_Independent;
@@ -114,6 +116,7 @@ void adc_set(uint8_t channel, uint8_t rising){
     
     adc_delay_count = 0;
     adc_count = 0;
+    adc_filtered = 0;
 
     ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
     pwm_trig_led=1;
@@ -126,9 +129,14 @@ void adc1_2_irq_handler(void){
 
     new_value = ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
 
+    if(adc_delay_count == 0)
+        adc_filtered = new_value;
+    else
+        adc_filtered = ((adc_filtered * 3) + new_value) >> 2;
+
     if(adc_delay_count > 5){
         if(adc_rising){
-            if(new_value > adc_level + 300){
+            if(adc_filtered > adc_level + 100){
                 if(adc_count < 3){
                     adc_count++;
                 }else{
@@ -139,7 +147,7 @@ void adc1_2_irq_handler(void){
                 }
             }
         }else{
-            if(new_value < adc_level){
+            if(adc_filtered < adc_level){
                 if(adc_count < 3){
                     adc_count++;
                 }else{

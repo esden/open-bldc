@@ -89,13 +89,13 @@ void comm_tim_set_next_comm(void){
     static int inc_counter = 0;
     static int dec_counter = 0;
     
-    if(new_freq < (comm_tim_freq - 200)){
+    if(new_freq < (comm_tim_freq - 400)){
         inc_counter = 0;
         if(dec_counter < 10){
             dec_counter++;
             comm_tim_freq -= 100;
         }
-    }else if(new_freq > (comm_tim_freq + 200)){
+    }else if(new_freq > (comm_tim_freq + 400)){
         dec_counter = 0;
         if(inc_counter < 10){
             inc_counter++;

@@ -1,3 +1,4 @@
+
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
  * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
@@ -52,7 +53,7 @@ void adc_init(void){
     nvic.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&nvic);
 
-    /* GPIOA: ADC Channel 0, 1, 2 as analog input 
+    /* GPIOA: ADC Channel 0, 1, 2 as analog input
      * Ch 0 -> BEMF/I_Sense of PHASE A
      * Ch 1 -> BEMF/I_Sense of PHASE B
      * Ch 2 -> BEMF/I_Sense of PHASE C
@@ -113,7 +114,7 @@ void adc_set(uint8_t channel, uint8_t rising){
     pwm_trig_led=0;
 
     ADC_InjectedChannelConfig(ADC1, channel, 1, ADC_SampleTime_28Cycles5);
-    
+
     adc_delay_count = 0;
     adc_count = 0;
     adc_filtered = 0;
@@ -140,7 +141,7 @@ void adc1_2_irq_handler(void){
                 if(adc_count < 3){
                     adc_count++;
                 }else{
-                    LED_ORANGE_TOGGLE();            
+                    LED_ORANGE_TOGGLE();
                     ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
                     pwm_trig_led=0;
                     if(adc_comm) comm_tim_set_next_comm();
@@ -151,7 +152,7 @@ void adc1_2_irq_handler(void){
                 if(adc_count < 3){
                     adc_count++;
                 }else{
-                    LED_ORANGE_TOGGLE();            
+                    LED_ORANGE_TOGGLE();
                     ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
                     pwm_trig_led=0;
                     if(adc_comm) comm_tim_set_next_comm();

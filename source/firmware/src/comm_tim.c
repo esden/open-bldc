@@ -88,7 +88,7 @@ void comm_tim_set_next_comm(void){
     uint16_t new_freq = (curr_time - comm_tim_capture) * 2;
     static int inc_counter = 0;
     static int dec_counter = 0;
-    
+
     if(new_freq < (comm_tim_freq - 400)){
         inc_counter = 0;
         if(dec_counter < 10){

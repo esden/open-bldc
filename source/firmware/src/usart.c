@@ -59,7 +59,7 @@ void usart_init(void){
     GPIO_Init(GPIOB, &gpio);
 
     /* Initialize the usart subsystem */
-    usart.USART_BaudRate            = 38400;
+    usart.USART_BaudRate            = 500000;
     usart.USART_WordLength          = USART_WordLength_8b;
     usart.USART_StopBits            = USART_StopBits_1;
     usart.USART_Parity              = USART_Parity_No;

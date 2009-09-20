@@ -21,7 +21,7 @@
 
 int serial_open();
 int serial_close();
-int serial_write(unsigned char *buff, size_t size);
-int serial_read(unsigned char *buff, size_t size);
+int serial_write(u8 *buff, size_t size);
+int serial_read(u8 *buff, size_t size);
 
 #endif /* SERIAL_H */

@@ -19,6 +19,9 @@
 #include <stdio.h>
 #include <ftdi.h>
 
+#include "types.h"
+#include "serial.h"
+
 struct ftdi_context serial_ftdic;
 int serial_ret;
 
@@ -68,7 +71,7 @@ int serial_close(){
     return EXIT_SUCCESS;
 }
 
-int serial_write(unsigned char *buff, size_t size){
+int serial_write(u8 *buff, size_t size){
     int ret;
 
     if((ret = ftdi_write_data(&serial_ftdic, buff, size)) < 0){
@@ -86,7 +89,7 @@ int serial_write(unsigned char *buff, size_t size){
     return ret;
 }
 
-int serial_read(unsigned char *buff, size_t size){
+int serial_read(u8 *buff, size_t size){
     int ret;
 
     if((ret = ftdi_read_data(&serial_ftdic, buff, size)) < 0){

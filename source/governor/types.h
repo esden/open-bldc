@@ -16,43 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef TYPES_H
+#define TYPES_H
 
-#include "types.h"
-#include "serial.h"
+#include <stdint.h>
 
-int main(int argc, char **argv){
-    int ret;
-    u8 *buff;
-    int i, j;
+typedef int8_t  s8;
+typedef int16_t s16;
+typedef int32_t s32;
+typedef int64_t s64;
 
-    buff = malloc(11);
+typedef uint8_t  u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
 
-    if(serial_open()){
-        return 1;
-    }
-
-    for(i=0; i<100; i++){
-        if(serial_write((unsigned char *)"1234567890", 10) < 0){
-            serial_close();
-            return EXIT_FAILURE;
-        }
-        ret = serial_read(buff, 10);
-        if(ret < 0){
-            serial_close();
-            return EXIT_FAILURE;
-        }
-        if(ret > 0){
-            printf("got %04d : ", i);
-            for(j=0; j < ret; j++){
-                putchar((char)buff[j]);
-            }
-            printf("\n");
-        }
-    }
-
-    serial_close();
-
-    return 0;
-}
+#endif /* TYPES_H */

@@ -16,35 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef PROTOCOL_H
+#define PROTOCOL_H
 
-#include "types.h"
-#include "serial.h"
-#include "protocol.h"
+#define GP_MODE_PEEK 0
+#define GP_MODE_CONT (1 << 6)
+#define GP_MODE_READ 0
+#define GP_MODE_WRITE (1 << 7)
 
-int main(int argc, char **argv){
-    int ret;
-    u16 val;
-    int i, j;
+int gp_set(u8 addr, u16 val);
+int gp_get(u8 addr, u16 *val);
+int gp_conf_cont_read_slot(u8 addr, u8 slot);
 
-    if(serial_open()){
-        return 1;
-    }
-
-    for(i=0; i<100; i++){
-        if(gp_set(0, i)){
-            serial_close();
-            return EXIT_FAILURE;
-        }
-        if(gp_get(0, &val) < 0){
-            serial_close();
-            return EXIT_FAILURE;
-        }
-        printf("Set value %d\n", val);
-    }
-
-    serial_close();
-
-    return 0;
-}
+#endif /* PROTOCOL_H */

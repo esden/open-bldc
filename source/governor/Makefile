@@ -19,7 +19,8 @@ CFLAGS += -Wall -ansi -std=c99 -I.
 LDFLAGS += -lftdi -lncurses
 
 OBJECTS = main.o \
-	  serial.o
+	  serial.o \
+	  protocol.o
 
 all: governor
 

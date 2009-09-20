@@ -25,6 +25,8 @@
  * '--------- 0 ^= Read 1 ^= Write
  */
 
+#include <stdlib.h>
+
 #include "types.h"
 #include "serial.h"
 #include "protocol.h"

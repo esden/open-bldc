@@ -24,9 +24,8 @@
 #include "protocol.h"
 
 int main(int argc, char **argv){
-    int ret;
     u16 val;
-    int i, j;
+    int i;
 
     if(serial_open()){
         return 1;

@@ -41,7 +41,7 @@ _Minimum_Stack_Size = 0x100 ;
 MEMORY
 {
   RAM   (xrw) : ORIGIN = 0x20000000, LENGTH = 20K
-  FLASH (rx)  : ORIGIN = 0x8000000,  LENGTH = 128K
+  FLASH (rx)  : ORIGIN = 0x8000000,  LENGTH = 64K
 }
 
 /* User mode stack top */

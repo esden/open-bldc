@@ -24,12 +24,14 @@
 
 #include "usart.h"
 
+#include "types.h"
 #include "led.h"
-#include "pwm.h"
-#include "comm_tim.h"
-#include "adc.h"
+//#include "pwm.h"
+//#include "comm_tim.h"
+//#include "adc.h"
+#include "gprot.h"
 
-volatile char out_data;
+volatile s16 out_data;
 
 void usart_init(void){
     NVIC_InitTypeDef nvic;
@@ -78,9 +80,13 @@ void usart_init(void){
 }
 
 void usart3_irq_handler(void){
-    char buff;
 
     if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
+        if(gprot_handle(USART_ReceiveData(USART3))){
+                USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+        }
+
+        /*
         buff = USART_ReceiveData(USART3);
 
         switch(buff){
@@ -134,15 +140,15 @@ void usart3_irq_handler(void){
             adc_comm = 1;
             break;
         }
-
-        out_data = buff;
-
-        USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+        */
     }
 
     if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
-        USART_SendData(USART3, out_data);
-        USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
-        LED_BLUE_TOGGLE();
+        if((out_data = gprot_get_byte()) < 0){
+            USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
+        }else{
+            USART_SendData(USART3, out_data);
+            //            LED_BLUE_TOGGLE();
+        }
     }
 }

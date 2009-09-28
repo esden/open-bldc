@@ -71,7 +71,8 @@ OBJECTS = main.o \
 	  pwm/pwm_scheme_6step_on_pwm.o \
 	  pwm/pwm_scheme_6step_pwm_on.o \
 	  pwm/pwm_scheme_12step_pwm_on_pwm.o \
-	  comm_tim.o
+	  comm_tim.o \
+	  gprot.o
 
 all: gccversion images size
 

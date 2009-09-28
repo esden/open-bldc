@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdio.h>
 #include <ftdi.h>
 
@@ -92,12 +93,15 @@ int serial_write(u8 *buff, size_t size){
 int serial_read(u8 *buff, size_t size){
     int ret;
 
-    if((ret = ftdi_read_data(&serial_ftdic, buff, size)) < 0){
+    memset(buff, 0, size);
+    ret = ftdi_read_data(&serial_ftdic, buff, size);
+    if(ret < 0){
         fprintf(stderr, "Failed to read data: %d (%s)\n",
                 ret, ftdi_get_error_string(&serial_ftdic));
     }
+    printf("ret:%d\n", ret);
     if(ret == 0){
-        fprintf(stderr, "No data toread.\n");
+        fprintf(stderr, "No data to read.\n");
     }
     return ret;
 }

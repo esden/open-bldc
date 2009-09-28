@@ -22,7 +22,9 @@
 #include <stm32/gpio.h>
 #include <stm32/tim.h>
 
+#include "types.h"
 #include "led.h"
+#include "gprot.h"
 #include "usart.h"
 #include "adc.h"
 #include "pwm.h"
@@ -45,6 +47,7 @@ int main(void){
 
     system_init();
     led_init();
+    gprot_init();
     usart_init();
     adc_init();
     pwm_init();

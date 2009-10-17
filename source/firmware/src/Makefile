@@ -81,17 +81,17 @@ all: gccversion images size
 images: $(NAME).bin $(NAME).hex $(NAME).srec $(NAME).lst
 
 $(NAME).elf: $(OBJECTS)
-	@echo -e "  LD\t$@"
+	@echo "  LD    $@"
 	$(Q)$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
 
 clean:
 	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; do \
-		echo -e "  CLEAN\t$$i"; \
+		echo "  CLEAN $$i"; \
 		rm -f $$i; \
 	done
 
 flash: $(NAME).hex
-	@echo -e "  OOCD\t$<"
+	@echo "  OOCD  $<"
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		    -f board/$(OOCD_TARGET).cfg \
 		    -c init \
@@ -110,21 +110,21 @@ size: $(NAME).elf
 # Suffix rules
 
 .elf.bin:
-	@echo -e "  CP\t$@"
+	@echo "  CP    $@"
 	$(Q)$(CP) $(CPFLAGS) -Obinary $< $@
 
 .elf.hex:
-	@echo -e "  CP\t$@"
+	@echo "  CP    $@"
 	$(Q)$(CP) $(CPFLAGS) -Oihex $< $@
 
 .elf.srec:
-	@echo -e "  CP\t$@"
+	@echo "  CP    $@"
 	$(Q)$(CP) $(CPFLAGS) -Osrec $< $@
 
 .elf.lst:
-	@echo -e "  OD\t$@"
+	@echo "  OD    $@"
 	$(Q)$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
 
 %.o: %.c %.h
-	@echo -e "  CC\t$@"
+	@echo "  CC    $@"
 	$(Q)$(CC) $(CFLAGS) -c $< -o $@

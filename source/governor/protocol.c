@@ -57,6 +57,10 @@ int gp_get(u8 addr, u16 *val){
 
     *val = in[1] | ((u16)in[2]) << 8;
 
+    if(in[0] > 31){
+        return -1;
+    }
+
     return 0;
 }
 

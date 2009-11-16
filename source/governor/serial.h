@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SERIAL_H
-#define SERIAL_H
+#ifndef SERIAL_FTD_H
+#define SERIAL_FTD_H
 
 int serial_open();
 int serial_close();
 int serial_write(u8 *buff, size_t size);
 int serial_read(u8 *buff, size_t size);
+int serial_clear(void);
 
-#endif /* SERIAL_H */
+#endif /* SERIAL_FTD_H */

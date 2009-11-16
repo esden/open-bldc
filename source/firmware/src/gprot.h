@@ -22,5 +22,10 @@
 void gprot_init();
 u8   gprot_handle(u8 byte);
 s16  gprot_get_byte();
+void gprot_conf_reg(u8 addr, u16 *value);
+void gprot_toggle_cont_reg(u8 addr);
+void gprot_poke_cont_reg(u8 addr);
+void gprot_poke_reg(u8 addr);
+u8 gprot_get_next_addr(void);
 
 #endif /* __GPROT_H */

@@ -54,6 +54,7 @@ int main(void){
     comm_tim_init();
 
     while(1){
+        /*
         for(j=0; j<20; j++){
             for(i=0; i< 125; i++){
                 LED_RED_ON();
@@ -70,5 +71,6 @@ int main(void){
                 my_delay(1000-50*j);
             }
         }
+        */
     }
 }

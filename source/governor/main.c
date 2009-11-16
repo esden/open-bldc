@@ -31,24 +31,29 @@ int main(int argc, char **argv){
         return 1;
     }
 
+    serial_clear();
+
     for(i=0; i<100; i++){
-        if(gp_set(0, i) < 0){
+        if(gp_set(1, i) < 0){
             fprintf(stderr, "gp_set failed so closing.\n");
             serial_close();
             return EXIT_FAILURE;
         }
-        if(gp_get(0, &val) < 0){
+        if(gp_get(1, &val) < 0){
             fprintf(stderr, "gp_get failed so closing.\n");
             serial_close();
             return EXIT_FAILURE;
         }
-        printf("Got value %d(0x%04X) for register 0\n", val, val);
+
+        printf("Got value %d(0x%04X) for register 1\n", val, val);
+        /*
         if(gp_get(1, &val) < 0){
             fprintf(stderr, "gp_get failed so closing.\n");
             serial_close();
             return EXIT_FAILURE;
         }
         printf("Got value %d(0x%04X) for register 1\n", val, val);
+        */
     }
 
     serial_close();

@@ -79,12 +79,24 @@ void usart_init(void){
     USART_Cmd(USART3, ENABLE);
 }
 
-void usart3_irq_handler(void){
+void usart_enable_send(void){
+    USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+}
 
+void usart_disable_send(void){
+    USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
+}
+
+void usart3_irq_handler(void){
+    static int mirror = 0;
+    static char dat;
+    /* input (RX) handler */
     if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
-        if(gprot_handle(USART_ReceiveData(USART3))){
-                USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
-        }
+        dat = USART_ReceiveData(USART3);
+        mirror = 1;
+        USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+
+        gprot_handle(dat);
 
         /*
         buff = USART_ReceiveData(USART3);
@@ -92,15 +104,6 @@ void usart3_irq_handler(void){
         switch(buff){
         case ' ':
             pwm_offset=190;
-            break;
-        case 'a':
-            pwm_comm();
-            break;
-        case 'b':
-            comm_tim_on();
-            break;
-        case 'c':
-            comm_tim_off();
             break;
         case 'h':
             pwm_val++;
@@ -136,19 +139,24 @@ void usart3_irq_handler(void){
             if(adc_level<10)
                 adc_level=10;
             break;
-        case 'p':
-            adc_comm = 1;
-            break;
         }
         */
     }
 
+    /* output (TX) handler */
     if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
-        if((out_data = gprot_get_byte()) < 0){
+        /*
+        if(mirror){
             USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
-        }else{
+            USART_SendData(USART3, dat);
+        }
+        */
+
+        if((out_data = gprot_get_byte()) >= 0){
             USART_SendData(USART3, out_data);
-            //            LED_BLUE_TOGGLE();
+        }else{
+            LED_RED_TOGGLE();
+            usart_disable_send();
         }
     }
 }

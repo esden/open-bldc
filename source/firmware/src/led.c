@@ -32,7 +32,7 @@ void led_init(void){
                   GPIO_Pin_7,
                   Bit_SET);
     gpio.GPIO_Pin =  GPIO_Pin_7;
-    gpio.GPIO_Mode = GPIO_Mode_Out_PP;
+    gpio.GPIO_Mode = GPIO_Mode_Out_OD;
     gpio.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &gpio);
 
@@ -41,7 +41,7 @@ void led_init(void){
                   GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_12,
                   Bit_SET);
     gpio.GPIO_Pin =  GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_12;
-    gpio.GPIO_Mode = GPIO_Mode_Out_PP;
+    gpio.GPIO_Mode = GPIO_Mode_Out_OD;
     gpio.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &gpio);
 }

@@ -10,16 +10,15 @@ Flashing
 
 1) Run OpenOCD in the directory where the *.bin file is located:
 
- $ openocd -f /usr/lib/openocd/interface/jtagkey-tiny.cfg \
-           -f /usr/lib/openocd/board/olimex_stm32_h103.cfg
+ $ openocd -f interface/flossjtag.cfg \
+           -f board/open-bldc.cfg
 
-NOTE: jtagkey-tiny.cfg is only an example. If you use another JTAG adapter
+NOTE: flossjtag.cfg is only an example. If you use another JTAG adapter
       choose a different config file.
 
 2) Connect to OpenOCD, flash and reset the target:
 
  $ telnet localhost 4444
- > init
  > reset halt
  > flash write_image erase open-bldc.hex
  > reset

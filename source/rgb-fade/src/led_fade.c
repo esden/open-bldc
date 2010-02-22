@@ -21,44 +21,47 @@
 #include <stm32/tim.h>
 #include <stm32/gpio.h>
 
+#include "types.h"
+#include "led.h"
+
 #include "led_fade.h"
 
-#include "led.h"
-#include "types.h"
-
-static const u32 brightness_table[] = {
-    2,	        8,	19,	34,	52,	75,	102,	134,
-    169,	208,	252,	299,	351,	406,	466,	530,
-    598,	669,	745,	825,	909,	998,	1090,	1186,
-    1286,	1390,	1499,	1611,	1728,	1848,	1972,	2101,
-    2233,	2370,	2511,	2655,	2804,	2956,	3113,	3274,
-    3438,	3607,	3780,	3957,	4137,	4322,	4511,	4704,
-    4900,	5101,	5306,	5515,	5728,	5944,	6165,	6390,
-    6619,	6852,	7089,	7329,	7574,	7823,	8076,	8333,
-    8593,	8858,	9127,	9400,	9676,	9957,	10242,	10531,
-    10823,	11120,	11421,	11725,	12034,	12347,	12663,	12984,
-    13309,	13637,	13970,	14306,	14647,	14991,	15340,	15692,
-    16049,	16409,	16774,	17142,	17514,	17891,	18271,	18655,
-    19043,	19436,	19832,	20232,	20636,	21044,	21456,	21872,
-    22292,	22716,	23144,	23576,	24012,	24452,	24896,	25344,
-    25795,	26251,	26711,	27175,	27642,	28114,	28589,	29069,
-    29552,	30040,	30531,	31027,	31526,	32029,	32537,	33048,
-    33563,	34082,	34605,	35132,	35663,	36198,	36737,	37280,
-    37827,	38378,	38932,	39491,	40054,	40621,	41191,	41766,
-    42344,	42927,	43513,	44103,	44698,	45296,	45898,	46504,
-    47114,	47728,	48347,	48968,	49594,	50224,	50858,	51496,
-    52138,	52783,	53433,	54086,	54744,	55405,	56071,	56740,
-    57414,	58091,	58772,	59457,	60146,	60839,	61536,	62237,
-    62942,	63651,	64364,	65080,	65801,	66526,	67254,	67987,
-    68723,	69463,	70208,	70956,	71708,	72464,	73224,	73988,
-    74756,	75528,	76304,	77084,	77867,	78655,	79447,	80242,
-    81042,	81845,	82652,	83464,	84279,	85098,	85921,	86748,
-    87579,	88414,	89253,	90096,	90942,	91793,	92648,	93506,
-    94369,	95235,	96105,	96980,	97858,	98740,	99626,	100516,
-    101410,	102308,	103209,	104115,	105025,	105938,	106856,	107777,
-    108703,	109632,	110565,	111502,	112444,	113389,	114338,	115290,
-    116247,	117208,	118173,	119141,	120114,	121090,	122071,	123055,
-    124043,	125035,	126032,	127032,	128036,	129043,	130055,	131071
+/* Gamma correction table
+ * Gamma value 2.5
+ */
+static const u16 gamma_table[] = {
+	0,	0,	0,	1,	2,	4,	6,	8,
+	11,	15,	20,	25,	31,	38,	46,	55,
+	65,	75,	87,	99,	113,	128,	143,	160,
+	178,	197,	218,	239,	262,	286,	311,	338,
+	366,	395,	425,	457,	491,	526,	562,	599,
+	639,	679,	722,	765,	811,	857,	906,	956,
+	1007,	1061,	1116,	1172,	1231,	1291,	1352,	1416,
+	1481,	1548,	1617,	1688,	1760,	1834,	1910,	1988,
+	2068,	2150,	2233,	2319,	2407,	2496,	2587,	2681,
+	2776,	2874,	2973,	3075,	3178,	3284,	3391,	3501,
+	3613,	3727,	3843,	3961,	4082,	4204,	4329,	4456,
+	4585,	4716,	4850,	4986,	5124,	5264,	5407,	5552,
+	5699,	5849,	6001,	6155,	6311,	6470,	6632,	6795,
+	6962,	7130,	7301,	7475,	7650,	7829,	8009,	8193,
+	8379,	8567,	8758,	8951,	9147,	9345,	9546,	9750,
+	9956,	10165,	10376,	10590,	10806,	11025,	11247,	11472,
+	11699,	11929,	12161,	12397,	12634,	12875,	13119,	13365,
+	13614,	13865,	14120,	14377,	14637,	14899,	15165,	15433,
+	15705,	15979,	16256,	16535,	16818,	17104,	17392,	17683,
+	17978,	18275,	18575,	18878,	19184,	19493,	19805,	20119,
+	20437,	20758,	21082,	21409,	21739,	22072,	22407,	22746,
+	23089,	23434,	23782,	24133,	24487,	24845,	25206,	25569,
+	25936,	26306,	26679,	27055,	27435,	27818,	28203,	28592,
+	28985,	29380,	29779,	30181,	30586,	30994,	31406,	31820,
+	32239,	32660,	33085,	33513,	33944,	34379,	34817,	35258,
+	35702,	36150,	36602,	37056,	37514,	37976,	38441,	38909,
+	39380,	39856,	40334,	40816,	41301,	41790,	42282,	42778,
+	43277,	43780,	44286,	44795,	45308,	45825,	46345,	46869,
+	47396,	47927,	48461,	48999,	49540,	50085,	50634,	51186,
+	51742,	52301,	52864,	53431,	54001,	54575,	55153,	55734,
+	56318,	56907,	57499,	58095,	58695,	59298,	59905,	60515,
+	61130,	61748,	62370,	62995,	63624,	64258,	64894,	65535
 };
 
 struct color_channel {
@@ -130,9 +133,9 @@ void led_fade_init(void){
 
     /* TIM3 time base configuration */
     tim_base.TIM_Period = 0xFFFF;
-    tim_base.TIM_Prescaler = 4;
+    tim_base.TIM_Prescaler = 0;
     tim_base.TIM_ClockDivision = 0;
-    tim_base.TIM_CounterMode = TIM_CounterMode_CenterAligned3;
+    tim_base.TIM_CounterMode = TIM_CounterMode_Up;
 
     TIM_TimeBaseInit(TIM3, &tim_base);
 
@@ -175,6 +178,31 @@ void led_fade_init(void){
     TIM_ARRPreloadConfig(TIM3, ENABLE);
 
     TIM_Cmd(TIM3, ENABLE);
+
+    led_fade_set_orange(0);
+    led_fade_set_red(0);
+    led_fade_set_green(0);
+    led_fade_set_blue(0);
+}
+
+void led_fade_set_orange(u8 val){
+    TIM_SetCompare1(TIM3, gamma_table[val]);
+    color_channels.o.curr_val=gamma_table[val];
+}
+
+void led_fade_set_red(u8 val){
+    TIM_SetCompare2(TIM3, gamma_table[val]);
+    color_channels.r.curr_val=gamma_table[val];
+}
+
+void led_fade_set_green(u8 val){
+    TIM_SetCompare3(TIM3, gamma_table[val]);
+    color_channels.g.curr_val=gamma_table[val];
+}
+
+void led_fade_set_blue(u8 val){
+    TIM_SetCompare4(TIM3, gamma_table[val]);
+    color_channels.b.curr_val=gamma_table[val];
 }
 
 void tim3_irq_handler(void){
@@ -182,93 +210,29 @@ void tim3_irq_handler(void){
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET){
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 
-        if(!color_channels.o.curr_val){
-            if(color_channels.o.curr_val & (1 << 16)){
-                TIM_SetCompare1(TIM3, (u16)(0xFFFF - (color_channels.o.next_val & 0xFFFF)));
-            }else{
-                TIM_SetCompare1(TIM3, (u16)(color_channels.o.next_val & 0xFFFF));
-            }
-            if(color_channels.o.next_val) LED_ORANGE_ON();
-        }else if(!(TIM3->CR1 & (1<<4))) LED_ORANGE_ON();
-
-        if(!(TIM3->CR1 & (1<<4))){
-            delay++;
-            if(delay == 2){
-                delay = 0;
-                if(dir == 1){
-                    cnt++;
-                }else{
-                    cnt--;
-                }
-                if(cnt == 250){
-                    dir = -1;
-                }
-                if(cnt == 5){
-                    dir = 1;
-                }
-                color_channels.o.next_val = brightness_table[cnt];
-            }
+        if(color_channels.o.curr_val){
+            LED_ORANGE_ON();
         }
-
-        if(!color_channels.r.curr_val){
-            if(color_channels.r.curr_val & (1 << 16)){
-                TIM_SetCompare2(TIM3, (u16)(0xFFFF - (color_channels.r.next_val & 0xFFFF)));
-            }else{
-                TIM_SetCompare2(TIM3, (u16)(color_channels.r.next_val & 0xFFFF));
-            }
-            if(color_channels.r.next_val) LED_RED_ON();
-        }else if(!(TIM3->CR1 & (1<<4))) LED_RED_ON();
-
-        if(!(TIM3->CR1 & (1<<4))){
-            rdelay++;
-            if(rdelay == 2){
-                rdelay = 0;
-                if(rdir == 1){
-                    rcnt++;
-                }else{
-                    rcnt--;
-                }
-                if(rcnt == 250){
-                    rdir = -1;
-                }
-                if(rcnt == 5){
-                    rdir = 1;
-                }
-                color_channels.r.next_val = brightness_table[rcnt];
-            }
+        if(color_channels.r.curr_val){
+            LED_RED_ON();
         }
-
+        if(color_channels.g.curr_val){
+            LED_GREEN_ON();
+        }
+        if(color_channels.b.curr_val){
+            LED_BLUE_ON();
+        }
     }
 
     if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET){
         TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
 
-        if(( (color_channels.o.curr_val & (1 << 16)) && (TIM3->CR1 & (1<<4))) ||
-           (!(color_channels.o.curr_val & (1 << 16)) && !(TIM3->CR1 & (1<<4)))){
-            LED_ORANGE_OFF();
-            if(color_channels.o.next_val & (1 << 16)){
-                TIM_SetCompare1(TIM3, (u16)(0xFFFF - (color_channels.o.next_val & 0xFFFF)));
-            }else{
-                TIM_SetCompare1(TIM3, (u16)(color_channels.o.next_val & 0xFFFF));
-            }
-            color_channels.o.curr_val = color_channels.o.next_val;
-        }
-
+        LED_ORANGE_OFF();
     }
     if (TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET){
         TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
 
-        if(( (color_channels.r.curr_val & (1 << 16)) && (TIM3->CR2 & (1<<4))) ||
-           (!(color_channels.r.curr_val & (1 << 16)) && !(TIM3->CR2 & (1<<4)))){
-            LED_RED_OFF();
-            if(color_channels.r.next_val & (1 << 16)){
-                TIM_SetCompare2(TIM3, (u16)(0xFFFF - (color_channels.r.next_val & 0xFFFF)));
-            }else{
-                TIM_SetCompare2(TIM3, (u16)(color_channels.r.next_val & 0xFFFF));
-            }
-            color_channels.r.curr_val = color_channels.r.next_val;
-        }
-
+        LED_RED_OFF();
     }
     if (TIM_GetITStatus(TIM3, TIM_IT_CC3) != RESET){
         TIM_ClearITPendingBit(TIM3, TIM_IT_CC3);

@@ -20,6 +20,10 @@
 #define __LED_FADE_H
 
 void led_fade_init(void);
+void led_fade_set_orange(u8 val);
+void led_fade_set_red(u8 val);
+void led_fade_set_green(u8 val);
+void led_fade_set_blue(u8 val);
 void tim3_irq_handler(void);
 
 #endif /* __COMM_TIM_H */

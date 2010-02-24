@@ -56,6 +56,7 @@ int main(int argc, char **argv){
         */
     }
 
+
     serial_close();
 
     return 0;

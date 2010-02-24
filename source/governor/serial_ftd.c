@@ -30,19 +30,26 @@
 
 struct ftdi_context serial_ftdic;
 int serial_ret;
+static char* serial_ftdi_device_desc = NULL;
+static char* serial_ftdi_serial = NULL;
 
 int serial_open(){
     int ret;
 
     ftdi_init(&serial_ftdic);
 
-    if((ret = ftdi_usb_open(&serial_ftdic, 0x0403, 0x6001)) < 0){
+    if((ret = ftdi_set_interface(&serial_ftdic, INTERFACE_B)) < 0){
+	    fprintf(stderr, "Unable to set interface: %d (%s)\n",
+		    ret, ftdi_get_error_string(&serial_ftdic));
+    }
+
+    if((ret = ftdi_usb_open_desc(&serial_ftdic, 0x0403, 0x6010, serial_ftdi_device_desc, serial_ftdi_serial)) < 0){
         fprintf(stderr, "Unable to open ftdi device: %d (%s)\n",
                 ret, ftdi_get_error_string(&serial_ftdic));
         return EXIT_FAILURE;
     }
 
-    if(serial_ftdic.type == TYPE_R){
+    if(serial_ftdic.type == TYPE_2232H){
         unsigned int chipid;
         printf("ftdi_read_chipid: %d\n", ftdi_read_chipid(&serial_ftdic, &chipid));
         printf("FTDI chipid: %X\n", chipid);

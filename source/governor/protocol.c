@@ -46,17 +46,21 @@ int gp_get(u8 addr, u16 *val){
     u8 out = addr | GP_MODE_READ | GP_MODE_PEEK;
     u8 in[3];
 
+    /* Send read request */
     if((ret = serial_write(&out, 1)) < 0){
         return ret;
     }
 
+    /* Retrieve reply */
     ret = serial_read(in, 3);
     if(ret < 0){
         return ret;
     }
 
+    /* Unscramble register content */
     *val = in[1] | ((u16)in[2]) << 8;
 
+    /* ? */
     if(in[0] > 31){
         return -1;
     }

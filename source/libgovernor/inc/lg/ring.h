@@ -28,7 +28,7 @@ struct ring {
 	u32 end;
 };
 
-#define RING_SIZE(RING) (RING)->size
+#define RING_SIZE(RING) ((RING)->size - 1)
 #define RING_DATA(RING) (RING)->data
 
 void ring_init(struct ring *ring, u8 *buf, ring_size_t size);

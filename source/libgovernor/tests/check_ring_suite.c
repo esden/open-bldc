@@ -73,7 +73,7 @@ int clean_ring_suite(void)
 
 void test_ring_create(void)
 {
-	CU_ASSERT(10 == RING_SIZE(&test_ring));
+	CU_ASSERT(9 == RING_SIZE(&test_ring));
 	CU_ASSERT(data == RING_DATA(&test_ring));
 }
 
@@ -127,3 +127,4 @@ void test_ring_read_max()
 	CU_ASSERT(-1 == ring_read_ch(&test_ring, &ch));
 	CU_ASSERT(10 == ch);
 }
+

@@ -73,10 +73,8 @@ int clean_ring_suite(void)
 
 void test_ring_create(void)
 {
-	CU_ASSERT(10 == test_ring.size);
-	CU_ASSERT(data == test_ring.data);
-	CU_ASSERT(0 == test_ring.begin);
-	CU_ASSERT(0 == test_ring.end);
+	CU_ASSERT(10 == RING_SIZE(&test_ring));
+	CU_ASSERT(data == RING_DATA(&test_ring));
 }
 
 void test_ring_write_one()

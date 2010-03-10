@@ -153,12 +153,12 @@ void test_ring_read_array()
 	CU_ASSERT(0 != memcmp(array, "ABCDEFGHIJ", 10));
 
 	memset(array, 0, 10);
-	CU_ASSERT(4 == ring_write(&test_ring, "ABCD", 4));
+	CU_ASSERT(4 == ring_write(&test_ring, (u8 *)"ABCD", 4));
 	CU_ASSERT(4 == ring_read(&test_ring, array, 10));
 	CU_ASSERT(0 == memcmp(array, "ABCD", 4));
 
 	memset(array, 0, 10);
-	CU_ASSERT(6 == ring_write(&test_ring, "ABCDEF", 6));
+	CU_ASSERT(6 == ring_write(&test_ring, (u8 *)"ABCDEF", 6));
 	CU_ASSERT(-4 == ring_read(&test_ring, array, 4));
 	CU_ASSERT(0 == memcmp(array, "ABCD", 4));
 }

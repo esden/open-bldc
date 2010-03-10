@@ -29,7 +29,7 @@ int main(void)
 		return CU_get_error();
 
 
-	if(ret = check_ring_suite_register()){
+	if((ret = check_ring_suite_register())){
 		return ret;
 	}
 

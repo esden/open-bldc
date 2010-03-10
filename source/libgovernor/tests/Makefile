@@ -18,7 +18,7 @@ NAME=check
 OBJ = check_main.o \
       check_ring_suite.o
 
-CFLAGS += -I../inc
+CFLAGS += -I../inc -g -Wall -Wextra -Werror -Wshadow
 
 all: $(NAME)
 

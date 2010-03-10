@@ -1,4 +1,4 @@
-# governorlib - Open-BLDC configuration and debug protocol library
+# libgovernor - Open-BLDC configuration and debug protocol library
 # Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
 #
 # This program is free software; you can redistribute it and/or modify

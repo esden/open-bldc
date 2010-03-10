@@ -1,4 +1,4 @@
-## governor - Open-BLDC configuration and debug protocol library
+## libgovernor - Open-BLDC configuration and debug protocol library
 ## Copyright (C) 2010 Uwe Hermann <uwe@hermann-uwe.de>
 ## Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
 ##

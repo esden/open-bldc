@@ -33,6 +33,7 @@ void test_ring_write_one();
 void test_ring_read_one();
 void test_ring_write_max();
 void test_ring_read_max();
+void test_ring_write_array();
 
 int check_ring_suite_register()
 {
@@ -50,7 +51,8 @@ int check_ring_suite_register()
 	    (NULL == CU_add_test(pSuite, "test of write one", test_ring_write_one)) ||
 	    (NULL == CU_add_test(pSuite, "test of read one", test_ring_read_one)) ||
 	    (NULL == CU_add_test(pSuite, "test of write max", test_ring_write_max)) ||
-	    (NULL == CU_add_test(pSuite, "test of read max", test_ring_read_max))){
+	    (NULL == CU_add_test(pSuite, "test of read max", test_ring_read_max)) ||
+	    (NULL == CU_add_test(pSuite, "test of write array", test_ring_write_array))){
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
@@ -127,4 +129,12 @@ void test_ring_read_max()
 	CU_ASSERT(-1 == ring_read_ch(&test_ring, &ch));
 	CU_ASSERT(10 == ch);
 }
+void test_ring_write_array()
+{
+	s32 ret;
+	u8 array1[] = "ABCD";
+	u8 array2[] = "EFGHIJ";
 
+	CU_ASSERT(4 == ring_write(&test_ring, array1, 4));
+	CU_ASSERT(-5 == ring_write(&test_ring, array2, 6));
+}

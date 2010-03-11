@@ -16,20 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* governor protocol definitions */
+#ifndef LG_GPROTC_H
+#define LG_GPROTC_H
 
-#ifndef GPDEF_H
-#define GPDEF_H
+int gpc_init(gp_simple_hook_t trigger_output);
+int gpc_setup_reg(u8 addr, u16 *reg);
+s32 gpc_pickup_byte(void);
+int gpc_send_reg(u8 addr);
+int gpc_handle_byte(u8 ch);
 
-typedef void (*gp_simple_hook_t)();
-typedef void (*gp_with_addr_hook_t)(u8 addr);
-
-#define GP_MODE_RESERVED (1 << 5)
-#define GP_MODE_PEEK 0
-#define GP_MODE_CONT (1 << 6)
-#define GP_MODE_READ 0
-#define GP_MODE_WRITE (1 << 7)
-#define GP_MODE_MASK 0xE0
-#define GP_ADDR_MASK 0x1F
-
-#endif /* GPDEF_H */
+#endif /* LG_GPROTC_H */

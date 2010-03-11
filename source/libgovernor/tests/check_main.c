@@ -20,6 +20,7 @@
 
 #include "check_ring_suite.h"
 #include "check_gprotm_suite.h"
+#include "check_gprotc_suite.h"
 
 int main(void)
 {
@@ -35,6 +36,10 @@ int main(void)
 	}
 
 	if((ret = check_gprotm_suite_register())){
+		return ret;
+	}
+
+	if((ret = check_gprotc_suite_register())){
 		return ret;
 	}
 

@@ -31,7 +31,7 @@ CFLAGS   += -g -Wall -Wextra -Werror -Wshadow
 CPPFLAGS += -I../inc
 LDFLAGS  += -L/usr/local/lib -L.
 LIBS      =
-SRC       = ring.o gprotm.o
+SRC       = ring.o gprotm.o gprotc.o
 HEADERSS  = ../inc/ring.h ../inc/types.h
 
 ifeq ($(OS),Darwin)

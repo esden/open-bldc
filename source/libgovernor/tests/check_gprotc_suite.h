@@ -1,6 +1,6 @@
 /*
  * libgovernor - Open-BLDC configuration and debug protocol library
- * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* governor protocol definitions */
+#ifndef CHECK_GPROTC_SUITE
+#define CHECK_GPROTC_SUITE
 
-#ifndef GPDEF_H
-#define GPDEF_H
+int check_gprotc_suite_register();
 
-typedef void (*gp_simple_hook_t)();
-typedef void (*gp_with_addr_hook_t)(u8 addr);
-
-#define GP_MODE_RESERVED (1 << 5)
-#define GP_MODE_PEEK 0
-#define GP_MODE_CONT (1 << 6)
-#define GP_MODE_READ 0
-#define GP_MODE_WRITE (1 << 7)
-#define GP_MODE_MASK 0xE0
-#define GP_ADDR_MASK 0x1F
-
-#endif /* GPDEF_H */
+#endif /* CHECK_GPROTC_SUITE */

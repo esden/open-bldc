@@ -16,7 +16,8 @@
 
 NAME=check
 OBJ = check_main.o \
-      check_ring_suite.o
+      check_ring_suite.o \
+      check_gprotm_suite.o
 
 CFLAGS += -I../inc -g -Wall -Wextra -Werror -Wshadow
 

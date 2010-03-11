@@ -30,8 +30,8 @@ PREFIX   ?= /usr/local
 CFLAGS   += -g -Wall -Wextra -Werror -Wshadow
 CPPFLAGS += -I../inc
 LDFLAGS  += -L/usr/local/lib -L.
-LIBS      = 
-SRC       = ring.o
+LIBS      =
+SRC       = ring.o gprotm.o
 HEADERSS  = ../inc/ring.h ../inc/types.h
 
 ifeq ($(OS),Darwin)

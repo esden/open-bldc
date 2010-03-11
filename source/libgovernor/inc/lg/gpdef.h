@@ -1,6 +1,6 @@
 /*
  * libgovernor - Open-BLDC configuration and debug protocol library
- * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/Basic.h>
+/* governor protocol definitions */
 
-#include "check_ring_suite.h"
-#include "check_gprotm_suite.h"
+#ifndef GPDEF_H
+#define GPDEF_H
 
-int main(void)
-{
-	int ret;
+typedef void (*gp_simple_hook_t)();
+typedef void (*gp_with_addr_hook_t)(u8 addr);
 
-	/* initialize CUnit test registry */
-	if( CUE_SUCCESS != CU_initialize_registry())
-		return CU_get_error();
+#define GP_MODE_PEEK 0
+#define GP_MODE_CONT (1 << 6)
+#define GP_MODE_READ 0
+#define GP_MODE_WRITE (1 << 7)
 
-
-	if((ret = check_ring_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprotm_suite_register())){
-		return ret;
-	}
-
-	/* Run all tests using the CUnit Basic interface */
-	CU_basic_set_mode(CU_BRM_VERBOSE);
-	CU_basic_run_tests();
-	CU_cleanup_registry();
-	return CU_get_error();
-}
+#endif /* GPDEF_H */

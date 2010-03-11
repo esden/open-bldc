@@ -1,6 +1,6 @@
 /*
  * libgovernor - Open-BLDC configuration and debug protocol library
- * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/Basic.h>
+/*
+ * Function definitions of the governor master protocol library
+ */
 
-#include "check_ring_suite.h"
-#include "check_gprotm_suite.h"
+#ifndef GPROTM_H
+#define GPROTM_H
 
-int main(void)
-{
-	int ret;
+int gpm_init(gp_simple_hook_t trigger_output, gp_with_addr_hook_t register_changed);
 
-	/* initialize CUnit test registry */
-	if( CUE_SUCCESS != CU_initialize_registry())
-		return CU_get_error();
+s32 gpm_get_register_map_val(u8 addr);
+s32 gpm_pickup_byte(void);
 
+int gpm_send_set(u8 addr, u16 val);
+int gpm_send_get(u8 addr);
+int gpm_send_get_cont(u8 addr);
+int gpm_handle_byte(u8 byte);
 
-	if((ret = check_ring_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprotm_suite_register())){
-		return ret;
-	}
-
-	/* Run all tests using the CUnit Basic interface */
-	CU_basic_set_mode(CU_BRM_VERBOSE);
-	CU_basic_run_tests();
-	CU_cleanup_registry();
-	return CU_get_error();
-}
+#endif /* GPROTM_H */

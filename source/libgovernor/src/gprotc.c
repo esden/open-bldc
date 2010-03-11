@@ -55,7 +55,7 @@ int gpc_init(gp_simple_hook_t trigger_output)
 {
 	gpc_hooks.trigger_output = trigger_output;
 
-	memset(gpc_register_map, 0, 32);
+        memset(gpc_register_map, 0, sizeof(gpc_register_map));
 
 	ring_init(&gpc_output_ring, gpc_output_buffer, 128);
 
@@ -66,6 +66,10 @@ int gpc_setup_reg(u8 addr, u16 *reg)
 {
 	if(addr > 31)
 		return 1;
+
+        DEBUG("Setting up register %02X with %p\n",
+	      addr,
+	      reg);
 
 	gpc_register_map[addr] = reg;
 
@@ -130,7 +134,9 @@ int gpc_handle_byte(u8 byte)
 		gpc_state = GPCS_IDLE;
 
 		if(!gpc_register_map[gpc_addr]){
-			DEBUG("\n");
+                        DEBUG("addr %02X with pointer %p not set up\n",
+			      gpc_addr,
+			      gpc_register_map[gpc_addr]);
 			return 1;
 		}
 

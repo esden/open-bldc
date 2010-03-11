@@ -16,41 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/Basic.h>
+#ifndef CHECK_GPROT_SUITE
+#define CHECK_GPROT_SUITE
 
-#include "check_ring_suite.h"
-#include "check_gprotm_suite.h"
-#include "check_gprotc_suite.h"
-#include "check_gprot_suite.h"
+int check_gprot_suite_register();
 
-int main(void)
-{
-	int ret;
-
-	/* initialize CUnit test registry */
-	if( CUE_SUCCESS != CU_initialize_registry())
-		return CU_get_error();
-
-
-	if((ret = check_ring_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprotm_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprotc_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprot_suite_register())){
-		return ret;
-	}
-
-	/* Run all tests using the CUnit Basic interface */
-	CU_basic_set_mode(CU_BRM_VERBOSE);
-	CU_basic_run_tests();
-	CU_cleanup_registry();
-	return CU_get_error();
-}
+#endif /* CHECK_GPROT_SUITE */

@@ -50,13 +50,13 @@ int check_ring_suite_register()
 	}
 
 	/* add the tests to the suite */
-	if( (NULL == CU_add_test(pSuite, "test of ring create", test_ring_create)) ||
-	    (NULL == CU_add_test(pSuite, "test of write one", test_ring_write_one)) ||
-	    (NULL == CU_add_test(pSuite, "test of read one", test_ring_read_one)) ||
-	    (NULL == CU_add_test(pSuite, "test of write max", test_ring_write_max)) ||
-	    (NULL == CU_add_test(pSuite, "test of read max", test_ring_read_max)) ||
-	    (NULL == CU_add_test(pSuite, "test of write array", test_ring_write_array)) ||
-	    (NULL == CU_add_test(pSuite, "test of read array", test_ring_read_array))){
+	if( (NULL == CU_add_test(pSuite, "ring create", test_ring_create)) ||
+	    (NULL == CU_add_test(pSuite, "write one", test_ring_write_one)) ||
+	    (NULL == CU_add_test(pSuite, "read one", test_ring_read_one)) ||
+	    (NULL == CU_add_test(pSuite, "write max", test_ring_write_max)) ||
+	    (NULL == CU_add_test(pSuite, "read max", test_ring_read_max)) ||
+	    (NULL == CU_add_test(pSuite, "write array", test_ring_write_array)) ||
+	    (NULL == CU_add_test(pSuite, "read array", test_ring_read_array))){
 		CU_cleanup_registry();
 		return CU_get_error();
 	}

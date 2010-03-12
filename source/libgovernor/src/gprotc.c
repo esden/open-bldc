@@ -25,8 +25,6 @@
 #define DEBUG(STR, ARGS...)
 #endif
 
-#include <string.h>
-
 #include "lg/types.h"
 #include "lg/ring.h"
 #include "lg/gpdef.h"
@@ -53,9 +51,12 @@ u16 gpc_data;
 
 int gpc_init(gp_simple_hook_t trigger_output)
 {
+	int i;
+
 	gpc_hooks.trigger_output = trigger_output;
 
-        memset(gpc_register_map, 0, sizeof(gpc_register_map));
+	for(i=0; i<32; i++)
+		gpc_register_map[i] = 0;
 
 	ring_init(&gpc_output_ring, gpc_output_buffer, 128);
 
@@ -78,7 +79,7 @@ int gpc_setup_reg(u8 addr, u16 *reg)
 
 s32 gpc_pickup_byte(void)
 {
-	return ring_read_ch(&gpc_output_ring, NULL);
+	return ring_read_ch(&gpc_output_ring, 0);
 }
 
 int gpc_send_reg(u8 addr)

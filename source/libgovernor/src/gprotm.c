@@ -27,9 +27,6 @@
  * '--------- 0 ^= Read 1 ^= Write
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "lg/types.h"
 #include "lg/ring.h"
 #include "lg/gpdef.h"
@@ -57,10 +54,13 @@ u16 gpm_data;
 
 int gpm_init(gp_simple_hook_t trigger_output, gp_with_addr_hook_t register_changed)
 {
+	int i;
+
 	gpm_hooks.trigger_output = trigger_output;
 	gpm_hooks.register_changed = register_changed;
 
-	memset(gpm_register_map, 0, 32);
+	for(i=0; i<32; i++)
+		gpm_register_map[i] = 0;
 
 	ring_init(&gpm_output_ring, gpm_output_buffer, 128);
 
@@ -77,7 +77,7 @@ s32 gpm_get_register_map_val(u8 addr)
 
 s32 gpm_pickup_byte(void)
 {
-	return ring_read_ch(&gpm_output_ring, NULL);
+	return ring_read_ch(&gpm_output_ring, 0);
 }
 
 int gpm_send_set(u8 addr, u16 val)

@@ -4,3 +4,9 @@
 *.srec
 *.hex
 *.lst
+*.gcno
+*.gcda
+*.dylib
+*.dylib.dSYM
+*.so
+*.info

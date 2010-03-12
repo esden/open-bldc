@@ -14,20 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-NAME=check
-OBJ = check_main.o \
-      check_ring_suite.o \
-      check_gprotm_suite.o \
-      check_gprotc_suite.o \
-      check_gprot_suite.o
-
-CFLAGS += -I../inc -g -Wall -Wextra -Werror -Wshadow
-
-all: $(NAME)
-
-$(NAME): $(OBJ)
-	$(CC) $(LDFLAGS) -L../src -lgovernor -lcheck -lncurses -o $@ $(OBJ)
-
-clean:
-	rm -rf $(NAME)
-	rm -rf $(OBJ)
+include_HEADERS = lg/types.h \
+		  lg/ring.h \
+		  lg/gpdef.h \
+		  lg/gprotm.h \
+		  lg/gprotc.h

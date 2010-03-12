@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/Basic.h>
+#include <check.h>
 
 #include <string.h>
 #include <stdio.h>
@@ -26,43 +26,12 @@
 #include "lg/gprotm.h"
 #include "lg/gprotc.h"
 
-#include "check_gprot_suite.h"
+#include "check_suites.h"
 
 u16 gp_register_map[32];
 
 int gpm_register_changed = 0;
 int gpm_register_changed_addr = 0;
-void gpm_trigger_output_hook(void);
-void gpm_register_changed_hook(u8 addr);
-void gpc_trigger_output_hook(void);
-
-int init_gprot_suite(void);
-int clean_gprot_suite(void);
-void test_gprot_write(void);
-void test_gprot_read(void);
-void test_gprot_read_write(void);
-
-int check_gprot_suite_register()
-{
-	CU_pSuite pSuite = NULL;
-
-	/* add suite to the registry */
-	pSuite = CU_add_suite("governor protocol suite", init_gprot_suite, clean_gprot_suite);
-	if(NULL == pSuite){
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* add the tests to the suite */
-	if((NULL == CU_add_test(pSuite, "gprot write", test_gprot_write)) ||
-	   (NULL == CU_add_test(pSuite, "gprot read", test_gprot_read)) ||
-	   (NULL == CU_add_test(pSuite, "gprot read write", test_gprot_read_write))){
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	return 0;
-}
 
 void gpm_trigger_output_hook(void)
 {
@@ -90,7 +59,7 @@ void gpc_trigger_output_hook(void)
 	}
 }
 
-int init_gprot_suite(void)
+void init_gprot_tc(void)
 {
 	int i;
 
@@ -102,38 +71,37 @@ int init_gprot_suite(void)
 		gp_register_map[i] = 0xAA55+i;
 		gpc_setup_reg(i, &gp_register_map[i]);
 	}
-	return 0;
 }
 
-int clean_gprot_suite(void)
+void clean_gprot_tc(void)
 {
-	return 0;
 }
 
-void test_gprot_write(void)
+START_TEST(test_gprot_write)
 {
 	u8 addr = 0;
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_set(addr, 0x0000));
-		CU_ASSERT(0x0000 == gp_register_map[addr]);
-		CU_ASSERT(0x0000 == gpm_get_register_map_val(addr));
+		fail_unless(0 == gpm_send_set(addr, 0x0000));
+		fail_unless(0x0000 == gp_register_map[addr]);
+		fail_unless(0x0000 == gpm_get_register_map_val(addr));
 	}
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_set(addr, 0xAA55));
-		CU_ASSERT(0xAA55 == gp_register_map[addr]);
-		CU_ASSERT(0xAA55 == gpm_get_register_map_val(addr));
+		fail_unless(0 == gpm_send_set(addr, 0xAA55));
+		fail_unless(0xAA55 == gp_register_map[addr]);
+		fail_unless(0xAA55 == gpm_get_register_map_val(addr));
 	}
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_set(addr, 0xFFFF));
-		CU_ASSERT(0xFFFF == gp_register_map[addr]);
-		CU_ASSERT(0xFFFF == gpm_get_register_map_val(addr));
+		fail_unless(0 == gpm_send_set(addr, 0xFFFF));
+		fail_unless(0xFFFF == gp_register_map[addr]);
+		fail_unless(0xFFFF == gpm_get_register_map_val(addr));
 	}
 }
+END_TEST
 
-void test_gprot_read(void)
+START_TEST(test_gprot_read)
 {
 	u8 addr;
 
@@ -142,8 +110,8 @@ void test_gprot_read(void)
 	}
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_get(addr));
-		CU_ASSERT(0x0000 == gpm_get_register_map_val(addr));
+		fail_unless(0 == gpm_send_get(addr));
+		fail_unless(0x0000 == gpm_get_register_map_val(addr));
 	}
 
 	for(addr=0; addr<32; addr++){
@@ -151,8 +119,8 @@ void test_gprot_read(void)
 	}
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_get(addr));
-		CU_ASSERT(0xAA55 == gpm_get_register_map_val(addr));
+		fail_unless(0 == gpm_send_get(addr));
+		fail_unless(0xAA55 == gpm_get_register_map_val(addr));
 	}
 
 	for(addr=0; addr<32; addr++){
@@ -160,19 +128,38 @@ void test_gprot_read(void)
 	}
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_get(addr));
-		CU_ASSERT(0xFFFF == gpm_get_register_map_val(addr));
+		fail_unless(0 == gpm_send_get(addr));
+		fail_unless(0xFFFF == gpm_get_register_map_val(addr));
 	}
 }
+END_TEST
 
-void test_gprot_read_write(void)
+START_TEST(test_gprot_read_write)
 {
 	u8 addr;
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_set(addr, 0x0000+addr));
-		CU_ASSERT(0 == gpm_send_get(addr));
-		CU_ASSERT(0x0000+addr == gpm_get_register_map_val(addr));
+		fail_unless(0 == gpm_send_set(addr, 0x0000+addr));
+		fail_unless(0 == gpm_send_get(addr));
+		fail_unless(0x0000+addr == gpm_get_register_map_val(addr));
 	}
 
+}
+END_TEST
+
+Suite *make_lg_gprot_suite()
+{
+	Suite *s;
+	TCase *tc;
+
+	s= suite_create("Governor protocol master and client");
+
+	tc = tcase_create("Basic functions");
+	suite_add_tcase(s, tc);
+	tcase_add_checked_fixture(tc, init_gprot_tc, clean_gprot_tc);
+	tcase_add_test(tc, test_gprot_write);
+	tcase_add_test(tc, test_gprot_read);
+	tcase_add_test(tc, test_gprot_read_write);
+
+	return s;
 }

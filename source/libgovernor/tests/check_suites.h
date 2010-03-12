@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHECK_GPROT_SUITE
-#define CHECK_GPROT_SUITE
+#ifndef CHECK_SUITES_H
+#define CHECK_SUITES_H
 
-int check_gprot_suite_register();
+Suite *make_lg_ring_suite(void);
+Suite *make_lg_gprotm_suite(void);
+Suite *make_lg_gprotc_suite(void);
+Suite *make_lg_gprot_suite(void);
 
-#endif /* CHECK_GPROT_SUITE */
+#endif /* CHECK_SUITES_H */

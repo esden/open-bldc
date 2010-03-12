@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/Basic.h>
+#include <check.h>
 
 #include <string.h>
 
@@ -24,45 +24,11 @@
 #include "lg/gpdef.h"
 #include "lg/gprotm.h"
 
-#include "check_gprotm_suite.h"
+#include "check_suites.h"
 
 int gpm_dummy_trigger_output_triggered = 0;
 int gpm_dummy_register_changed = 0;
 int gpm_dummy_register_changed_addr = 0;
-void gpm_dummy_trigger_output_hook(void);
-void gpm_dummy_register_changed_hook(u8 addr);
-
-int init_gprotm_suite(void);
-int clean_gprotm_suite(void);
-void test_gprotm_get_register_map_val(void);
-void test_gprotm_send_set(void);
-void test_gprotm_send_get(void);
-void test_gprotm_send_get_cont(void);
-void test_gprotm_handle_byte(void);
-
-int check_gprotm_suite_register()
-{
-	CU_pSuite pSuite = NULL;
-
-	/* add suite to the registry */
-	pSuite = CU_add_suite("governor protocol for master suite", init_gprotm_suite, clean_gprotm_suite);
-	if(NULL == pSuite){
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* add the tests to the suite */
-	if((NULL == CU_add_test(pSuite, "gprotm get_register_map_val", test_gprotm_get_register_map_val)) ||
-	   (NULL == CU_add_test(pSuite, "gprotm send_set", test_gprotm_send_set)) ||
-	   (NULL == CU_add_test(pSuite, "gprotm send_get", test_gprotm_send_get)) ||
-	   (NULL == CU_add_test(pSuite, "gprotm send_get_cont", test_gprotm_send_get_cont)) ||
-	   (NULL == CU_add_test(pSuite, "gprotm send_handle_byte", test_gprotm_handle_byte))){
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	return 0;
-}
 
 void gpm_dummy_trigger_output_hook(void)
 {
@@ -75,158 +41,163 @@ void gpm_dummy_register_changed_hook(u8 addr)
 	gpm_dummy_register_changed = 1;
 }
 
-int init_gprotm_suite(void)
+void init_gprotm_tc(void)
 {
 	gpm_init(gpm_dummy_trigger_output_hook, gpm_dummy_register_changed_hook);
-	return 0;
 }
 
-int clean_gprotm_suite(void)
+void clean_gprotm_tc(void)
 {
-	return 0;
+	gpm_dummy_trigger_output_triggered = 0;
+	gpm_dummy_register_changed = 0;
+	gpm_dummy_register_changed_addr = 0;
 }
 
-void test_gprotm_get_register_map_val(void)
+START_TEST(test_gprotm_get_register_map_val)
 {
 	u8 addr;
 
 	for(addr = 0; addr<32; addr++){
-		CU_ASSERT(0x0000 == gpm_get_register_map_val(addr));
+		fail_unless(0x0000 == gpm_get_register_map_val(addr));
 	}
 
 	for(addr = 32; addr!=0; addr++){
-		CU_ASSERT(-1 == gpm_get_register_map_val(addr));
+		fail_unless(-1 == gpm_get_register_map_val(addr));
 	}
 }
+END_TEST
 
-void test_gprotm_send_set(void)
+START_TEST(test_gprotm_send_set)
 {
 	u8 addr;
 
 	/* test data zero */
 	for(addr = 0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_set(addr, 0x0000));
+		fail_unless(0 == gpm_send_set(addr, 0x0000));
 
-		CU_ASSERT(1 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT((addr | GP_MODE_WRITE) == gpm_pickup_byte());
-		CU_ASSERT(0x00 == gpm_pickup_byte());
-		CU_ASSERT(0x00 == gpm_pickup_byte());
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((addr | GP_MODE_WRITE) == gpm_pickup_byte());
+		fail_unless(0x00 == gpm_pickup_byte());
+		fail_unless(0x00 == gpm_pickup_byte());
+		fail_unless(-1 == gpm_pickup_byte());
 
-		CU_ASSERT(0x0000 == gpm_get_register_map_val(addr));
+		fail_unless(0x0000 == gpm_get_register_map_val(addr));
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 
 	/* test data some value */
 	for(addr = 0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_set(addr, 0xAA55));
+		fail_unless(0 == gpm_send_set(addr, 0xAA55));
 
-		CU_ASSERT(1 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT((addr | GP_MODE_WRITE) == gpm_pickup_byte());
-		CU_ASSERT(0x55 == gpm_pickup_byte());
-		CU_ASSERT(0xAA == gpm_pickup_byte());
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((addr | GP_MODE_WRITE) == gpm_pickup_byte());
+		fail_unless(0x55 == gpm_pickup_byte());
+		fail_unless(0xAA == gpm_pickup_byte());
+		fail_unless(-1 == gpm_pickup_byte());
 
-		CU_ASSERT(0xAA55 == gpm_get_register_map_val(addr));
+		fail_unless(0xAA55 == gpm_get_register_map_val(addr));
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 
 	/* test data max value */
 	for(addr = 0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_set(addr, 0xFFFF));
+		fail_unless(0 == gpm_send_set(addr, 0xFFFF));
 
-		CU_ASSERT(1 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT((addr | GP_MODE_WRITE) == gpm_pickup_byte());
-		CU_ASSERT(0xFF == gpm_pickup_byte());
-		CU_ASSERT(0xFF == gpm_pickup_byte());
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((addr | GP_MODE_WRITE) == gpm_pickup_byte());
+		fail_unless(0xFF == gpm_pickup_byte());
+		fail_unless(0xFF == gpm_pickup_byte());
+		fail_unless(-1 == gpm_pickup_byte());
 
-		CU_ASSERT(0xFFFF == gpm_get_register_map_val(addr));
+		fail_unless(0xFFFF == gpm_get_register_map_val(addr));
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 
 	/* test invalid addresses */
 	for(addr = 32; addr!=0; addr++){
-		CU_ASSERT(1 == gpm_send_set(addr, 0x0000));
+		fail_unless(1 == gpm_send_set(addr, 0x0000));
 
-		CU_ASSERT(0 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(0 == gpm_dummy_trigger_output_triggered);
+		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 
 }
+END_TEST
 
-void test_gprotm_send_get(void)
+START_TEST(test_gprotm_send_get)
 {
 	u8 addr;
 
 	/* test all valid addresses */
 	for(addr = 0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_get(addr));
+		fail_unless(0 == gpm_send_get(addr));
 
-		CU_ASSERT(1 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT((addr | GP_MODE_READ | GP_MODE_PEEK) == gpm_pickup_byte());
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((addr | GP_MODE_READ | GP_MODE_PEEK) == gpm_pickup_byte());
+		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 
 	/* test invalid addresses */
 	for(addr = 32; addr!=0; addr++){
-		CU_ASSERT(1 == gpm_send_get(addr));
+		fail_unless(1 == gpm_send_get(addr));
 
-		CU_ASSERT(0 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(0 == gpm_dummy_trigger_output_triggered);
+		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 }
+END_TEST
 
-void test_gprotm_send_get_cont(void)
+START_TEST(test_gprotm_send_get_cont)
 {
 	u8 addr;
 
 	/* test all valid addresses */
 	for(addr = 0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_send_get_cont(addr));
+		fail_unless(0 == gpm_send_get_cont(addr));
 
-		CU_ASSERT(1 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT((addr | GP_MODE_READ | GP_MODE_CONT) == gpm_pickup_byte());
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((addr | GP_MODE_READ | GP_MODE_CONT) == gpm_pickup_byte());
+		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 
 	/* test invalid addresses */
 	for(addr = 32; addr!=0; addr++){
-		CU_ASSERT(1 == gpm_send_get_cont(addr));
+		fail_unless(1 == gpm_send_get_cont(addr));
 
-		CU_ASSERT(0 == gpm_dummy_trigger_output_triggered);
-		CU_ASSERT(-1 == gpm_pickup_byte());
+		fail_unless(0 == gpm_dummy_trigger_output_triggered);
+		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
 	}
 }
+END_TEST
 
-void test_gprotm_handle_byte(void)
+START_TEST(test_gprotm_handle_byte)
 {
 	u8 addr = 0;
 	u16 data = 0;
 
 	/* check all valid addresses with data zero */
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_handle_byte(addr));
-		CU_ASSERT(0 == gpm_dummy_register_changed);
-		CU_ASSERT(0 == gpm_handle_byte(data & 0xFF));
-		CU_ASSERT(0 == gpm_dummy_register_changed);
-		CU_ASSERT(0 == gpm_handle_byte(data >> 8));
-		CU_ASSERT(1 == gpm_dummy_register_changed);
-		CU_ASSERT(addr == gpm_dummy_register_changed_addr);
-		CU_ASSERT(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
+		fail_unless(0 == gpm_handle_byte(addr));
+		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless(0 == gpm_handle_byte(data & 0xFF));
+		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless(0 == gpm_handle_byte(data >> 8));
+		fail_unless(1 == gpm_dummy_register_changed);
+		fail_unless(addr == gpm_dummy_register_changed_addr);
+		fail_unless(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
 	}
@@ -234,14 +205,14 @@ void test_gprotm_handle_byte(void)
 	/* check all valid addresses with data 0xAA55 */
 	data = 0xAA55;
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_handle_byte(addr));
-		CU_ASSERT(0 == gpm_dummy_register_changed);
-		CU_ASSERT(0 == gpm_handle_byte(data & 0xFF));
-		CU_ASSERT(0 == gpm_dummy_register_changed);
-		CU_ASSERT(0 == gpm_handle_byte(data >> 8));
-		CU_ASSERT(1 == gpm_dummy_register_changed);
-		CU_ASSERT(addr == gpm_dummy_register_changed_addr);
-		CU_ASSERT(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
+		fail_unless(0 == gpm_handle_byte(addr));
+		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless(0 == gpm_handle_byte(data & 0xFF));
+		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless(0 == gpm_handle_byte(data >> 8));
+		fail_unless(1 == gpm_dummy_register_changed);
+		fail_unless(addr == gpm_dummy_register_changed_addr);
+		fail_unless(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
 	}
@@ -249,24 +220,44 @@ void test_gprotm_handle_byte(void)
 	/* check all valid addresses with data 0xFFFF */
 	data = 0xFFFF;
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpm_handle_byte(addr));
-		CU_ASSERT(0 == gpm_dummy_register_changed);
-		CU_ASSERT(0 == gpm_handle_byte(data & 0xFF));
-		CU_ASSERT(0 == gpm_dummy_register_changed);
-		CU_ASSERT(0 == gpm_handle_byte(data >> 8));
-		CU_ASSERT(1 == gpm_dummy_register_changed);
-		CU_ASSERT(addr == gpm_dummy_register_changed_addr);
-		CU_ASSERT(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
+		fail_unless(0 == gpm_handle_byte(addr));
+		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless(0 == gpm_handle_byte(data & 0xFF));
+		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless(0 == gpm_handle_byte(data >> 8));
+		fail_unless(1 == gpm_dummy_register_changed);
+		fail_unless(addr == gpm_dummy_register_changed_addr);
+		fail_unless(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
 	}
 
 	/* check all invalid addresses */
 	for(addr=32; addr!=0; addr++){
-		CU_ASSERT(1 == gpm_handle_byte(addr));
-		CU_ASSERT(0 == gpm_dummy_register_changed);
-		CU_ASSERT(0 == gpm_dummy_register_changed_addr);
+		fail_unless(1 == gpm_handle_byte(addr));
+		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless(0 == gpm_dummy_register_changed_addr);
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
 	}
+}
+END_TEST
+
+Suite *make_lg_gprotm_suite(void)
+{
+	Suite *s;
+	TCase *tc;
+
+	s= suite_create("Governor protocol for master");
+
+	tc = tcase_create("Basic functions");
+	suite_add_tcase(s, tc);
+	tcase_add_checked_fixture(tc, init_gprotm_tc, clean_gprotm_tc);
+	tcase_add_test(tc, test_gprotm_get_register_map_val);
+	tcase_add_test(tc, test_gprotm_send_set);
+	tcase_add_test(tc, test_gprotm_send_get);
+	tcase_add_test(tc, test_gprotm_send_get_cont);
+	tcase_add_test(tc, test_gprotm_handle_byte);
+
+	return s;
 }

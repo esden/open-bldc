@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/Basic.h>
+#include <check.h>
 
 #include <string.h>
 
@@ -24,47 +24,18 @@
 #include "lg/gpdef.h"
 #include "lg/gprotc.h"
 
-#include "check_gprotc_suite.h"
+#include "check_suites.h"
 
 u16 gpc_dummy_register_map[32];
 
 int gpc_dummy_trigger_output_triggered = 0;
-void gpc_dummy_trigger_output_hook(void);
-
-int init_gprotc_suite(void);
-int clean_gprotc_suite(void);
-void test_gprotc_send_reg(void);
-void test_gprotc_handle_byte_read(void);
-void test_gprotc_handle_byte_write(void);
-
-int check_gprotc_suite_register()
-{
-	CU_pSuite pSuite = NULL;
-
-	/* add suite to the registry */
-	pSuite = CU_add_suite("governor protocol for client suite", init_gprotc_suite, clean_gprotc_suite);
-	if(NULL == pSuite){
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	/* add the tests to the suite */
-	if((NULL == CU_add_test(pSuite, "gprotc send_reg", test_gprotc_send_reg)) ||
-	   (NULL == CU_add_test(pSuite, "gprotc handle_byte_read", test_gprotc_handle_byte_read)) ||
-	   (NULL == CU_add_test(pSuite, "gprotc handle_byte_write", test_gprotc_handle_byte_write))){
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-
-	return 0;
-}
 
 void gpc_dummy_trigger_output_hook(void)
 {
 	gpc_dummy_trigger_output_triggered = 1;
 }
 
-int init_gprotc_suite(void)
+void init_gprotc_tc(void)
 {
 	int i;
 
@@ -72,83 +43,110 @@ int init_gprotc_suite(void)
 		gpc_dummy_register_map[i] = 0xAA55+i;
 
 	gpc_init(gpc_dummy_trigger_output_hook);
-	return 0;
+
+	gpc_dummy_trigger_output_triggered = 0;
 }
 
-int clean_gprotc_suite(void)
+void clean_gprotc_tc(void)
 {
-	return 0;
 }
 
-void test_gprotc_send_reg(void)
+START_TEST(test_gprotc_send_reg)
 {
 	int i;
 	u8 addr;
 
 	addr = 0;
 	for(i = 0; i<256; i++){
-		CU_ASSERT(1 == gpc_send_reg(addr));
-		CU_ASSERT(-1 == gpc_pickup_byte());
+		fail_unless(1 == gpc_send_reg(addr));
+		fail_unless(-1 == gpc_pickup_byte());
 		addr++;
 	}
 
-	CU_ASSERT(0 == gpc_setup_reg(0, &gpc_dummy_register_map[0]));
-	CU_ASSERT(0 == gpc_send_reg(0));
-	CU_ASSERT(0 == gpc_pickup_byte());
-	CU_ASSERT(0x55 == gpc_pickup_byte());
-	CU_ASSERT(0xAA == gpc_pickup_byte());
-	CU_ASSERT(-1 == gpc_pickup_byte());
-	CU_ASSERT(1 == gpc_send_reg(1));
-
+	fail_unless(0 == gpc_setup_reg(0, &gpc_dummy_register_map[0]));
+	fail_unless(0 == gpc_send_reg(0));
+	fail_unless(0 == gpc_pickup_byte());
+	fail_unless(0x55 == gpc_pickup_byte());
+	fail_unless(0xAA == gpc_pickup_byte());
+	fail_unless(-1 == gpc_pickup_byte());
+	fail_unless(1 == gpc_send_reg(1));
 
 	for(addr=1; addr<32; addr++){
-		CU_ASSERT(0 == gpc_setup_reg(addr, &gpc_dummy_register_map[addr]));
-		CU_ASSERT(0 == gpc_send_reg(addr));
-		CU_ASSERT(addr == gpc_pickup_byte());
-		CU_ASSERT(0x55+addr == gpc_pickup_byte());
-		CU_ASSERT(0xAA == gpc_pickup_byte());
-		CU_ASSERT(-1 == gpc_pickup_byte());
+		fail_unless(0 == gpc_setup_reg(addr, &gpc_dummy_register_map[addr]));
+		fail_unless(0 == gpc_send_reg(addr));
+		fail_unless(addr == gpc_pickup_byte());
+		fail_unless(0x55+addr == gpc_pickup_byte());
+		fail_unless(0xAA == gpc_pickup_byte());
+		fail_unless(-1 == gpc_pickup_byte());
 	}
 
 
 	for(addr=32; addr!=0; addr++){
-		CU_ASSERT(1 == gpc_send_reg(addr));
-		CU_ASSERT(-1 == gpc_pickup_byte());
+		fail_unless(1 == gpc_send_reg(addr));
+		fail_unless(-1 == gpc_pickup_byte());
 	}
 }
+END_TEST
 
-void test_gprotc_handle_byte_read(void)
+START_TEST(test_gprotc_handle_byte_read)
 {
 	u8 addr = 0;
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK));
-		CU_ASSERT(addr == gpc_pickup_byte());
-		CU_ASSERT(0x55+addr == gpc_pickup_byte());
-		CU_ASSERT(0xAA == gpc_pickup_byte());
-		CU_ASSERT(-1 == gpc_pickup_byte());
+		fail_unless(0 == gpc_setup_reg(addr, &gpc_dummy_register_map[addr]));
 	}
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(1 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK | GP_MODE_RESERVED));
-		CU_ASSERT(-1 == gpc_pickup_byte());
+		fail_unless(0 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK));
+		fail_unless(addr == gpc_pickup_byte());
+		fail_unless(0x55+addr == gpc_pickup_byte());
+		fail_unless(0xAA == gpc_pickup_byte());
+		fail_unless(-1 == gpc_pickup_byte());
+	}
+
+	for(addr=0; addr<32; addr++){
+		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK | GP_MODE_RESERVED));
+		fail_unless(-1 == gpc_pickup_byte());
 	}
 }
+END_TEST
 
-void test_gprotc_handle_byte_write(void)
+START_TEST(test_gprotc_handle_byte_write)
 {
 	u8 addr = 0;
 	u16 data = 0xDADE;
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(0 == gpc_handle_byte(addr | GP_MODE_WRITE));
-		CU_ASSERT(0 == gpc_handle_byte(data & 0xFF));
-		CU_ASSERT(0 == gpc_handle_byte(data >> 8));
-		CU_ASSERT(data == gpc_dummy_register_map[addr]);
+		fail_unless(0 == gpc_setup_reg(addr, &gpc_dummy_register_map[addr]));
 	}
 
 	for(addr=0; addr<32; addr++){
-		CU_ASSERT(1 == gpc_handle_byte(addr | GP_MODE_WRITE | GP_MODE_RESERVED));
-		CU_ASSERT(-1 == gpc_pickup_byte());
+		fail_unless(0 == gpc_handle_byte(addr | GP_MODE_WRITE));
+		fail_unless(0 == gpc_handle_byte(data & 0xFF));
+		fail_unless(0 == gpc_handle_byte(data >> 8));
+		fail_unless(data == gpc_dummy_register_map[addr]);
 	}
+
+	for(addr=0; addr<32; addr++){
+		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_WRITE | GP_MODE_RESERVED));
+		fail_unless(-1 == gpc_pickup_byte());
+	}
+}
+END_TEST
+
+Suite *make_lg_gprotc_suite(void)
+{
+	Suite *s;
+	TCase *tc;
+
+	s= suite_create("Governor protocol for client");
+
+	tc = tcase_create("Basic functions");
+	suite_add_tcase(s, tc);
+	tcase_add_checked_fixture(tc, init_gprotc_tc, clean_gprotc_tc);
+	tcase_add_test(tc, test_gprotc_send_reg);
+	tcase_add_test(tc, test_gprotc_handle_byte_read);
+	tcase_add_test(tc, test_gprotc_handle_byte_write);
+
+	return s;
 }

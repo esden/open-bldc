@@ -16,41 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/Basic.h>
+#include <check.h>
 
-#include "check_ring_suite.h"
-#include "check_gprotm_suite.h"
-#include "check_gprotc_suite.h"
-#include "check_gprot_suite.h"
+#include "check_suites.h"
 
 int main(void)
 {
-	int ret;
+	int nf;
+	SRunner *sr;
 
-	/* initialize CUnit test registry */
-	if( CUE_SUCCESS != CU_initialize_registry())
-		return CU_get_error();
+	sr = srunner_create(make_lg_ring_suite());
+	srunner_add_suite(sr, make_lg_gprotm_suite());
+	srunner_add_suite(sr, make_lg_gprotc_suite());
+	srunner_add_suite(sr, make_lg_gprot_suite());
 
+	srunner_run_all(sr, CK_NORMAL);
+	nf = srunner_ntests_failed(sr);
+	srunner_free(sr);
 
-	if((ret = check_ring_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprotm_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprotc_suite_register())){
-		return ret;
-	}
-
-	if((ret = check_gprot_suite_register())){
-		return ret;
-	}
-
-	/* Run all tests using the CUnit Basic interface */
-	CU_basic_set_mode(CU_BRM_VERBOSE);
-	CU_basic_run_tests();
-	CU_cleanup_registry();
-	return CU_get_error();
+	return (nf == 0) ? 0 : 1;
 }

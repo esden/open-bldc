@@ -26,7 +26,7 @@ CFLAGS += -I../inc -g -Wall -Wextra -Werror -Wshadow
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(LDFLAGS) -L../src -lgovernor -lcunit -lncurses -o $@ $(OBJ)
+	$(CC) $(LDFLAGS) -L../src -lgovernor -lcheck -lncurses -o $@ $(OBJ)
 
 clean:
 	rm -rf $(NAME)

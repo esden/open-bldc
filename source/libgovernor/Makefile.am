@@ -51,6 +51,10 @@ missing
 dist-hook:
 	-chmod -R a-s $(distdir)
 
+macx_embed: all
+	cp src/.libs/libgovernor.dylib .
+	install_name_tool -id @executable_path/../Frameworks/libgovernor.dylib libgovernor.dylib
+
 lcov: check
 	@if [ "x$(LCOV_GCOV_ENABLED)" = "xyes" ]; then \
 		$(LCOV_LCOV) --directory . --capture --output-file libgovernor.info --test-name LG_LCOV; \

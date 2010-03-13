@@ -31,7 +31,9 @@ AC_DEFINE_UNQUOTED([HOST],["$host"],[The canonical host])
 #test -z "$CFLAGS" && CFLAGS="-O2 -g -Wall"
 
 AC_SUBST(EXTRACFLAGS, "-O2 -g -Wall")
+AC_SUBST(CHECK_EXTRACFLAGS, "-O2 -g -Wall")
 AC_SUBST(EXTRALDFLAGS, "")
+AC_SUBST(CHECK_EXTRALDFLAGS, "")
 
 # ===================
 # Check for programs.
@@ -165,5 +167,6 @@ manual page install path : $mandir
 compiler                 : $CC
 general options
   CFLAGS                 : $CFLAGS $MORE_WARNINGS_CFLAGS $EXTRACFLAGS
-  LIBS                   : $LDFLAGS $LIBS $EXTRALDFLAGS"
-
+  LIBS                   : $LDFLAGS $LIBS $EXTRALDFLAGS
+  CHECK_CFLAGS           : $CFLAGS $MORE_WARNINGS_CFLAGS $CHECK_EXTRACFLAGS
+  CHECK_LIBS             : $LDFLAGS $LIBS $CHECK_EXTRALDFLAGS"

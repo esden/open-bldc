@@ -15,13 +15,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 TESTS = check_lg
-
-noinst_PROGRAMS = check_lg
-
-INCLUDES = @CHECK_CFLAGS@ @EXTRACFLAGS@ -I$(top_srcdir)/inc -I.. -I.
-LDADD = @CHECK_LIBS@ @EXTRALDFLAGS@ $(top_srcdir)/src/libgovernor.la
-
-AM_CFLAGS = $(MORE_WARNINGS_CFLAGS)
+check_PROGRAMS = check_lg
 
 check_lg_SOURCES = check_suites.h \
 		   check_main.c \
@@ -29,4 +23,5 @@ check_lg_SOURCES = check_suites.h \
 		   check_gprotm_suite.c \
 		   check_gprotc_suite.c \
 		   check_gprot_suite.c
-
+check_lg_CFLAGS = @CHECK_CFLAGS@ @CHECK_EXTRACFLAGS@
+check_lg_LDADD = $(top_builddir)/src/libgovernor.la @CHECK_LIBS@ @CHECK_EXTRALDFLAGS@

@@ -30,8 +30,8 @@ AC_DEFINE_UNQUOTED([HOST],["$host"],[The canonical host])
 # set it to the default of -O2 -g -Wall.
 #test -z "$CFLAGS" && CFLAGS="-O2 -g -Wall"
 
-AC_SUBST(EXTRACFLAGS, "-O2 -g -Wall")
-AC_SUBST(CHECK_EXTRACFLAGS, "-O2 -g -Wall")
+AC_SUBST(EXTRACFLAGS, "-Wall -Wextra -Wshadow")
+AC_SUBST(CHECK_EXTRACFLAGS, "-Wall -Wextra -Wshadow")
 AC_SUBST(EXTRALDFLAGS, "")
 AC_SUBST(CHECK_EXTRALDFLAGS, "")
 
@@ -89,6 +89,26 @@ AC_CHECK_FUNCS([strerror])
 AC_CHECK_DECLS([strerror])
 AC_FUNC_STRERROR_R
 
+#===============================
+# Werror
+#===============================
+AC_ARG_ENABLE([werror],
+   [AC_HELP_STRING([--disable-werror], [disable -Werror @<:@default=enabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       werror="yes"
+    else
+       werror="no"
+    fi
+   ],
+   [werror="yes"])
+
+if test "x$werror" == "xyes";
+then
+	EXTRACFLAGS="$EXTRACFLAGS -Werror"
+	CHECK_EXTRACFLAGS="$CHECK_EXTRACFLAGS -Werror"
+fi
+
 #==============================
 # code coverage stuff
 #==============================
@@ -106,7 +126,7 @@ then
 	EXTRACFLAGS="$EXTRACFLAGS -fprofile-arcs -ftest-coverage"
 	dnl Turn off optimization so code coverage tool
 	dnl can get accurate line numbers
-	EXTRACFLAGS=`echo "$EXTRACFLAGS" | sed -e 's/-O[0-9]*//g'`
+	CFLAGS=`echo "$CFLAGS" | sed -e 's/-O[0-9]//g'`
 	EXTRALDFLAGS="$EXTRALDFLAGS -lgcov"
 fi
 
@@ -166,7 +186,7 @@ manual page install path : $mandir
 
 compiler                 : $CC
 general options
-  CFLAGS                 : $CFLAGS $MORE_WARNINGS_CFLAGS $EXTRACFLAGS
+  CFLAGS                 : $CFLAGS $EXTRACFLAGS
   LIBS                   : $LDFLAGS $LIBS $EXTRALDFLAGS
-  CHECK_CFLAGS           : $CFLAGS $MORE_WARNINGS_CFLAGS $CHECK_EXTRACFLAGS
+  CHECK_CFLAGS           : $CFLAGS $CHECK_EXTRACFLAGS
   CHECK_LIBS             : $LDFLAGS $LIBS $CHECK_EXTRALDFLAGS"

@@ -19,7 +19,7 @@ LCOV_LCOV    = @LCOV@
 LCOV_GENHTML = @GENHTML@
 LCOV_GCOV_ENABLED = @GCOV_ENABLED@
 
-SUBDIRS = inc src tests doc
+SUBDIRS = include src tests doc
 
 # Doxygen
 #include $(top_srcdir)/aminclude.am

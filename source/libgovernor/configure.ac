@@ -158,12 +158,12 @@ PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
 # but keep src/config.h.in in the src/ directory to keep the base directory
 # as clean as possible.
 dnl Don't quote the following argument, it is parsed by automake.
-AM_CONFIG_HEADER(inc/config.h:inc/config.h.in)
+AM_CONFIG_HEADER(include/config.h:include/config.h.in)
 
 AC_CONFIG_FILES([
  Makefile
  src/Makefile
- inc/Makefile
+ include/Makefile
  tests/Makefile
  doc/Makefile
 ])

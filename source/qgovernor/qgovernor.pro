@@ -32,3 +32,16 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+macx {
+	LIBS += -L/opt/local/lib -L../libgovernor
+        INCLUDEPATH += /opt/local/include ../libgovernor/inc
+        FILETYPES.files = ../libgovernor/libgovernor.dylib
+        FILETYPES.path = Contents/Frameworks
+        QMAKE_BUNDLE_DATA += FILETYPES
+} else {
+	LIBS += -L../libgovernor/src/.libs
+}
+
+LIBS	 += -lgovernor
+

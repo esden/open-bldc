@@ -14,12 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-INCLUDES = @EXTRACFLAGS@ -I$(top_srcdir)/inc -I.. -I.
-
-AM_CFLAGS = $(MORE_WARNINGS_CFLAGS)
-
 lib_LTLIBRARIES=libgovernor.la
 
-libgovernor_la_SOURCES= ring.c \
-			gprotm.c \
-			gprotc.c
+libgovernor_la_SOURCES = ring.c \
+			 gprotm.c \
+			 gprotc.c
+libgovernor_la_CFLAGS = @EXTRACFLAGS@
+libgovernor_la_LDFLAGS = @EXTRALDFLAGS@

@@ -33,9 +33,11 @@ u16 gp_register_map[32];
 int gpm_register_changed = 0;
 int gpm_register_changed_addr = 0;
 
-void gpm_trigger_output_hook(void)
+void gpm_trigger_output_hook(void *data)
 {
         s32 dat;
+
+	data = data;
 
 	while(-1 != (dat = gpm_pickup_byte())){
 		if(gpc_handle_byte(dat))
@@ -43,15 +45,19 @@ void gpm_trigger_output_hook(void)
 	}
 }
 
-void gpm_register_changed_hook(u8 addr)
+void gpm_register_changed_hook(void *data, u8 addr)
 {
+	data = data;
+
 	gpm_register_changed_addr = addr;
 	gpm_register_changed = 1;
 }
 
-void gpc_trigger_output_hook(void)
+void gpc_trigger_output_hook(void* data)
 {
 	s32 dat;
+
+	data = data;
 
 	while(-1 != (dat = gpc_pickup_byte())){
 		if(gpm_handle_byte(dat))
@@ -63,9 +69,9 @@ void init_gprot_tc(void)
 {
 	int i;
 
-	gpm_init(gpm_trigger_output_hook, gpm_register_changed_hook);
+	gpm_init(gpm_trigger_output_hook, NULL, gpm_register_changed_hook, NULL);
 
-	gpc_init(gpc_trigger_output_hook);
+	gpc_init(gpc_trigger_output_hook, NULL);
 
 	for(i=0; i<32; i++){
 		gp_register_map[i] = 0xAA55+i;

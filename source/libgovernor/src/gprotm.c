@@ -35,7 +35,9 @@
 
 struct gpm_hooks {
 	gp_simple_hook_t trigger_output;
+	void *trigger_output_data;
 	gp_with_addr_hook_t register_changed;
+	void *register_changed_data;
 } gpm_hooks;
 
 u16 gpm_register_map[32];
@@ -52,12 +54,14 @@ enum gpm_states gpm_state = GPMS_IDLE;
 u16 gpm_addr;
 u16 gpm_data;
 
-int gpm_init(gp_simple_hook_t trigger_output, gp_with_addr_hook_t register_changed)
+int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with_addr_hook_t register_changed, void *register_changed_data)
 {
 	int i;
 
 	gpm_hooks.trigger_output = trigger_output;
+	gpm_hooks.trigger_output_data = trigger_output_data;
 	gpm_hooks.register_changed = register_changed;
+	gpm_hooks.register_changed_data = register_changed_data;
 
 	for(i=0; i<32; i++)
 		gpm_register_map[i] = 0;
@@ -92,7 +96,7 @@ int gpm_send_set(u8 addr, u16 val)
     dat[2] = val >> 8;
 
     if(0 <= ring_write(&gpm_output_ring, dat, 3)){
-	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output();
+	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
 	    gpm_register_map[addr] = val;
 	    return 0;
     }
@@ -108,7 +112,7 @@ int gpm_send_get(u8 addr)
 	    return 1;
 
     if(0 <= ring_write_ch(&gpm_output_ring, out)){
-	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output();
+	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
 	    return 0;
     }
 
@@ -123,7 +127,7 @@ int gpm_send_get_cont(u8 addr)
 	    return 1;
 
     if(0 <= ring_write_ch(&gpm_output_ring, out)){
-	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output();
+	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
 	    return 0;
     }
 
@@ -148,7 +152,7 @@ int gpm_handle_byte(u8 byte)
 		gpm_data |= byte << 8;
 		gpm_register_map[gpm_addr] = gpm_data;
 		if(gpm_hooks.register_changed)
-			gpm_hooks.register_changed(gpm_addr);
+			gpm_hooks.register_changed(gpm_hooks.register_changed_data, gpm_addr);
 		gpm_state = GPMS_IDLE;
 		break;
 	}

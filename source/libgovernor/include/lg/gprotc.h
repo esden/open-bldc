@@ -19,7 +19,7 @@
 #ifndef LG_GPROTC_H
 #define LG_GPROTC_H
 
-int gpc_init(gp_simple_hook_t trigger_output);
+int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data);
 int gpc_setup_reg(u8 addr, u16 *reg);
 s32 gpc_pickup_byte(void);
 int gpc_send_reg(u8 addr);

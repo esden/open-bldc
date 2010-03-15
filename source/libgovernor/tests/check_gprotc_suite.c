@@ -30,8 +30,9 @@ u16 gpc_dummy_register_map[32];
 
 int gpc_dummy_trigger_output_triggered = 0;
 
-void gpc_dummy_trigger_output_hook(void)
+void gpc_dummy_trigger_output_hook(void* data)
 {
+	data = data;
 	gpc_dummy_trigger_output_triggered = 1;
 }
 
@@ -42,7 +43,7 @@ void init_gprotc_tc(void)
 	for(i=0; i<32; i++)
 		gpc_dummy_register_map[i] = 0xAA55+i;
 
-	gpc_init(gpc_dummy_trigger_output_hook);
+	gpc_init(gpc_dummy_trigger_output_hook, NULL);
 
 	gpc_dummy_trigger_output_triggered = 0;
 }

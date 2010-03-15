@@ -30,20 +30,24 @@ int gpm_dummy_trigger_output_triggered = 0;
 int gpm_dummy_register_changed = 0;
 int gpm_dummy_register_changed_addr = 0;
 
-void gpm_dummy_trigger_output_hook(void)
+void gpm_dummy_trigger_output_hook(void *data)
 {
+	data = data;
+
 	gpm_dummy_trigger_output_triggered = 1;
 }
 
-void gpm_dummy_register_changed_hook(u8 addr)
+void gpm_dummy_register_changed_hook(void *data, u8 addr)
 {
+	data = data;
+
 	gpm_dummy_register_changed_addr = addr;
 	gpm_dummy_register_changed = 1;
 }
 
 void init_gprotm_tc(void)
 {
-	gpm_init(gpm_dummy_trigger_output_hook, gpm_dummy_register_changed_hook);
+	gpm_init(gpm_dummy_trigger_output_hook, NULL, gpm_dummy_register_changed_hook, NULL);
 }
 
 void clean_gprotm_tc(void)

@@ -1,0 +1,63 @@
+/*
+ * qgovernor - QT based Open-BLDC PC interface tool
+ * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+extern "C" {
+#include <lg/types.h>
+#include <lg/gpdef.h>
+#include <lg/gprotm.h>
+}
+
+#include "governormaster.h"
+
+void gpm_output_trigger(void *data);
+void gpm_register_changed(void *data, u8 addr);
+
+GovernorMaster::GovernorMaster()
+{
+    gpm_init(gpm_output_trigger, static_cast<void *>(this), gpm_register_changed, static_cast<void *>(this));
+}
+
+signed short GovernorMaster::pickupByte()
+{
+    return gpm_pickup_byte();
+}
+
+int GovernorMaster::sendSet(unsigned char addr, unsigned short data)
+{
+    return gpm_send_set(addr, data);
+}
+
+void GovernorMaster::outputTriggerCB()
+{
+    emit outputTriggered();
+}
+
+void GovernorMaster::registerChangedCB(unsigned char addr)
+{
+    emit registerChanged(addr);
+}
+
+void gpm_output_trigger(void *data)
+{
+    static_cast<GovernorMaster *>(data)->outputTriggerCB();
+}
+
+void gpm_register_changed(void *data, u8 addr)
+{
+    static_cast<GovernorMaster *>(data)->registerChangedCB(addr);
+}

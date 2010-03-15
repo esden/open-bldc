@@ -211,6 +211,9 @@
       <property name="text">
        <string>Connect</string>
       </property>
+      <property name="default">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item row="2" column="1">
@@ -220,7 +223,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="0">
      <widget class="QGroupBox" name="registerGroupBox">
       <property name="title">
        <string>Register Contents</string>
@@ -334,6 +337,13 @@
       </layout>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QGroupBox" name="graphicGroupBox">
+      <property name="title">
+       <string>Graphic Display</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -344,6 +354,12 @@
      <width>914</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="defaultUp">
+    <bool>true</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

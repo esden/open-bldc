@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <lg/types.h>
+#include <lg/gpdef.h>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -36,7 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
         registerModel.setVerticalHeaderItem(i, new QStandardItem(QString::number(i, 10).rightJustified(3, '0', false)));
         registerModel.setItem(i, 0, new QStandardItem(QString::number(0, 10).rightJustified(5, '0', false)));
         registerModel.setItem(i, 1, new QStandardItem(QString::number(0, 16).rightJustified(4, '0', false)));
-        registerModel.setItem(i, 2, new QStandardItem(QString::number(0, 2).rightJustified(16, '0', false)));
+        registerModel.setItem(i, 2, new QStandardItem(QString::number(0 >> 8, 2).rightJustified(8, '0', false)
+                                                      .append(" ")
+                                                      .append(QString::number(0 & 0xFF, 2).rightJustified(8, '0', false))));
         registerModel.setItem(i, 3, new QStandardItem());
         registerModel.item(i, 3)->setCheckable(true);
         registerModel.setItem(i, 4, new QStandardItem());
@@ -71,6 +76,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->inputTableView->resizeColumnsToContents();
     ui->inputTableView->resizeRowsToContents();
 
+    /* Dialog initialization */
+    connectDialog = new ConnectDialog(this);
+
+    /* Governor */
+    governorMaster = new GovernorMaster();
+    connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(outputTriggeredSignal()));
 }
 
 MainWindow::~MainWindow()
@@ -92,17 +103,75 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::on_connectPushButton_clicked()
 {
-    ui->statusBar->showMessage("Connecting...");
+    ui->connectPushButton->setDisabled(true);
+    if(connectDialog->exec()){
+        ui->statusBar->showMessage(tr("Connection accepted ... connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
+        governorMaster->sendSet(10, 20);
+        ui->connectPushButton->setDisabled(false);
+    }else{
+        ui->statusBar->showMessage(tr("Connection rejected..."));
+        ui->connectPushButton->setDisabled(false);
+    }
+}
 
+void MainWindow::addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value)
+{
+    inputModel.appendRow(
+            QList<QStandardItem *>() << new QStandardItem()
+                                     << new QStandardItem(r_w)
+                                     << new QStandardItem(QString::number(addr, 10).rightJustified(2, '0', false))
+                                     << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
+                                     << new QStandardItem(QString::number(value, 10).rightJustified(4, '0', false))
+                                     << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
+                                                          .append(" ")
+                                                          .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
+    ui->inputTableView->resizeColumnsToContents();
+    ui->inputTableView->scrollToBottom();
+    ui->inputTableView->resizeRowsToContents();
+}
+
+void MainWindow::addOutput(bool monitor, QChar r_w, unsigned char addr, unsigned short value)
+{
     outputModel.appendRow(
             QList<QStandardItem *>() << new QStandardItem()
-                                     << new QStandardItem("R")
-                                     << new QStandardItem(QString::number(10, 10).rightJustified(3, '0', false))
-                                     << new QStandardItem(QString::number(12, 16).rightJustified(4, '0', false))
-                                     << new QStandardItem(QString::number(12, 10).rightJustified(4, '0', false))
-                                     << new QStandardItem(QString::number(12, 2).rightJustified(16, '0', false)));
+                                     << new QStandardItem(r_w)
+                                     << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false))
+                                     << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
+                                     << new QStandardItem(QString::number(value, 10).rightJustified(4, '0', false))
+                                     << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
+                                                          .append(" ")
+                                                          .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
     ui->outputTableView->resizeColumnsToContents();
     ui->outputTableView->resizeRowsToContents();
     ui->outputTableView->scrollToBottom();
+}
 
+void MainWindow::outputTriggeredSignal()
+{
+    signed short data;
+    static int state = 0;
+    bool monitor;
+    unsigned char addr;
+    unsigned short value;
+
+    while((data = governorMaster->pickupByte()) != -1){
+        printf("data value: %d\n", data);
+        switch(state){
+        case 0:
+            if((data & GP_MODE_MASK) == GP_MODE_WRITE){
+                addr = data & GP_ADDR_MASK;
+                state = 1;
+            }
+            break;
+        case 1:
+            value = data;
+            state = 2;
+            break;
+        case 2:
+            value |= data << 8;
+            addOutput(false, 'W', addr, value);
+            state = 0;
+            break;
+        }
+    }
 }

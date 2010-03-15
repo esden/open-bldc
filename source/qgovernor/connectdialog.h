@@ -16,46 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef CONNECTDIALOG_H
+#define CONNECTDIALOG_H
 
-#include <QMainWindow>
-#include <QtGui>
-#include <QTcpSocket>
-
-#include "governormaster.h"
-
-#include "connectdialog.h"
+#include <QDialog>
 
 namespace Ui {
-    class MainWindow;
+    class connectDialog;
 }
 
-class MainWindow : public QMainWindow {
+class ConnectDialog : public QDialog {
     Q_OBJECT
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    void addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value);
-    void addOutput(bool monitor, QChar r_w, unsigned char addr, unsigned short value);
+    ConnectDialog(QWidget *parent = 0);
+    ~ConnectDialog();
+    int getInterfaceId();
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::connectDialog *ui;
 
-    ConnectDialog *connectDialog;
-    QStandardItemModel registerModel;
-    QStandardItemModel outputModel;
-    QStandardItemModel inputModel;
-    QTcpSocket *tcpSocket;
-
-    GovernorMaster *governorMaster;
-
-public slots:
-    void on_connectPushButton_clicked();
-    void outputTriggeredSignal();
+private slots:
 };
 
-#endif // MAINWINDOW_H
+#endif // CONNECTDIALOG_H

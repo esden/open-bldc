@@ -48,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
         registerModel.item(i, 4)->setCheckable(true);
     }
 
+    connect(&registerModel, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(on_registerChanged(QStandardItem *)));
+
     ui->registerTableView->setModel(&registerModel);
     ui->registerTableView->resizeColumnsToContents();
     ui->registerTableView->resizeRowsToContents();
@@ -81,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Governor */
     governorMaster = new GovernorMaster();
-    connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(outputTriggeredSignal()));
+    connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(on_outputTriggered()));
 }
 
 MainWindow::~MainWindow()
@@ -121,7 +123,7 @@ void MainWindow::addInput(bool monitor, QChar r_w, unsigned char addr, unsigned 
                                      << new QStandardItem(r_w)
                                      << new QStandardItem(QString::number(addr, 10).rightJustified(2, '0', false))
                                      << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
-                                     << new QStandardItem(QString::number(value, 10).rightJustified(4, '0', false))
+                                     << new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false))
                                      << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
                                                           .append(" ")
                                                           .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
@@ -137,7 +139,7 @@ void MainWindow::addOutput(bool monitor, QChar r_w, unsigned char addr, unsigned
                                      << new QStandardItem(r_w)
                                      << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false))
                                      << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
-                                     << new QStandardItem(QString::number(value, 10).rightJustified(4, '0', false))
+                                     << new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false))
                                      << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
                                                           .append(" ")
                                                           .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
@@ -146,7 +148,7 @@ void MainWindow::addOutput(bool monitor, QChar r_w, unsigned char addr, unsigned
     ui->outputTableView->scrollToBottom();
 }
 
-void MainWindow::outputTriggeredSignal()
+void MainWindow::on_outputTriggered()
 {
     signed short data;
     static int state = 0;
@@ -155,7 +157,6 @@ void MainWindow::outputTriggeredSignal()
     unsigned short value;
 
     while((data = governorMaster->pickupByte()) != -1){
-        printf("data value: %d\n", data);
         switch(state){
         case 0:
             if((data & GP_MODE_MASK) == GP_MODE_WRITE){
@@ -173,5 +174,34 @@ void MainWindow::outputTriggeredSignal()
             state = 0;
             break;
         }
+    }
+}
+
+void MainWindow::on_registerChanged(QStandardItem *item)
+{
+    int value;
+    bool conversion_ok;
+
+    switch(item->column()){
+    case 0:
+        value = item->data(Qt::DisplayRole).toString().toInt(&conversion_ok, 10);
+        break;
+    case 1:
+        value = item->data(Qt::DisplayRole).toString().toInt(&conversion_ok, 16);
+        break;
+    case 2:
+        value = item->data(Qt::DisplayRole).toString().remove(QChar(' '), Qt::CaseInsensitive).toInt(&conversion_ok, 2);
+        break;
+    }
+
+    if(conversion_ok){
+        registerModel.item(item->row(), 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
+                                                    .append(" ")
+                                                    .append(QString::number(value & 0xFF, 2)
+                                                            .rightJustified(8, '0', false)),
+                                                    Qt::DisplayRole);
+        governorMaster->sendSet(item->row(), value);
     }
 }

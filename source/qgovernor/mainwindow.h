@@ -53,9 +53,10 @@ private:
 
     GovernorMaster *governorMaster;
 
-public slots:
+private slots:
     void on_connectPushButton_clicked();
-    void outputTriggeredSignal();
+    void on_outputTriggered();
+    void on_registerChanged(QStandardItem *item);
 };
 
 #endif // MAINWINDOW_H

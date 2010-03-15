@@ -34,6 +34,8 @@
 struct gpc_hooks {
 	gp_simple_hook_t trigger_output;
 	void *trigger_output_data;
+	gp_with_addr_hook_t register_changed;
+	void *register_changed_data;
 } gpc_hooks;
 
 u16 *gpc_register_map[32];
@@ -50,12 +52,14 @@ enum gpc_states gpc_state = GPCS_IDLE;
 u16 gpc_addr;
 u16 gpc_data;
 
-int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data)
+int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with_addr_hook_t register_changed, void *register_changed_data)
 {
 	int i;
 
 	gpc_hooks.trigger_output = trigger_output;
 	gpc_hooks.trigger_output_data = trigger_output_data;
+	gpc_hooks.register_changed = register_changed;
+	gpc_hooks.register_changed_data = register_changed_data;
 
 	for(i=0; i<32; i++)
 		gpc_register_map[i] = 0;
@@ -144,6 +148,7 @@ int gpc_handle_byte(u8 byte)
 		}
 
 		*gpc_register_map[gpc_addr] = gpc_data;
+		if(gpc_hooks.register_changed) gpc_hooks.register_changed(gpc_hooks.register_changed_data, gpc_addr);
 
 		break;
 	}

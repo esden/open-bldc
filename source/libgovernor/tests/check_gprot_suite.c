@@ -71,7 +71,7 @@ void init_gprot_tc(void)
 
 	gpm_init(gpm_trigger_output_hook, NULL, gpm_register_changed_hook, NULL);
 
-	gpc_init(gpc_trigger_output_hook, NULL);
+	gpc_init(gpc_trigger_output_hook, NULL, NULL, NULL);
 
 	for(i=0; i<32; i++){
 		gp_register_map[i] = 0xAA55+i;

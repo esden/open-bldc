@@ -43,7 +43,7 @@ void init_gprotc_tc(void)
 	for(i=0; i<32; i++)
 		gpc_dummy_register_map[i] = 0xAA55+i;
 
-	gpc_init(gpc_dummy_trigger_output_hook, NULL);
+	gpc_init(gpc_dummy_trigger_output_hook, NULL, NULL, NULL);
 
 	gpc_dummy_trigger_output_triggered = 0;
 }

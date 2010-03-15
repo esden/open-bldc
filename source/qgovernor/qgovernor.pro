@@ -35,6 +35,7 @@ macx {
     LIBS += -L/opt/local/lib \
         -L../libgovernor
     INCLUDEPATH += /opt/local/include
+    ICON = icons/qgovernor.icns
     FILETYPES.files = ../libgovernor/libgovernor.dylib
     FILETYPES.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FILETYPES

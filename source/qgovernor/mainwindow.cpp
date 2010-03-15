@@ -28,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    /* Governor */
+    governorMaster = new GovernorMaster();
+    connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(on_outputTriggered()));
+
+    /* register display table */
     registerModel.setHorizontalHeaderLabels(
             QStringList() << QApplication::translate("qgovernor", "Dec")
                           << QApplication::translate("qgovernor", "Hex")
@@ -35,13 +40,17 @@ MainWindow::MainWindow(QWidget *parent) :
                           << QApplication::translate("qgovernor", "Mon")
                           << QApplication::translate("qgovernor", "Dis"));
 
+
+    unsigned short value;
+
     for(int i=0; i<32; i++){
+        value = governorMaster->getRegisterMapValue(i);
         registerModel.setVerticalHeaderItem(i, new QStandardItem(QString::number(i, 10).rightJustified(3, '0', false)));
-        registerModel.setItem(i, 0, new QStandardItem(QString::number(0, 10).rightJustified(5, '0', false)));
-        registerModel.setItem(i, 1, new QStandardItem(QString::number(0, 16).rightJustified(4, '0', false)));
-        registerModel.setItem(i, 2, new QStandardItem(QString::number(0 >> 8, 2).rightJustified(8, '0', false)
+        registerModel.setItem(i, 0, new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false)));
+        registerModel.setItem(i, 1, new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false)));
+        registerModel.setItem(i, 2, new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
                                                       .append(" ")
-                                                      .append(QString::number(0 & 0xFF, 2).rightJustified(8, '0', false))));
+                                                      .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
         registerModel.setItem(i, 3, new QStandardItem());
         registerModel.item(i, 3)->setCheckable(true);
         registerModel.setItem(i, 4, new QStandardItem());
@@ -81,9 +90,6 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Dialog initialization */
     connectDialog = new ConnectDialog(this);
 
-    /* Governor */
-    governorMaster = new GovernorMaster();
-    connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(on_outputTriggered()));
 }
 
 MainWindow::~MainWindow()
@@ -202,6 +208,17 @@ void MainWindow::on_registerChanged(QStandardItem *item)
                                                     .append(QString::number(value & 0xFF, 2)
                                                             .rightJustified(8, '0', false)),
                                                     Qt::DisplayRole);
-        governorMaster->sendSet(item->row(), value);
+        if(governorMaster->getRegisterMapValue(item->row()) != value)
+            governorMaster->sendSet(item->row(), value);
+    }else{
+        value = governorMaster->getRegisterMapValue(item->row());
+        registerModel.item(item->row(), 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
+                                                    .append(" ")
+                                                    .append(QString::number(value & 0xFF, 2)
+                                                            .rightJustified(8, '0', false)),
+                                                    Qt::DisplayRole);
+
     }
 }

@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    /* Variable initialization */
+    connected = false;
+
     /* Governor */
     governorMaster = new GovernorMaster();
     connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(on_outputTriggered()));
@@ -113,14 +116,25 @@ void MainWindow::on_connectPushButton_clicked()
 {
     ui->connectPushButton->setDisabled(true);
     if(connectDialog->exec()){
-        ui->statusBar->showMessage(tr("Connection accepted ... connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
+        ui->statusBar->showMessage(tr("Connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
         for(int i=0; i<32; i++)
             governorMaster->sendGet(i);
-        ui->connectPushButton->setDisabled(false);
+        ui->disconnectPushButton->setDisabled(false);
+        ui->registerTableView->setDisabled(false);
+        connected = true;
+        ui->statusBar->showMessage(tr("Connection to interface %1 established.").arg(connectDialog->getInterfaceId()), 5000);
     }else{
-        ui->statusBar->showMessage(tr("Connection rejected..."));
         ui->connectPushButton->setDisabled(false);
     }
+}
+
+void MainWindow::on_disconnectPushButton_clicked()
+{
+    ui->statusBar->showMessage(tr("Connection closed."), 5000);
+    ui->connectPushButton->setDisabled(false);
+    ui->disconnectPushButton->setDisabled(true);
+    ui->registerTableView->setDisabled(true);
+    connected = false;
 }
 
 void MainWindow::addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value)
@@ -213,7 +227,7 @@ void MainWindow::on_registerChanged(QStandardItem *item)
         break;
     }
 
-    if(conversion_ok){
+    if(conversion_ok && connected){
         registerModel.item(item->row(), 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
         registerModel.item(item->row(), 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
         registerModel.item(item->row(), 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
@@ -232,6 +246,7 @@ void MainWindow::on_registerChanged(QStandardItem *item)
                                                     .append(QString::number(value & 0xFF, 2)
                                                             .rightJustified(8, '0', false)),
                                                     Qt::DisplayRole);
-
+        if(!connected)
+            ui->statusBar->showMessage(tr("Please connect first before changing register values..."), 5000);
     }
 }

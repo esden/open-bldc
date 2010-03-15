@@ -53,9 +53,11 @@ private:
     QTcpSocket *tcpSocket;
 
     GovernorMaster *governorMaster;
+    bool connected;
 
 private slots:
     void on_connectPushButton_clicked();
+    void on_disconnectPushButton_clicked();
     void on_outputTriggered();
     void on_registerChanged(QStandardItem *item);
 };

@@ -24,12 +24,17 @@ TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
     connectdialog.cpp \
-    governormaster.cpp
+    governormaster.cpp \
+    simulator.cpp \
+    governorclient.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
-    governormaster.h
+    governormaster.h \
+    simulator.h \
+    governorclient.h
 FORMS += mainwindow.ui \
-    connectdialog.ui
+    connectdialog.ui \
+    simulator.ui
 INCLUDEPATH += ../libgovernor/include
 macx { 
     LIBS += -L/opt/local/lib \

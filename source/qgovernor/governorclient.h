@@ -16,28 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GOVERNORMASTER_H
-#define GOVERNORMASTER_H
+#ifndef GOVERNORCLIENT_H
+#define GOVERNORCLIENT_H
 
 #include <QObject>
 
-class GovernorMaster : public QObject
+class GovernorClient : public QObject
 {
     Q_OBJECT
 public:
-    GovernorMaster();
-    void outputTriggerCB();
-    void registerChangedCB(unsigned char addr);
+    GovernorClient();
     signed short pickupByte();
-    int sendSet(unsigned char addr, unsigned short data);
-    int sendGet(unsigned char addr);
     unsigned short getRegisterMapValue(unsigned char addr);
     int handleByte(unsigned char byte);
+    void outputTriggerCB();
+    void registerChangedCB(unsigned char addr);
 
+private:
+    unsigned short register_map[32];
 
 signals:
     void outputTriggered();
     void registerChanged(unsigned char addr);
 };
 
-#endif // GOVERNORMASTER_H
+#endif // GOVERNORCLIENT_H

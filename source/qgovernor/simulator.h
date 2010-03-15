@@ -16,53 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
 
-#include <QMainWindow>
 #include <QtGui>
-#include <QTcpSocket>
+#include <QDialog>
 
-#include "governormaster.h"
-
-#include "connectdialog.h"
-#include "simulator.h"
+#include "governorclient.h"
 
 namespace Ui {
-    class MainWindow;
+    class Simulator;
 }
 
-class MainWindow : public QMainWindow {
+class Simulator : public QDialog {
     Q_OBJECT
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    void addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value);
-    void addOutput(unsigned char addr, unsigned short value);
-    void addOutput(bool monitor, unsigned char addr);
+    Simulator(QWidget *parent = 0);
+    ~Simulator();
+    int handleByte(unsigned char byte);
 
 protected:
     void changeEvent(QEvent *e);
 
-private:
-    Ui::MainWindow *ui;
-
-    ConnectDialog *connectDialog;
-    Simulator *simulator;
     QStandardItemModel registerModel;
-    QStandardItemModel outputModel;
-    QStandardItemModel inputModel;
-    QTcpSocket *tcpSocket;
+    GovernorClient *governorClient;
 
-    GovernorMaster *governorMaster;
-    bool connected;
+private:
+    Ui::Simulator *ui;
 
 private slots:
-    void on_connectPushButton_clicked();
-    void on_disconnectPushButton_clicked();
     void on_outputTriggered();
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);
 };
 
-#endif // MAINWINDOW_H
+#endif // SIMULATOR_H

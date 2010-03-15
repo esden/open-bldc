@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Governor */
     governorMaster = new GovernorMaster();
     connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(on_outputTriggered()));
+    connect(governorMaster, SIGNAL(registerChanged(unsigned char)), this, SLOT(on_registerChanged(unsigned char)));
 
     /* register display table */
     registerModel.setHorizontalHeaderLabels(
@@ -60,12 +61,13 @@ MainWindow::MainWindow(QWidget *parent) :
         registerModel.item(i, 4)->setCheckable(true);
     }
 
-    connect(&registerModel, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(on_registerChanged(QStandardItem *)));
+    connect(&registerModel, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(on_guiRegisterChanged(QStandardItem *)));
 
     ui->registerTableView->setModel(&registerModel);
     ui->registerTableView->resizeColumnsToContents();
     ui->registerTableView->resizeRowsToContents();
 
+    /* governor output data */
     outputModel.setHorizontalHeaderLabels(
             QStringList() << QApplication::translate("qgovernor", "Mon")
                           << QApplication::translate("qgovernor", "R/W")
@@ -78,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->outputTableView->resizeColumnsToContents();
     ui->outputTableView->resizeRowsToContents();
 
+    /* governor input data */
     inputModel.setHorizontalHeaderLabels(
             QStringList() << QApplication::translate("qgovernor", "Mon")
                           << QApplication::translate("qgovernor", "R/W")
@@ -93,6 +96,8 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Dialog initialization */
     connectDialog = new ConnectDialog(this);
 
+    /* Simulator initialization */
+    simulator = new Simulator(this);
 }
 
 MainWindow::~MainWindow()
@@ -117,6 +122,9 @@ void MainWindow::on_connectPushButton_clicked()
     ui->connectPushButton->setDisabled(true);
     if(connectDialog->exec()){
         ui->statusBar->showMessage(tr("Connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
+        if(connectDialog->getInterfaceId() == 0)
+            simulator->show();
+
         for(int i=0; i<32; i++)
             governorMaster->sendGet(i);
         ui->disconnectPushButton->setDisabled(false);
@@ -140,7 +148,7 @@ void MainWindow::on_disconnectPushButton_clicked()
 void MainWindow::addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value)
 {
     inputModel.appendRow(
-            QList<QStandardItem *>() << new QStandardItem()
+            QList<QStandardItem *>() << new QStandardItem(monitor ? "M" : "")
                                      << new QStandardItem(r_w)
                                      << new QStandardItem(QString::number(addr, 10).rightJustified(2, '0', false))
                                      << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
@@ -207,10 +215,25 @@ void MainWindow::on_outputTriggered()
             state = 0;
             break;
         }
+
+        simulator->handleByte(data);
     }
 }
 
-void MainWindow::on_registerChanged(QStandardItem *item)
+void MainWindow::on_registerChanged(unsigned char addr)
+{
+    int value = governorMaster->getRegisterMapValue(addr);
+
+    registerModel.item(addr, 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
+    registerModel.item(addr, 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
+    registerModel.item(addr, 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
+                                                .append(" ")
+                                                .append(QString::number(value & 0xFF, 2)
+                                                        .rightJustified(8, '0', false)),
+                                                Qt::DisplayRole);
+}
+
+void MainWindow::on_guiRegisterChanged(QStandardItem *item)
 {
     int value;
     bool conversion_ok;

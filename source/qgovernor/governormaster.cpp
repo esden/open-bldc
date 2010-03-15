@@ -52,6 +52,11 @@ unsigned short GovernorMaster::getRegisterMapValue(unsigned char addr)
     return gpm_get_register_map_val(addr);
 }
 
+int GovernorMaster::handleByte(unsigned char byte)
+{
+    return gpm_handle_byte(byte);
+}
+
 void GovernorMaster::outputTriggerCB()
 {
     emit outputTriggered();

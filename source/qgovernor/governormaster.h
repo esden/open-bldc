@@ -30,6 +30,7 @@ public:
     void registerChangedCB(unsigned char addr);
     signed short pickupByte();
     int sendSet(unsigned char addr, unsigned short data);
+    int sendGet(unsigned char addr);
     unsigned short getRegisterMapValue(unsigned char addr);
 
 

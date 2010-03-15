@@ -42,6 +42,11 @@ int GovernorMaster::sendSet(unsigned char addr, unsigned short data)
     return gpm_send_set(addr, data);
 }
 
+int GovernorMaster::sendGet(unsigned char addr)
+{
+    return gpm_send_get(addr);
+}
+
 unsigned short GovernorMaster::getRegisterMapValue(unsigned char addr)
 {
     return gpm_get_register_map_val(addr);

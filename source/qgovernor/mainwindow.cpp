@@ -114,7 +114,8 @@ void MainWindow::on_connectPushButton_clicked()
     ui->connectPushButton->setDisabled(true);
     if(connectDialog->exec()){
         ui->statusBar->showMessage(tr("Connection accepted ... connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
-        governorMaster->sendSet(10, 20);
+        for(int i=0; i<32; i++)
+            governorMaster->sendGet(i);
         ui->connectPushButton->setDisabled(false);
     }else{
         ui->statusBar->showMessage(tr("Connection rejected..."));
@@ -138,11 +139,11 @@ void MainWindow::addInput(bool monitor, QChar r_w, unsigned char addr, unsigned 
     ui->inputTableView->resizeRowsToContents();
 }
 
-void MainWindow::addOutput(bool monitor, QChar r_w, unsigned char addr, unsigned short value)
+void MainWindow::addOutput(unsigned char addr, unsigned short value)
 {
     outputModel.appendRow(
             QList<QStandardItem *>() << new QStandardItem()
-                                     << new QStandardItem(r_w)
+                                     << new QStandardItem("W")
                                      << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false))
                                      << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
                                      << new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false))
@@ -154,11 +155,21 @@ void MainWindow::addOutput(bool monitor, QChar r_w, unsigned char addr, unsigned
     ui->outputTableView->scrollToBottom();
 }
 
+void MainWindow::addOutput(bool monitor, unsigned char addr)
+{
+    outputModel.appendRow(
+            QList<QStandardItem *>() << new QStandardItem()
+                                     << new QStandardItem("R")
+                                     << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false)));
+    ui->outputTableView->resizeColumnsToContents();
+    ui->outputTableView->resizeRowsToContents();
+    ui->outputTableView->scrollToBottom();
+}
+
 void MainWindow::on_outputTriggered()
 {
     signed short data;
     static int state = 0;
-    bool monitor;
     unsigned char addr;
     unsigned short value;
 
@@ -168,6 +179,8 @@ void MainWindow::on_outputTriggered()
             if((data & GP_MODE_MASK) == GP_MODE_WRITE){
                 addr = data & GP_ADDR_MASK;
                 state = 1;
+            }else if((data & GP_MODE_MASK) == GP_MODE_READ | GP_MODE_PEEK){
+                addOutput(false, data & GP_ADDR_MASK);
             }
             break;
         case 1:
@@ -176,7 +189,7 @@ void MainWindow::on_outputTriggered()
             break;
         case 2:
             value |= data << 8;
-            addOutput(false, 'W', addr, value);
+            addOutput(addr, value);
             state = 0;
             break;
         }

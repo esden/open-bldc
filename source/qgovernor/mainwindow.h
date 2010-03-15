@@ -37,7 +37,8 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value);
-    void addOutput(bool monitor, QChar r_w, unsigned char addr, unsigned short value);
+    void addOutput(unsigned char addr, unsigned short value);
+    void addOutput(bool monitor, unsigned char addr);
 
 protected:
     void changeEvent(QEvent *e);

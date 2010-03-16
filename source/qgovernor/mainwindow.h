@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value);
+    void addInput(unsigned char addr, unsigned short value);
     void addOutput(unsigned char addr, unsigned short value);
     void addOutput(bool monitor, unsigned char addr);
 
@@ -63,6 +63,7 @@ private slots:
     void on_outputTriggered();
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);
+    void on_simulatorInput(unsigned char data);
 };
 
 #endif // MAINWINDOW_H

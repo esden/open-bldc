@@ -48,6 +48,9 @@ private slots:
     void on_outputTriggered();
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);
+
+signals:
+    void newOutput(unsigned char data);
 };
 
 #endif // SIMULATOR_H

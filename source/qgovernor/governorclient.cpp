@@ -30,8 +30,10 @@ GovernorClient::GovernorClient()
 {
     int i;
     gpc_init(gpc_output_trigger, static_cast<void *>(this), gpc_register_changed, static_cast<void *>(this));
-    for(i=0; i<32; i++)
+    for(i=0; i<32; i++){
+        register_map[i] = 0;
         gpc_setup_reg(i, &register_map[i]);
+    }
 }
 
 signed short GovernorClient::pickupByte()
@@ -47,6 +49,11 @@ unsigned short GovernorClient::getRegisterMapValue(unsigned char addr)
 int GovernorClient::handleByte(unsigned char byte)
 {
     return gpc_handle_byte(byte);
+}
+
+void GovernorClient::setRegister(unsigned char addr, unsigned short value)
+{
+    register_map[addr] = value;
 }
 
 void GovernorClient::outputTriggerCB()

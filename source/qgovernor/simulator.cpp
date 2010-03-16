@@ -32,6 +32,12 @@ Simulator::Simulator(QWidget *parent) :
     connect(governorClient, SIGNAL(outputTriggered()), this, SLOT(on_outputTriggered()));
     connect(governorClient, SIGNAL(registerChanged(unsigned char)), this, SLOT(on_registerChanged(unsigned char)));
 
+    /* initialize client register with some arbitary numbers so we see some connection action */
+    for(int i=0; i<16; i++)
+        governorClient->setRegister(i, 1 << i);
+    for(int i=0; i<16; i++)
+        governorClient->setRegister(16+i, 0x8000 >> i);
+
     /* register display table */
     registerModel.setHorizontalHeaderLabels(
             QStringList() << QApplication::translate("qgovernor", "Dec")
@@ -45,7 +51,6 @@ Simulator::Simulator(QWidget *parent) :
 
     for(int i=0; i<32; i++){
         value = governorClient->getRegisterMapValue(i);
-        value = 0;
         registerModel.setVerticalHeaderItem(i, new QStandardItem(QString::number(i, 10).rightJustified(3, '0', false)));
         registerModel.setItem(i, 0, new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false)));
         registerModel.setItem(i, 1, new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false)));
@@ -90,7 +95,10 @@ void Simulator::changeEvent(QEvent *e)
 
 void Simulator::on_outputTriggered()
 {
-
+    signed short data;
+    while((data = governorClient->pickupByte()) != -1){
+        emit newOutput(data);
+    }
 }
 
 void Simulator::on_registerChanged(unsigned char addr)
@@ -109,5 +117,39 @@ void Simulator::on_registerChanged(unsigned char addr)
 
 void Simulator::on_guiRegisterChanged(QStandardItem *item)
 {
+    int value;
+    bool conversion_ok;
 
+    switch(item->column()){
+    case 0:
+        value = item->data(Qt::DisplayRole).toString().toInt(&conversion_ok, 10);
+        break;
+    case 1:
+        value = item->data(Qt::DisplayRole).toString().toInt(&conversion_ok, 16);
+        break;
+    case 2:
+        value = item->data(Qt::DisplayRole).toString().remove(QChar(' '), Qt::CaseInsensitive).toInt(&conversion_ok, 2);
+        break;
+    }
+
+    if(conversion_ok){
+        registerModel.item(item->row(), 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
+                                                    .append(" ")
+                                                    .append(QString::number(value & 0xFF, 2)
+                                                            .rightJustified(8, '0', false)),
+                                                    Qt::DisplayRole);
+        if(governorClient->getRegisterMapValue(item->row()) != value)
+            governorClient->setRegister(item->row(), value);
+    }else{
+        value = governorClient->getRegisterMapValue(item->row());
+        registerModel.item(item->row(), 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
+        registerModel.item(item->row(), 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
+                                                    .append(" ")
+                                                    .append(QString::number(value & 0xFF, 2)
+                                                            .rightJustified(8, '0', false)),
+                                                    Qt::DisplayRole);
+    }
 }

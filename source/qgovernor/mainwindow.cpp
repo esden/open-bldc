@@ -82,9 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* governor input data */
     inputModel.setHorizontalHeaderLabels(
-            QStringList() << QApplication::translate("qgovernor", "Mon")
-                          << QApplication::translate("qgovernor", "R/W")
-                          << QApplication::translate("qgovernor", "Addr")
+            QStringList() << QApplication::translate("qgovernor", "Addr")
                           << QApplication::translate("qgovernor", "Val Hex")
                           << QApplication::translate("qgovernor", "Val Dec")
                           << QApplication::translate("qgovernor", "Val Bin"));
@@ -98,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Simulator initialization */
     simulator = new Simulator(this);
+    connect(simulator, SIGNAL(newOutput(unsigned char)), this, SLOT(on_simulatorInput(unsigned char)));
 }
 
 MainWindow::~MainWindow()
@@ -139,18 +138,18 @@ void MainWindow::on_connectPushButton_clicked()
 void MainWindow::on_disconnectPushButton_clicked()
 {
     ui->statusBar->showMessage(tr("Connection closed."), 5000);
+    if(connectDialog->getInterfaceId() == 0)
+        simulator->hide();
     ui->connectPushButton->setDisabled(false);
     ui->disconnectPushButton->setDisabled(true);
     ui->registerTableView->setDisabled(true);
     connected = false;
 }
 
-void MainWindow::addInput(bool monitor, QChar r_w, unsigned char addr, unsigned short value)
+void MainWindow::addInput(unsigned char addr, unsigned short value)
 {
     inputModel.appendRow(
-            QList<QStandardItem *>() << new QStandardItem(monitor ? "M" : "")
-                                     << new QStandardItem(r_w)
-                                     << new QStandardItem(QString::number(addr, 10).rightJustified(2, '0', false))
+            QList<QStandardItem *>() << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false))
                                      << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
                                      << new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false))
                                      << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
@@ -272,4 +271,29 @@ void MainWindow::on_guiRegisterChanged(QStandardItem *item)
         if(!connected)
             ui->statusBar->showMessage(tr("Please connect first before changing register values..."), 5000);
     }
+}
+
+void MainWindow::on_simulatorInput(unsigned char data)
+{
+    static int state = 0;
+    static unsigned char addr;
+    static unsigned short value;
+
+    switch(state){
+    case 0:
+        addr = data & GP_ADDR_MASK;
+        state = 1;
+        break;
+    case 1:
+        value = data;
+        state = 2;
+        break;
+    case 2:
+        value |= data << 8;
+        addInput(addr, value);
+        state = 0;
+        break;
+    }
+
+    governorMaster->handleByte(data);
 }

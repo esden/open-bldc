@@ -29,6 +29,7 @@ public:
     signed short pickupByte();
     unsigned short getRegisterMapValue(unsigned char addr);
     int handleByte(unsigned char byte);
+    void setRegister(unsigned char addr, unsigned short value);
     void outputTriggerCB();
     void registerChangedCB(unsigned char addr);
 

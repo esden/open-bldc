@@ -39,28 +39,11 @@ Simulator::Simulator(QWidget *parent) :
         governorClient->setRegister(16+i, 0x8000 >> i);
 
     /* register display table */
-    registerModel.setHorizontalHeaderLabels(
-            QStringList() << QApplication::translate("qgovernor", "Dec")
-                          << QApplication::translate("qgovernor", "Hex")
-                          << QApplication::translate("qgovernor", "Bin")
-                          << QApplication::translate("qgovernor", "Mon")
-                          << QApplication::translate("qgovernor", "Dis"));
-
-
     unsigned short value;
 
     for(int i=0; i<32; i++){
         value = governorClient->getRegisterMapValue(i);
-        registerModel.setVerticalHeaderItem(i, new QStandardItem(QString::number(i, 10).rightJustified(3, '0', false)));
-        registerModel.setItem(i, 0, new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false)));
-        registerModel.setItem(i, 1, new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false)));
-        registerModel.setItem(i, 2, new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
-                                                      .append(" ")
-                                                      .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
-        registerModel.setItem(i, 3, new QStandardItem());
-        registerModel.item(i, 3)->setCheckable(true);
-        registerModel.setItem(i, 4, new QStandardItem());
-        registerModel.item(i, 4)->setCheckable(true);
+        registerModel.setRegisterValue(i, value);
     }
 
     connect(&registerModel, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(on_guiRegisterChanged(QStandardItem *)));
@@ -103,16 +86,7 @@ void Simulator::on_outputTriggered()
 
 void Simulator::on_registerChanged(unsigned char addr)
 {
-    int value = governorClient->getRegisterMapValue(addr);
-
-    registerModel.item(addr, 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
-    registerModel.item(addr, 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
-    registerModel.item(addr, 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
-                                                .append(" ")
-                                                .append(QString::number(value & 0xFF, 2)
-                                                        .rightJustified(8, '0', false)),
-                                                Qt::DisplayRole);
-
+    registerModel.setRegisterValue(addr, governorClient->getRegisterMapValue(addr));
 }
 
 void Simulator::on_guiRegisterChanged(QStandardItem *item)
@@ -133,23 +107,10 @@ void Simulator::on_guiRegisterChanged(QStandardItem *item)
     }
 
     if(conversion_ok){
-        registerModel.item(item->row(), 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
-        registerModel.item(item->row(), 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
-        registerModel.item(item->row(), 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
-                                                    .append(" ")
-                                                    .append(QString::number(value & 0xFF, 2)
-                                                            .rightJustified(8, '0', false)),
-                                                    Qt::DisplayRole);
+        registerModel.setRegisterValue(item->row(), value);
         if(governorClient->getRegisterMapValue(item->row()) != value)
             governorClient->setRegister(item->row(), value);
     }else{
-        value = governorClient->getRegisterMapValue(item->row());
-        registerModel.item(item->row(), 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
-        registerModel.item(item->row(), 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);
-        registerModel.item(item->row(), 2)->setData(QString::number(value >> 8, 2).rightJustified(8, '0', false)
-                                                    .append(" ")
-                                                    .append(QString::number(value & 0xFF, 2)
-                                                            .rightJustified(8, '0', false)),
-                                                    Qt::DisplayRole);
+        registerModel.setRegisterValue(item->row(), governorClient->getRegisterMapValue(item->row()));
     }
 }

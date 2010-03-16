@@ -25,6 +25,7 @@
 
 #include "governormaster.h"
 
+#include "registermodel.h"
 #include "connectdialog.h"
 #include "simulator.h"
 
@@ -49,7 +50,7 @@ private:
 
     ConnectDialog *connectDialog;
     Simulator *simulator;
-    QStandardItemModel registerModel;
+    RegisterModel registerModel;
     QStandardItemModel outputModel;
     QStandardItemModel inputModel;
     QTcpSocket *tcpSocket;

@@ -16,42 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SIMULATOR_H
-#define SIMULATOR_H
+#ifndef REGISTERMODEL_H
+#define REGISTERMODEL_H
 
-#include <QtGui>
-#include <QDialog>
+#include <QStandardItemModel>
 
-#include "registermodel.h"
-#include "governorclient.h"
-
-namespace Ui {
-    class Simulator;
-}
-
-class Simulator : public QDialog {
-    Q_OBJECT
+class RegisterModel : public QStandardItemModel
+{
 public:
-    Simulator(QWidget *parent = 0);
-    ~Simulator();
-    int handleByte(unsigned char byte);
-
-protected:
-    void changeEvent(QEvent *e);
-
-    RegisterModel registerModel;
-    GovernorClient *governorClient;
-
-private:
-    Ui::Simulator *ui;
-
-private slots:
-    void on_outputTriggered();
-    void on_registerChanged(unsigned char addr);
-    void on_guiRegisterChanged(QStandardItem *item);
-
-signals:
-    void newOutput(unsigned char data);
+    RegisterModel();
+    void setRegisterValue(unsigned char addr, unsigned short value);
 };
 
-#endif // SIMULATOR_H
+#endif // REGISTERMODEL_H

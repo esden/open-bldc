@@ -23,8 +23,10 @@ extern "C" {
 
 #include "governorclient.h"
 
+extern "C" {
 void gpc_output_trigger(void *data);
 void gpc_register_changed(void *data, u8 addr);
+}
 
 GovernorClient::GovernorClient()
 {
@@ -66,6 +68,7 @@ void GovernorClient::registerChangedCB(unsigned char addr)
     emit registerChanged(addr);
 }
 
+extern "C" {
 void gpc_output_trigger(void *data)
 {
     static_cast<GovernorClient *>(data)->outputTriggerCB();
@@ -74,4 +77,5 @@ void gpc_output_trigger(void *data)
 void gpc_register_changed(void *data, u8 addr)
 {
     static_cast<GovernorClient *>(data)->registerChangedCB(addr);
+}
 }

@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+extern "C" {
 #include <lg/types.h>
 #include <lg/gpdef.h>
+}
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -51,25 +53,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->registerTableView->resizeRowsToContents();
 
     /* governor output data */
-    outputModel.setHorizontalHeaderLabels(
-            QStringList() << QApplication::translate("qgovernor", "Mon")
-                          << QApplication::translate("qgovernor", "R/W")
-                          << QApplication::translate("qgovernor", "Addr")
-                          << QApplication::translate("qgovernor", "Val Hex")
-                          << QApplication::translate("qgovernor", "Val Dec")
-                          << QApplication::translate("qgovernor", "Val Bin"));
-
     ui->outputTableView->setModel(&outputModel);
     ui->outputTableView->resizeColumnsToContents();
     ui->outputTableView->resizeRowsToContents();
 
     /* governor input data */
-    inputModel.setHorizontalHeaderLabels(
-            QStringList() << QApplication::translate("qgovernor", "Addr")
-                          << QApplication::translate("qgovernor", "Val Hex")
-                          << QApplication::translate("qgovernor", "Val Dec")
-                          << QApplication::translate("qgovernor", "Val Bin"));
-
     ui->inputTableView->setModel(&inputModel);
     ui->inputTableView->resizeColumnsToContents();
     ui->inputTableView->resizeRowsToContents();
@@ -135,77 +123,16 @@ void MainWindow::on_disconnectPushButton_clicked()
     connected = false;
 }
 
-void MainWindow::addInput(unsigned char addr, unsigned short value)
-{
-    inputModel.appendRow(
-            QList<QStandardItem *>() << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false))
-                                     << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
-                                     << new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false))
-                                     << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
-                                                          .append(" ")
-                                                          .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
-    ui->inputTableView->resizeColumnsToContents();
-    ui->inputTableView->scrollToBottom();
-    ui->inputTableView->resizeRowsToContents();
-}
-
-void MainWindow::addOutput(unsigned char addr, unsigned short value)
-{
-    outputModel.appendRow(
-            QList<QStandardItem *>() << new QStandardItem()
-                                     << new QStandardItem("W")
-                                     << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false))
-                                     << new QStandardItem(QString::number(value, 16).rightJustified(4, '0', false))
-                                     << new QStandardItem(QString::number(value, 10).rightJustified(5, '0', false))
-                                     << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
-                                                          .append(" ")
-                                                          .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
-    ui->outputTableView->resizeColumnsToContents();
-    ui->outputTableView->resizeRowsToContents();
-    ui->outputTableView->scrollToBottom();
-}
-
-void MainWindow::addOutput(bool monitor, unsigned char addr)
-{
-    outputModel.appendRow(
-            QList<QStandardItem *>() << new QStandardItem()
-                                     << new QStandardItem("R")
-                                     << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false)));
-    ui->outputTableView->resizeColumnsToContents();
-    ui->outputTableView->resizeRowsToContents();
-    ui->outputTableView->scrollToBottom();
-}
-
 void MainWindow::on_outputTriggered()
 {
     signed short data;
-    static int state = 0;
-    unsigned char addr;
-    unsigned short value;
-
     while((data = governorMaster->pickupByte()) != -1){
-        switch(state){
-        case 0:
-            if((data & GP_MODE_MASK) == GP_MODE_WRITE){
-                addr = data & GP_ADDR_MASK;
-                state = 1;
-            }else if((data & GP_MODE_MASK) == GP_MODE_READ | GP_MODE_PEEK){
-                addOutput(false, data & GP_ADDR_MASK);
-            }
-            break;
-        case 1:
-            value = data;
-            state = 2;
-            break;
-        case 2:
-            value |= data << 8;
-            addOutput(addr, value);
-            state = 0;
-            break;
-        }
-
+        outputModel.handleByte(data);
         simulator->handleByte(data);
     }
+    ui->outputTableView->resizeColumnsToContents();
+    ui->outputTableView->resizeRowsToContents();
+    ui->outputTableView->scrollToBottom();
 }
 
 void MainWindow::on_registerChanged(unsigned char addr)
@@ -243,27 +170,12 @@ void MainWindow::on_guiRegisterChanged(QStandardItem *item)
 
 void MainWindow::on_simulatorInput(unsigned char data)
 {
-    static int state = 0;
-    static unsigned char addr;
-    static unsigned short value;
-
-    switch(state){
-    case 0:
-        addr = data & GP_ADDR_MASK;
-        state = 1;
-        break;
-    case 1:
-        value = data;
-        state = 2;
-        break;
-    case 2:
-        value |= data << 8;
-        addInput(addr, value);
-        state = 0;
-        break;
-    }
-
+    inputModel.handleByte(data);
     governorMaster->handleByte(data);
+
+    ui->inputTableView->resizeColumnsToContents();
+    ui->inputTableView->resizeRowsToContents();
+    ui->inputTableView->scrollToBottom();
 }
 
 void MainWindow::on_registerTableView_customContextMenuRequested(QPoint pos)

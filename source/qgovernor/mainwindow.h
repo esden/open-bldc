@@ -26,6 +26,7 @@
 #include "governormaster.h"
 
 #include "registermodel.h"
+#include "protocolmodel.h"
 #include "connectdialog.h"
 #include "simulator.h"
 
@@ -38,9 +39,6 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void addInput(unsigned char addr, unsigned short value);
-    void addOutput(unsigned char addr, unsigned short value);
-    void addOutput(bool monitor, unsigned char addr);
 
 protected:
     void changeEvent(QEvent *e);
@@ -51,8 +49,8 @@ private:
     ConnectDialog *connectDialog;
     Simulator *simulator;
     RegisterModel registerModel;
-    QStandardItemModel outputModel;
-    QStandardItemModel inputModel;
+    ProtocolModel outputModel;
+    ProtocolModel inputModel;
     QTcpSocket *tcpSocket;
 
     GovernorMaster *governorMaster;

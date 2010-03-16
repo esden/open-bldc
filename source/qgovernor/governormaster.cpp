@@ -24,8 +24,10 @@ extern "C" {
 
 #include "governormaster.h"
 
+extern "C" {
 void gpm_output_trigger(void *data);
 void gpm_register_changed(void *data, u8 addr);
+}
 
 GovernorMaster::GovernorMaster()
 {
@@ -67,6 +69,7 @@ void GovernorMaster::registerChangedCB(unsigned char addr)
     emit registerChanged(addr);
 }
 
+extern "C" {
 void gpm_output_trigger(void *data)
 {
     static_cast<GovernorMaster *>(data)->outputTriggerCB();
@@ -75,4 +78,5 @@ void gpm_output_trigger(void *data)
 void gpm_register_changed(void *data, u8 addr)
 {
     static_cast<GovernorMaster *>(data)->registerChangedCB(addr);
+}
 }

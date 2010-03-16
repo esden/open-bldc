@@ -57,7 +57,11 @@ private:
     GovernorMaster *governorMaster;
     bool connected;
 
+    QAction *updateRegister;
+    QAction *updateAllRegisters;
+
 private slots:
+    void on_registerTableView_customContextMenuRequested(QPoint pos);
     void on_connectPushButton_clicked();
     void on_disconnectPushButton_clicked();
     void on_outputTriggered();

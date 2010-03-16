@@ -97,6 +97,12 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Simulator initialization */
     simulator = new Simulator(this);
     connect(simulator, SIGNAL(newOutput(unsigned char)), this, SLOT(on_simulatorInput(unsigned char)));
+
+    /* Actions */
+    updateRegister = new QAction(tr("Update"), this);
+    updateRegister->setStatusTip(tr("Read register content from client."));
+    updateAllRegisters = new QAction(tr("Update All"), this);
+    updateAllRegisters->setStatusTip(tr("Read all register contents from client."));
 }
 
 MainWindow::~MainWindow()
@@ -296,4 +302,26 @@ void MainWindow::on_simulatorInput(unsigned char data)
     }
 
     governorMaster->handleByte(data);
+}
+
+void MainWindow::on_registerTableView_customContextMenuRequested(QPoint pos)
+{
+    QModelIndex index = ui->registerTableView->indexAt(pos);
+    QMenu menu(this);
+    QAction *action;
+
+    if(index.isValid()){
+        menu.addAction(updateRegister);
+        menu.addAction(updateAllRegisters);
+    }else{
+        menu.addAction(updateAllRegisters);
+    }
+
+    action = menu.exec(ui->registerTableView->mapToGlobal(pos));
+
+    if(action == updateRegister)
+        governorMaster->sendGet(index.row());
+    else if(action == updateAllRegisters)
+        for(int i=0; i<32; i++)
+            governorMaster->sendGet(i);
 }

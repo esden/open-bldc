@@ -27,8 +27,8 @@ typedef void (*gp_with_addr_hook_t)(void *data, u8 addr);
 #define GP_MODE_RESERVED (1 << 5)
 #define GP_MODE_PEEK 0
 #define GP_MODE_CONT (1 << 6)
-#define GP_MODE_READ 0
-#define GP_MODE_WRITE (1 << 7)
+#define GP_MODE_READ (1 << 7)
+#define GP_MODE_WRITE 0
 #define GP_MODE_MASK 0xE0
 #define GP_ADDR_MASK 0x1F
 

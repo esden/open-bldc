@@ -27,27 +27,28 @@
 #include "check_suites.h"
 
 int gpm_dummy_trigger_output_triggered = 0;
+void *gpm_dummy_trigger_output_data = 0;
+
 int gpm_dummy_register_changed = 0;
 int gpm_dummy_register_changed_addr = 0;
+void *gpm_dummy_register_changed_data = 0;
 
 void gpm_dummy_trigger_output_hook(void *data)
 {
-	data = data;
-
+	gpm_dummy_trigger_output_data = data;
 	gpm_dummy_trigger_output_triggered = 1;
 }
 
 void gpm_dummy_register_changed_hook(void *data, u8 addr)
 {
-	data = data;
-
+	gpm_dummy_register_changed_data = data;
 	gpm_dummy_register_changed_addr = addr;
 	gpm_dummy_register_changed = 1;
 }
 
 void init_gprotm_tc(void)
 {
-	gpm_init(gpm_dummy_trigger_output_hook, NULL, gpm_dummy_register_changed_hook, NULL);
+	gpm_init(gpm_dummy_trigger_output_hook, (void *)1, gpm_dummy_register_changed_hook, (void *)1);
 }
 
 void clean_gprotm_tc(void)
@@ -80,6 +81,7 @@ START_TEST(test_gprotm_send_set)
 		fail_unless(0 == gpm_send_set(addr, 0x0000));
 
 		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((void *)1 == gpm_dummy_trigger_output_data);
 		fail_unless((addr | GP_MODE_WRITE) == gpm_pickup_byte());
 		fail_unless(0x00 == gpm_pickup_byte());
 		fail_unless(0x00 == gpm_pickup_byte());
@@ -88,6 +90,7 @@ START_TEST(test_gprotm_send_set)
 		fail_unless(0x0000 == gpm_get_register_map_val(addr));
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 
 	/* test data some value */
@@ -95,6 +98,7 @@ START_TEST(test_gprotm_send_set)
 		fail_unless(0 == gpm_send_set(addr, 0xAA55));
 
 		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((void *)1 == gpm_dummy_trigger_output_data);
 		fail_unless((addr | GP_MODE_WRITE) == gpm_pickup_byte());
 		fail_unless(0x55 == gpm_pickup_byte());
 		fail_unless(0xAA == gpm_pickup_byte());
@@ -103,6 +107,7 @@ START_TEST(test_gprotm_send_set)
 		fail_unless(0xAA55 == gpm_get_register_map_val(addr));
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 
 	/* test data max value */
@@ -110,6 +115,7 @@ START_TEST(test_gprotm_send_set)
 		fail_unless(0 == gpm_send_set(addr, 0xFFFF));
 
 		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((void *)1 == gpm_dummy_trigger_output_data);
 		fail_unless((addr | GP_MODE_WRITE) == gpm_pickup_byte());
 		fail_unless(0xFF == gpm_pickup_byte());
 		fail_unless(0xFF == gpm_pickup_byte());
@@ -118,6 +124,7 @@ START_TEST(test_gprotm_send_set)
 		fail_unless(0xFFFF == gpm_get_register_map_val(addr));
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 
 	/* test invalid addresses */
@@ -125,9 +132,11 @@ START_TEST(test_gprotm_send_set)
 		fail_unless(1 == gpm_send_set(addr, 0x0000));
 
 		fail_unless(0 == gpm_dummy_trigger_output_triggered);
+		fail_unless((void *)0 == gpm_dummy_trigger_output_data);
 		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 
 }
@@ -142,10 +151,12 @@ START_TEST(test_gprotm_send_get)
 		fail_unless(0 == gpm_send_get(addr));
 
 		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((void *)1 == gpm_dummy_trigger_output_data);
 		fail_unless((addr | GP_MODE_READ | GP_MODE_PEEK) == gpm_pickup_byte());
 		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 
 	/* test invalid addresses */
@@ -156,6 +167,7 @@ START_TEST(test_gprotm_send_get)
 		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 }
 END_TEST
@@ -169,10 +181,12 @@ START_TEST(test_gprotm_send_get_cont)
 		fail_unless(0 == gpm_send_get_cont(addr));
 
 		fail_unless(1 == gpm_dummy_trigger_output_triggered);
+		fail_unless((void *)1 == gpm_dummy_trigger_output_data);
 		fail_unless((addr | GP_MODE_READ | GP_MODE_CONT) == gpm_pickup_byte());
 		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 
 	/* test invalid addresses */
@@ -180,9 +194,11 @@ START_TEST(test_gprotm_send_get_cont)
 		fail_unless(1 == gpm_send_get_cont(addr));
 
 		fail_unless(0 == gpm_dummy_trigger_output_triggered);
+		fail_unless((void *)0 == gpm_dummy_trigger_output_data);
 		fail_unless(-1 == gpm_pickup_byte());
 
 		gpm_dummy_trigger_output_triggered = 0;
+		gpm_dummy_trigger_output_data = 0;
 	}
 }
 END_TEST
@@ -196,14 +212,18 @@ START_TEST(test_gprotm_handle_byte)
 	for(addr=0; addr<32; addr++){
 		fail_unless(0 == gpm_handle_byte(addr));
 		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless((void *)0 == gpm_dummy_register_changed_data);
 		fail_unless(0 == gpm_handle_byte(data & 0xFF));
 		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless((void *)0 == gpm_dummy_register_changed_data);
 		fail_unless(0 == gpm_handle_byte(data >> 8));
 		fail_unless(1 == gpm_dummy_register_changed);
 		fail_unless(addr == gpm_dummy_register_changed_addr);
+		fail_unless((void *)1 == gpm_dummy_register_changed_data);
 		fail_unless(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
+		gpm_dummy_register_changed_data = 0;
 	}
 
 	/* check all valid addresses with data 0xAA55 */
@@ -211,14 +231,18 @@ START_TEST(test_gprotm_handle_byte)
 	for(addr=0; addr<32; addr++){
 		fail_unless(0 == gpm_handle_byte(addr));
 		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless((void *)0 == gpm_dummy_register_changed_data);
 		fail_unless(0 == gpm_handle_byte(data & 0xFF));
 		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless((void *)0 == gpm_dummy_register_changed_data);
 		fail_unless(0 == gpm_handle_byte(data >> 8));
 		fail_unless(1 == gpm_dummy_register_changed);
 		fail_unless(addr == gpm_dummy_register_changed_addr);
+		fail_unless((void *)1 == gpm_dummy_register_changed_data);
 		fail_unless(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
+		gpm_dummy_register_changed_data = 0;
 	}
 
 	/* check all valid addresses with data 0xFFFF */
@@ -226,14 +250,18 @@ START_TEST(test_gprotm_handle_byte)
 	for(addr=0; addr<32; addr++){
 		fail_unless(0 == gpm_handle_byte(addr));
 		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless((void *)0 == gpm_dummy_register_changed_data);
 		fail_unless(0 == gpm_handle_byte(data & 0xFF));
 		fail_unless(0 == gpm_dummy_register_changed);
+		fail_unless((void *)0 == gpm_dummy_register_changed_data);
 		fail_unless(0 == gpm_handle_byte(data >> 8));
 		fail_unless(1 == gpm_dummy_register_changed);
 		fail_unless(addr == gpm_dummy_register_changed_addr);
+		fail_unless((void *)1 == gpm_dummy_register_changed_data);
 		fail_unless(data == gpm_get_register_map_val(gpm_dummy_register_changed_addr));
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
+		gpm_dummy_register_changed_data = 0;
 	}
 
 	/* check all invalid addresses */
@@ -241,8 +269,10 @@ START_TEST(test_gprotm_handle_byte)
 		fail_unless(1 == gpm_handle_byte(addr));
 		fail_unless(0 == gpm_dummy_register_changed);
 		fail_unless(0 == gpm_dummy_register_changed_addr);
+		fail_unless((void *)0 == gpm_dummy_register_changed_data);
 		gpm_dummy_register_changed = 0;
 		gpm_dummy_register_changed_addr = 0;
+		gpm_dummy_register_changed_data = 0;
 	}
 }
 END_TEST

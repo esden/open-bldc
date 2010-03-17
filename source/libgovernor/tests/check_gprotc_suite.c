@@ -28,12 +28,23 @@
 
 u16 gpc_dummy_register_map[32];
 
+void *gpc_dummy_trigger_output_data = 0;
 int gpc_dummy_trigger_output_triggered = 0;
+void *gpc_dummy_register_changed_data = 0;
+int gpc_dummy_register_changed = 0;
+int gpc_dummy_register_changed_addr = 0;
 
 void gpc_dummy_trigger_output_hook(void* data)
 {
-	data = data;
+	gpc_dummy_trigger_output_data = data;
 	gpc_dummy_trigger_output_triggered = 1;
+}
+
+void gpc_dummy_register_changed_hook(void* data, u8 addr)
+{
+	gpc_dummy_register_changed_data = data;
+	gpc_dummy_register_changed = 1;
+	gpc_dummy_register_changed_addr = addr;
 }
 
 void init_gprotc_tc(void)
@@ -43,9 +54,13 @@ void init_gprotc_tc(void)
 	for(i=0; i<32; i++)
 		gpc_dummy_register_map[i] = 0xAA55+i;
 
-	gpc_init(gpc_dummy_trigger_output_hook, NULL, NULL, NULL);
+	gpc_init(gpc_dummy_trigger_output_hook, (void *)1, gpc_dummy_register_changed_hook, (void*)1);
 
+	gpc_dummy_trigger_output_data = 0;
 	gpc_dummy_trigger_output_triggered = 0;
+	gpc_dummy_register_changed_data = 0;
+	gpc_dummy_register_changed = 0;
+	gpc_dummy_register_changed_addr = 0;
 }
 
 void clean_gprotc_tc(void)
@@ -99,14 +114,21 @@ START_TEST(test_gprotc_handle_byte_read)
 
 	for(addr=0; addr<32; addr++){
 		fail_unless(0 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK));
+		fail_unless(1 == gpc_dummy_trigger_output_triggered);
+		fail_unless((void *)1 == gpc_dummy_trigger_output_data);
 		fail_unless(addr == gpc_pickup_byte());
 		fail_unless(0x55+addr == gpc_pickup_byte());
 		fail_unless(0xAA == gpc_pickup_byte());
 		fail_unless(-1 == gpc_pickup_byte());
+
+		gpc_dummy_trigger_output_triggered = 0;
+		gpc_dummy_trigger_output_data = 0;
 	}
 
 	for(addr=0; addr<32; addr++){
 		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK | GP_MODE_RESERVED));
+		fail_unless(0 == gpc_dummy_trigger_output_triggered);
+		fail_unless((void *)0 == gpc_dummy_trigger_output_data);
 		fail_unless(-1 == gpc_pickup_byte());
 	}
 }
@@ -125,12 +147,26 @@ START_TEST(test_gprotc_handle_byte_write)
 		fail_unless(0 == gpc_handle_byte(addr | GP_MODE_WRITE));
 		fail_unless(0 == gpc_handle_byte(data & 0xFF));
 		fail_unless(0 == gpc_handle_byte(data >> 8));
+		fail_unless(1 == gpc_dummy_register_changed);
+		fail_unless(addr == gpc_dummy_register_changed_addr);
+		fail_unless((void *)1 == gpc_dummy_register_changed_data);
 		fail_unless(data == gpc_dummy_register_map[addr]);
+
+		gpc_dummy_register_changed = 0;
+		gpc_dummy_register_changed_addr = 0;
+		gpc_dummy_register_changed_data = 0;
 	}
 
 	for(addr=0; addr<32; addr++){
 		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_WRITE | GP_MODE_RESERVED));
+		fail_unless(0 == gpc_dummy_register_changed);
+		fail_unless(0 == gpc_dummy_register_changed_addr);
+		fail_unless((void *)0 == gpc_dummy_register_changed_data);
 		fail_unless(-1 == gpc_pickup_byte());
+
+		gpc_dummy_register_changed = 0;
+		gpc_dummy_register_changed_addr = 0;
+		gpc_dummy_register_changed_data = 0;
 	}
 }
 END_TEST

@@ -52,6 +52,8 @@ enum gpc_states gpc_state = GPCS_IDLE;
 u16 gpc_addr;
 u16 gpc_data;
 
+u32 gpc_monitor_map;
+
 int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with_addr_hook_t register_changed, void *register_changed_data)
 {
 	int i;
@@ -63,6 +65,8 @@ int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with
 
 	for(i=0; i<32; i++)
 		gpc_register_map[i] = 0;
+
+	gpc_monitor_map = 0;
 
 	ring_init(&gpc_output_ring, gpc_output_buffer, 128);
 
@@ -99,6 +103,8 @@ int gpc_send_reg(u8 addr)
 	dat[1] = (*gpc_register_map[addr]) & 0xFF;
 	dat[2] = (*gpc_register_map[addr]) >> 8;
 
+	DEBUG("sending reg %02X with content %04X\n", addr, *gpc_register_map[addr]);
+
 	if(0 <= ring_write(&gpc_output_ring, dat, 3)){
 	    if(gpc_hooks.trigger_output) gpc_hooks.trigger_output(gpc_hooks.trigger_output_data);
 	    return 0;
@@ -125,6 +131,9 @@ int gpc_handle_byte(u8 byte)
 		} else if((byte & GP_MODE_MASK) == (GP_MODE_READ | GP_MODE_PEEK)){
 			DEBUG("read ");
 			gpc_send_reg(byte & GP_ADDR_MASK);
+		} else if((byte & GP_MODE_MASK) == (GP_MODE_READ | GP_MODE_CONT)){
+			DEBUG("read cont ");
+			gpc_monitor_map ^= 1 << (byte & GP_ADDR_MASK);
 		} else {
 			DEBUG("unimplemented\n");
 			return 1;
@@ -154,5 +163,21 @@ int gpc_handle_byte(u8 byte)
 	}
 
 	DEBUG("\n");
+	return 0;
+}
+
+int gpc_register_touched(u8 addr){
+	if(addr > 31)
+		return 1;
+
+	DEBUG("touched_register %02X, search mask %08X and register map %08X ", addr, (1 << addr), gpc_monitor_map);
+	if(gpc_monitor_map & (1 << addr)){
+		DEBUG("sending\n");
+		gpc_send_reg(addr);
+	}else{
+		DEBUG("not sending\n");
+		return 1;
+	}
+
 	return 0;
 }

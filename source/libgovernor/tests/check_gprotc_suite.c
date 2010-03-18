@@ -171,6 +171,41 @@ START_TEST(test_gprotc_handle_byte_write)
 }
 END_TEST
 
+START_TEST(test_gprotc_read_cont)
+{
+	u16 addr = 0;
+
+	for(addr=0; addr<32; addr++){
+		fail_unless(0 == gpc_setup_reg(addr, &gpc_dummy_register_map[addr]));
+	}
+
+	for(addr=0; addr<32; addr++){
+		gpc_dummy_register_map[addr] = addr | ((addr+1) << 8);
+	}
+
+	for(addr=0; addr<256; addr++){
+		fail_unless(1 == gpc_register_touched(addr));
+		fail_unless(0 == gpc_dummy_register_changed);
+		fail_unless(0 == gpc_dummy_register_changed_addr);
+		fail_unless((void *)0 == gpc_dummy_register_changed_data);
+	}
+
+	for(addr=0; addr<31; addr++){
+		fail_unless(0 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_CONT));
+		fail_unless(0 == gpc_register_touched(addr));
+		fail_unless(addr == gpc_pickup_byte());
+		fail_unless(addr == gpc_pickup_byte());
+		fail_unless(addr+1 == gpc_pickup_byte());
+		fail_unless(-1 == gpc_pickup_byte());
+		fail_unless(0 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_CONT));
+		fail_unless(1 == gpc_register_touched(addr));
+		fail_unless(0 == gpc_dummy_register_changed);
+		fail_unless(0 == gpc_dummy_register_changed_addr);
+		fail_unless((void *)0 == gpc_dummy_register_changed_data);
+	}
+}
+END_TEST
+
 Suite *make_lg_gprotc_suite(void)
 {
 	Suite *s;
@@ -184,6 +219,7 @@ Suite *make_lg_gprotc_suite(void)
 	tcase_add_test(tc, test_gprotc_send_reg);
 	tcase_add_test(tc, test_gprotc_handle_byte_read);
 	tcase_add_test(tc, test_gprotc_handle_byte_write);
+	tcase_add_test(tc, test_gprotc_read_cont);
 
 	return s;
 }

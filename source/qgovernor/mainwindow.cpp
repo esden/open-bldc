@@ -215,3 +215,8 @@ void MainWindow::on_actionAbout_triggered()
                           "<center><a href=\"http://open-bldc.org\">"
                           "http://open-bldc.org</a></center>"));
 }
+
+void MainWindow::on_action_Simulator_triggered()
+{
+    simulator->show();
+}

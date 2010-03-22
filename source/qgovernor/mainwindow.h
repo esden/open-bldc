@@ -28,7 +28,7 @@
 #include "registermodel.h"
 #include "protocolmodel.h"
 #include "connectdialog.h"
-#include "simulator.h"
+#include "governorsimulator.h"
 
 namespace Ui {
     class MainWindow;
@@ -47,7 +47,7 @@ private:
     Ui::MainWindow *ui;
 
     ConnectDialog *connectDialog;
-    Simulator *simulator;
+    QIODevice *governorInterface;
     RegisterModel registerModel;
     ProtocolModel outputModel;
     ProtocolModel inputModel;
@@ -60,7 +60,7 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
-    void on_simulatorShutdown();
+    void on_governorInterface_aboutToClose();
     void on_action_Simulator_triggered();
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();
@@ -70,7 +70,7 @@ private slots:
     void on_outputTriggered();
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);
-    void on_simulatorInput(unsigned char data);
+    void on_governorInterface_readyRead();
 };
 
 #endif // MAINWINDOW_H

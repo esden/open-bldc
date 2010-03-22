@@ -35,9 +35,11 @@ public:
     Simulator(QWidget *parent = 0);
     ~Simulator();
     int handleByte(unsigned char byte);
+    qint64 readByte();
 
 protected:
     void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent *);
 
     RegisterModel registerModel;
     GovernorClient *governorClient;
@@ -52,7 +54,7 @@ private slots:
     void on_guiRegisterChanged(QStandardItem *item);
 
 signals:
-    void newOutput(unsigned char data);
+    void readyRead();
     void shutdown();
 };
 

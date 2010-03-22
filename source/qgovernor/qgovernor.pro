@@ -28,14 +28,16 @@ SOURCES += main.cpp \
     simulator.cpp \
     governorclient.cpp \
     registermodel.cpp \
-    protocolmodel.cpp
+    protocolmodel.cpp \
+    governorsimulator.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
     governormaster.h \
     simulator.h \
     governorclient.h \
     registermodel.h \
-    protocolmodel.h
+    protocolmodel.h \
+    governorsimulator.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
     simulator.ui

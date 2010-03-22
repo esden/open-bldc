@@ -65,11 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Dialog initialization */
     connectDialog = new ConnectDialog(this);
 
-    /* Simulator initialization */
-    simulator = new Simulator(this);
-    connect(simulator, SIGNAL(newOutput(unsigned char)), this, SLOT(on_simulatorInput(unsigned char)));
-    connect(simulator, SIGNAL(shutdown()), this, SLOT(on_simulatorShutdown()));
-
     /* Actions */
     updateRegister = new QAction(tr("Update"), this);
     updateRegister->setStatusTip(tr("Read register content from client."));
@@ -99,8 +94,12 @@ void MainWindow::on_connectPushButton_clicked()
     ui->connectPushButton->setDisabled(true);
     if(connectDialog->exec()){
         ui->statusBar->showMessage(tr("Connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
-        if(connectDialog->getInterfaceId() == 0)
-            simulator->show();
+        if(connectDialog->getInterfaceId() == 0){
+            governorInterface = new GovernorSimulator(this);
+            governorInterface->open(QIODevice::ReadWrite);
+            connect(governorInterface, SIGNAL(readyRead()), this, SLOT(on_governorInterface_readyRead()));
+            connect(governorInterface, SIGNAL(aboutToClose()), this, SLOT(on_governorInterface_aboutToClose()));
+        }
 
         for(int i=0; i<32; i++)
             governorMaster->sendGet(i);
@@ -117,7 +116,7 @@ void MainWindow::on_disconnectPushButton_clicked()
 {
     ui->statusBar->showMessage(tr("Connection closed."), 5000);
     if(connectDialog->getInterfaceId() == 0)
-        simulator->hide();
+        delete governorInterface;
     ui->connectPushButton->setDisabled(false);
     ui->disconnectPushButton->setDisabled(true);
     ui->registerTableView->setDisabled(true);
@@ -127,10 +126,15 @@ void MainWindow::on_disconnectPushButton_clicked()
 void MainWindow::on_outputTriggered()
 {
     signed short data;
+    QByteArray qdata;
+
     while((data = governorMaster->pickupByte()) != -1){
         outputModel.handleByte(data);
-        simulator->handleByte(data);
+        qdata.append(data);
     }
+
+    governorInterface->write(qdata);
+
     ui->outputTableView->resizeColumnsToContents();
     ui->outputTableView->resizeRowsToContents();
     ui->outputTableView->scrollToBottom();
@@ -173,16 +177,6 @@ void MainWindow::on_guiRegisterChanged(QStandardItem *item)
     }
 }
 
-void MainWindow::on_simulatorInput(unsigned char data)
-{
-    inputModel.handleByte(data);
-    governorMaster->handleByte(data);
-
-    ui->inputTableView->resizeColumnsToContents();
-    ui->inputTableView->resizeRowsToContents();
-    ui->inputTableView->scrollToBottom();
-}
-
 void MainWindow::on_registerTableView_customContextMenuRequested(QPoint pos)
 {
     QModelIndex index = ui->registerTableView->indexAt(pos);
@@ -223,16 +217,33 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_action_Simulator_triggered()
 {
-    simulator->show();
+    //simulator->show();
 }
 
-void MainWindow::on_simulatorShutdown()
+void MainWindow::on_governorInterface_aboutToClose()
 {
     ui->statusBar->showMessage(tr("Connection closed."), 5000);
     if(connectDialog->getInterfaceId() == 0)
-        simulator->hide();
+        delete governorInterface;
     ui->connectPushButton->setDisabled(false);
     ui->disconnectPushButton->setDisabled(true);
     ui->registerTableView->setDisabled(true);
     connected = false;
+}
+
+void MainWindow::on_governorInterface_readyRead()
+{
+    char data[10];
+    qint64 size;
+
+    size = governorInterface->read(data, 10);
+
+    for(int i=0; i<size; i++){
+        inputModel.handleByte(data[i]);
+        governorMaster->handleByte(data[i]);
+    }
+
+    ui->inputTableView->resizeColumnsToContents();
+    ui->inputTableView->resizeRowsToContents();
+    ui->inputTableView->scrollToBottom();
 }

@@ -64,6 +64,11 @@ int Simulator::handleByte(unsigned char byte)
     return governorClient->handleByte(byte);
 }
 
+qint64 Simulator::readByte()
+{
+    return governorClient->pickupByte();
+}
+
 void Simulator::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
@@ -76,12 +81,14 @@ void Simulator::changeEvent(QEvent *e)
     }
 }
 
+void Simulator::closeEvent(QCloseEvent *)
+{
+    emit shutdown();
+}
+
 void Simulator::on_outputTriggered()
 {
-    signed short data;
-    while((data = governorClient->pickupByte()) != -1){
-        emit newOutput(data);
-    }
+    emit readyRead();
 }
 
 void Simulator::on_registerChanged(unsigned char addr)

@@ -60,6 +60,7 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
+    void on_simulatorShutdown();
     void on_action_Simulator_triggered();
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();

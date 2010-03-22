@@ -46,12 +46,14 @@ private:
     Ui::Simulator *ui;
 
 private slots:
+    void on_pushButton_clicked();
     void on_outputTriggered();
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);
 
 signals:
     void newOutput(unsigned char data);
+    void shutdown();
 };
 
 #endif // SIMULATOR_H

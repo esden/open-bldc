@@ -114,3 +114,8 @@ void Simulator::on_guiRegisterChanged(QStandardItem *item)
         registerModel.setRegisterValue(item->row(), governorClient->getRegisterMapValue(item->row()));
     }
 }
+
+void Simulator::on_pushButton_clicked()
+{
+    emit shutdown();
+}

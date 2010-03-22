@@ -68,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Simulator initialization */
     simulator = new Simulator(this);
     connect(simulator, SIGNAL(newOutput(unsigned char)), this, SLOT(on_simulatorInput(unsigned char)));
+    connect(simulator, SIGNAL(shutdown()), this, SLOT(on_simulatorShutdown()));
 
     /* Actions */
     updateRegister = new QAction(tr("Update"), this);
@@ -219,4 +220,15 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_action_Simulator_triggered()
 {
     simulator->show();
+}
+
+void MainWindow::on_simulatorShutdown()
+{
+    ui->statusBar->showMessage(tr("Connection closed."), 5000);
+    if(connectDialog->getInterfaceId() == 0)
+        simulator->hide();
+    ui->connectPushButton->setDisabled(false);
+    ui->disconnectPushButton->setDisabled(true);
+    ui->registerTableView->setDisabled(true);
+    connected = false;
 }

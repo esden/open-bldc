@@ -58,6 +58,11 @@ void GovernorClient::setRegister(unsigned char addr, unsigned short value)
     register_map[addr] = value;
 }
 
+int GovernorClient::registerTouched(unsigned char addr)
+{
+    return gpc_register_touched(addr);
+}
+
 void GovernorClient::outputTriggerCB()
 {
     emit outputTriggered();

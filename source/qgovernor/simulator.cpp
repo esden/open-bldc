@@ -108,8 +108,10 @@ void Simulator::on_guiRegisterChanged(QStandardItem *item)
 
     if(conversion_ok){
         registerModel.setRegisterValue(item->row(), value);
-        if(governorClient->getRegisterMapValue(item->row()) != value)
+        if(governorClient->getRegisterMapValue(item->row()) != value){
             governorClient->setRegister(item->row(), value);
+            governorClient->registerTouched(item->row());
+        }
     }else{
         registerModel.setRegisterValue(item->row(), governorClient->getRegisterMapValue(item->row()));
     }

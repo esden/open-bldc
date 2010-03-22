@@ -156,6 +156,10 @@ void MainWindow::on_guiRegisterChanged(QStandardItem *item)
     case 2:
         value = item->data(Qt::DisplayRole).toString().remove(QChar(' '), Qt::CaseInsensitive).toInt(&conversion_ok, 2);
         break;
+    case 3:
+        governorMaster->sendGetCont(item->row());
+        return;
+        break;
     }
 
     if(conversion_ok && connected){

@@ -30,6 +30,7 @@ public:
     unsigned short getRegisterMapValue(unsigned char addr);
     int handleByte(unsigned char byte);
     void setRegister(unsigned char addr, unsigned short value);
+    int registerTouched(unsigned char addr);
     void outputTriggerCB();
     void registerChangedCB(unsigned char addr);
 

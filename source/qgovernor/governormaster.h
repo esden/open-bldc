@@ -31,6 +31,7 @@ public:
     signed short pickupByte();
     int sendSet(unsigned char addr, unsigned short data);
     int sendGet(unsigned char addr);
+    int sendGetCont(unsigned char addr);
     unsigned short getRegisterMapValue(unsigned char addr);
     int handleByte(unsigned char byte);
 

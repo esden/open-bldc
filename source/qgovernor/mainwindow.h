@@ -60,6 +60,8 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
+    void on_actionAbout_triggered();
+    void on_actionAbout_Qt_triggered();
     void on_registerTableView_customContextMenuRequested(QPoint pos);
     void on_connectPushButton_clicked();
     void on_disconnectPushButton_clicked();

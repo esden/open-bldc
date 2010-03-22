@@ -199,3 +199,19 @@ void MainWindow::on_registerTableView_customContextMenuRequested(QPoint pos)
         for(int i=0; i<32; i++)
             governorMaster->sendGet(i);
 }
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+    QMessageBox::aboutQt(this, tr("About Qt"));
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::about(this, tr("About"),
+                       tr("<center>qgovernor 0.1</center><br />\n"
+                          "<center>Copyright (C) 2010 "
+                          "Piotr Esden-Tempski &lt;piotr@esden.net&gt;</center>\n"
+                          "<center>GNU GPL, version 3 or later</center><br />\n"
+                          "<center><a href=\"http://open-bldc.org\">"
+                          "http://open-bldc.org</a></center>"));
+}

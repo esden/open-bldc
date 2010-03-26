@@ -28,6 +28,10 @@ public:
     void addPacket(bool monitor, QChar r_w, unsigned char addr, unsigned short value);
     void addPacket(bool monitor, QChar r_w, unsigned char addr);
     void handleByte(unsigned char byte);
+    void setHistorySize(qint64 size);
+
+private:
+    qint64 history_size;
 };
 
 #endif // PROTOCOLMODEL_H

@@ -28,6 +28,7 @@ ConnectDialog::ConnectDialog(QWidget *parent) :
     ui->setupUi(this);
 
     ui->interfaceComboBox->addItem("Simulator");
+    ui->interfaceComboBox->addItem("FTDI");
     ui->interfaceComboBox->addItem("Add Interface...");
 }
 

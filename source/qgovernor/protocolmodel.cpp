@@ -30,6 +30,8 @@ ProtocolModel::ProtocolModel()
                           << tr("Val Hex")
                           << tr("Val Dec")
                           << tr("Val Bin"));
+
+    history_size = 100;
 }
 
 void ProtocolModel::addPacket(bool monitor, QChar r_w, unsigned char addr, unsigned short value)
@@ -43,6 +45,10 @@ void ProtocolModel::addPacket(bool monitor, QChar r_w, unsigned char addr, unsig
             << new QStandardItem(QString::number(value >> 8, 2).rightJustified(8, '0', false)
                                  .append(" ")
                                  .append(QString::number(value & 0xFF, 2).rightJustified(8, '0', false))));
+
+    if(rowCount() > history_size){
+        removeRows(0, rowCount() - history_size);
+    }
 }
 
 void ProtocolModel::addPacket(bool monitor, QChar r_w, unsigned char addr)
@@ -51,6 +57,10 @@ void ProtocolModel::addPacket(bool monitor, QChar r_w, unsigned char addr)
             QList<QStandardItem *>() << new QStandardItem(monitor ? "X" : "")
             << new QStandardItem(r_w)
             << new QStandardItem(QString::number(addr, 10).rightJustified(3, '0', false)));
+
+    if(rowCount() > history_size){
+        removeRows(0, rowCount() - history_size);
+    }
 }
 
 void ProtocolModel::handleByte(unsigned char byte)
@@ -79,5 +89,14 @@ void ProtocolModel::handleByte(unsigned char byte)
         addPacket(false, 'W', addr, value);
         state = 0;
         break;
+    }
+}
+
+void ProtocolModel::setHistorySize(qint64 size)
+{
+    history_size = size;
+
+    if(rowCount() > history_size){
+        removeRows(0, rowCount() - history_size);
     }
 }

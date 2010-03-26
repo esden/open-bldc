@@ -94,19 +94,30 @@ void MainWindow::on_connectPushButton_clicked()
     ui->connectPushButton->setDisabled(true);
     if(connectDialog->exec()){
         ui->statusBar->showMessage(tr("Connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
-        if(connectDialog->getInterfaceId() == 0){
+        switch(connectDialog->getInterfaceId()){
+        case 0:
             governorInterface = new GovernorSimulator(this);
-            governorInterface->open(QIODevice::ReadWrite);
-            connect(governorInterface, SIGNAL(readyRead()), this, SLOT(on_governorInterface_readyRead()));
-            connect(governorInterface, SIGNAL(aboutToClose()), this, SLOT(on_governorInterface_aboutToClose()));
+            break;
+        case 1:
+            governorInterface = new GovernorFtdi(this);
+            break;
         }
 
-        for(int i=0; i<32; i++)
-            governorMaster->sendGet(i);
-        ui->disconnectPushButton->setDisabled(false);
-        ui->registerTableView->setDisabled(false);
-        connected = true;
-        ui->statusBar->showMessage(tr("Connection to interface %1 established.").arg(connectDialog->getInterfaceId()), 5000);
+        if(governorInterface->open(QIODevice::ReadWrite)){
+            connect(governorInterface, SIGNAL(readyRead()), this, SLOT(on_governorInterface_readyRead()));
+            connect(governorInterface, SIGNAL(aboutToClose()), this, SLOT(on_governorInterface_aboutToClose()));
+
+            for(int i=0; i<32; i++)
+                governorMaster->sendGet(i);
+            ui->disconnectPushButton->setDisabled(false);
+            ui->registerTableView->setDisabled(false);
+            connected = true;
+            ui->statusBar->showMessage(tr("Connection to interface %1 established.").arg(connectDialog->getInterfaceId()), 3000);
+        }else{
+            delete governorInterface;
+            ui->connectPushButton->setEnabled(true);
+            ui->statusBar->showMessage(tr("Connection failed to interface %1.").arg(connectDialog->getInterfaceId()), 3000);
+        }
     }else{
         ui->connectPushButton->setDisabled(false);
     }
@@ -233,10 +244,10 @@ void MainWindow::on_governorInterface_aboutToClose()
 
 void MainWindow::on_governorInterface_readyRead()
 {
-    char data[10];
+    char data[1024];
     qint64 size;
 
-    size = governorInterface->read(data, 10);
+    size = governorInterface->read(data, sizeof(data));
 
     for(int i=0; i<size; i++){
         inputModel.handleByte(data[i]);

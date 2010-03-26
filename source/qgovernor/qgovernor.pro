@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     governorclient.cpp \
     registermodel.cpp \
     protocolmodel.cpp \
-    governorsimulator.cpp
+    governorsimulator.cpp \
+    governorftdi.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
     governormaster.h \
@@ -37,19 +38,20 @@ HEADERS += mainwindow.h \
     governorclient.h \
     registermodel.h \
     protocolmodel.h \
-    governorsimulator.h
+    governorsimulator.h \
+    governorftdi.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
     simulator.ui
 INCLUDEPATH += ../libgovernor/include
 macx { 
     LIBS += -L/opt/local/lib \
-        -L../libgovernor
-    INCLUDEPATH += /opt/local/include
+        -L../libgovernor -L/opt/mine/lib
+    INCLUDEPATH += /opt/local/include /opt/mine/include
     ICON = icons/qgovernor.icns
     FILETYPES.files = ../libgovernor/libgovernor.dylib
     FILETYPES.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FILETYPES
 }
 else:LIBS += -L../libgovernor/src/.libs
-LIBS += -lgovernor
+LIBS += -lgovernor -lftdi -lusb

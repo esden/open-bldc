@@ -29,6 +29,7 @@
 #include "protocolmodel.h"
 #include "connectdialog.h"
 #include "governorsimulator.h"
+#include "governorftdi.h"
 
 namespace Ui {
     class MainWindow;

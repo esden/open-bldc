@@ -58,6 +58,8 @@ int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with
 {
 	int i;
 
+	gpc_state = GPCS_IDLE;
+
 	gpc_hooks.trigger_output = trigger_output;
 	gpc_hooks.trigger_output_data = trigger_output_data;
 	gpc_hooks.register_changed = register_changed;
@@ -160,6 +162,8 @@ int gpc_handle_byte(u8 byte)
 		if(gpc_hooks.register_changed) gpc_hooks.register_changed(gpc_hooks.register_changed_data, gpc_addr);
 
 		break;
+	default:
+		return 1;
 	}
 
 	DEBUG("\n");

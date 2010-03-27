@@ -26,9 +26,9 @@
 #
 
 NAME		?= open-bldc
-PREFIX		?= arm-elf
-OOCD_INTERFACE	?= jtagkey-tiny
-OOCD_TARGET	?= olimex_stm32_h103
+PREFIX		?= arm-none-eabi
+OOCD_INTERFACE	?= flossjtag
+OOCD_TARGET	?= open-bldc
 
 VERBOSE		?= 0
 
@@ -98,6 +98,14 @@ flash: $(NAME).hex
 		    -c "reset halt" \
 		    -c "flash write_image erase $(NAME).hex" \
 		    -c reset \
+		    -c shutdown
+
+halt:
+	@echo " OOCD halt"
+	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+		    -f board/$(OOCD_TARGET).cfg \
+		    -c init \
+		    -c "reset halt" \
 		    -c shutdown
 
 gccversion:

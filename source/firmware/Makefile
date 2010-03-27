@@ -26,8 +26,8 @@
 #
 
 NAME		= open-bldc
-OOCD_INTERFACE	= jtagkey-tiny
-OOCD_TARGET	= olimex_stm32_h103
+OOCD_INTERFACE	= flossjtag
+OOCD_TARGET	= open-bldc
 
 all:
 	make -w -C src all

@@ -19,3 +19,4 @@ libtool
 .libs
 *.lo
 *.la
+*.a

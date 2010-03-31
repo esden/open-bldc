@@ -22,16 +22,15 @@
 #include <stm32/gpio.h>
 #include <stm32/tim.h>
 
+#include <lg/types.h>
+#include <lg/gpdef.h>
+#include <lg/gprotc.h>
+
 #include "usart.h"
 
-#include "types.h"
 #include "led.h"
-//#include "pwm.h"
-//#include "comm_tim.h"
-//#include "adc.h"
-#include "gprot.h"
 
-volatile s16 out_data;
+volatile s16 data_buf;
 
 void usart_init(void){
     NVIC_InitTypeDef nvic;
@@ -61,7 +60,7 @@ void usart_init(void){
     GPIO_Init(GPIOB, &gpio);
 
     /* Initialize the usart subsystem */
-    usart.USART_BaudRate            = 500000;
+    usart.USART_BaudRate            = 9600;
     usart.USART_WordLength          = USART_WordLength_8b;
     usart.USART_StopBits            = USART_StopBits_1;
     usart.USART_Parity              = USART_Parity_No;
@@ -88,75 +87,25 @@ void usart_disable_send(void){
 }
 
 void usart3_irq_handler(void){
-    static int mirror = 0;
-    static char dat;
-    /* input (RX) handler */
-    if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
-        dat = USART_ReceiveData(USART3);
-        mirror = 1;
-        USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
 
-        gprot_handle(dat);
+	/* input (RX) handler */
+	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
+		data_buf = USART_ReceiveData(USART3);
 
-        /*
-        buff = USART_ReceiveData(USART3);
+		if(!gpc_handle_byte(data_buf)){
+			LED_GREEN_TOGGLE();
+		}else{
+			LED_RED_ON();
+		}
+	}
 
-        switch(buff){
-        case ' ':
-            pwm_offset=190;
-            break;
-        case 'h':
-            pwm_val++;
-            pwm_offset++;
-            break;
-        case 't':
-            pwm_val--;
-            pwm_offset--;
-            break;
-        case 'n':
-            comm_tim_freq+=10;
-            break;
-        case 's':
-            comm_tim_freq-=10;
-            break;
-        case 'r':
-            pwm_offset+=10;
-            if(pwm_offset>1500)
-                pwm_offset=1500;
-            break;
-        case 'l':
-            pwm_offset-=10;
-            if(pwm_offset<pwm_val)
-                pwm_offset=pwm_val;
-            break;
-        case 'v':
-            adc_level+=10;
-            if(adc_level>3000)
-                adc_level=3000;
-            break;
-        case 'z':
-            adc_level-=10;
-            if(adc_level<10)
-                adc_level=10;
-            break;
-        }
-        */
-    }
-
-    /* output (TX) handler */
-    if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
-        /*
-        if(mirror){
-            USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
-            USART_SendData(USART3, dat);
-        }
-        */
-
-        if((out_data = gprot_get_byte()) >= 0){
-            USART_SendData(USART3, out_data);
-        }else{
-            LED_RED_TOGGLE();
-            usart_disable_send();
-        }
-    }
+	/* output (TX) handler */
+	if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
+		if((data_buf = gpc_pickup_byte()) >= 0){
+			USART_SendData(USART3, data_buf);
+			LED_GREEN_TOGGLE();
+		}else{
+			usart_disable_send();
+		}
+	}
 }

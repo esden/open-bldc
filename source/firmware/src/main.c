@@ -43,7 +43,7 @@ void my_delay(unsigned long delay ){
 }
 
 int main(void){
-    int i,j;
+//    int i,j;
 
     system_init();
     led_init();

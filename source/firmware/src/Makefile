@@ -48,15 +48,16 @@ OOCD		= openocd
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-CFLAGS		= -I. -Ipwm -Wall -ansi -std=c99 -c -fno-common -O0 -g \
-		  -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections
-ASFLAGS		= -ahls -mapcs-32
-LDFLAGS		= -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
-		  --gc-sections
-LDLIBS		= -lcmsis -lstm32
-CPFLAGS		= -j .isr_vector -j .text -j .data
-ODFLAGS		= -S
-SIZEFLAGS	= -A -x
+CFLAGS          = -I. -Ipwm -I../../libgovernor/include -Wall -ansi -std=c99 -c \
+		  -fno-common -O0 -g -mcpu=cortex-m3 -mthumb \
+		  -ffunction-sections -fdata-sections
+ASFLAGS         = -ahls -mapcs-32
+LDFLAGS         = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
+		                    -L../../libgovernor/src/.libs --gc-sections
+LDLIBS          = -lcmsis -lstm32 -lgovernor
+CPFLAGS         = -j .isr_vector -j .text -j .data
+ODFLAGS         = -S
+SIZEFLAGS       = -A -x
 
 OBJECTS = main.o \
 	  exceptions.o \

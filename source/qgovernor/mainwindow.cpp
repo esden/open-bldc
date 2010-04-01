@@ -126,7 +126,8 @@ void MainWindow::on_connectPushButton_clicked()
 void MainWindow::on_disconnectPushButton_clicked()
 {
     ui->statusBar->showMessage(tr("Connection closed."), 5000);
-    if(connectDialog->getInterfaceId() == 0)
+    if(connectDialog->getInterfaceId() == 0 ||
+       connectDialog->getInterfaceId() == 1)
         delete governorInterface;
     ui->connectPushButton->setDisabled(false);
     ui->disconnectPushButton->setDisabled(true);

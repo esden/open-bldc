@@ -2,49 +2,49 @@
 
 #include "usb.h"
 
-GovernorFtdiReadThread::GovernorFtdiReadThread(struct ftdi_context *context)
+GovernorFtdiReadThread::GovernorFtdiReadThread(QObject *parent, struct ftdi_context *context)
+    : QThread(parent), ftdic(context), quit(false)
 {
-    ftdic = context;
+}
+
+GovernorFtdiReadThread::~GovernorFtdiReadThread()
+{
+    quit = true;
 }
 
 void GovernorFtdiReadThread::run()
 {
     unsigned char data;
-    bool data_added = false;
     int ret;
 
-    while(ftdic->usb_dev != NULL){
+    while(!quit){
         if((ret = ftdi_read_data(ftdic, &data, 1)) > 0){
-            qDebug("got from ftdi %02X", data);
+            mutex.lock();
             buffer.append(data);
             if(buffer.size() <= 1)
-            emit readyRead();
-            //data_added = true;
+                emit readyRead();
+            mutex.unlock();
         }else{
-//            if(ret < 0){
-//                qDebug("Error: unable to read data %d (%s)", ret, ftdi_get_error_string(ftdic));
-//            }else{
-//                if(data_added){
-//                    data_added = false;
-//                    emit readyRead();
-//                    qDebug("data added");
-//                }
-//                //qDebug("Got %d bytes sleeping.", ret);
-//            }
             usleep(200);
         }
     }
-    qDebug("dying...");
 }
 
 qint64 GovernorFtdiReadThread::read(char *data, qint64 maxlen)
 {
+    QMutexLocker lock(&mutex);
     int i;
 
     for(i=0; i<maxlen && !buffer.isEmpty(); i++)
         data[i] = buffer.takeFirst();
 
     return i;
+}
+
+void GovernorFtdiReadThread::shutdown(void)
+{
+    quit = true;
+    wait();
 }
 
 GovernorFtdi::GovernorFtdi(QObject *parent)
@@ -54,10 +54,11 @@ GovernorFtdi::GovernorFtdi(QObject *parent)
 
 GovernorFtdi::~GovernorFtdi()
 {
+    if(readThread)
+        readThread->shutdown();
     ftdi_usb_close(&ftdic);
     ftdi_deinit(&ftdic);
     ftdic.usb_dev = NULL;
-    readThread->wait(0);
 }
 
 bool GovernorFtdi::open(OpenMode mode)
@@ -85,17 +86,7 @@ bool GovernorFtdi::open(OpenMode mode)
         return false;
     }
 
-//    ret = ftdi_read_data_set_chunksize(&ftdic, 1);
-//    if(ret < 0){
-//        qDebug("Error: unable to set read chunksize: %d (%s)", ret, ftdi_get_error_string(&ftdic));
-//    }
-
-//    ret = ftdi_write_data_set_chunksize(&ftdic, 1);
-//    if(ret < 0){
-//        qDebug("Error: unable to set write chunksize: %d (%s)", ret, ftdi_get_error_string(&ftdic));
-//    }
-
-    readThread = new GovernorFtdiReadThread(&ftdic);
+    readThread = new GovernorFtdiReadThread(this, &ftdic);
     connect(readThread, SIGNAL(readyRead()), this, SLOT(on_readThread_readyRead()));
     readThread->start();
 

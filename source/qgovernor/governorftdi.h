@@ -5,19 +5,25 @@
 
 #include <QIODevice>
 #include <QThread>
+#include <QMutex>
 #include <QLinkedList>
 
 class GovernorFtdiReadThread : public QThread
 {
     Q_OBJECT
 public:
-    GovernorFtdiReadThread(struct ftdi_context *context);
+    GovernorFtdiReadThread(QObject *parent, struct ftdi_context *context);
+    ~GovernorFtdiReadThread();
+
     virtual void run();
     qint64 read(char *data, qint64 maxlen);
+    void shutdown();
 
 private:
     struct ftdi_context *ftdic;
+    QMutex mutex;
     QLinkedList<unsigned char> buffer;
+    bool quit;
 
 signals:
     void readyRead();

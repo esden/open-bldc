@@ -393,7 +393,6 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="action_Simulator"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -432,11 +431,6 @@
     <string>&amp;About</string>
    </property>
   </action>
-  <action name="action_Simulator">
-   <property name="text">
-    <string>&amp;Simulator</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
@@ -448,8 +442,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>456</x>
-     <y>333</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>456</x>

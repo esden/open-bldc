@@ -227,11 +227,6 @@ void MainWindow::on_actionAbout_triggered()
                           "http://open-bldc.org</a></center>"));
 }
 
-void MainWindow::on_action_Simulator_triggered()
-{
-    //simulator->show();
-}
-
 void MainWindow::on_governorInterface_aboutToClose()
 {
     ui->statusBar->showMessage(tr("Connection closed."), 5000);

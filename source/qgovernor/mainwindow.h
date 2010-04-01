@@ -61,12 +61,11 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
+    void on_actionConnect_triggered(bool checked);
     void on_governorInterface_aboutToClose();
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();
     void on_registerTableView_customContextMenuRequested(QPoint pos);
-    void on_connectPushButton_clicked();
-    void on_disconnectPushButton_clicked();
     void on_outputTriggered();
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);

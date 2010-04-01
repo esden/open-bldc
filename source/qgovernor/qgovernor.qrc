@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/connect-32x32.png</file>
+        <file>icons/disconnect-32x32.png</file>
+    </qresource>
+</RCC>

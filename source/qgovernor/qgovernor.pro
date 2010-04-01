@@ -46,12 +46,17 @@ FORMS += mainwindow.ui \
 INCLUDEPATH += ../libgovernor/include
 macx { 
     LIBS += -L/opt/local/lib \
-        -L../libgovernor -L/opt/mine/lib
-    INCLUDEPATH += /opt/local/include /opt/mine/include
+        -L../libgovernor \
+        -L/opt/mine/lib
+    INCLUDEPATH += /opt/local/include \
+        /opt/mine/include
     ICON = icons/qgovernor.icns
     FILETYPES.files = ../libgovernor/libgovernor.dylib
     FILETYPES.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FILETYPES
 }
 else:LIBS += -L../libgovernor/src/.libs
-LIBS += -lgovernor -lftdi -lusb
+LIBS += -lgovernor \
+    -lftdi \
+    -lusb
+RESOURCES += qgovernor.qrc

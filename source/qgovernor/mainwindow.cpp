@@ -89,52 +89,6 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::on_connectPushButton_clicked()
-{
-    ui->connectPushButton->setDisabled(true);
-    if(connectDialog->exec()){
-        ui->statusBar->showMessage(tr("Connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
-        switch(connectDialog->getInterfaceId()){
-        case 0:
-            governorInterface = new GovernorSimulator(this);
-            break;
-        case 1:
-            governorInterface = new GovernorFtdi(this);
-            break;
-        }
-
-        if(governorInterface->open(QIODevice::ReadWrite)){
-            connect(governorInterface, SIGNAL(readyRead()), this, SLOT(on_governorInterface_readyRead()));
-            connect(governorInterface, SIGNAL(aboutToClose()), this, SLOT(on_governorInterface_aboutToClose()));
-
-            for(int i=0; i<32; i++)
-                governorMaster->sendGet(i);
-            ui->disconnectPushButton->setDisabled(false);
-            ui->registerTableView->setDisabled(false);
-            connected = true;
-            ui->statusBar->showMessage(tr("Connection to interface %1 established.").arg(connectDialog->getInterfaceId()), 3000);
-        }else{
-            delete governorInterface;
-            ui->connectPushButton->setEnabled(true);
-            ui->statusBar->showMessage(tr("Connection failed to interface %1.").arg(connectDialog->getInterfaceId()), 3000);
-        }
-    }else{
-        ui->connectPushButton->setDisabled(false);
-    }
-}
-
-void MainWindow::on_disconnectPushButton_clicked()
-{
-    ui->statusBar->showMessage(tr("Connection closed."), 5000);
-    if(connectDialog->getInterfaceId() == 0 ||
-       connectDialog->getInterfaceId() == 1)
-        delete governorInterface;
-    ui->connectPushButton->setDisabled(false);
-    ui->disconnectPushButton->setDisabled(true);
-    ui->registerTableView->setDisabled(true);
-    connected = false;
-}
-
 void MainWindow::on_outputTriggered()
 {
     signed short data;
@@ -232,8 +186,10 @@ void MainWindow::on_governorInterface_aboutToClose()
     ui->statusBar->showMessage(tr("Connection closed."), 5000);
     if(connectDialog->getInterfaceId() == 0)
         delete governorInterface;
-    ui->connectPushButton->setDisabled(false);
-    ui->disconnectPushButton->setDisabled(true);
+    ui->actionConnect->setText(tr("Connect..."));
+    ui->actionConnect->setIconText(tr("Connect"));
+    ui->actionConnect->setToolTip(tr("Connect"));
+    ui->actionConnect->setChecked(false);
     ui->registerTableView->setDisabled(true);
     connected = false;
 }
@@ -253,4 +209,51 @@ void MainWindow::on_governorInterface_readyRead()
     ui->inputTableView->resizeColumnsToContents();
     ui->inputTableView->resizeRowsToContents();
     ui->inputTableView->scrollToBottom();
+}
+
+void MainWindow::on_actionConnect_triggered(bool checked)
+{
+    if(checked){
+        if(connectDialog->exec()){
+            ui->statusBar->showMessage(tr("Connecting to interface %1 ...").arg(connectDialog->getInterfaceId()));
+            switch(connectDialog->getInterfaceId()){
+            case 0:
+                governorInterface = new GovernorSimulator(this);
+                break;
+            case 1:
+                governorInterface = new GovernorFtdi(this);
+                break;
+            }
+
+            if(governorInterface->open(QIODevice::ReadWrite)){
+                connect(governorInterface, SIGNAL(readyRead()), this, SLOT(on_governorInterface_readyRead()));
+                connect(governorInterface, SIGNAL(aboutToClose()), this, SLOT(on_governorInterface_aboutToClose()));
+
+                for(int i=0; i<32; i++)
+                    governorMaster->sendGet(i);
+                ui->registerTableView->setDisabled(false);
+                connected = true;
+                ui->actionConnect->setText(tr("Disconnect..."));
+                ui->actionConnect->setIconText(tr("Disconnect"));
+                ui->actionConnect->setToolTip(tr("Disconnect"));
+                ui->statusBar->showMessage(tr("Connection to interface %1 established.").arg(connectDialog->getInterfaceId()), 3000);
+            }else{
+                ui->actionConnect->setChecked(false);
+                delete governorInterface;
+                ui->statusBar->showMessage(tr("Connection failed to interface %1.").arg(connectDialog->getInterfaceId()), 3000);
+            }
+        }else{
+            ui->actionConnect->setChecked(false);
+        }
+    }else{
+        ui->statusBar->showMessage(tr("Connection closed."), 5000);
+        if(connectDialog->getInterfaceId() == 0 ||
+           connectDialog->getInterfaceId() == 1)
+            delete governorInterface;
+        ui->registerTableView->setDisabled(true);
+        connected = false;
+        ui->actionConnect->setText(tr("Connect..."));
+        ui->actionConnect->setIconText(tr("Connect"));
+        ui->actionConnect->setToolTip(tr("Connect"));
+    }
 }

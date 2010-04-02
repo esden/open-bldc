@@ -109,6 +109,24 @@ void MainWindow::on_outputTriggered()
 void MainWindow::on_registerChanged(unsigned char addr)
 {
     registerModel.setRegisterValue(addr, governorMaster->getRegisterMapValue(addr));
+    switch(addr){
+    case 0:
+        ui->forcedCommCheckBox->setChecked(governorMaster->getRegisterMapValue(0) & (1 << 1));
+        ui->ADCCommCheckBox->setChecked(governorMaster->getRegisterMapValue(0) & (1 << 2));
+        break;
+    case 1:
+        ui->PWMOffsetSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        break;
+    case 2:
+        ui->PWMDutyCycleSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        break;
+    case 3:
+        ui->forcedCommTimValSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        break;
+    case 4:
+        ui->ADCLevelspinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        break;
+    }
 }
 
 void MainWindow::on_guiRegisterChanged(QStandardItem *item)
@@ -191,6 +209,7 @@ void MainWindow::on_governorInterface_aboutToClose()
     ui->actionConnect->setToolTip(tr("Connect"));
     ui->actionConnect->setChecked(false);
     ui->registerTableView->setDisabled(true);
+    ui->commGroupBox->setDisabled(true);
     connected = false;
 }
 
@@ -231,7 +250,8 @@ void MainWindow::on_actionConnect_triggered(bool checked)
 
                 for(int i=0; i<32; i++)
                     governorMaster->sendGet(i);
-                ui->registerTableView->setDisabled(false);
+                ui->registerTableView->setEnabled(true);
+                ui->commGroupBox->setEnabled(true);
                 connected = true;
                 ui->actionConnect->setText(tr("Disconnect..."));
                 ui->actionConnect->setIconText(tr("Disconnect"));
@@ -251,9 +271,54 @@ void MainWindow::on_actionConnect_triggered(bool checked)
            connectDialog->getInterfaceId() == 1)
             delete governorInterface;
         ui->registerTableView->setDisabled(true);
+        ui->commGroupBox->setDisabled(true);
         connected = false;
         ui->actionConnect->setText(tr("Connect..."));
         ui->actionConnect->setIconText(tr("Connect"));
         ui->actionConnect->setToolTip(tr("Connect"));
     }
+}
+
+void MainWindow::on_forcedCommCheckBox_clicked(bool checked)
+{
+    if(checked){
+        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) | (1 << 1));
+    }else{
+        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) & ~(1 << 1));
+    }
+}
+
+void MainWindow::on_ADCCommCheckBox_clicked(bool checked)
+{
+    if(checked){
+        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) | (1 << 2));
+    }else{
+        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) & ~(1 << 2));
+    }
+}
+
+void MainWindow::on_PWMDutyCycleSpinBox_valueChanged(int value)
+{
+    registerModel.setRegisterValue(2, value);
+}
+
+void MainWindow::on_PWMOffsetSpinBox_valueChanged(int value)
+{
+    registerModel.setRegisterValue(1, value);
+}
+
+void MainWindow::on_forcedCommTimValSpinBox_valueChanged(int value)
+{
+    registerModel.setRegisterValue(3, value);
+}
+
+void MainWindow::on_ADCLevelspinBox_valueChanged(int value)
+{
+    registerModel.setRegisterValue(4, value);
+}
+
+void MainWindow::on_triggerCommPushButton_clicked()
+{
+    registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) | (1 << 0));
+    registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) & ~(1 << 0));
 }

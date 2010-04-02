@@ -61,6 +61,13 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
+    void on_triggerCommPushButton_clicked();
+    void on_ADCLevelspinBox_valueChanged(int );
+    void on_forcedCommTimValSpinBox_valueChanged(int );
+    void on_PWMOffsetSpinBox_valueChanged(int );
+    void on_PWMDutyCycleSpinBox_valueChanged(int );
+    void on_ADCCommCheckBox_clicked(bool checked);
+    void on_forcedCommCheckBox_clicked(bool checked);
     void on_actionConnect_triggered(bool checked);
     void on_governorInterface_aboutToClose();
     void on_actionAbout_triggered();

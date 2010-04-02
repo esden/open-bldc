@@ -322,3 +322,8 @@ void MainWindow::on_triggerCommPushButton_clicked()
     registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) | (1 << 0));
     registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) & ~(1 << 0));
 }
+
+void MainWindow::on_forcedCommTimIncSpinBox_valueChanged(int step)
+{
+    ui->forcedCommTimValSpinBox->setSingleStep(step);
+}

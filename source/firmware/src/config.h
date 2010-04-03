@@ -19,7 +19,7 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-#define PWM_PHASE_TRIGGER 5
+#define PWM_PHASE_TRIGGER 1
 //#define PWM_PHASE_TRIGGER -1
 //#define ADC_COMM_TRIGGER 1
 

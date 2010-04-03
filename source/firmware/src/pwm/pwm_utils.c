@@ -27,10 +27,10 @@
 
 void pwm_trigger(uint16_t zone){
     if(PWM_PHASE_TRIGGER == zone){
-        LED_GREEN_OFF();
+        LED_BLUE_OFF();
     }
     if(PWM_PHASE_TRIGGER == zone + 1){
-        LED_GREEN_ON();
+        LED_BLUE_ON();
     }
 }
 

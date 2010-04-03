@@ -29,11 +29,11 @@
 
 #include "led.h"
 
-#define PWM_VALUE 130;
-#define PWM_OFFSET 130;
+#define PWM_VALUE 400;
+#define PWM_OFFSET 100;
 
-volatile uint16_t pwm_val = 130;
-volatile uint16_t pwm_offset = 500;
+volatile uint16_t pwm_val = 400;
+volatile uint16_t pwm_offset = 100;
 volatile int pwm_trig_led = 0;
 
 void pwm_init(void){
@@ -76,7 +76,7 @@ void pwm_init(void){
     GPIO_Init(GPIOB, &gpio);
 
     /* Time base configuration */
-    tim_base.TIM_Period = 1999;
+    tim_base.TIM_Period = 3999;
     tim_base.TIM_Prescaler = 0;
     tim_base.TIM_ClockDivision = 0;
     tim_base.TIM_CounterMode = TIM_CounterMode_Up;

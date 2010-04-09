@@ -24,6 +24,7 @@
 
 #include "led.h"
 #include "adc.h"
+#include "pwm/pwm_utils.h"
 
 volatile uint16_t comm_tim_freq = 49152;
 uint16_t comm_tim_capture = 0;
@@ -81,6 +82,10 @@ void comm_tim_on(void){
 void comm_tim_off(void){
     /* TIM2 disable counter */
     TIM_Cmd(TIM2, DISABLE);
+    pwm_set____off(PWM_PHASE_A);
+    pwm_set____off(PWM_PHASE_B);
+    pwm_set____off(PWM_PHASE_C);
+    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
 }
 
 void comm_tim_set_next_comm(void){

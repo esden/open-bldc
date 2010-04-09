@@ -134,10 +134,12 @@ void pwm_comm(void){
     TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
 }
 
-void pwm_off(void){
-    pwm_set_pwm_hi(PWM_PHASE_A);
-    pwm_set_____lo(PWM_PHASE_B);
-    pwm_set____off(PWM_PHASE_C);
+void pwm_off(void)
+{
+	pwm_set____off(PWM_PHASE_A);
+	pwm_set____off(PWM_PHASE_B);
+	pwm_set____off(PWM_PHASE_C);
+	pwm_comm();
 }
 
 void tim1_trg_com_irq_handler(void){

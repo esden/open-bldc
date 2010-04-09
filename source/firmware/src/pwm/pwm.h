@@ -26,6 +26,8 @@ extern volatile int pwm_trig_led;
 
 void pwm_init(void);
 void pwm_off(void);
+void pwm_all_lo(void);
+void pwm_all_hi(void);
 void pwm_comm(void);
 void tim1_trg_com_irq_handler(void);
 void tim1_cc_irq_handler(void);

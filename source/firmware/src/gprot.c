@@ -42,9 +42,12 @@
 #define GPROT_FLAG_PWM_COMM (1 << 0)
 #define GPROT_FLAG_COMM_TIM (1 << 1)
 #define GPROT_FLAG_ADC_COMM (1 << 2)
+#define GPROT_FLAG_ALL_LO (1 << 3)
+#define GPROT_FLAG_ALL_HI (1 << 4)
 
 u16 gprot_dummy_val;
 u16 gprot_flag_reg;
+u16 gprot_flag_reg_old;
 
 /* Private function declarations */
 void gprot_trigger_output(void *data);
@@ -59,6 +62,7 @@ void gprot_init()
 	gpc_init(gprot_trigger_output, 0, gprot_register_changed, 0);
 
 	gprot_flag_reg = 0;
+	gprot_flag_reg_old = 0;
 	gpc_setup_reg(GPROT_FLAG_REG_ADDR, &gprot_flag_reg);
 
 	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
@@ -91,14 +95,36 @@ void gprot_update_flags(void)
 	if(gprot_flag_reg & GPROT_FLAG_COMM_TIM){
 		comm_tim_on();
 	}else{
-		comm_tim_off();
+		if(gprot_flag_reg_old & GPROT_FLAG_COMM_TIM){
+			comm_tim_off();
+		}
 	}
 
 	if(gprot_flag_reg & GPROT_FLAG_ADC_COMM){
 		adc_comm = 1;
 	}else{
-		adc_comm = 0;
+		if(gprot_flag_reg_old & GPROT_FLAG_ADC_COMM){
+			adc_comm = 0;
+		}
+	}
+
+	if(gprot_flag_reg & GPROT_FLAG_ALL_LO){
+		pwm_all_lo();
+	}else{
+		if(gprot_flag_reg_old & GPROT_FLAG_ALL_LO){
+			pwm_off();
+		}
+	}
+
+	if(gprot_flag_reg & GPROT_FLAG_ALL_HI){
+		pwm_all_hi();
+	}else{
+		if(gprot_flag_reg_old & GPROT_FLAG_ALL_HI){
+			pwm_off();
+		}
 	}
 
 	/* add other flags here (up to 16) */
+
+	gprot_flag_reg_old = gprot_flag_reg;
 }

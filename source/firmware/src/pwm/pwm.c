@@ -142,6 +142,22 @@ void pwm_off(void)
 	pwm_comm();
 }
 
+void pwm_all_lo(void)
+{
+	pwm_set_____lo(PWM_PHASE_A);
+	pwm_set_____lo(PWM_PHASE_B);
+	pwm_set_____lo(PWM_PHASE_C);
+	pwm_comm();
+}
+
+void pwm_all_hi(void)
+{
+	pwm_set_____hi(PWM_PHASE_A);
+	pwm_set_____hi(PWM_PHASE_B);
+	pwm_set_____hi(PWM_PHASE_C);
+	pwm_comm();
+}
+
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
 

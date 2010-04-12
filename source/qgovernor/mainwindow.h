@@ -63,7 +63,8 @@ private:
 private slots:
     void on_forcedCommTimIncSpinBox_valueChanged(int );
     void on_triggerCommPushButton_clicked();
-    void on_ADCLevelspinBox_valueChanged(int );
+    void on_ADCLevelRisingSpinBox_valueChanged(int );
+    void on_ADCLevelFallingSpinBox_valueChanged(int );
     void on_forcedCommTimValSpinBox_valueChanged(int );
     void on_PWMOffsetSpinBox_valueChanged(int );
     void on_PWMDutyCycleSpinBox_valueChanged(int );

@@ -176,6 +176,6 @@ void tim1_cc_irq_handler(void){
         TIM_ClearITPendingBit(TIM1, TIM_IT_CC4);
 
         /* Toggling ORANGE LED ca. 22us after pwm duty cycle start of PWM1 */
-        if(pwm_trig_led) LED_ORANGE_TOGGLE();
+        //if(pwm_trig_led) LED_ORANGE_TOGGLE();
     }
 }

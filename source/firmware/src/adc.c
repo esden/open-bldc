@@ -23,6 +23,10 @@
 #include <stm32/gpio.h>
 #include <stm32/tim.h>
 
+#include <lg/types.h>
+#include <lg/gpdef.h>
+#include <lg/gprotc.h>
+
 #include "config.h"
 
 #include "adc.h"
@@ -33,7 +37,8 @@
 
 volatile uint8_t adc_rising = ADC_RISING;
 volatile uint16_t adc_delay_count = 0;
-volatile uint16_t adc_level = 10;
+volatile uint16_t adc_level_rising = 2000;
+volatile uint16_t adc_level_falling = 1300;
 volatile int adc_comm = 0;
 uint16_t adc_count = 0;
 uint16_t adc_filtered = 0;
@@ -53,17 +58,20 @@ void adc_init(void){
     nvic.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&nvic);
 
-    /* GPIOA: ADC Channel 0, 1, 2 as analog input
+    /* GPIOA: ADC Channel 0, 1, 2, 3 as analog input
      * Ch 0 -> BEMF/I_Sense of PHASE A
      * Ch 1 -> BEMF/I_Sense of PHASE B
      * Ch 2 -> BEMF/I_Sense of PHASE C
+     * Ch 3 -> Battery Voltage
      */
-    gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
+    gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
     gpio.GPIO_Mode = GPIO_Mode_AIN;
     GPIO_Init(GPIOA, &gpio);
 
     adc_comm = 0;
     adc_filtered = 0;
+    adc_level_rising = 2000;
+    adc_level_falling = 1300;
 
     /* Configure ADC1 */
     adc.ADC_Mode = ADC_Mode_Independent;
@@ -106,7 +114,8 @@ void adc_init(void){
 
 }
 
-void adc_set(uint8_t channel, uint8_t rising){
+void adc_set(uint8_t channel, uint8_t rising)
+{
 
     adc_rising = rising;
 
@@ -130,6 +139,30 @@ void adc1_2_irq_handler(void){
 
     new_value = ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
 
+    if(adc_delay_count < 5){
+	    adc_delay_count ++;
+	    return;
+    }
+
+    if(adc_rising){
+	    if(new_value > adc_level_rising){
+                    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
+                    if(adc_comm) comm_tim_set_next_comm();
+		    LED_ORANGE_ON();
+	    }else{
+		    LED_ORANGE_OFF();
+	    }
+    }else{
+	    if(new_value > adc_level_falling){
+		    LED_ORANGE_ON();
+	    }else{
+                    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
+                    if(adc_comm) comm_tim_set_next_comm();
+		    LED_ORANGE_OFF();
+	    }
+    }
+
+#if 0
     if(adc_delay_count == 0)
         adc_filtered = new_value;
     else
@@ -141,7 +174,7 @@ void adc1_2_irq_handler(void){
                 if(adc_count < 3){
                     adc_count++;
                 }else{
-                    LED_ORANGE_TOGGLE();
+			//LED_ORANGE_TOGGLE();
                     ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
                     pwm_trig_led=0;
                     if(adc_comm) comm_tim_set_next_comm();
@@ -152,7 +185,7 @@ void adc1_2_irq_handler(void){
                 if(adc_count < 3){
                     adc_count++;
                 }else{
-                    LED_ORANGE_TOGGLE();
+			//LED_ORANGE_TOGGLE();
                     ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
                     pwm_trig_led=0;
                     if(adc_comm) comm_tim_set_next_comm();
@@ -162,5 +195,5 @@ void adc1_2_irq_handler(void){
     }else{
         adc_delay_count++;
     }
-
+#endif
 }

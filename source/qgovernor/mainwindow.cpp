@@ -124,7 +124,10 @@ void MainWindow::on_registerChanged(unsigned char addr)
         ui->forcedCommTimValSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
     case 4:
-        ui->ADCLevelspinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        ui->ADCLevelRisingSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        break;
+    case 5:
+        ui->ADCLevelFallingSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
     }
 }
@@ -312,9 +315,14 @@ void MainWindow::on_forcedCommTimValSpinBox_valueChanged(int value)
     registerModel.setRegisterValue(3, value);
 }
 
-void MainWindow::on_ADCLevelspinBox_valueChanged(int value)
+void MainWindow::on_ADCLevelRisingSpinBox_valueChanged(int value)
 {
     registerModel.setRegisterValue(4, value);
+}
+
+void MainWindow::on_ADCLevelFallingSpinBox_valueChanged(int value)
+{
+    registerModel.setRegisterValue(5, value);
 }
 
 void MainWindow::on_triggerCommPushButton_clicked()

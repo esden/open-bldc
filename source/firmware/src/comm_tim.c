@@ -83,7 +83,7 @@ void comm_tim_off(void){
     /* TIM2 disable counter */
     TIM_Cmd(TIM2, DISABLE);
 
-    pwm_off();
+    pwm_all_lo();
 }
 
 void comm_tim_set_next_comm(void){

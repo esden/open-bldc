@@ -25,7 +25,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="OpenBLDCTabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="OpenBLDCTab">
        <attribute name="title">
@@ -73,9 +73,9 @@
             </widget>
            </item>
            <item row="5" column="0">
-            <widget class="QLabel" name="ADCLevelLabel">
+            <widget class="QLabel" name="ADCLevelRisingLabel">
              <property name="text">
-              <string>ADC level</string>
+              <string>ADC level rising</string>
              </property>
             </widget>
            </item>
@@ -86,7 +86,7 @@
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
+           <item row="7" column="0">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -131,7 +131,7 @@
             </widget>
            </item>
            <item row="5" column="1" colspan="3">
-            <widget class="QSpinBox" name="ADCLevelspinBox">
+            <widget class="QSpinBox" name="ADCLevelRisingSpinBox">
              <property name="maximum">
               <number>65535</number>
              </property>
@@ -151,6 +151,20 @@
             <widget class="QLabel" name="forcedCommTimIncLabel">
              <property name="text">
               <string>Increment</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="ADCLevelFallingLabel">
+             <property name="text">
+              <string>ADC level falling</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1" colspan="3">
+            <widget class="QSpinBox" name="ADCLevelFallingSpinBox">
+             <property name="maximum">
+              <number>65535</number>
              </property>
             </widget>
            </item>
@@ -564,7 +578,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="qgovernor.qrc">
      <normaloff>:/icons/icons/connect-32x32.png</normaloff>
      <normalon>:/icons/icons/disconnect-32x32.png</normalon>:/icons/icons/connect-32x32.png</iconset>
    </property>
@@ -574,7 +588,9 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="qgovernor.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>

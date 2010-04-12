@@ -26,7 +26,8 @@
 #define ADC_FALLIN 0
 #define ADC_RISING 1
 
-extern volatile uint16_t adc_level;
+extern volatile uint16_t adc_level_rising;
+extern volatile uint16_t adc_level_falling;
 extern volatile int adc_comm;
 
 void adc_init(void);

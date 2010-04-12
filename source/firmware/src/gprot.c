@@ -37,7 +37,8 @@
 #define GPROT_PWM_OFFSET_REG_ADDR 1
 #define GPROT_PWM_VAL_REG_ADDR 2
 #define GPROT_COMM_TIM_FREQ_REG_ADDR 3
-#define GPROT_ADC_LEVEL_REG_ADDR 4
+#define GPROT_ADC_LEVEL_RISING_REG_ADDR 4
+#define GPROT_ADC_LEVEL_FALLING_REG_ADDR 5
 
 #define GPROT_FLAG_PWM_COMM (1 << 0)
 #define GPROT_FLAG_COMM_TIM (1 << 1)
@@ -68,7 +69,8 @@ void gprot_init()
 	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
 	gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
 	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &comm_tim_freq);
-	gpc_setup_reg(GPROT_ADC_LEVEL_REG_ADDR, &adc_level);
+	gpc_setup_reg(GPROT_ADC_LEVEL_RISING_REG_ADDR, &adc_level_rising);
+	gpc_setup_reg(GPROT_ADC_LEVEL_FALLING_REG_ADDR, &adc_level_falling);
 }
 
 void gprot_trigger_output(void *data)

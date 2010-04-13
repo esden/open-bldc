@@ -37,8 +37,8 @@
 
 volatile uint8_t adc_rising = ADC_RISING;
 volatile uint16_t adc_delay_count = 0;
-volatile uint16_t adc_level_rising = 2000;
-volatile uint16_t adc_level_falling = 1300;
+volatile uint16_t adc_level_rising = 1878;
+volatile uint16_t adc_level_falling = 1678;
 volatile int adc_comm = 0;
 uint16_t adc_count = 0;
 uint16_t adc_filtered = 0;
@@ -70,8 +70,8 @@ void adc_init(void){
 
     adc_comm = 0;
     adc_filtered = 0;
-    adc_level_rising = 2000;
-    adc_level_falling = 1300;
+    adc_level_rising = 1878;
+    adc_level_falling = 1678;
 
     /* Configure ADC1 */
     adc.ADC_Mode = ADC_Mode_Independent;

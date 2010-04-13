@@ -90,11 +90,11 @@ void comm_tim_set_next_comm(void){
 	uint16_t curr_time = TIM_GetCounter(TIM2);
 	uint16_t new_freq = (curr_time - comm_tim_capture) * 2;
 
-	if(new_freq < (comm_tim_freq - 400)){
+	if(new_freq < (comm_tim_freq - 200)){
 		comm_tim_freq -= 20;
 	}else if(new_freq < comm_tim_freq){
 		comm_tim_freq = new_freq;
-	}else if(new_freq > (comm_tim_freq + 400)){
+	}else if(new_freq > (comm_tim_freq + 200)){
 		comm_tim_freq += 20;
 	}else if(new_freq > comm_tim_freq){
 		comm_tim_freq = new_freq;

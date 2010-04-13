@@ -213,6 +213,9 @@ void MainWindow::on_governorInterface_aboutToClose()
     ui->actionConnect->setChecked(false);
     ui->registerTableView->setDisabled(true);
     ui->commGroupBox->setDisabled(true);
+    ui->powerGroupBox->setDisabled(true);
+    ui->commDetectGroupBox->setDisabled(true);
+    ui->monitoringGroupBox->setDisabled(true);
     connected = false;
 }
 
@@ -255,6 +258,10 @@ void MainWindow::on_actionConnect_triggered(bool checked)
                     governorMaster->sendGet(i);
                 ui->registerTableView->setEnabled(true);
                 ui->commGroupBox->setEnabled(true);
+                ui->powerGroupBox->setEnabled(true);
+                ui->commDetectGroupBox->setEnabled(true);
+                ui->monitoringGroupBox->setEnabled(true);
+
                 connected = true;
                 ui->actionConnect->setText(tr("Disconnect..."));
                 ui->actionConnect->setIconText(tr("Disconnect"));
@@ -275,6 +282,9 @@ void MainWindow::on_actionConnect_triggered(bool checked)
             delete governorInterface;
         ui->registerTableView->setDisabled(true);
         ui->commGroupBox->setDisabled(true);
+        ui->powerGroupBox->setDisabled(true);
+        ui->commDetectGroupBox->setDisabled(true);
+        ui->monitoringGroupBox->setDisabled(true);
         connected = false;
         ui->actionConnect->setText(tr("Connect..."));
         ui->actionConnect->setIconText(tr("Connect"));
@@ -334,4 +344,15 @@ void MainWindow::on_triggerCommPushButton_clicked()
 void MainWindow::on_forcedCommTimIncSpinBox_valueChanged(int step)
 {
     ui->forcedCommTimValSpinBox->setSingleStep(step);
+}
+
+void MainWindow::on_forcedCommMonCheckBox_clicked(bool checked)
+{
+    governorMaster->sendGetCont(3);
+}
+
+void MainWindow::on_ADCLevelMonCheckBox_clicked(bool checked)
+{
+    governorMaster->sendGetCont(4);
+    governorMaster->sendGetCont(5);
 }

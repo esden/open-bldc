@@ -61,6 +61,8 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
+    void on_ADCLevelMonCheckBox_clicked(bool checked);
+    void on_forcedCommMonCheckBox_clicked(bool checked);
     void on_forcedCommTimIncSpinBox_valueChanged(int );
     void on_triggerCommPushButton_clicked();
     void on_ADCLevelRisingSpinBox_valueChanged(int );

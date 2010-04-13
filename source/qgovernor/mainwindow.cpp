@@ -327,11 +327,17 @@ void MainWindow::on_forcedCommTimValSpinBox_valueChanged(int value)
 
 void MainWindow::on_ADCLevelRisingSpinBox_valueChanged(int value)
 {
+    if(ui->ADCLevelCouplingCheckBox->isChecked()){
+        ui->ADCLevelFallingSpinBox->setValue(value);
+    }
     registerModel.setRegisterValue(4, value);
 }
 
 void MainWindow::on_ADCLevelFallingSpinBox_valueChanged(int value)
 {
+    if(ui->ADCLevelCouplingCheckBox->isChecked()){
+        ui->ADCLevelRisingSpinBox->setValue(value);
+    }
     registerModel.setRegisterValue(5, value);
 }
 

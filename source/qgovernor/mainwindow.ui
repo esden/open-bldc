@@ -151,42 +151,42 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="2" column="0">
             <widget class="QLabel" name="ADCLevelRisingLabel">
              <property name="text">
               <string>ADC level rising</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
+           <item row="2" column="1">
             <widget class="QSpinBox" name="ADCLevelRisingSpinBox">
              <property name="maximum">
               <number>65535</number>
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="3" column="0">
             <widget class="QLabel" name="ADCLevelFallingLabel">
              <property name="text">
               <string>ADC level falling</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="3" column="1">
             <widget class="QSpinBox" name="ADCLevelFallingSpinBox">
              <property name="maximum">
               <number>65535</number>
              </property>
             </widget>
            </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="ADCLevelCouplingCheckBox">
+             <property name="text">
+              <string>Couple ADC levels</string>
+             </property>
+            </widget>
+           </item>
           </layout>
-          <zorder>commGroupBox</zorder>
-          <zorder>PWMOffsetLabel</zorder>
-          <zorder>PWMOffsetSpinBox</zorder>
-          <zorder>ADCLevelRisingLabel</zorder>
-          <zorder>ADCLevelRisingSpinBox</zorder>
-          <zorder>ADCLevelFallingLabel</zorder>
-          <zorder>ADCLevelFallingSpinBox</zorder>
          </widget>
         </item>
         <item>
@@ -322,11 +322,11 @@
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>false</bool>
              </attribute>
-             <attribute name="verticalHeaderVisible">
-              <bool>true</bool>
-             </attribute>
              <attribute name="verticalHeaderStretchLastSection">
               <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>true</bool>
              </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>false</bool>
@@ -619,7 +619,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="qgovernor.qrc">
+    <iconset>
      <normaloff>:/icons/icons/connect-32x32.png</normaloff>
      <normalon>:/icons/icons/disconnect-32x32.png</normalon>:/icons/icons/connect-32x32.png</iconset>
    </property>
@@ -629,9 +629,7 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="qgovernor.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionQuit</sender>

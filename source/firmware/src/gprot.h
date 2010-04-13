@@ -19,6 +19,13 @@
 #ifndef __GPROT_H
 #define __GPROT_H
 
+#define GPROT_FLAG_REG_ADDR 0
+#define GPROT_PWM_OFFSET_REG_ADDR 1
+#define GPROT_PWM_VAL_REG_ADDR 2
+#define GPROT_COMM_TIM_FREQ_REG_ADDR 3
+#define GPROT_ADC_LEVEL_RISING_REG_ADDR 4
+#define GPROT_ADC_LEVEL_FALLING_REG_ADDR 5
+
 void gprot_init();
 
 #endif /* __GPROT_H */

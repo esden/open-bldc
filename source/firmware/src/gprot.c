@@ -58,8 +58,6 @@ void gprot_update_flags(void);
 /* Function implementations */
 void gprot_init()
 {
-	int i;
-
 	gpc_init(gprot_trigger_output, 0, gprot_register_changed, 0);
 
 	gprot_flag_reg = 0;

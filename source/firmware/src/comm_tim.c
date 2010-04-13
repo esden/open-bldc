@@ -20,8 +20,13 @@
 #include <stm32/misc.h>
 #include <stm32/tim.h>
 
+#include <lg/types.h>
+#include <lg/gpdef.h>
+#include <lg/gprotc.h>
+
 #include "comm_tim.h"
 
+#include "gprot.h"
 #include "led.h"
 #include "adc.h"
 #include "pwm/pwm.h"
@@ -101,6 +106,8 @@ void comm_tim_set_next_comm(void){
 	}
 
 	TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
+
+	gpc_register_touched(GPROT_COMM_TIM_FREQ_REG_ADDR);
 }
 
 void tim2_irq_handler(void){

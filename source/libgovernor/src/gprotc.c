@@ -38,7 +38,7 @@ struct gpc_hooks {
 	void *register_changed_data;
 } gpc_hooks;
 
-u16 *gpc_register_map[32];
+volatile u16 *gpc_register_map[32];
 
 struct ring gpc_output_ring;
 u8 gpc_output_buffer[128];
@@ -75,7 +75,7 @@ int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with
 	return 0;
 }
 
-int gpc_setup_reg(u8 addr, u16 *reg)
+int gpc_setup_reg(u8 addr, volatile u16 *reg)
 {
 	if(addr > 31)
 		return 1;

@@ -30,10 +30,10 @@
 #include "led.h"
 
 #define PWM_VALUE 400;
-#define PWM_OFFSET 100;
+#define PWM_OFFSET 250;
 
 volatile uint16_t pwm_val = 400;
-volatile uint16_t pwm_offset = 100;
+volatile uint16_t pwm_offset = 250;
 volatile int pwm_trig_led = 0;
 
 void pwm_init(void){

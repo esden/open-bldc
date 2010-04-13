@@ -87,30 +87,20 @@ void comm_tim_off(void){
 }
 
 void comm_tim_set_next_comm(void){
-    uint16_t curr_time = TIM_GetCounter(TIM2);
-    uint16_t new_freq = (curr_time - comm_tim_capture) * 2;
-    static int inc_counter = 0;
-    static int dec_counter = 0;
+	uint16_t curr_time = TIM_GetCounter(TIM2);
+	uint16_t new_freq = (curr_time - comm_tim_capture) * 2;
 
-    if(new_freq < (comm_tim_freq - 400)){
-        inc_counter = 0;
-        if(dec_counter < 10){
-            dec_counter++;
-            comm_tim_freq -= 100;
-        }
-    }else if(new_freq > (comm_tim_freq + 400)){
-        dec_counter = 0;
-        if(inc_counter < 10){
-            inc_counter++;
-            comm_tim_freq += 100;
-        }
-    }else{
-        inc_counter = 0;
-        dec_counter = 0;
-        comm_tim_freq = new_freq;
-    }
+	if(new_freq < (comm_tim_freq - 400)){
+		comm_tim_freq -= 20;
+	}else if(new_freq < comm_tim_freq){
+		comm_tim_freq = new_freq;
+	}else if(new_freq > (comm_tim_freq + 400)){
+		comm_tim_freq += 20;
+	}else if(new_freq > comm_tim_freq){
+		comm_tim_freq = new_freq;
+	}
 
-    TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
+	TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
 }
 
 void tim2_irq_handler(void){
@@ -121,7 +111,7 @@ void tim2_irq_handler(void){
 
     /* Toggling ORANGE LED and triggering commutation with frequency = 73.24 Hz */
     //LED_ORANGE_TOGGLE();
-    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);// | TIM_EventSource_Update);
+    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);//  | TIM_EventSource_Update);
 
     /* Preparing next comm time */
     comm_tim_capture = TIM_GetCapture1(TIM2);

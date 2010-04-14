@@ -36,7 +36,6 @@
 #include "comm_tim.h"
 
 volatile uint8_t adc_rising = ADC_RISING;
-volatile uint16_t adc_delay_count = 0;
 volatile uint16_t adc_level_rising = 1780;
 volatile uint16_t adc_level_falling = 1780;
 volatile int adc_comm = 0;
@@ -124,7 +123,6 @@ void adc_set(uint8_t channel, uint8_t rising)
 
     ADC_InjectedChannelConfig(ADC1, channel, 1, ADC_SampleTime_28Cycles5);
 
-    adc_delay_count = 0;
     adc_count = 0;
     adc_filtered = 0;
 
@@ -138,11 +136,6 @@ void adc1_2_irq_handler(void){
     ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
 
     new_value = ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
-
-    if(adc_delay_count < 5){
-	    adc_delay_count ++;
-	    return;
-    }
 
     if(adc_rising){
 	    if(new_value > adc_level_rising){

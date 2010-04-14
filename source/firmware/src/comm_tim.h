@@ -19,7 +19,7 @@
 #ifndef __COMM_TIM_H
 #define __COMM_TIM_H
 
-extern volatile uint16_t comm_tim_freq;
+extern volatile u16 comm_tim_freq;
 extern volatile s16 comm_tim_spark_advance;
 extern volatile u16 comm_tim_direct_cutoff;
 extern volatile u16 comm_tim_iir_pole;

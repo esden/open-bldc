@@ -31,7 +31,7 @@
 #include "adc.h"
 #include "pwm/pwm.h"
 
-volatile uint16_t comm_tim_freq = 49152;
+volatile u16 comm_tim_freq = 49152;
 uint16_t comm_tim_capture = 0;
 volatile uint16_t comm_tim_memory=0;
 volatile s16 comm_tim_spark_advance = 0;
@@ -110,7 +110,7 @@ void comm_tim_set_next_comm(void){
 	}else if(new_freq > (comm_tim_freq + comm_tim_direct_cutoff)){
 		comm_tim_freq += 20;
 	}else{
-		comm_tim_freq = ((comm_tim_freq * comm_tim_iir_pole) + new_freq)
+		comm_tim_freq = (((u32)comm_tim_freq * comm_tim_iir_pole) + new_freq)
 			        / comm_tim_iir_pole + 1;
 	}
 

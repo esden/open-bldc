@@ -161,39 +161,4 @@ void adc1_2_irq_handler(void){
 		    LED_ORANGE_OFF();
 	    }
     }
-
-#if 0
-    if(adc_delay_count == 0)
-        adc_filtered = new_value;
-    else
-        adc_filtered = ((adc_filtered * 3) + new_value) >> 2;
-
-    if(adc_delay_count > 5){
-        if(adc_rising){
-            if(adc_filtered > adc_level + 100){
-                if(adc_count < 3){
-                    adc_count++;
-                }else{
-			//LED_ORANGE_TOGGLE();
-                    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-                    pwm_trig_led=0;
-                    if(adc_comm) comm_tim_set_next_comm();
-                }
-            }
-        }else{
-            if(adc_filtered < adc_level){
-                if(adc_count < 3){
-                    adc_count++;
-                }else{
-			//LED_ORANGE_TOGGLE();
-                    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-                    pwm_trig_led=0;
-                    if(adc_comm) comm_tim_set_next_comm();
-                }
-            }
-        }
-    }else{
-        adc_delay_count++;
-    }
-#endif
 }

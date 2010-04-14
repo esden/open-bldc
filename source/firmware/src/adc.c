@@ -39,8 +39,6 @@ volatile uint8_t adc_rising = ADC_RISING;
 volatile uint16_t adc_level_rising = 1780;
 volatile uint16_t adc_level_falling = 1780;
 volatile int adc_comm = 0;
-uint16_t adc_count = 0;
-uint16_t adc_filtered = 0;
 
 void adc_init(void){
     NVIC_InitTypeDef nvic;
@@ -68,7 +66,6 @@ void adc_init(void){
     GPIO_Init(GPIOA, &gpio);
 
     adc_comm = 0;
-    adc_filtered = 0;
     adc_level_rising = 1780;
     adc_level_falling = 1780;
 
@@ -122,9 +119,6 @@ void adc_set(uint8_t channel, uint8_t rising)
     pwm_trig_led=0;
 
     ADC_InjectedChannelConfig(ADC1, channel, 1, ADC_SampleTime_28Cycles5);
-
-    adc_count = 0;
-    adc_filtered = 0;
 
     ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
     pwm_trig_led=1;

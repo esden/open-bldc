@@ -104,14 +104,16 @@ void comm_tim_off(void){
 void comm_tim_set_next_comm(void){
 	u32 curr_time = TIM_GetCounter(TIM2);
 	u32 new_freq = (curr_time - comm_tim_capture) * 2;
+	u32 comm_tim_freq_cpy = comm_tim_freq;
+	u32 comm_tim_iir_pole_cpy = comm_tim_iir_pole;
 
 	if(new_freq < (comm_tim_freq - comm_tim_direct_cutoff)){
 		comm_tim_freq -= 20;
 	}else if(new_freq > (comm_tim_freq + comm_tim_direct_cutoff)){
 		comm_tim_freq += 20;
 	}else{
-		comm_tim_freq = (((u32)comm_tim_freq * comm_tim_iir_pole) + new_freq)
-			        / comm_tim_iir_pole + 1;
+		comm_tim_freq = ((comm_tim_freq_cpy * comm_tim_iir_pole_cpy) + new_freq)
+			/ (comm_tim_iir_pole_cpy + 1);
 	}
 
 	TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq + comm_tim_spark_advance);

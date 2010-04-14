@@ -63,6 +63,8 @@ void gprot_init()
 	gpc_setup_reg(GPROT_ADC_LEVEL_RISING_REG_ADDR, &adc_level_rising);
 	gpc_setup_reg(GPROT_ADC_LEVEL_FALLING_REG_ADDR, &adc_level_falling);
 	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR, (u16 *)&comm_tim_spark_advance);
+	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR, &comm_tim_direct_cutoff);
+	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &comm_tim_iir_pole);
 }
 
 void gprot_trigger_output(void *data)

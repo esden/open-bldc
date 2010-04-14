@@ -111,17 +111,37 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="6" column="0">
             <widget class="QCheckBox" name="forcedCommCheckBox">
              <property name="text">
               <string>Commutation timer enable</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
+           <item row="7" column="0">
             <widget class="QCheckBox" name="ADCCommCheckBox">
              <property name="text">
               <string>ADC based commutation enable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="commSparkAdvanceLabel">
+             <property name="text">
+              <string>Commutation spark advance</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QSpinBox" name="commSparkAdvanceSpinBox">
+             <property name="minimum">
+              <number>-32767</number>
+             </property>
+             <property name="maximum">
+              <number>32767</number>
+             </property>
+             <property name="singleStep">
+              <number>20</number>
              </property>
             </widget>
            </item>
@@ -321,6 +341,9 @@
              </property>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderStretchLastSection">
               <bool>false</bool>
@@ -619,7 +642,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="qgovernor.qrc">
      <normaloff>:/icons/icons/connect-32x32.png</normaloff>
      <normalon>:/icons/icons/disconnect-32x32.png</normalon>:/icons/icons/connect-32x32.png</iconset>
    </property>
@@ -629,7 +652,9 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="qgovernor.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>

@@ -34,11 +34,17 @@
 volatile uint16_t comm_tim_freq = 49152;
 uint16_t comm_tim_capture = 0;
 volatile uint16_t comm_tim_memory=0;
+volatile s16 comm_tim_spark_advance = 0;
 
 void comm_tim_init(void){
     NVIC_InitTypeDef nvic;
     TIM_TimeBaseInitTypeDef tim_base;
     TIM_OCInitTypeDef       tim_oc;
+
+    comm_tim_freq = 49152;
+    comm_tim_capture = 0;
+    comm_tim_memory = 0;
+    comm_tim_spark_advance = 0;
 
     /* TIM2 clock enable */
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
@@ -95,17 +101,17 @@ void comm_tim_set_next_comm(void){
 	uint16_t curr_time = TIM_GetCounter(TIM2);
 	uint16_t new_freq = (curr_time - comm_tim_capture) * 2;
 
-	if(new_freq < (comm_tim_freq - 200)){
+	if(new_freq < (comm_tim_freq - 1000)){
 		comm_tim_freq -= 20;
 	}else if(new_freq < comm_tim_freq){
 		comm_tim_freq = new_freq;
-	}else if(new_freq > (comm_tim_freq + 200)){
+	}else if(new_freq > (comm_tim_freq + 1000)){
 		comm_tim_freq += 20;
 	}else if(new_freq > comm_tim_freq){
 		comm_tim_freq = new_freq;
 	}
 
-	TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
+	TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq + comm_tim_spark_advance);
 
 	gpc_register_touched(GPROT_COMM_TIM_FREQ_REG_ADDR);
 }

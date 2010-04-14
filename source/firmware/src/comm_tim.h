@@ -20,6 +20,7 @@
 #define __COMM_TIM_H
 
 extern volatile uint16_t comm_tim_freq;
+extern volatile s16 comm_tim_spark_advance;
 
 void comm_tim_init(void);
 void comm_tim_on(void);

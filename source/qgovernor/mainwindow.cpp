@@ -129,6 +129,9 @@ void MainWindow::on_registerChanged(unsigned char addr)
     case 5:
         ui->ADCLevelFallingSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
+    case 6:
+        ui->commSparkAdvanceSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        break;
     }
 }
 
@@ -361,4 +364,9 @@ void MainWindow::on_ADCLevelMonCheckBox_clicked(bool checked)
 {
     governorMaster->sendGetCont(4);
     governorMaster->sendGetCont(5);
+}
+
+void MainWindow::on_commSparkAdvanceSpinBox_valueChanged(int value)
+{
+    registerModel.setRegisterValue(6, value);
 }

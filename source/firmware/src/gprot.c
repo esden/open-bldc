@@ -33,13 +33,6 @@
 #include "comm_tim.h"
 #include "adc.h"
 
-#define GPROT_FLAG_REG_ADDR 0
-#define GPROT_PWM_OFFSET_REG_ADDR 1
-#define GPROT_PWM_VAL_REG_ADDR 2
-#define GPROT_COMM_TIM_FREQ_REG_ADDR 3
-#define GPROT_ADC_LEVEL_RISING_REG_ADDR 4
-#define GPROT_ADC_LEVEL_FALLING_REG_ADDR 5
-
 #define GPROT_FLAG_PWM_COMM (1 << 0)
 #define GPROT_FLAG_COMM_TIM (1 << 1)
 #define GPROT_FLAG_ADC_COMM (1 << 2)
@@ -69,6 +62,7 @@ void gprot_init()
 	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &comm_tim_freq);
 	gpc_setup_reg(GPROT_ADC_LEVEL_RISING_REG_ADDR, &adc_level_rising);
 	gpc_setup_reg(GPROT_ADC_LEVEL_FALLING_REG_ADDR, &adc_level_falling);
+	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR, (u16 *)&comm_tim_spark_advance);
 }
 
 void gprot_trigger_output(void *data)

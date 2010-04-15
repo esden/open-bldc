@@ -31,24 +31,24 @@
 #include "adc.h"
 #include "pwm/pwm.h"
 
-volatile u16 comm_tim_freq = 49152;
+volatile u16 comm_tim_freq = 65000;
 uint16_t comm_tim_capture = 0;
 volatile uint16_t comm_tim_memory=0;
 volatile s16 comm_tim_spark_advance = 0;
-volatile u16 comm_tim_direct_cutoff = 1000;
-volatile u16 comm_tim_iir_pole = 50;
+volatile u16 comm_tim_direct_cutoff = 6000;
+volatile u16 comm_tim_iir_pole = 31;
 
 void comm_tim_init(void){
     NVIC_InitTypeDef nvic;
     TIM_TimeBaseInitTypeDef tim_base;
     TIM_OCInitTypeDef       tim_oc;
 
-    comm_tim_freq = 49152;
+    comm_tim_freq = 50000;
     comm_tim_capture = 0;
     comm_tim_memory = 0;
     comm_tim_spark_advance = 0;
-    comm_tim_direct_cutoff = 1000;
-    comm_tim_iir_pole = 50;
+    comm_tim_direct_cutoff = 6000;
+    comm_tim_iir_pole = 31;
 
     /* TIM2 clock enable */
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);

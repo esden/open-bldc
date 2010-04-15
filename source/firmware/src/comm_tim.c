@@ -71,7 +71,7 @@ void comm_tim_init(void){
     TIM_TimeBaseInit(TIM2, &tim_base);
 
     /* TIM2 prescaler configuration */
-    TIM_PrescalerConfig(TIM2, 4, TIM_PSCReloadMode_Immediate);
+    TIM_PrescalerConfig(TIM2, 8, TIM_PSCReloadMode_Immediate);
 
     /* TIM2 Output Compare Timing Mode configuration: Channel1 */
     tim_oc.TIM_OCMode = TIM_OCMode_Timing;
@@ -108,9 +108,9 @@ void comm_tim_set_next_comm(void){
 	u32 comm_tim_iir_pole_cpy = comm_tim_iir_pole;
 
 	if(new_freq < (comm_tim_freq - comm_tim_direct_cutoff)){
-		comm_tim_freq -= 20;
+		comm_tim_freq -= 50;
 	}else if(new_freq > (comm_tim_freq + comm_tim_direct_cutoff)){
-		comm_tim_freq += 20;
+		comm_tim_freq += 50;
 	}else{
 		comm_tim_freq = ((comm_tim_freq_cpy * comm_tim_iir_pole_cpy) + new_freq)
 			/ (comm_tim_iir_pole_cpy + 1);

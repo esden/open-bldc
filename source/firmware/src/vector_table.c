@@ -18,6 +18,7 @@
 
 #include <cmsis/stm32.h>
 
+#include "types.h"
 #include "main.h"
 #include "exceptions.h"
 

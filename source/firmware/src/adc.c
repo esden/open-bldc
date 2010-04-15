@@ -39,6 +39,7 @@ volatile uint8_t adc_rising = ADC_RISING;
 volatile uint16_t adc_level_rising = 1780;
 volatile uint16_t adc_level_falling = 1780;
 volatile int adc_comm = 0;
+int adc_comm_count = 0;
 
 void adc_init(void){
     NVIC_InitTypeDef nvic;
@@ -80,7 +81,7 @@ void adc_init(void){
 
     ADC_InjectedSequencerLengthConfig(ADC1, 1);
 
-    ADC_InjectedChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_28Cycles5);
+    ADC_InjectedChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_41Cycles5);
 
     ADC_ExternalTrigInjectedConvConfig(ADC1, ADC_ExternalTrigInjecConv_T1_CC4);
 
@@ -122,6 +123,7 @@ void adc_set(uint8_t channel, uint8_t rising)
 
     ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
     pwm_trig_led=1;
+    adc_comm_count = 0;
 }
 
 void adc1_2_irq_handler(void){
@@ -133,19 +135,29 @@ void adc1_2_irq_handler(void){
 
     if(adc_rising){
 	    if(new_value > adc_level_rising){
-                    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-                    if(adc_comm) comm_tim_set_next_comm();
-		    LED_ORANGE_ON();
+		    if(adc_comm_count == 2){
+			    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
+			    if(adc_comm) comm_tim_set_next_comm();
+			    LED_ORANGE_ON();
+		    }else{
+			    adc_comm_count++;
+		    }
 	    }else{
 		    LED_ORANGE_OFF();
+		    adc_comm_count = 0;
 	    }
     }else{
 	    if(new_value > adc_level_falling){
 		    LED_ORANGE_ON();
+		    adc_comm_count = 0;
 	    }else{
-                    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-                    if(adc_comm) comm_tim_set_next_comm();
-		    LED_ORANGE_OFF();
+		    if(adc_comm_count == 2){
+			    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
+			    if(adc_comm) comm_tim_set_next_comm();
+			    LED_ORANGE_OFF();
+		    }else{
+			    adc_comm_count++;
+		    }
 	    }
     }
 }

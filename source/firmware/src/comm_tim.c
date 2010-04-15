@@ -43,7 +43,6 @@ void comm_tim_init(void){
     TIM_TimeBaseInitTypeDef tim_base;
     TIM_OCInitTypeDef       tim_oc;
 
-    comm_tim_freq = 50000;
     comm_tim_capture = 0;
     comm_tim_memory = 0;
     comm_tim_spark_advance = 0;
@@ -109,11 +108,14 @@ void comm_tim_set_next_comm(void){
 
 	if(new_freq < (comm_tim_freq - comm_tim_direct_cutoff)){
 		comm_tim_freq -= 50;
+		LED_BLUE_ON();
 	}else if(new_freq > (comm_tim_freq + comm_tim_direct_cutoff)){
 		comm_tim_freq += 50;
+		LED_BLUE_ON();
 	}else{
 		comm_tim_freq = ((comm_tim_freq_cpy * comm_tim_iir_pole_cpy) + new_freq)
 			/ (comm_tim_iir_pole_cpy + 1);
+		LED_BLUE_OFF();
 	}
 
 	TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq + comm_tim_spark_advance);

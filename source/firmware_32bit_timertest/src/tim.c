@@ -38,11 +38,15 @@ void tim_init(void){
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 |
 		           RCC_APB1Periph_TIM3, ENABLE);
 
-    /* TIM2 config ------------------------------------------------ */
-
-    /* This timer is being triggered by TIM3 to count the lsb of
-     * tim_freq
+    /*
+     * TIM2 is representing the lsb part of the timer.
+     * TIM3 is representing the msb part of the timer.
+     *
+     * The lsb timer is advancing the msb timer every time it wraps
+     * (update event).
      */
+
+    /* TIM2 (LSB) config ------------------------------------------ */
 
     /* Enable the TIM2 gloabal interrupt */
     nvic.NVIC_IRQChannel = TIM2_IRQn;
@@ -68,15 +72,16 @@ void tim_init(void){
 
     TIM_OC1Init(TIM2, &tim_oc);
 
+    /* TIM2 disable output compare preload */
     TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
 
-    /* TIM3 Update master output trigger selection */
+    /* TIM2 Update master output trigger selection */
     TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);
 
     /* TIM2 interrupt enable */
     TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
 
-    /* TIM3 config ------------------------------------------------ */
+    /* TIM3 (MSB) config ------------------------------------------ */
 
     /* Enable the TIM3 global inturrupt */
     nvic.NVIC_IRQChannel = TIM3_IRQn;
@@ -94,7 +99,7 @@ void tim_init(void){
 
     TIM_TimeBaseInit(TIM3, &tim_base);
 
-    /* TIM2 Output Compare Timing Mode configuration: Channel1 */
+    /* TIM3 Output Compare Timing Mode configuration: Channel1 */
     tim_oc.TIM_OCMode = TIM_OCMode_Timing;
     tim_oc.TIM_OutputState = TIM_OutputState_Enable;
     tim_oc.TIM_Pulse = tim_freq >> 16;
@@ -104,7 +109,7 @@ void tim_init(void){
 
     TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Disable);
 
-    /* Slave mode selection: trigger mode */
+    /* TIM3 slave mode selection: trigger mode */
     TIM_SelectSlaveMode(TIM3, TIM_SlaveMode_External1);
 
     /* TIM3 input trigger selection */

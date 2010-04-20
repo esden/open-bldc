@@ -137,7 +137,7 @@ void tim_update(void){
 		return;
 	}
 
-	next_capture = (curr_time - tim_last_upd) / 3;
+	next_capture = (curr_time - tim_last_upd) / 2;
 
 	if(next_capture > (u32)0xFFFF) LED_BLUE_TOGGLE();
 
@@ -160,8 +160,7 @@ void tim_update(void){
 
 void tim2_irq_handler(void){
 
-	if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
-	{
+	if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET){
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 		TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
 		LED_ORANGE_TOGGLE();
@@ -173,7 +172,5 @@ void tim3_irq_handler(void){
 	if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET){
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
 		TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
-		TIM_ITConfig(TIM3, TIM_IT_CC1, DISABLE);
-		LED_GREEN_TOGGLE();
 	}
 }

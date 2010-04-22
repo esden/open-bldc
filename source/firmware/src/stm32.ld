@@ -45,7 +45,7 @@ MEMORY
 }
 
 /* User mode stack top */
-_estack = 0x20000800;
+_estack = 0x20005000;
 
 /* Sections Definitions */
 

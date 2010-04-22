@@ -25,7 +25,7 @@
 
 #include "led.h"
 
-volatile u32 tim_freq = 0x0FFFFF;
+volatile u32 tim_freq = 1030;
 u32 tim_was_updated = 0;
 u32 tim_last_upd = 0;
 
@@ -78,9 +78,6 @@ void tim_init(void){
     /* TIM2 Update master output trigger selection */
     TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);
 
-    /* TIM2 interrupt enable */
-    TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
-
     /* TIM3 (MSB) config ------------------------------------------ */
 
     /* Enable the TIM3 global inturrupt */
@@ -115,8 +112,15 @@ void tim_init(void){
     /* TIM3 input trigger selection */
     TIM_SelectInputTrigger(TIM3, TIM_TS_ITR1);
 
-    /* TIM3 CC1 interrupt enable */
-    TIM_ITConfig(TIM3, TIM_IT_CC1, DISABLE);
+
+    /* Switch on/off interrupt handlers --------------------------- */
+    if(tim_freq < 0x10000){
+	    TIM_ITConfig(TIM3, TIM_IT_CC1, DISABLE);
+	    TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+    }else{
+	    TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
+	    TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
+    }
 
     /* Enable timers */
     TIM_Cmd(TIM3, ENABLE);
@@ -138,13 +142,11 @@ void tim_update(void){
 	if(!tim_was_updated){
 		tim_last_upd = curr_time;
 		tim_was_updated = 1;
-		LED_BLUE_TOGGLE();
 		return;
 	}
 
-	next_capture = (curr_time - tim_last_upd) / 2;
-
-	if(next_capture > (u32)0xFFFF) LED_BLUE_TOGGLE();
+	tim_freq = (curr_time - tim_last_upd);
+	next_capture = tim_freq / 2;
 
 	tim_last_upd = curr_time;
 
@@ -160,14 +162,27 @@ void tim_update(void){
 		TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
 		TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
 	}
-	//LED_BLUE_TOGGLE();
 }
 
 void tim2_irq_handler(void){
+	u16 last_capture_lsb = TIM_GetCapture1(TIM2);
+	u16 last_capture_msb = TIM_GetCapture1(TIM3);
+	u16 tim_freq_lsb;
+	u16 tim_freq_msb;
 
 	if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET){
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
-		TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
+		tim_freq_lsb = tim_freq & 0xFFFF;
+		tim_freq_msb = tim_freq >> 16;
+		TIM_SetCompare1(TIM2, last_capture_lsb + tim_freq_lsb);
+		TIM_SetCompare1(TIM3, last_capture_msb + tim_freq_msb);
+		if(tim_freq_msb == 0){
+			TIM_ITConfig(TIM3, TIM_IT_CC1, DISABLE);
+			TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+		}else{
+			TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
+			TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
+		}
 		LED_ORANGE_TOGGLE();
 	}
 }
@@ -177,5 +192,6 @@ void tim3_irq_handler(void){
 	if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET){
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
 		TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+		LED_RED_TOGGLE();
 	}
 }

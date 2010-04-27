@@ -31,12 +31,12 @@
 #include "adc.h"
 #include "pwm/pwm.h"
 
-volatile u16 comm_tim_freq = 65000;
+volatile u16 comm_tim_freq = 65535;
 uint16_t comm_tim_capture = 0;
-volatile uint16_t comm_tim_memory=0;
+volatile u32 comm_tim_last_time = 0;
 volatile s16 comm_tim_spark_advance = 0;
-volatile u16 comm_tim_direct_cutoff = 6000;
-volatile u16 comm_tim_iir_pole = 31;
+volatile u16 comm_tim_direct_cutoff = 8000;
+volatile u16 comm_tim_iir_pole = 15;
 
 void comm_tim_init(void){
     NVIC_InitTypeDef nvic;
@@ -44,10 +44,9 @@ void comm_tim_init(void){
     TIM_OCInitTypeDef       tim_oc;
 
     comm_tim_capture = 0;
-    comm_tim_memory = 0;
     comm_tim_spark_advance = 0;
-    comm_tim_direct_cutoff = 6000;
-    comm_tim_iir_pole = 31;
+    comm_tim_direct_cutoff = 8000;
+    comm_tim_iir_pole = 15;
 
     /* TIM2 clock enable */
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
@@ -70,7 +69,7 @@ void comm_tim_init(void){
     TIM_TimeBaseInit(TIM2, &tim_base);
 
     /* TIM2 prescaler configuration */
-    TIM_PrescalerConfig(TIM2, 8, TIM_PSCReloadMode_Immediate);
+    TIM_PrescalerConfig(TIM2, 2, TIM_PSCReloadMode_Immediate);
 
     /* TIM2 Output Compare Timing Mode configuration: Channel1 */
     tim_oc.TIM_OCMode = TIM_OCMode_Timing;
@@ -100,27 +99,80 @@ void comm_tim_off(void){
     pwm_all_lo();
 }
 
-void comm_tim_set_next_comm(void){
-	u32 curr_time = TIM_GetCounter(TIM2);
-	u32 new_freq = (curr_time - comm_tim_capture) * 2;
-	u32 comm_tim_freq_cpy = comm_tim_freq;
-	u32 comm_tim_iir_pole_cpy = comm_tim_iir_pole;
-
-	if(new_freq < (comm_tim_freq - comm_tim_direct_cutoff)){
-		comm_tim_freq -= 50;
-		LED_BLUE_ON();
-	}else if(new_freq > (comm_tim_freq + comm_tim_direct_cutoff)){
-		comm_tim_freq += 50;
-		LED_BLUE_ON();
+void comm_tim_rising_set_next_comm()
+{
+	if((adc_comm_data.last_value == 0) ||
+		(adc_comm_data.last_value > adc_comm_data.curr_value)){
+		comm_tim_freq -= 10;
 	}else{
-		comm_tim_freq = ((comm_tim_freq_cpy * comm_tim_iir_pole_cpy) + new_freq)
-			/ (comm_tim_iir_pole_cpy + 1);
-		LED_BLUE_OFF();
+		u32 curr_time = TIM_GetCounter(TIM2);
+		u32 pwm_time = curr_time - comm_tim_last_time;
+		u32 adc_rise = adc_comm_data.curr_value - adc_comm_data.last_value;
+		u32 adc_zero = adc_comm_data.zero_value - adc_comm_data.last_value;
+		u32 match_time = (adc_zero * pwm_time) / adc_rise;
+		u32 new_freq = ((comm_tim_last_time - comm_tim_capture) + match_time) * 2;
+		u32 comm_tim_freq_cpy = comm_tim_freq;
+		u32 comm_tim_iir_pole_cpy = comm_tim_iir_pole;
+
+		if(new_freq < (comm_tim_freq - comm_tim_direct_cutoff)){
+			comm_tim_freq -= 10;
+			LED_BLUE_ON();
+		}else if(new_freq > (comm_tim_freq + comm_tim_direct_cutoff)){
+			comm_tim_freq += 10;
+			LED_BLUE_ON();
+		}else{
+			comm_tim_freq = ((comm_tim_freq_cpy * comm_tim_iir_pole_cpy) + new_freq)
+				/ (comm_tim_iir_pole_cpy + 1);
+			LED_BLUE_OFF();
+		}
+
+		TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq + comm_tim_spark_advance);
 	}
+}
 
-	TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq + comm_tim_spark_advance);
+void comm_tim_falling_set_next_comm()
+{
+	if((adc_comm_data.last_value == 0) ||
+		(adc_comm_data.last_value < adc_comm_data.curr_value)){
+		comm_tim_freq -= 10;
+	}else{
+		u32 curr_time = TIM_GetCounter(TIM2);
+		u32 pwm_time = curr_time - comm_tim_last_time;
+		u32 adc_rise = adc_comm_data.last_value - adc_comm_data.curr_value;
+		u32 adc_zero = adc_comm_data.last_value - adc_comm_data.zero_value;
+		u32 match_time = (adc_zero * pwm_time) / adc_rise;
+		u32 new_freq = ((comm_tim_last_time - comm_tim_capture) + match_time) * 2;
+		u32 comm_tim_freq_cpy = comm_tim_freq;
+		u32 comm_tim_iir_pole_cpy = comm_tim_iir_pole;
 
-	gpc_register_touched(GPROT_COMM_TIM_FREQ_REG_ADDR);
+		if(new_freq < (comm_tim_freq - comm_tim_direct_cutoff)){
+			comm_tim_freq -= 10;
+			LED_BLUE_ON();
+		}else if(new_freq > (comm_tim_freq + comm_tim_direct_cutoff)){
+			comm_tim_freq += 10;
+			LED_BLUE_ON();
+		}else{
+			comm_tim_freq = ((comm_tim_freq_cpy * comm_tim_iir_pole_cpy) + new_freq)
+				/ (comm_tim_iir_pole_cpy + 1);
+			LED_BLUE_OFF();
+		}
+
+		TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq + comm_tim_spark_advance);
+	}
+}
+
+void comm_tim_set_next_comm(void)
+{
+
+	if(!adc_comm_data.crossed){
+		comm_tim_last_time = TIM_GetCounter(TIM2);
+	}else if(adc_comm){
+		if(adc_comm_data.rising){
+			comm_tim_rising_set_next_comm();
+		}else{
+			comm_tim_falling_set_next_comm();
+		}
+	}
 }
 
 void tim2_irq_handler(void){

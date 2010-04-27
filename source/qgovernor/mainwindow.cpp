@@ -19,6 +19,7 @@
 extern "C" {
 #include <lg/types.h>
 #include <lg/gpdef.h>
+#include "../firmware/src/gprot.h"
 }
 
 #include "mainwindow.h"
@@ -110,32 +111,29 @@ void MainWindow::on_registerChanged(unsigned char addr)
 {
     registerModel.setRegisterValue(addr, governorMaster->getRegisterMapValue(addr));
     switch(addr){
-    case 0:
+    case GPROT_FLAG_REG_ADDR:
         ui->forcedCommCheckBox->setChecked(governorMaster->getRegisterMapValue(0) & (1 << 1));
         ui->ADCCommCheckBox->setChecked(governorMaster->getRegisterMapValue(0) & (1 << 2));
         break;
-    case 1:
+    case GPROT_PWM_OFFSET_REG_ADDR:
         ui->PWMOffsetSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
-    case 2:
+    case GPROT_PWM_VAL_REG_ADDR:
         ui->PWMDutyCycleSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
-    case 3:
+    case GPROT_COMM_TIM_FREQ_REG_ADDR:
         ui->forcedCommTimValSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
-    case 4:
-        ui->ADCLevelRisingSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+    case GPROT_ADC_ZERO_VALUE_REG_ADDR:
+        ui->ADCZeroValueSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
-    case 5:
-        ui->ADCLevelFallingSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
-        break;
-    case 6:
+    case GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR:
         ui->commSparkAdvanceSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
-    case 7:
+    case GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR:
         ui->commDirectCutoffSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
-    case 8:
+    case GPROT_COMM_TIM_IIR_POLE_REG_ADDR:
         ui->commIIRPoleSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
     }
@@ -304,56 +302,45 @@ void MainWindow::on_actionConnect_triggered(bool checked)
 void MainWindow::on_forcedCommCheckBox_clicked(bool checked)
 {
     if(checked){
-        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) | (1 << 1));
+        registerModel.setRegisterValue(GPROT_FLAG_REG_ADDR, governorMaster->getRegisterMapValue(GPROT_FLAG_REG_ADDR) | (1 << 1));
     }else{
-        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) & ~(1 << 1));
+        registerModel.setRegisterValue(GPROT_FLAG_REG_ADDR, governorMaster->getRegisterMapValue(GPROT_FLAG_REG_ADDR) & ~(1 << 1));
     }
 }
 
 void MainWindow::on_ADCCommCheckBox_clicked(bool checked)
 {
     if(checked){
-        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) | (1 << 2));
+        registerModel.setRegisterValue(GPROT_FLAG_REG_ADDR, governorMaster->getRegisterMapValue(GPROT_FLAG_REG_ADDR) | (1 << 2));
     }else{
-        registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) & ~(1 << 2));
+        registerModel.setRegisterValue(GPROT_FLAG_REG_ADDR, governorMaster->getRegisterMapValue(GPROT_FLAG_REG_ADDR) & ~(1 << 2));
     }
 }
 
 void MainWindow::on_PWMDutyCycleSpinBox_valueChanged(int value)
 {
-    registerModel.setRegisterValue(2, value);
+    registerModel.setRegisterValue(GPROT_PWM_VAL_REG_ADDR, value);
 }
 
 void MainWindow::on_PWMOffsetSpinBox_valueChanged(int value)
 {
-    registerModel.setRegisterValue(1, value);
+    registerModel.setRegisterValue(GPROT_PWM_OFFSET_REG_ADDR, value);
 }
 
 void MainWindow::on_forcedCommTimValSpinBox_valueChanged(int value)
 {
-    registerModel.setRegisterValue(3, value);
+    registerModel.setRegisterValue(GPROT_COMM_TIM_FREQ_REG_ADDR, value);
 }
 
-void MainWindow::on_ADCLevelRisingSpinBox_valueChanged(int value)
+void MainWindow::on_ADCZeroValueSpinBox_valueChanged(int value)
 {
-    if(ui->ADCLevelCouplingCheckBox->isChecked()){
-        ui->ADCLevelFallingSpinBox->setValue(value);
-    }
-    registerModel.setRegisterValue(4, value);
-}
-
-void MainWindow::on_ADCLevelFallingSpinBox_valueChanged(int value)
-{
-    if(ui->ADCLevelCouplingCheckBox->isChecked()){
-        ui->ADCLevelRisingSpinBox->setValue(value);
-    }
-    registerModel.setRegisterValue(5, value);
+    registerModel.setRegisterValue(GPROT_ADC_ZERO_VALUE_REG_ADDR, value);
 }
 
 void MainWindow::on_triggerCommPushButton_clicked()
 {
-    registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) | (1 << 0));
-    registerModel.setRegisterValue(0, governorMaster->getRegisterMapValue(0) & ~(1 << 0));
+    registerModel.setRegisterValue(GPROT_FLAG_REG_ADDR, governorMaster->getRegisterMapValue(GPROT_FLAG_REG_ADDR) | (1 << 0));
+    registerModel.setRegisterValue(GPROT_FLAG_REG_ADDR, governorMaster->getRegisterMapValue(GPROT_FLAG_REG_ADDR) & ~(1 << 0));
 }
 
 void MainWindow::on_forcedCommTimIncSpinBox_valueChanged(int step)
@@ -363,26 +350,25 @@ void MainWindow::on_forcedCommTimIncSpinBox_valueChanged(int step)
 
 void MainWindow::on_forcedCommMonCheckBox_clicked(bool checked)
 {
-    governorMaster->sendGetCont(3);
+    governorMaster->sendGetCont(GPROT_COMM_TIM_FREQ_REG_ADDR);
 }
 
 void MainWindow::on_ADCLevelMonCheckBox_clicked(bool checked)
 {
-    governorMaster->sendGetCont(4);
-    governorMaster->sendGetCont(5);
+    governorMaster->sendGetCont(GPROT_ADC_ZERO_VALUE_REG_ADDR);
 }
 
 void MainWindow::on_commSparkAdvanceSpinBox_valueChanged(int value)
 {
-    registerModel.setRegisterValue(6, value);
+    registerModel.setRegisterValue(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR, value);
 }
 
 void MainWindow::on_commDirectCutoffSpinBox_valueChanged(int value)
 {
-    registerModel.setRegisterValue(7, value);
+    registerModel.setRegisterValue(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR, value);
 }
 
 void MainWindow::on_commIIRPoleSpinBox_valueChanged(int value)
 {
-    registerModel.setRegisterValue(8, value);
+    registerModel.setRegisterValue(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, value);
 }

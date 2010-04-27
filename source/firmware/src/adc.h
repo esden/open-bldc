@@ -26,9 +26,16 @@
 #define ADC_FALLIN 0
 #define ADC_RISING 1
 
-extern volatile uint16_t adc_level_rising;
-extern volatile uint16_t adc_level_falling;
+struct adc_comm_data {
+	u16 last_value;
+	u16 curr_value;
+	u16 zero_value;
+	bool rising;
+	bool crossed;
+};
+
 extern volatile int adc_comm;
+extern struct adc_comm_data adc_comm_data;
 
 void adc_init(void);
 void adc_set(uint8_t channel, uint8_t rising);

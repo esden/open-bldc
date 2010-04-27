@@ -60,8 +60,7 @@ void gprot_init()
 	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
 	gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
 	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &comm_tim_freq);
-	gpc_setup_reg(GPROT_ADC_LEVEL_RISING_REG_ADDR, &adc_level_rising);
-	gpc_setup_reg(GPROT_ADC_LEVEL_FALLING_REG_ADDR, &adc_level_falling);
+	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR, &adc_comm_data.zero_value);
 	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR, (u16 *)&comm_tim_spark_advance);
 	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR, &comm_tim_direct_cutoff);
 	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &comm_tim_iir_pole);

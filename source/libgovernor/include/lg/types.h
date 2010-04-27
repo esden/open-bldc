@@ -21,6 +21,9 @@
 
 #include <stdint.h>
 
+#define false 0
+#define true 1
+
 typedef int8_t s8;
 typedef uint8_t u8;
 

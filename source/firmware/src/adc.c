@@ -35,11 +35,9 @@
 #include "pwm.h"
 #include "comm_tim.h"
 
-volatile uint8_t adc_rising = ADC_RISING;
-volatile uint16_t adc_level_rising = 1780;
-volatile uint16_t adc_level_falling = 1780;
 volatile int adc_comm = 0;
-int adc_comm_count = 0;
+volatile int adc_comm_count = 0;
+struct adc_comm_data adc_comm_data;
 
 void adc_init(void){
     NVIC_InitTypeDef nvic;
@@ -67,8 +65,12 @@ void adc_init(void){
     GPIO_Init(GPIOA, &gpio);
 
     adc_comm = 0;
-    adc_level_rising = 1780;
-    adc_level_falling = 1780;
+    adc_comm_count = 0;
+    adc_comm_data.last_value = 0;
+    adc_comm_data.curr_value = 0;
+    adc_comm_data.zero_value = 2000;
+    adc_comm_data.rising = true;
+    adc_comm_data.crossed = false;
 
     /* Configure ADC1 */
     adc.ADC_Mode = ADC_Mode_Independent;
@@ -114,50 +116,48 @@ void adc_init(void){
 void adc_set(uint8_t channel, uint8_t rising)
 {
 
-    adc_rising = rising;
+    adc_comm_data.rising = rising;
 
     ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-    pwm_trig_led=0;
 
     ADC_InjectedChannelConfig(ADC1, channel, 1, ADC_SampleTime_28Cycles5);
 
-    ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
-    pwm_trig_led=1;
     adc_comm_count = 0;
+    ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
+    adc_comm_data.last_value = 0;
+    adc_comm_data.crossed = false;
 }
 
 void adc1_2_irq_handler(void){
-    uint16_t new_value;
 
     ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
 
-    new_value = ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
+    adc_comm_data.curr_value = ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
 
-    if(adc_rising){
-	    if(new_value > adc_level_rising){
-		    if(adc_comm_count == 2){
-			    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-			    if(adc_comm) comm_tim_set_next_comm();
-			    LED_ORANGE_ON();
-		    }else{
-			    adc_comm_count++;
-		    }
+    if(adc_comm_count <= 2){
+	    adc_comm_count++;
+	    return;
+    }
+
+    if(adc_comm_data.rising){
+	    adc_comm_data.crossed = adc_comm_data.curr_value >= adc_comm_data.zero_value;
+	    comm_tim_set_next_comm();
+	    if(adc_comm_data.crossed){
+		    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
+		    LED_ORANGE_ON();
 	    }else{
 		    LED_ORANGE_OFF();
-		    adc_comm_count = 0;
 	    }
     }else{
-	    if(new_value > adc_level_falling){
-		    LED_ORANGE_ON();
-		    adc_comm_count = 0;
+	    adc_comm_data.crossed = adc_comm_data.curr_value <= adc_comm_data.zero_value;
+	    comm_tim_set_next_comm();
+	    if(adc_comm_data.crossed){
+		    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
+		    LED_ORANGE_OFF();
 	    }else{
-		    if(adc_comm_count == 2){
-			    ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-			    if(adc_comm) comm_tim_set_next_comm();
-			    LED_ORANGE_OFF();
-		    }else{
-			    adc_comm_count++;
-		    }
+		    LED_ORANGE_ON();
 	    }
     }
+
+    adc_comm_data.last_value = adc_comm_data.curr_value;
 }

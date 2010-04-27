@@ -200,37 +200,16 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QLabel" name="ADCLevelRisingLabel">
+            <widget class="QLabel" name="ADCZeroValueLabel">
              <property name="text">
-              <string>ADC level rising</string>
+              <string>ADC zero value</string>
              </property>
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QSpinBox" name="ADCLevelRisingSpinBox">
+            <widget class="QSpinBox" name="ADCZeroValueSpinBox">
              <property name="maximum">
               <number>65535</number>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="ADCLevelFallingLabel">
-             <property name="text">
-              <string>ADC level falling</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QSpinBox" name="ADCLevelFallingSpinBox">
-             <property name="maximum">
-              <number>65535</number>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2" rowspan="2">
-            <widget class="QCheckBox" name="ADCLevelCouplingCheckBox">
-             <property name="text">
-              <string>Couple ADC levels</string>
              </property>
             </widget>
            </item>
@@ -256,7 +235,7 @@
            <item row="0" column="1">
             <widget class="QCheckBox" name="ADCLevelMonCheckBox">
              <property name="text">
-              <string>Monitor ADC threshhold levels</string>
+              <string>Monitor ADC zero value</string>
              </property>
             </widget>
            </item>

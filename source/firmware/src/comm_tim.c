@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,65 +38,67 @@ volatile s16 comm_tim_spark_advance = 0;
 volatile u16 comm_tim_direct_cutoff = 8000;
 volatile u16 comm_tim_iir_pole = 15;
 
-void comm_tim_init(void){
-    NVIC_InitTypeDef nvic;
-    TIM_TimeBaseInitTypeDef tim_base;
-    TIM_OCInitTypeDef       tim_oc;
+void comm_tim_init(void)
+{
+	NVIC_InitTypeDef nvic;
+	TIM_TimeBaseInitTypeDef tim_base;
+	TIM_OCInitTypeDef       tim_oc;
 
-    comm_tim_capture = 0;
-    comm_tim_spark_advance = 0;
-    comm_tim_direct_cutoff = 8000;
-    comm_tim_iir_pole = 15;
+	comm_tim_capture = 0;
+	comm_tim_spark_advance = 0;
+	comm_tim_direct_cutoff = 8000;
+	comm_tim_iir_pole = 15;
 
-    /* TIM2 clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	/* TIM2 clock enable */
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
+	/* Enable the TIM2 gloabal interrupt */
+	nvic.NVIC_IRQChannel = TIM2_IRQn;
+	nvic.NVIC_IRQChannelPreemptionPriority = 0;
+	nvic.NVIC_IRQChannelSubPriority = 1;
+	nvic.NVIC_IRQChannelCmd = ENABLE;
 
-    /* Enable the TIM2 gloabal interrupt */
-    nvic.NVIC_IRQChannel = TIM2_IRQn;
-    nvic.NVIC_IRQChannelPreemptionPriority = 0;
-    nvic.NVIC_IRQChannelSubPriority = 1;
-    nvic.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&nvic);
 
-    NVIC_Init(&nvic);
+	/* TIM2 time base configuration */
+	tim_base.TIM_Period = 65535;
+	tim_base.TIM_Prescaler = 0;
+	tim_base.TIM_ClockDivision = 0;
+	tim_base.TIM_CounterMode = TIM_CounterMode_Up;
 
-    /* TIM2 time base configuration */
-    tim_base.TIM_Period = 65535;
-    tim_base.TIM_Prescaler = 0;
-    tim_base.TIM_ClockDivision = 0;
-    tim_base.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInit(TIM2, &tim_base);
 
-    TIM_TimeBaseInit(TIM2, &tim_base);
+	/* TIM2 prescaler configuration */
+	TIM_PrescalerConfig(TIM2, 2, TIM_PSCReloadMode_Immediate);
 
-    /* TIM2 prescaler configuration */
-    TIM_PrescalerConfig(TIM2, 2, TIM_PSCReloadMode_Immediate);
+	/* TIM2 Output Compare Timing Mode configuration: Channel1 */
+	tim_oc.TIM_OCMode = TIM_OCMode_Timing;
+	tim_oc.TIM_OutputState = TIM_OutputState_Enable;
+	tim_oc.TIM_Pulse = comm_tim_freq;
+	tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
 
-    /* TIM2 Output Compare Timing Mode configuration: Channel1 */
-    tim_oc.TIM_OCMode = TIM_OCMode_Timing;
-    tim_oc.TIM_OutputState = TIM_OutputState_Enable;
-    tim_oc.TIM_Pulse = comm_tim_freq;
-    tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
+	TIM_OC1Init(TIM2, &tim_oc);
 
-    TIM_OC1Init(TIM2, &tim_oc);
+	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
 
-    TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
+	/* TIM1 IT enable */
+	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 
-    /* TIM1 IT enable */
-    TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
-
-    comm_tim_off();
+	comm_tim_off();
 }
 
-void comm_tim_on(void){
-    /* TIM2 enable counter */
-    TIM_Cmd(TIM2, ENABLE);
+void comm_tim_on(void)
+{
+	/* TIM2 enable counter */
+	TIM_Cmd(TIM2, ENABLE);
 }
 
-void comm_tim_off(void){
-    /* TIM2 disable counter */
-    TIM_Cmd(TIM2, DISABLE);
+void comm_tim_off(void)
+{
+	/* TIM2 disable counter */
+	TIM_Cmd(TIM2, DISABLE);
 
-    pwm_all_lo();
+	pwm_all_lo();
 }
 
 void comm_tim_rising_set_next_comm()
@@ -175,19 +177,19 @@ void comm_tim_set_next_comm(void)
 	}
 }
 
-void tim2_irq_handler(void){
+void tim2_irq_handler(void)
+{
 
-  if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
-  {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+	if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET){
+		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 
-    /* Toggling ORANGE LED and triggering commutation with frequency = 73.24 Hz */
-    //LED_ORANGE_TOGGLE();
-    TIM_GenerateEvent(TIM1, TIM_EventSource_COM);//  | TIM_EventSource_Update);
+		/* Toggling ORANGE LED and triggering commutation with frequency = 73.24 Hz */
+		//LED_ORANGE_TOGGLE();
+		TIM_GenerateEvent(TIM1, TIM_EventSource_COM);//  | TIM_EventSource_Update);
 
-    /* Preparing next comm time */
-    comm_tim_capture = TIM_GetCapture1(TIM2);
+		/* Preparing next comm time */
+		comm_tim_capture = TIM_GetCapture1(TIM2);
 
-    TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
-  }
+		TIM_SetCompare1(TIM2, comm_tim_capture + comm_tim_freq);
+	}
 }

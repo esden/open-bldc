@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,29 +19,30 @@
 #include <stm32/rcc.h>
 #include <stm32/gpio.h>
 
-void led_init(void){
-    GPIO_InitTypeDef gpio;
+void led_init(void)
+{
+	GPIO_InitTypeDef gpio;
 
-    /* GPIOA, GPIOB clock enable */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
-                           RCC_APB2Periph_GPIOB,
-                           ENABLE);
+	/* GPIOA, GPIOB clock enable */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
+			       RCC_APB2Periph_GPIOB,
+			       ENABLE);
 
-    /* GPIOA: Blue LED pin as output push-pull */
-    GPIO_WriteBit(GPIOA,
-                  GPIO_Pin_7,
-                  Bit_SET);
-    gpio.GPIO_Pin =  GPIO_Pin_7;
-    gpio.GPIO_Mode = GPIO_Mode_Out_OD;
-    gpio.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &gpio);
+	/* GPIOA: Blue LED pin as output push-pull */
+	GPIO_WriteBit(GPIOA,
+		      GPIO_Pin_7,
+		      Bit_SET);
+	gpio.GPIO_Pin =  GPIO_Pin_7;
+	gpio.GPIO_Mode = GPIO_Mode_Out_OD;
+	gpio.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &gpio);
 
-    /* GPIOB: Green, Orange and Red LED pin as output push-pull */
-    GPIO_WriteBit(GPIOB,
-                  GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_12,
-                  Bit_SET);
-    gpio.GPIO_Pin =  GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_12;
-    gpio.GPIO_Mode = GPIO_Mode_Out_OD;
-    gpio.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &gpio);
+	/* GPIOB: Green, Orange and Red LED pin as output push-pull */
+	GPIO_WriteBit(GPIOB,
+		      GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_12,
+		      Bit_SET);
+	gpio.GPIO_Pin =  GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_12;
+	gpio.GPIO_Mode = GPIO_Mode_Out_OD;
+	gpio.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &gpio);
 }

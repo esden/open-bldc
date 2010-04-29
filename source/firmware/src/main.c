@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,46 +31,20 @@
 #include "comm_tim.h"
 
 void system_init(void){
-    /* Initialize the microcontroller system. Initialize clocks. */
-    SystemInit();
-}
-
-void my_delay(unsigned long delay ){
-
-    while(delay){
-        delay--;
-    }
+	/* Initialize the microcontroller system. Initialize clocks. */
+	SystemInit();
 }
 
 int main(void){
-//    int i,j;
 
-    system_init();
-    led_init();
-    gprot_init();
-    usart_init();
-    adc_init();
-    pwm_init();
-    comm_tim_init();
+	system_init();
+	led_init();
+	gprot_init();
+	usart_init();
+	adc_init();
+	pwm_init();
+	comm_tim_init();
 
-    while(1){
-        /*
-        for(j=0; j<20; j++){
-            for(i=0; i< 125; i++){
-                LED_RED_ON();
-                my_delay(50*j);
-                LED_RED_OFF();
-                my_delay(1200-50*j);
-            }
-        }
-        for(j=0; j<20; j++){
-            for(i=0; i< 125; i++){
-                LED_RED_OFF();
-                my_delay(200+50*j);
-                LED_RED_ON();
-                my_delay(1000-50*j);
-            }
-        }
-        */
-    }
+	while(1){
+	}
 }

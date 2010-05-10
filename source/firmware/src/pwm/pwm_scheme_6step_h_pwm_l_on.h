@@ -19,6 +19,6 @@
 #ifndef __PWM_SCHEME_6STEP_H_PWM_L_ON
 #define __PWM_SCHEME_6STEP_H_PWM_L_ON
 
-void pwm_scheme_6step_h_pwm_l_on(void);
+void pwm_scheme_6step_h_pwm_l_on(void) __attribute__((always_inline));
 
 #endif /* __PWM_SCHEME_6STEP_H_PWM_L_ON */

@@ -96,9 +96,9 @@ void usart3_irq_handler(void)
 		data_buf = USART_ReceiveData(USART3);
 
 		if(!gpc_handle_byte(data_buf)){
-			LED_GREEN_TOGGLE();
+			//LED_GREEN_TOGGLE();
 		}else{
-			LED_RED_ON();
+			//LED_RED_ON();
 		}
 	}
 
@@ -106,7 +106,7 @@ void usart3_irq_handler(void)
 	if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
 		if((data_buf = gpc_pickup_byte()) >= 0){
 			USART_SendData(USART3, data_buf);
-			LED_GREEN_TOGGLE();
+			//LED_GREEN_TOGGLE();
 		}else{
 			usart_disable_send();
 		}

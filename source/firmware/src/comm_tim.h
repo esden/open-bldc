@@ -19,16 +19,19 @@
 #ifndef __COMM_TIM_H
 #define __COMM_TIM_H
 
-extern volatile u16 comm_tim_freq;
-extern volatile s16 comm_tim_spark_advance;
-extern volatile u16 comm_tim_direct_cutoff;
-extern volatile u16 comm_tim_iir_pole;
+struct comm_tim_data {
+	volatile u16 last_capture_time;
+	volatile u16 curr_time;
+	volatile u16 prev_time;
+	volatile u16 freq;
+};
+
+extern struct comm_tim_data comm_tim_data;
 
 void comm_tim_init(void);
 void comm_tim_on(void);
 void comm_tim_off(void);
-void comm_tim_remember(void);
-void comm_tim_set_next_comm(void);
-void tim2_irq_handler(void);
+void comm_tim_capture_time(void);
+void comm_tim_update_freq(void);
 
 #endif /* __COMM_TIM_H */

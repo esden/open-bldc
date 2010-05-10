@@ -22,23 +22,24 @@
 #define ADC_CHANNEL_A ADC_Channel_0
 #define ADC_CHANNEL_B ADC_Channel_1
 #define ADC_CHANNEL_C ADC_Channel_2
+#define ADC_CHANNEL_HALF_BATTERY_VOLTAGE ADC_Channel_3
+#define ADC_CHANNEL_GLOBAL_CURRENT ADC_Channel_9
 
-#define ADC_FALLIN 0
-#define ADC_RISING 1
+#define ADC_PHASE_VOLTAGE ADC_InjectedChannel_1
+#define ADC_HALF_BATTERY_VOLTAGE ADC_InjectedChannel_2
+#define ADC_GLOBAL_CURRENT ADC_InjectedChannel_3
 
-struct adc_comm_data {
-	u16 last_value;
-	u16 curr_value;
-	u16 zero_value;
-	bool rising;
-	bool crossed;
+struct adc_data {
+	u16 phase_voltage;
+	u16 half_battery_voltage;
+	u16 global_current;
 };
 
-extern volatile int adc_comm;
-extern struct adc_comm_data adc_comm_data;
+extern struct adc_data adc_data;
+extern volatile bool adc_new_data_trigger;
 
 void adc_init(void);
-void adc_set(uint8_t channel, uint8_t rising);
+void adc_set(u8 channel);
 void adc1_2_irq_handler(void);
 
 #endif /* __ADC_H */

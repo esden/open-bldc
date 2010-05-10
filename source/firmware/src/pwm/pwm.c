@@ -121,7 +121,8 @@ void pwm_init(void){
     TIM_CCPreloadControl(TIM1, ENABLE);
 
     /* Enable COM and CC interrupt */
-    TIM_ITConfig(TIM1, TIM_IT_COM | TIM_IT_CC4, ENABLE);
+    TIM_ITConfig(TIM1, TIM_IT_COM, ENABLE);
+    //TIM_ITConfig(TIM1, TIM_IT_COM | TIM_IT_CC4, ENABLE);
 
     /* TIM1 enable counter */
     TIM_Cmd(TIM1, ENABLE);
@@ -161,7 +162,7 @@ void pwm_all_hi(void)
 void tim1_trg_com_irq_handler(void){
     TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
 
-    //LED_ORANGE_TOGGLE();
+    LED_BLUE_ON();
 
     TIM_SetCompare1(TIM1, pwm_val);
     TIM_SetCompare2(TIM1, pwm_val);
@@ -169,6 +170,7 @@ void tim1_trg_com_irq_handler(void){
     TIM_SetCompare4(TIM1, pwm_offset);
 
     PWM_SCHEME();
+    LED_BLUE_OFF();
 }
 
 void tim1_cc_irq_handler(void){

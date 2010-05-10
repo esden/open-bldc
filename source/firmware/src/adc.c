@@ -33,10 +33,10 @@
 #include "led.h"
 #include "pwm.h"
 #include "comm_tim.h"
+#include "gprot.h"
 
-volatile int adc_comm = 0;
-volatile int adc_comm_count = 0;
-struct adc_comm_data adc_comm_data;
+struct adc_data adc_data;
+volatile bool adc_new_data_trigger;
 
 void adc_init(void)
 {
@@ -59,31 +59,34 @@ void adc_init(void)
 	 * Ch 1 -> BEMF/I_Sense of PHASE B
 	 * Ch 2 -> BEMF/I_Sense of PHASE C
 	 * Ch 3 -> Battery Voltage
+	 * Ch 9 -> Global Current
 	 */
 	gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
 	gpio.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOA, &gpio);
 
-	adc_comm = 0;
-	adc_comm_count = 0;
-	adc_comm_data.last_value = 0;
-	adc_comm_data.curr_value = 0;
-	adc_comm_data.zero_value = 2000;
-	adc_comm_data.rising = true;
-	adc_comm_data.crossed = false;
+	gpio.GPIO_Pin = GPIO_Pin_1;
+	gpio.GPIO_Mode = GPIO_Mode_AIN;
+	GPIO_Init(GPIOB, &gpio);
+
+	adc_data.phase_voltage = 0;
+	adc_data.half_battery_voltage = 0;
+	adc_data.global_current = 0;
 
 	/* Configure ADC1 */
 	adc.ADC_Mode = ADC_Mode_Independent;
-	adc.ADC_ScanConvMode = DISABLE;
+	adc.ADC_ScanConvMode = ENABLE;
 	adc.ADC_ContinuousConvMode = DISABLE;
 	adc.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
 	adc.ADC_DataAlign = ADC_DataAlign_Right;
 	adc.ADC_NbrOfChannel = 0;
 	ADC_Init(ADC1, &adc);
 
-	ADC_InjectedSequencerLengthConfig(ADC1, 1);
+	ADC_InjectedSequencerLengthConfig(ADC1, 3);
 
-	ADC_InjectedChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_41Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_C, 1, ADC_SampleTime_41Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_HALF_BATTERY_VOLTAGE, 2, ADC_SampleTime_41Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_GLOBAL_CURRENT, 3, ADC_SampleTime_41Cycles5);
 
 	ADC_ExternalTrigInjectedConvConfig(ADC1, ADC_ExternalTrigInjecConv_T1_CC4);
 
@@ -109,55 +112,27 @@ void adc_init(void)
 
 	/* Enable ADC1 External Trigger */
 	ADC_ExternalTrigConvCmd(ADC1, ENABLE);
-	//ADC_ExternalTrigConvCmd(ADC1, DISABLE);
 
 }
 
-void adc_set(uint8_t channel, uint8_t rising)
+void adc_set(u8 channel)
 {
-
-	adc_comm_data.rising = rising;
 
 	ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
 
 	ADC_InjectedChannelConfig(ADC1, channel, 1, ADC_SampleTime_28Cycles5);
 
-	adc_comm_count = 0;
 	ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
-	adc_comm_data.last_value = 0;
-	adc_comm_data.crossed = false;
 }
 
 void adc1_2_irq_handler(void){
-
 	ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
 
-	adc_comm_data.curr_value = ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
+	comm_tim_capture_time();
 
-	if(adc_comm_count <= 2){
-		adc_comm_count++;
-		return;
-	}
+	adc_data.phase_voltage = ADC_GetInjectedConversionValue(ADC1, ADC_PHASE_VOLTAGE);
+	adc_data.half_battery_voltage = ADC_GetInjectedConversionValue(ADC1, ADC_HALF_BATTERY_VOLTAGE);
+	adc_data.global_current = ADC_GetInjectedConversionValue(ADC1, ADC_GLOBAL_CURRENT);
 
-	if(adc_comm_data.rising){
-		adc_comm_data.crossed = adc_comm_data.curr_value >= adc_comm_data.zero_value;
-		comm_tim_set_next_comm();
-		if(adc_comm_data.crossed){
-			ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-			LED_ORANGE_ON();
-		}else{
-			LED_ORANGE_OFF();
-		}
-	}else{
-		adc_comm_data.crossed = adc_comm_data.curr_value <= adc_comm_data.zero_value;
-		comm_tim_set_next_comm();
-		if(adc_comm_data.crossed){
-			ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-			LED_ORANGE_OFF();
-		}else{
-			LED_ORANGE_ON();
-		}
-	}
-
-	adc_comm_data.last_value = adc_comm_data.curr_value;
+	adc_new_data_trigger = true;
 }

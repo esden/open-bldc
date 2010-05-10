@@ -32,6 +32,8 @@
 #include "pwm.h"
 #include "comm_tim.h"
 #include "adc.h"
+#include "sensor_process.h"
+#include "comm_process.h"
 
 #define GPROT_FLAG_PWM_COMM (1 << 0)
 #define GPROT_FLAG_COMM_TIM (1 << 1)
@@ -59,11 +61,13 @@ void gprot_init()
 
 	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
 	gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
-	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &comm_tim_freq);
-	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR, &adc_comm_data.zero_value);
-	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR, (u16 *)&comm_tim_spark_advance);
-	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR, &comm_tim_direct_cutoff);
-	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &comm_tim_iir_pole);
+	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &(comm_tim_data.freq));
+	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR, (u16 *)&(sensors.half_battery_voltage));
+	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR, (u16 *)&(comm_params.spark_advance));
+	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR, &(comm_params.direct_cutoff));
+	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &(comm_params.iir));
+	gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR, (u16 *)&(sensors.global_current));
+	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR, (u16 *)&(sensors.phase_voltage));
 }
 
 void gprot_trigger_output(void *data)
@@ -96,10 +100,10 @@ void gprot_update_flags(void)
 	}
 
 	if(gprot_flag_reg & GPROT_FLAG_ADC_COMM){
-		adc_comm = 1;
+		comm_process_closed_loop_off();;
 	}else{
 		if(gprot_flag_reg_old & GPROT_FLAG_ADC_COMM){
-			adc_comm = 0;
+			comm_process_closed_loop_off();;
 		}
 	}
 

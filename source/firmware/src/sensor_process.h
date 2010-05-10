@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __GPROT_H
-#define __GPROT_H
+#ifndef __SENSOR_PROCESS_H
+#define __SENSOR_PROCESS_H
 
-#define GPROT_FLAG_REG_ADDR 0
-#define GPROT_PWM_OFFSET_REG_ADDR 1
-#define GPROT_PWM_VAL_REG_ADDR 2
-#define GPROT_COMM_TIM_FREQ_REG_ADDR 3
-#define GPROT_ADC_ZERO_VALUE_REG_ADDR 4
-#define GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR 5
-#define GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR 6
-#define GPROT_COMM_TIM_IIR_POLE_REG_ADDR 7
-#define GPROT_ADC_GLOBAL_CURRENT_REG_ADDR 8
-#define GPROT_ADC_PHASE_VOLTAGE_REG_ADDR 9
+struct sensors {
+	u16 phase_voltage;
+	u32 half_battery_voltage;
+	u16 global_current;
+};
 
-void gprot_init();
+struct sensor_params {
+	struct pv {
+		s32 offset;
+		u32 iir;
+	} pv;
+	struct hbv {
+		s32 offset;
+		u32 iir;
+	} hbv;
+	struct gc {
+		s32 zero_current_offset;
+		s32 zero_current;
+		u32 iir;
+	} gc;
+};
 
-#endif /* __GPROT_H */
+extern struct sensors sensors;
+extern struct sensor_params sensor_params;
+
+void sensor_process_init(void);
+void sensor_process_reset(void);
+void run_sensor_process(void);
+
+#endif /* __SENSOR_PROCESS_H */

@@ -34,6 +34,7 @@
 #include "adc.h"
 #include "sensor_process.h"
 #include "comm_process.h"
+#include "control_process.h"
 
 #define GPROT_FLAG_PWM_COMM (1 << 0)
 #define GPROT_FLAG_COMM_TIM (1 << 1)
@@ -93,10 +94,10 @@ void gprot_update_flags(void)
 	}
 
 	if(gprot_flag_reg & GPROT_FLAG_COMM_TIM){
-		comm_tim_on();
+		control_process_ignite();
 	}else{
 		if(gprot_flag_reg_old & GPROT_FLAG_COMM_TIM){
-			comm_tim_off();
+			control_process_kill();
 		}
 	}
 

@@ -33,8 +33,8 @@
 
 struct comm_tim_data comm_tim_data;
 bool comm_tim_trigger_comm = false;
-bool comm_tim_startup_state = true;
-int comm_tim_align_count = 0;
+bool comm_tim_trigger_comm_once = false;
+bool comm_tim_trigger = false;
 
 void comm_tim_init(void)
 {
@@ -80,22 +80,15 @@ void comm_tim_init(void)
 	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 
 	TIM_Cmd(TIM2, ENABLE);
-	comm_tim_off();
+
+	comm_tim_reset();
 }
 
-void comm_tim_on(void)
-{
-	comm_tim_startup_state = true;
-	comm_tim_align_count = 0;
-	comm_tim_data.freq = 65535;
-	comm_tim_trigger_comm = true;
-}
-
-void comm_tim_off(void)
+void comm_tim_reset(void)
 {
 	comm_tim_trigger_comm = false;
-
-	pwm_all_lo();
+	comm_tim_trigger_comm_once = false;
+	comm_tim_data.freq = 65535;
 }
 
 void comm_tim_capture_time(void)
@@ -119,35 +112,18 @@ void tim2_irq_handler(void)
 		/* prepare for next comm */
 		comm_tim_data.last_capture_time = TIM_GetCapture1(TIM2);
 
-		/* Triggering commutation */
-		if((comm_tim_align_count == 0) ||
-			(comm_tim_align_count == 100) ||
-			(comm_tim_align_count == 150) ||
-			(comm_tim_align_count == 125) ||
-			(comm_tim_align_count == 142) ||
-			(comm_tim_align_count == 145) ||
-			(comm_tim_align_count == 147) ||
-			(comm_tim_align_count == 148) ||
-			(comm_tim_align_count > 149)){
-			if(comm_tim_trigger_comm) TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+		/* triggering commutation event */
+		if(comm_tim_trigger_comm ||
+			comm_tim_trigger_comm_once){
+			TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+			//TIM_GenerateEvent(TIM1, TIM_EventSource_COM | TIM_EventSource_Update);
 		}
 
-		comm_tim_align_count++;
-		//if(comm_tim_trigger_comm) TIM_GenerateEvent(TIM1, TIM_EventSource_COM | TIM_EventSource_Update);
+		/* (re)setting "semaphors" */
+		comm_tim_trigger_comm_once = false;
+		comm_tim_trigger = true;
 
 		/* Set next comm time */
-		if(comm_tim_startup_state && (comm_tim_align_count > 149)){
-			comm_tim_data.freq = comm_tim_data.freq - (comm_tim_data.freq / 400);
-		}
-
-		if(comm_tim_data.freq < 27500) comm_tim_startup_state = false;
-
-
-		if(comm_tim_data.freq < 1000){
-			comm_tim_data.freq = 65535;
-			comm_tim_off();
-		}
-
 		TIM_SetCompare1(TIM2, comm_tim_data.last_capture_time + comm_tim_data.freq);
 	}
 }

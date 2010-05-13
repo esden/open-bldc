@@ -31,6 +31,7 @@
 #include "comm_tim.h"
 #include "comm_process.h"
 #include "sensor_process.h"
+#include "control_process.h"
 
 void system_init(void){
 	/* Initialize the microcontroller system. Initialize clocks. */
@@ -48,12 +49,17 @@ int main(void){
 	adc_init();
 	pwm_init();
 	comm_tim_init();
+	control_process_init();
 
 	while(1){
 		if(adc_new_data_trigger){
 			adc_new_data_trigger = false;
 			run_sensor_process();
 			run_comm_process();
+		}
+		if(comm_tim_trigger){
+			comm_tim_trigger = false;
+			run_control_process();
 		}
 	}
 }

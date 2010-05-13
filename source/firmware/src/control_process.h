@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,24 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __COMM_TIM_H
-#define __COMM_TIM_H
+#ifndef __CONTROL_PROCESS_H
+#define __CONTROL_PROCESS_H
 
-struct comm_tim_data {
-	volatile u16 last_capture_time;
-	volatile u16 curr_time;
-	volatile u16 prev_time;
-	volatile u16 freq;
-};
+void control_process_init(void);
+void control_process_ignite(void);
+void control_process_kill(void);
+void run_control_process(void);
 
-extern struct comm_tim_data comm_tim_data;
-extern bool comm_tim_trigger_comm;
-extern bool comm_tim_trigger_comm_once;
-extern bool comm_tim_trigger;
-
-void comm_tim_init(void);
-void comm_tim_reset(void);
-void comm_tim_capture_time(void);
-void comm_tim_update_freq(void);
-
-#endif /* __COMM_TIM_H */
+#endif /* __CONTROL_PROCESS_H */

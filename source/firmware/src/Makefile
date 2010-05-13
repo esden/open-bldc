@@ -75,7 +75,8 @@ OBJECTS = main.o \
 	  comm_tim.o \
 	  gprot.o \
 	  sensor_process.o \
-	  comm_process.o
+	  comm_process.o \
+	  control_process.o
 
 all: gccversion images size
 

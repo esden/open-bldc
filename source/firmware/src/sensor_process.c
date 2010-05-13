@@ -44,7 +44,7 @@ void sensor_process_init(void)
 
 	sensor_params.pv.offset = 0;
 	sensor_params.pv.iir = 1;
-	sensor_params.hbv.offset = 100;
+	sensor_params.hbv.offset = 000;
 	sensor_params.hbv.iir = 20;
 	sensor_params.gc.zero_current_offset = 0;
 	sensor_params.gc.zero_current = 2045;
@@ -65,9 +65,11 @@ void run_sensor_process(void)
 	u16 half_battery_voltage = adc_data.half_battery_voltage;
 	u16 global_current = adc_data.global_current;
 
-	LED_RED_ON();
+	//LED_RED_ON();
 	/* High priority sensors */
 	if(sensors.phase_voltage == 0){
+		sensors.phase_voltage = 1;
+	}else if(sensors.phase_voltage == 1){
 		sensors.phase_voltage = phase_voltage;
 	}else{
 		sensors.phase_voltage = SENSOR_OFFSET_IIR(sensors.phase_voltage,
@@ -78,7 +80,7 @@ void run_sensor_process(void)
 	}
 
 	/* Low priority sensors */
-	if(sensor_process_low_prio_update_cnt == 100){
+	if(sensor_process_low_prio_update_cnt == 211){
 		sensor_process_low_prio_update_cnt = 0;
 
 		/* Jump to the current battery voltage when initializing */
@@ -112,5 +114,5 @@ void run_sensor_process(void)
 	}else{
 		sensor_trigger_debug_output++;
 	}
-	LED_RED_OFF();
+	//LED_RED_OFF();
 }

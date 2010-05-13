@@ -68,6 +68,7 @@ void gprot_init()
 	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &(comm_params.iir));
 	gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR, (u16 *)&(sensors.global_current));
 	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR, (u16 *)&(sensors.phase_voltage));
+	gpc_setup_reg(10, (u16 *)&new_cycle_time);
 }
 
 void gprot_trigger_output(void *data)
@@ -100,7 +101,7 @@ void gprot_update_flags(void)
 	}
 
 	if(gprot_flag_reg & GPROT_FLAG_ADC_COMM){
-		comm_process_closed_loop_off();;
+		comm_process_closed_loop_on();;
 	}else{
 		if(gprot_flag_reg_old & GPROT_FLAG_ADC_COMM){
 			comm_process_closed_loop_off();;

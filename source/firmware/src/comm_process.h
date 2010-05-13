@@ -19,16 +19,19 @@
 #ifndef __COMM_PROCESS_H
 #define __COMM_PROCESS_H
 
-#define COMM_PROCESS_FALLING TRUE
-#define COMM_PROCESS_RISING FALSE
+#define COMM_PROCESS_FALLING FALSE
+#define COMM_PROCESS_RISING TRUE
 
 struct comm_params {
 	s16 spark_advance;
 	u16 direct_cutoff;
+	u16 direct_cutoff_slope;
 	u16 iir;
+	u16 hold_off;
 };
 
 extern struct comm_params comm_params;
+extern u32 new_cycle_time;
 
 void comm_process_init(void);
 void comm_process_reset(void);

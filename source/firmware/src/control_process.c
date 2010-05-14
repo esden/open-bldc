@@ -20,6 +20,7 @@
 #include "comm_tim.h"
 #include "pwm.h"
 #include "comm_process.h"
+#include "led.h"
 
 #include "control_process.h"
 
@@ -27,7 +28,7 @@
 #define CONTROL_PROCESS_ALIGN_TIME 200
 #define CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP 30
 #define CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV 5
-#define CONTROL_PROCESS_SPINUP_DEC_DIV 500
+#define CONTROL_PROCESS_SPINUP_DEC_DIV 1000
 
 enum control_process_states {
 	cps_idle,
@@ -46,6 +47,7 @@ struct control_process {
 	bool ignite;
 	bool kill;
 	u32 bemf_crossing_counter;
+	u32 bemf_lost_crossing_counter;
 };
 
 struct control_process control_process;
@@ -84,6 +86,7 @@ void control_process_kill(void)
 	comm_tim_trigger_comm_once = false;
 	control_process.kill = true;
 	control_process.state = cps_idle;
+	comm_process_closed_loop_off();
 }
 
 void run_control_process(void)
@@ -132,12 +135,17 @@ void run_control_process(void)
 		if(comm_data.bemf_crossing_detected){
 			comm_data.bemf_crossing_detected = false;
 			control_process.bemf_crossing_counter++;
+			control_process.bemf_lost_crossing_counter = 0;
 		}else{
 			control_process.bemf_crossing_counter = 0;
+			control_process.bemf_lost_crossing_counter++;
 		}
 
-		if(control_process.bemf_crossing_counter > 10){
-			control_process_kill();
+		if((control_process.bemf_crossing_counter > 1) &&
+			(comm_tim_data.freq < 30000)){
+			comm_process_closed_loop_on();
+			control_process.state = cps_spinning;
+			LED_RED_ON();
 			return;
 		}
 
@@ -150,7 +158,21 @@ void run_control_process(void)
 		}
 		break;
 	case cps_spinning:
-		/* nothing yet */
+		if(comm_data.bemf_crossing_detected){
+			comm_data.bemf_crossing_detected = false;
+			control_process.bemf_crossing_counter++;
+			control_process.bemf_lost_crossing_counter = 0;
+		}else{
+			control_process.bemf_crossing_counter = 0;
+			control_process.bemf_lost_crossing_counter++;
+		}
+
+		if(control_process.bemf_lost_crossing_counter > 10){
+			comm_process_closed_loop_off();
+			control_process_kill();
+			LED_RED_OFF();
+		}
+
 		break;
 	}
 }

@@ -29,7 +29,6 @@ struct comm_process_state {
 	int pwm_count;
 	bool closed_loop;
 	bool recalculated_comm_time;
-	bool just_started;
 	u32 prev_phase_voltage;
 	u32 prev_prev_phase_voltage;
 };
@@ -45,7 +44,6 @@ void comm_process_init(void)
 	comm_process_state.pwm_count = 0;
 	comm_process_state.closed_loop = false;
 	comm_process_state.recalculated_comm_time = false;
-	comm_process_state.just_started = true;
 	comm_process_state.prev_phase_voltage = 0;
 
 	comm_data.bemf_crossing_detected = false;
@@ -53,8 +51,8 @@ void comm_process_init(void)
 
 	comm_params.spark_advance = 0;
 	comm_params.direct_cutoff = 10000;
-	comm_params.direct_cutoff_slope = 100;
-	comm_params.iir = 7;
+	comm_params.direct_cutoff_slope = 10;
+	comm_params.iir = 6;
 	comm_params.hold_off = 2;
 }
 
@@ -81,13 +79,12 @@ void comm_process_config_and_reset(bool rising){
 	}
 	comm_process_state.pwm_count = 0;
 	comm_process_state.recalculated_comm_time = false;
-	LED_RED_OFF();
+	//LED_RED_OFF();
 }
 
 void comm_process_closed_loop_on(void)
 {
 	comm_process_state.closed_loop = true;
-	comm_process_state.just_started = true;
 }
 
 void comm_process_closed_loop_off(void)
@@ -159,42 +156,26 @@ void comm_process_calc_next_comm(void)
 		comm_tim_data.last_capture_time;
 	new_cycle_time = half_cycle_time * 2;
 
-	if(!comm_process_state.recalculated_comm_time){
-		comm_process_state.recalculated_comm_time = true;
-		if((half_cycle_time > 500) &&
-			(half_cycle_time < (0xFFFF - 500))){
-			comm_process_state.just_started = false;
-			if(new_cycle_time >
-				(old_cycle_time + comm_params.direct_cutoff)){
-				new_cycle_time = old_cycle_time +
-					comm_params.direct_cutoff_slope;
-			}else if(new_cycle_time <
-				(old_cycle_time - comm_params.direct_cutoff)){
-				new_cycle_time = old_cycle_time -
-					comm_params.direct_cutoff_slope;
-			}
+	if(new_cycle_time >
+		(old_cycle_time + comm_params.direct_cutoff)){
+		new_cycle_time = old_cycle_time +
+			comm_params.direct_cutoff_slope;
+	}else if(new_cycle_time <
+		(old_cycle_time - comm_params.direct_cutoff)){
+		new_cycle_time = old_cycle_time -
+			comm_params.direct_cutoff_slope;
+	}
 
-			if(comm_process_state.closed_loop){
-				new_cycle_time = ((old_cycle_time * comm_params.iir) +
-						(new_cycle_time + comm_params.spark_advance)) / (comm_params.iir + 1);
-				comm_tim_data.freq = new_cycle_time;
-				comm_tim_update_freq();
-			}
-		}else{
-			if((half_cycle_time <= 500) &&
-				comm_process_state.just_started){
-				comm_tim_data.freq -= 500;
-			}else if(comm_process_state.closed_loop){
-				//comm_tim_off();
-			}
-		}
-		gpc_register_touched(10);
+	if(comm_process_state.closed_loop){
+		new_cycle_time = ((old_cycle_time * comm_params.iir) +
+				(new_cycle_time + comm_params.spark_advance)) / (comm_params.iir + 1);
+		comm_tim_data.freq = new_cycle_time;
+		comm_tim_update_freq();
 	}
 }
 
 void run_comm_process(void)
 {
-	LED_RED_ON();
 	/*
 	if(comm_process_state.pwm_count < comm_process_state.hold_off){
 		comm_process_state.pwm_count++;
@@ -226,7 +207,7 @@ void run_comm_process(void)
 		comm_process_state.prev_prev_phase_voltage = comm_process_state.prev_phase_voltage;
 		comm_process_state.prev_phase_voltage = sensors.phase_voltage;
 		LED_ORANGE_OFF();
-		LED_RED_OFF();
+		//LED_RED_OFF();
 		return;
 	}
 
@@ -236,7 +217,7 @@ void run_comm_process(void)
 			if((comm_process_state.prev_prev_phase_voltage < comm_process_state.prev_phase_voltage) &&
 				(comm_process_state.prev_phase_voltage < sensors.half_battery_voltage) &&
 				(sensors.phase_voltage >= sensors.half_battery_voltage)){
-				//comm_process_calc_next_comm();
+				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
 				LED_ORANGE_ON();
 			}else{
@@ -246,7 +227,7 @@ void run_comm_process(void)
 			if((comm_process_state.prev_prev_phase_voltage > comm_process_state.prev_phase_voltage) &&
 				(comm_process_state.prev_phase_voltage > sensors.half_battery_voltage) &&
 				(sensors.phase_voltage <= sensors.half_battery_voltage)){
-				//comm_process_calc_next_comm();
+				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
 				LED_ORANGE_ON();
 			}else{
@@ -259,6 +240,4 @@ void run_comm_process(void)
 
 	comm_process_state.prev_prev_phase_voltage = comm_process_state.prev_phase_voltage;
 	comm_process_state.prev_phase_voltage = sensors.phase_voltage;
-
-	LED_RED_OFF();
 }

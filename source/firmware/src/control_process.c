@@ -19,6 +19,7 @@
 #include "types.h"
 #include "comm_tim.h"
 #include "pwm.h"
+#include "comm_process.h"
 
 #include "control_process.h"
 
@@ -44,6 +45,7 @@ struct control_process {
 	int coarce_spinup_step;
 	bool ignite;
 	bool kill;
+	u32 bemf_crossing_counter;
 };
 
 struct control_process control_process;
@@ -65,6 +67,7 @@ void control_process_reset(void)
 	control_process.coarce_spinup_step = CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP;
 	control_process.ignite = false;
 	control_process.kill = false;
+	control_process.bemf_crossing_counter = 0;
 }
 
 void control_process_ignite(void)
@@ -126,12 +129,24 @@ void run_control_process(void)
 		}
 		break;
 	case cps_spinup:
+		if(comm_data.bemf_crossing_detected){
+			comm_data.bemf_crossing_detected = false;
+			control_process.bemf_crossing_counter++;
+		}else{
+			control_process.bemf_crossing_counter = 0;
+		}
+
+		if(control_process.bemf_crossing_counter > 10){
+			control_process_kill();
+			return;
+		}
+
 		comm_tim_data.freq =
 			comm_tim_data.freq -
 			(comm_tim_data.freq /
 				CONTROL_PROCESS_SPINUP_DEC_DIV);
-		if(comm_tim_data.freq < 27500){
-			control_process.state = cps_spinning;
+		if(comm_tim_data.freq < 20000){
+			control_process_kill();
 		}
 		break;
 	case cps_spinning:

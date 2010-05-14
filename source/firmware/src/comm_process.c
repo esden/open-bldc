@@ -35,6 +35,7 @@ struct comm_process_state {
 };
 
 struct comm_process_state comm_process_state;
+struct comm_data comm_data;
 struct comm_params comm_params;
 u32 new_cycle_time;
 
@@ -46,6 +47,9 @@ void comm_process_init(void)
 	comm_process_state.recalculated_comm_time = false;
 	comm_process_state.just_started = true;
 	comm_process_state.prev_phase_voltage = 0;
+
+	comm_data.bemf_crossing_detected = false;
+	comm_data.calculated_freq = 0;
 
 	comm_params.spark_advance = 0;
 	comm_params.direct_cutoff = 10000;
@@ -181,7 +185,7 @@ void comm_process_calc_next_comm(void)
 				comm_process_state.just_started){
 				comm_tim_data.freq -= 500;
 			}else if(comm_process_state.closed_loop){
-				comm_tim_off();
+				//comm_tim_off();
 			}
 		}
 		gpc_register_touched(10);
@@ -233,6 +237,7 @@ void run_comm_process(void)
 				(comm_process_state.prev_phase_voltage < sensors.half_battery_voltage) &&
 				(sensors.phase_voltage >= sensors.half_battery_voltage)){
 				//comm_process_calc_next_comm();
+				comm_data.bemf_crossing_detected = true;
 				LED_ORANGE_ON();
 			}else{
 				LED_ORANGE_OFF();
@@ -242,6 +247,7 @@ void run_comm_process(void)
 				(comm_process_state.prev_phase_voltage > sensors.half_battery_voltage) &&
 				(sensors.phase_voltage <= sensors.half_battery_voltage)){
 				//comm_process_calc_next_comm();
+				comm_data.bemf_crossing_detected = true;
 				LED_ORANGE_ON();
 			}else{
 				LED_ORANGE_OFF();

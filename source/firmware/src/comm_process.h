@@ -30,7 +30,13 @@ struct comm_params {
 	u16 hold_off;
 };
 
+struct comm_data {
+	bool bemf_crossing_detected;
+	u16 calculated_freq;
+};
+
 extern struct comm_params comm_params;
+extern struct comm_data comm_data;
 extern u32 new_cycle_time;
 
 void comm_process_init(void);

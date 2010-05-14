@@ -33,12 +33,16 @@
 #include "sensor_process.h"
 #include "control_process.h"
 
+bool demo;
+
 void system_init(void){
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
 }
 
 int main(void){
+	int demo_counter;
+	int demo_dir;
 
 	system_init();
 	led_init();
@@ -51,6 +55,10 @@ int main(void){
 	comm_tim_init();
 	control_process_init();
 
+	demo_counter = 500;
+	demo_dir = 1;
+	demo = false;
+
 	while(1){
 		if(adc_new_data_trigger){
 			adc_new_data_trigger = false;
@@ -60,6 +68,22 @@ int main(void){
 		if(comm_tim_trigger){
 			comm_tim_trigger = false;
 			run_control_process();
+		}
+
+		if(demo){
+			if(demo_counter == 0){
+				demo_counter = 500;
+			        pwm_val += demo_dir;
+				if(pwm_val > 1500){
+					demo_dir = -1;
+				}
+
+				if(pwm_val < 600){
+					demo_dir = 1;
+				}
+			}else{
+				demo_counter--;
+			}
 		}
 	}
 }

@@ -43,7 +43,7 @@ void sensor_process_init(void)
 	sensors.global_current = 0;
 
 	sensor_params.pv.offset = 0;
-	sensor_params.pv.iir = 1;
+	sensor_params.pv.iir = 0;
 	sensor_params.hbv.offset = 000;
 	sensor_params.hbv.iir = 20;
 	sensor_params.gc.zero_current_offset = 0;

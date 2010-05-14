@@ -71,6 +71,10 @@ void run_sensor_process(void)
 		sensors.phase_voltage = 1;
 	}else if(sensors.phase_voltage == 1){
 		sensors.phase_voltage = phase_voltage;
+	}else if(sensors.phase_voltage == 65535){
+		sensors.phase_voltage = 65534;
+	}else if(sensors.phase_voltage == 65534){
+		sensors.phase_voltage = phase_voltage;
 	}else{
 		sensors.phase_voltage = SENSOR_OFFSET_IIR(sensors.phase_voltage,
 							  phase_voltage,

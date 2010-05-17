@@ -37,7 +37,7 @@ struct comm_data {
 
 extern struct comm_params comm_params;
 extern struct comm_data comm_data;
-extern u32 new_cycle_time;
+extern s32 new_cycle_time;
 
 void comm_process_init(void);
 void comm_process_reset(void);

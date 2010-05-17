@@ -36,7 +36,7 @@ struct comm_process_state {
 struct comm_process_state comm_process_state;
 struct comm_data comm_data;
 struct comm_params comm_params;
-u32 new_cycle_time;
+s32 new_cycle_time;
 
 void comm_process_init(void)
 {
@@ -51,7 +51,7 @@ void comm_process_init(void)
 
 	comm_params.spark_advance = 0;
 	comm_params.direct_cutoff = 10000;
-	comm_params.direct_cutoff_slope = 10;
+	comm_params.direct_cutoff_slope = 20;
 	comm_params.iir = 6;
 	comm_params.hold_off = 2;
 }
@@ -94,7 +94,7 @@ void comm_process_closed_loop_off(void)
 
 void comm_process_calc_next_comm(void)
 {
-	u32 old_cycle_time = comm_tim_data.freq;
+	s32 old_cycle_time = comm_tim_data.freq;
 	s32 pwm_time = comm_tim_data.curr_time -
 		comm_tim_data.prev_time;
 	s32 bemf_rise = sensors.phase_voltage -

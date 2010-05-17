@@ -142,7 +142,7 @@ void run_control_process(void)
 		}
 
 		if((control_process.bemf_crossing_counter > 1) &&
-			(comm_tim_data.freq < 30000)){
+			(comm_tim_data.freq < 25000)){
 			comm_process_closed_loop_on();
 			control_process.state = cps_spinning;
 			LED_RED_ON();
@@ -162,15 +162,16 @@ void run_control_process(void)
 			comm_data.bemf_crossing_detected = false;
 			control_process.bemf_crossing_counter++;
 			control_process.bemf_lost_crossing_counter = 0;
+			LED_RED_ON();
 		}else{
 			control_process.bemf_crossing_counter = 0;
 			control_process.bemf_lost_crossing_counter++;
+			LED_RED_OFF();
 		}
 
 		if(control_process.bemf_lost_crossing_counter > 10){
 			comm_process_closed_loop_off();
 			control_process_kill();
-			LED_RED_OFF();
 		}
 
 		break;

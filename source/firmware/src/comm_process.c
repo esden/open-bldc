@@ -92,68 +92,19 @@ void comm_process_closed_loop_off(void)
 	comm_process_state.closed_loop = false;
 }
 
-//void comm_process_calc_next_comm_for_rising(void)
-//{
-//	u32 half_cycle_time = comm_tim_data.curr_time -
-//		comm_tim_data.last_capture_time;
-//	new_cycle_time = half_cycle_time * 2;
-//
-//	if(!comm_process_state.recalculated_comm_time){
-//		comm_process_state.recalculated_comm_time = true;
-//		//if(half_cycle_time > 300){
-//			if(new_cycle_time >
-//				(comm_tim_data.freq + comm_params.direct_cutoff)){
-//				new_cycle_time = comm_tim_data.freq +
-//					comm_params.direct_cutoff_slope;
-//			}else if(new_cycle_time <
-//				(comm_tim_data.freq - comm_params.direct_cutoff)){
-//				new_cycle_time = comm_tim_data.freq -
-//					comm_params.direct_cutoff_slope;
-//			}
-//
-//			if(comm_process_state.closed_loop){
-//				comm_tim_data.freq = ((comm_tim_data.freq * comm_params.iir) +
-//						new_cycle_time) / (comm_params.iir + 1);
-//				comm_tim_update_freq();
-//			}
-//			//}
-//		gpc_register_touched(10);
-//	}
-//}
-//
-//void comm_process_calc_next_comm_for_falling(void)
-//{
-//	u32 half_cycle_time = comm_tim_data.curr_time -
-//		comm_tim_data.last_capture_time;
-//	new_cycle_time = half_cycle_time * 2;
-//
-//	if(!comm_process_state.recalculated_comm_time){
-//		comm_process_state.recalculated_comm_time = true;
-//		//if(half_cycle_time > 300){
-//			if(new_cycle_time <
-//				(comm_tim_data.freq - comm_params.direct_cutoff)){
-//				new_cycle_time = comm_tim_data.freq -
-//					comm_params.direct_cutoff_slope;
-//			}else if(new_cycle_time >
-//				(comm_tim_data.freq + comm_params.direct_cutoff)){
-//				new_cycle_time = comm_tim_data.freq +
-//					comm_params.direct_cutoff_slope;
-//			}
-//
-//			if(comm_process_state.closed_loop){
-//				comm_tim_data.freq = ((comm_tim_data.freq * comm_params.iir) +
-//						new_cycle_time) / (comm_params.iir + 1);
-//				comm_tim_update_freq();
-//			}
-//			//}
-//	}
-//}
-
 void comm_process_calc_next_comm(void)
 {
 	u32 old_cycle_time = comm_tim_data.freq;
-	u32 half_cycle_time = comm_tim_data.curr_time -
-		comm_tim_data.last_capture_time;
+	s32 pwm_time = comm_tim_data.curr_time -
+		comm_tim_data.prev_time;
+	s32 bemf_rise = sensors.phase_voltage -
+		comm_process_state.prev_phase_voltage;
+	s32 zero_value = sensors.half_battery_voltage -
+		comm_process_state.prev_phase_voltage;
+	s32 half_cycle_time_adjust = (zero_value * pwm_time) / bemf_rise;
+	u32 half_cycle_time = (comm_tim_data.prev_time -
+			comm_tim_data.last_capture_time) +
+		half_cycle_time_adjust;
 	new_cycle_time = half_cycle_time * 2;
 
 	if(new_cycle_time >
@@ -176,38 +127,11 @@ void comm_process_calc_next_comm(void)
 
 void run_comm_process(void)
 {
-	/*
-	if(comm_process_state.pwm_count < comm_process_state.hold_off){
-		comm_process_state.pwm_count++;
-		return;
-	}
-
-	if(sensors.phase_voltage > 1000){
-		if(comm_process_state.rising){
-			if(sensors.phase_voltage >= sensors.half_battery_voltage){
-				comm_process_calc_next_comm();
-				LED_ORANGE_OFF();
-			}else{
-				LED_ORANGE_ON();
-			}
-		}else{
-			if(sensors.phase_voltage <= sensors.half_battery_voltage){
-				comm_process_calc_next_comm();
-				LED_ORANGE_ON();
-			}else{
-				LED_ORANGE_OFF();
-			}
-		}
-	}
-
-	*/
-
 	if(comm_process_state.pwm_count < comm_params.hold_off){
 		comm_process_state.pwm_count++;
 		comm_process_state.prev_prev_phase_voltage = comm_process_state.prev_phase_voltage;
 		comm_process_state.prev_phase_voltage = sensors.phase_voltage;
 		LED_ORANGE_OFF();
-		//LED_RED_OFF();
 		return;
 	}
 

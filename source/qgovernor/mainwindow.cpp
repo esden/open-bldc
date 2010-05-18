@@ -120,6 +120,7 @@ void MainWindow::on_registerChanged(unsigned char addr)
         break;
     case GPROT_PWM_VAL_REG_ADDR:
         ui->PWMDutyCycleSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        ui->PWMDutyCycleHorizontalSlider->setValue(governorMaster->getRegisterMapValue(addr));
         break;
     case GPROT_COMM_TIM_FREQ_REG_ADDR:
         ui->forcedCommTimValSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
@@ -371,4 +372,9 @@ void MainWindow::on_commDirectCutoffSpinBox_valueChanged(int value)
 void MainWindow::on_commIIRPoleSpinBox_valueChanged(int value)
 {
     registerModel.setRegisterValue(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, value);
+}
+
+void MainWindow::on_PWMDutyCycleHorizontalSlider_valueChanged(int value)
+{
+    ui->PWMDutyCycleSpinBox->setValue(value);
 }

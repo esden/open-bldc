@@ -48,7 +48,17 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
+           <item row="1" column="1">
+            <widget class="QSlider" name="PWMDutyCycleHorizontalSlider">
+             <property name="maximum">
+              <number>2999</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" rowspan="2">
             <widget class="QLabel" name="PWMDutyCycleLabel">
              <property name="text">
               <string>PWM duty cycle value</string>
@@ -114,7 +124,7 @@
            <item row="8" column="0">
             <widget class="QCheckBox" name="forcedCommCheckBox">
              <property name="text">
-              <string>Commutation timer enable</string>
+              <string>Ignite motor</string>
              </property>
             </widget>
            </item>
@@ -162,7 +172,7 @@
            <item row="8" column="1">
             <widget class="QCheckBox" name="ADCCommCheckBox">
              <property name="text">
-              <string>ADC based commutation enable</string>
+              <string>Run oscillation demo</string>
              </property>
             </widget>
            </item>

@@ -61,6 +61,7 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
+    void on_PWMDutyCycleHorizontalSlider_valueChanged(int value);
     void on_commIIRPoleSpinBox_valueChanged(int );
     void on_commDirectCutoffSpinBox_valueChanged(int );
     void on_commSparkAdvanceSpinBox_valueChanged(int );

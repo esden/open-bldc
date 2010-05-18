@@ -33,6 +33,7 @@ struct comm_params {
 struct comm_data {
 	bool bemf_crossing_detected;
 	u16 calculated_freq;
+	u32 in_range_counter;
 };
 
 extern struct comm_params comm_params;

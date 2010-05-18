@@ -28,7 +28,7 @@
 #define CONTROL_PROCESS_ALIGN_TIME 200
 #define CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP 30
 #define CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV 5
-#define CONTROL_PROCESS_SPINUP_DEC_DIV 1000
+#define CONTROL_PROCESS_SPINUP_DEC_DIV 900
 
 enum control_process_states {
 	cps_idle,
@@ -70,6 +70,7 @@ void control_process_reset(void)
 	control_process.ignite = false;
 	control_process.kill = false;
 	control_process.bemf_crossing_counter = 0;
+	control_process.bemf_lost_crossing_counter = 0;
 }
 
 void control_process_ignite(void)
@@ -141,8 +142,9 @@ void run_control_process(void)
 			control_process.bemf_lost_crossing_counter++;
 		}
 
-		if((control_process.bemf_crossing_counter > 1) &&
-			(comm_tim_data.freq < 25000)){
+		if((control_process.bemf_crossing_counter > 2) &&
+			(comm_tim_data.freq < 30000) &&
+			(comm_data.in_range_counter > 2)){
 			comm_process_closed_loop_on();
 			control_process.state = cps_spinning;
 			LED_RED_ON();
@@ -153,7 +155,7 @@ void run_control_process(void)
 			comm_tim_data.freq -
 			(comm_tim_data.freq /
 				CONTROL_PROCESS_SPINUP_DEC_DIV);
-		if(comm_tim_data.freq < 20000){
+		if(comm_tim_data.freq < 10000){
 			control_process_kill();
 		}
 		break;

@@ -72,13 +72,13 @@ int main(void){
 
 		if(demo){
 			if(demo_counter == 0){
-				demo_counter = 500;
+				demo_counter = 300;
 			        pwm_val += demo_dir;
-				if(pwm_val > 1500){
+				if(pwm_val > 2000){
 					demo_dir = -1;
 				}
 
-				if(pwm_val < 600){
+				if(pwm_val < 500){
 					demo_dir = 1;
 				}
 			}else{

@@ -65,18 +65,17 @@ OBJECTS = main.o \
 	  led.o \
 	  usart.o \
 	  adc.o \
-	  pwm/pwm_utils.o \
 	  pwm/pwm.o \
 	  pwm/pwm_scheme_6step_h_pwm_l_on.o \
-	  pwm/pwm_scheme_6step_h_on_l_pwm.o \
-	  pwm/pwm_scheme_6step_on_pwm.o \
-	  pwm/pwm_scheme_6step_pwm_on.o \
-	  pwm/pwm_scheme_12step_pwm_on_pwm.o \
 	  comm_tim.o \
 	  gprot.o \
 	  sensor_process.o \
 	  comm_process.o \
 	  control_process.o
+	  #pwm/pwm_scheme_6step_h_on_l_pwm.o \
+	  #pwm/pwm_scheme_6step_on_pwm.o \
+	  #pwm/pwm_scheme_6step_pwm_on.o \
+	  #pwm/pwm_scheme_12step_pwm_on_pwm.o \
 
 all: gccversion images size
 

@@ -58,80 +58,62 @@ inline void pwm_scheme_6step_h_pwm_l_on(void){
 
     switch(pwm_phase){
     case 1: // 000º
-        pwm_trigger(1);
 
         adc_set(ADC_CHANNEL_B);
 	comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
         /* Configure step 2 */
-        pwm_set_pwm_hi(PWM_PHASE_A);
-        pwm_set_____lo(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
+	pwm_set_a_hpwm_b_low__c_off();
 
         pwm_phase++;
         break;
     case 2: // 060º
-        pwm_trigger(2);
 
         adc_set(ADC_CHANNEL_C);
 	comm_process_config(COMM_PROCESS_RISING);
 
         /* Configure step 3 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_____lo(PWM_PHASE_B);
-        pwm_set_pwm_hi(PWM_PHASE_C);
+	pwm_set_a_off__b_low__c_hpwm();
 
         pwm_phase++;
         break;
     case 3: // 120º
-        pwm_trigger(3);
 
         adc_set(ADC_CHANNEL_A);
 	comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
         /* Configure step 4 */
-        pwm_set_____lo(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_pwm_hi(PWM_PHASE_C);
+	pwm_set_a_low__b_off__c_hpwm();
 
         pwm_phase++;
         break;
     case 4: // 180º
-        pwm_trigger(4);
 
         adc_set(ADC_CHANNEL_B);
 	comm_process_config_and_reset(COMM_PROCESS_RISING);
 
         /* Configure step 4 */
-        pwm_set_____lo(PWM_PHASE_A);
-        pwm_set_pwm_hi(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
+	pwm_set_a_low__b_hpwm_c_off();
 
         pwm_phase++;
         break;
     case 5: // 220º
-        pwm_trigger(5);
 
         adc_set(ADC_CHANNEL_C);
 	comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
         /* Configure step 4 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_pwm_hi(PWM_PHASE_B);
-        pwm_set_____lo(PWM_PHASE_C);
+	pwm_set_a_off__b_hpwm_c_low();
 
         pwm_phase++;
         break;
     case 6: // 280º
-        pwm_trigger(6);
 
         adc_set(ADC_CHANNEL_A);
 	comm_process_config_and_reset(COMM_PROCESS_RISING);
 
         /* Configure step 4 */
-        pwm_set_pwm_hi(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_____lo(PWM_PHASE_C);
+	pwm_set_a_hpwm_b_off__c_low();
 
         pwm_phase=1;
         break;

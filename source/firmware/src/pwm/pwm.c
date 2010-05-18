@@ -143,25 +143,19 @@ void pwm_comm(void){
 
 void pwm_off(void)
 {
-	pwm_set____off(PWM_PHASE_A);
-	pwm_set____off(PWM_PHASE_B);
-	pwm_set____off(PWM_PHASE_C);
+	pwm_set_all_off();
 	pwm_comm();
 }
 
 void pwm_all_lo(void)
 {
-	pwm_set_____lo(PWM_PHASE_A);
-	pwm_set_____lo(PWM_PHASE_B);
-	pwm_set_____lo(PWM_PHASE_C);
+	pwm_set_all_low();
 	pwm_comm();
 }
 
 void pwm_all_hi(void)
 {
-	pwm_set_____hi(PWM_PHASE_A);
-	pwm_set_____hi(PWM_PHASE_B);
-	pwm_set_____hi(PWM_PHASE_C);
+	pwm_set_all_high();
 	pwm_comm();
 }
 

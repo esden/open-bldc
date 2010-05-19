@@ -19,5 +19,4 @@
 #ifndef __VECTOR_TABLE_H
 #define __VECTOR_TABLE_H
 
-
 #endif /* __VECTOR_TABLE_H */

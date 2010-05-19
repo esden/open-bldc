@@ -25,40 +25,43 @@
 #include "types.h"
 #include "led.h"
 
-void system_init(void){
-    /* Initialize the microcontroller system. Initialize clocks. */
-    SystemInit();
+void system_init(void)
+{
+	/* Initialize the microcontroller system. Initialize clocks. */
+	SystemInit();
 }
 
-void my_delay(unsigned long delay ){
+void my_delay(unsigned long delay)
+{
 
-    while(delay){
-        delay--;
-    }
+	while (delay) {
+		delay--;
+	}
 }
 
-int main(void){
-    int i,j;
+int main(void)
+{
+	int i, j;
 
-    system_init();
-    led_init();
+	system_init();
+	led_init();
 
-    while(1){
-        for(j=0; j<20; j++){
-            for(i=0; i< 125; i++){
-                LED_RED_ON();
-                my_delay(50*j);
-                LED_RED_OFF();
-                my_delay(1200-50*j);
-            }
-        }
-        for(j=0; j<20; j++){
-            for(i=0; i< 125; i++){
-                LED_RED_OFF();
-                my_delay(200+50*j);
-                LED_RED_ON();
-                my_delay(1000-50*j);
-            }
-        }
-    }
+	while (1) {
+		for (j = 0; j < 20; j++) {
+			for (i = 0; i < 125; i++) {
+				LED_RED_ON();
+				my_delay(50 * j);
+				LED_RED_OFF();
+				my_delay(1200 - 50 * j);
+			}
+		}
+		for (j = 0; j < 20; j++) {
+			for (i = 0; i < 125; i++) {
+				LED_RED_OFF();
+				my_delay(200 + 50 * j);
+				LED_RED_ON();
+				my_delay(1000 - 50 * j);
+			}
+		}
+	}
 }

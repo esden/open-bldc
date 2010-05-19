@@ -26,19 +26,22 @@
 #include "test_tim.h"
 #include "tim.h"
 
-void system_init(void){
-    /* Initialize the microcontroller system. Initialize clocks. */
-    SystemInit();
+void system_init(void)
+{
+	/* Initialize the microcontroller system. Initialize clocks. */
+	SystemInit();
 }
 
-void my_delay(unsigned long delay ){
+void my_delay(unsigned long delay)
+{
 
-    while(delay){
-        delay--;
-    }
+	while (delay) {
+		delay--;
+	}
 }
 
-int main(void){
+int main(void)
+{
 	int dir = 1;
 
 	system_init();
@@ -46,16 +49,16 @@ int main(void){
 	test_tim_init();
 	tim_init();
 
-	while(1){
-		
-		if(dir > 0){
+	while (1) {
+
+		if (dir > 0) {
 			test_tim_update(test_tim_freq + 1);
-		}else if(dir < 0){
+		} else if (dir < 0) {
 			test_tim_update(test_tim_freq - 1);
 		}
-		if(test_tim_freq <= 10){
+		if (test_tim_freq <= 10) {
 			dir = 1;
-		}else if(test_tim_freq >= 50000){
+		} else if (test_tim_freq >= 50000) {
 			dir = -1;
 		}
 		my_delay(1000);

@@ -29,19 +29,22 @@
 #include "gprot.h"
 #include "usart.h"
 
-void system_init(void){
-    /* Initialize the microcontroller system. Initialize clocks. */
-    SystemInit();
+void system_init(void)
+{
+	/* Initialize the microcontroller system. Initialize clocks. */
+	SystemInit();
 }
 
-void my_delay(unsigned long delay ){
+void my_delay(unsigned long delay)
+{
 
-    while(delay){
-        delay--;
-    }
+	while (delay) {
+		delay--;
+	}
 }
 
-int main(void){
+int main(void)
+{
 	//int i,j;
 	u16 test_counter;
 
@@ -50,10 +53,10 @@ int main(void){
 	gprot_init();
 	usart_init();
 
-	test_counter=0;
+	test_counter = 0;
 	gpc_setup_reg(5, &test_counter);
 
-	while(1){
+	while (1) {
 		my_delay(500000);
 		test_counter++;
 		gpc_register_touched(5);

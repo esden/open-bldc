@@ -26,54 +26,59 @@
 #include "led.h"
 #include "led_fade.h"
 
-void system_init(void){
-    /* Initialize the microcontroller system. Initialize clocks. */
-    SystemInit();
+void system_init(void)
+{
+	/* Initialize the microcontroller system. Initialize clocks. */
+	SystemInit();
 }
 
-void my_delay(unsigned long delay ){
+void my_delay(unsigned long delay)
+{
 
-    while(delay){
-        delay--;
-    }
+	while (delay) {
+		delay--;
+	}
 }
 
-int main(void){
-    int i, d, on;
+int main(void)
+{
+	int i, d, on;
 
-    system_init();
-    led_init();
-    led_fade_init();
+	system_init();
+	led_init();
+	led_fade_init();
 
-    i=5;
-    d=1;
-    on=0;
-    while(1){
-        i+=d;
-        if(i==250) d=-1;
-        if(i==5){
-            d=1;
-            led_fade_set_orange(0);
-            led_fade_set_red(0);
-            led_fade_set_green(0);
-            led_fade_set_blue(0);
-            on++;
-            if(on==4) on=0;
-        }
-        switch(on){
-        case 0:
-            led_fade_set_orange(i);
-            break;
-        case 1:
-            led_fade_set_red(i);
-            break;
-        case 2:
-            led_fade_set_green(i);
-            break;
-        case 3:
-            led_fade_set_blue(i);
-            break;
-        }
-        my_delay(50000);
-    }
+	i = 5;
+	d = 1;
+	on = 0;
+	while (1) {
+		i += d;
+		if (i == 250)
+			d = -1;
+		if (i == 5) {
+			d = 1;
+			led_fade_set_orange(0);
+			led_fade_set_red(0);
+			led_fade_set_green(0);
+			led_fade_set_blue(0);
+			on++;
+			if (on == 4)
+				on = 0;
+		}
+		switch (on) {
+		case 0:
+			led_fade_set_orange(i);
+			break;
+		case 1:
+			led_fade_set_red(i);
+			break;
+		case 2:
+			led_fade_set_green(i);
+			break;
+		case 3:
+			led_fade_set_blue(i);
+			break;
+		}
+		my_delay(50000);
+	}
 }

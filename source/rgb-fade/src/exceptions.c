@@ -18,21 +18,26 @@
 
 #include "exceptions.h"
 
-void nmi_exception(void){
+void nmi_exception(void)
+{
 }
 
-void hard_fault_exception(void){
-    while(1);
+void hard_fault_exception(void)
+{
+	while (1) ;
 }
 
-void mem_manage_exception(void){
-    while(1);
+void mem_manage_exception(void)
+{
+	while (1) ;
 }
 
-void bus_fault_exception(void){
-    while(1);
+void bus_fault_exception(void)
+{
+	while (1) ;
 }
 
-void usage_fault_exception(void){
-    while(1);
+void usage_fault_exception(void)
+{
+	while (1) ;
 }

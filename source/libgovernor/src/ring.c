@@ -20,28 +20,31 @@
 
 #include "lg/ring.h"
 
-void ring_init(struct ring *ring, u8 *buf, ring_size_t size){
+void ring_init(struct ring *ring, u8 * buf, ring_size_t size)
+{
 	ring->data = buf;
 	ring->size = size;
 	ring->begin = 0;
 	ring->end = 0;
 }
 
-s32 ring_write_ch(struct ring *ring, u8 ch){
-	if(((ring->end + 1) % ring->size) != ring->begin){
+s32 ring_write_ch(struct ring *ring, u8 ch)
+{
+	if (((ring->end + 1) % ring->size) != ring->begin) {
 		ring->data[ring->end++] = ch;
 		ring->end %= ring->size;
-		return (u32)ch;
+		return (u32) ch;
 	}
 
 	return -1;
 }
 
-s32 ring_write(struct ring *ring, u8 *data, ring_size_t size){
+s32 ring_write(struct ring * ring, u8 * data, ring_size_t size)
+{
 	s32 i;
 
-	for(i = 0; i < size; i++){
-		if(ring_write_ch(ring, data[i]) < 0){
+	for (i = 0; i < size; i++) {
+		if (ring_write_ch(ring, data[i]) < 0) {
 			return -i;
 		}
 	}
@@ -49,23 +52,26 @@ s32 ring_write(struct ring *ring, u8 *data, ring_size_t size){
 	return i;
 }
 
-s32 ring_read_ch(struct ring *ring, u8 *ch){
+s32 ring_read_ch(struct ring * ring, u8 * ch)
+{
 	s32 ret = -1;
 
-	if(ring->begin != ring->end){
+	if (ring->begin != ring->end) {
 		ret = ring->data[ring->begin++];
 		ring->begin %= ring->size;
-		if(ch) *ch = ret;
+		if (ch)
+			*ch = ret;
 	}
 
 	return ret;
 }
 
-s32 ring_read(struct ring *ring, u8 *data, ring_size_t size){
+s32 ring_read(struct ring * ring, u8 * data, ring_size_t size)
+{
 	s32 i;
 
-	for(i = 0; i < size; i++){
-		if(ring_read_ch(ring, data+i) < 0){
+	for (i = 0; i < size; i++) {
+		if (ring_read_ch(ring, data + i) < 0) {
 			return i;
 		}
 	}

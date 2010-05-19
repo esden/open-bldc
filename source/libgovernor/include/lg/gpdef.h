@@ -21,8 +21,8 @@
 #ifndef GPDEF_H
 #define GPDEF_H
 
-typedef void (*gp_simple_hook_t)(void *data);
-typedef void (*gp_with_addr_hook_t)(void *data, u8 addr);
+typedef void (*gp_simple_hook_t) (void *data);
+typedef void (*gp_with_addr_hook_t) (void *data, u8 addr);
 
 #define GP_MODE_RESERVED (1 << 5)
 #define GP_MODE_PEEK 0

@@ -54,7 +54,8 @@ enum gpm_states gpm_state = GPMS_IDLE;
 u16 gpm_addr;
 u16 gpm_data;
 
-int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with_addr_hook_t register_changed, void *register_changed_data)
+int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
+	     gp_with_addr_hook_t register_changed, void *register_changed_data)
 {
 	int i;
 
@@ -63,7 +64,7 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with
 	gpm_hooks.register_changed = register_changed;
 	gpm_hooks.register_changed_data = register_changed_data;
 
-	for(i=0; i<32; i++)
+	for (i = 0; i < 32; i++)
 		gpm_register_map[i] = 0;
 
 	ring_init(&gpm_output_ring, gpm_output_buffer, 128);
@@ -73,7 +74,7 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data, gp_with
 
 s32 gpm_get_register_map_val(u8 addr)
 {
-	if(addr > 31)
+	if (addr > 31)
 		return -1;
 
 	return gpm_register_map[addr];
@@ -86,59 +87,62 @@ s32 gpm_pickup_byte(void)
 
 int gpm_send_set(u8 addr, u16 val)
 {
-    u8 dat[3];
+	u8 dat[3];
 
-    if(addr > 31)
-	    return 1;
+	if (addr > 31)
+		return 1;
 
-    dat[0] = addr | GP_MODE_WRITE;
-    dat[1] = val & 0xFF;
-    dat[2] = val >> 8;
+	dat[0] = addr | GP_MODE_WRITE;
+	dat[1] = val & 0xFF;
+	dat[2] = val >> 8;
 
-    if(0 <= ring_write(&gpm_output_ring, dat, 3)){
-	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
-	    gpm_register_map[addr] = val;
-	    return 0;
-    }
+	if (0 <= ring_write(&gpm_output_ring, dat, 3)) {
+		if (gpm_hooks.trigger_output)
+			gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
+		gpm_register_map[addr] = val;
+		return 0;
+	}
 
-    return 1;
+	return 1;
 }
 
 int gpm_send_get(u8 addr)
 {
-    u8 out = addr | GP_MODE_READ | GP_MODE_PEEK;
+	u8 out = addr | GP_MODE_READ | GP_MODE_PEEK;
 
-    if(addr > 31)
-	    return 1;
+	if (addr > 31)
+		return 1;
 
-    if(0 <= ring_write_ch(&gpm_output_ring, out)){
-	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
-	    return 0;
-    }
+	if (0 <= ring_write_ch(&gpm_output_ring, out)) {
+		if (gpm_hooks.trigger_output)
+			gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
+		return 0;
+	}
 
-    return 1;
+	return 1;
 }
 
 int gpm_send_get_cont(u8 addr)
 {
-    u8 out = addr | GP_MODE_READ | GP_MODE_CONT;
+	u8 out = addr | GP_MODE_READ | GP_MODE_CONT;
 
-    if(addr > 31)
-	    return 1;
+	if (addr > 31)
+		return 1;
 
-    if(0 <= ring_write_ch(&gpm_output_ring, out)){
-	    if(gpm_hooks.trigger_output) gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
-	    return 0;
-    }
+	if (0 <= ring_write_ch(&gpm_output_ring, out)) {
+		if (gpm_hooks.trigger_output)
+			gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
+		return 0;
+	}
 
-    return 1;
+	return 1;
 }
 
 int gpm_handle_byte(u8 byte)
 {
-	switch(gpm_state){
+	switch (gpm_state) {
 	case GPMS_IDLE:
-		if(byte > 31)
+		if (byte > 31)
 			return 1;
 
 		gpm_addr = byte;
@@ -151,8 +155,10 @@ int gpm_handle_byte(u8 byte)
 	case GPMS_DATA_MSB:
 		gpm_data |= byte << 8;
 		gpm_register_map[gpm_addr] = gpm_data;
-		if(gpm_hooks.register_changed)
-			gpm_hooks.register_changed(gpm_hooks.register_changed_data, gpm_addr);
+		if (gpm_hooks.register_changed)
+			gpm_hooks.register_changed(gpm_hooks.
+						   register_changed_data,
+						   gpm_addr);
 		gpm_state = GPMS_IDLE;
 		break;
 	}

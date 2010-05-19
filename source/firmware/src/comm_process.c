@@ -59,16 +59,18 @@ void comm_process_reset(void)
 	comm_process_state.pwm_count = 0;
 }
 
-void comm_process_config(bool rising){
+void comm_process_config(bool rising)
+{
 	comm_process_state.rising = rising;
 }
 
-void comm_process_config_and_reset(bool rising){
+void comm_process_config_and_reset(bool rising)
+{
 	comm_process_state.rising = rising;
-	if(rising){
+	if (rising) {
 		comm_process_state.prev_phase_voltage = 65535;
 		sensors.phase_voltage = 65535;
-	}else{
+	} else {
 		comm_process_state.prev_phase_voltage = 0;
 		sensors.phase_voltage = 0;
 	}
@@ -88,36 +90,35 @@ void comm_process_closed_loop_off(void)
 void comm_process_calc_next_comm(void)
 {
 	s32 old_cycle_time = comm_tim_data.freq;
-	s32 pwm_time = comm_tim_data.curr_time -
-		comm_tim_data.prev_time;
+	s32 pwm_time = comm_tim_data.curr_time - comm_tim_data.prev_time;
 	s32 bemf_rise = sensors.phase_voltage -
-		comm_process_state.prev_phase_voltage;
+	    comm_process_state.prev_phase_voltage;
 	s32 zero_value = sensors.half_battery_voltage -
-		comm_process_state.prev_phase_voltage;
+	    comm_process_state.prev_phase_voltage;
 	s32 half_cycle_time_adjust = (zero_value * pwm_time) / bemf_rise;
 	u32 half_cycle_time = (comm_tim_data.prev_time -
-			comm_tim_data.last_capture_time) +
-		half_cycle_time_adjust;
+			       comm_tim_data.last_capture_time) +
+	    half_cycle_time_adjust;
 	new_cycle_time = half_cycle_time * 2;
 
-	if(new_cycle_time >
-		(old_cycle_time + comm_params.direct_cutoff)){
+	if (new_cycle_time > (old_cycle_time + comm_params.direct_cutoff)) {
 		new_cycle_time = old_cycle_time +
-			comm_params.direct_cutoff_slope;
+		    comm_params.direct_cutoff_slope;
 		comm_data.in_range_counter = 0;
-	}else if(new_cycle_time <
-		(old_cycle_time - comm_params.direct_cutoff)){
+	} else if (new_cycle_time <
+		   (old_cycle_time - comm_params.direct_cutoff)) {
 		new_cycle_time = old_cycle_time -
-			comm_params.direct_cutoff_slope;
+		    comm_params.direct_cutoff_slope;
 		comm_data.in_range_counter = 0;
-	}else{
+	} else {
 		comm_data.in_range_counter++;
 	}
 
-	if(comm_process_state.closed_loop){
+	if (comm_process_state.closed_loop) {
 		new_cycle_time = ((old_cycle_time * comm_params.iir) +
-				(new_cycle_time + comm_params.spark_advance)) /
-			(comm_params.iir + 1);
+				  (new_cycle_time +
+				   comm_params.spark_advance)) /
+		    (comm_params.iir + 1);
 		comm_tim_data.freq = new_cycle_time;
 		comm_tim_update_freq();
 	}
@@ -125,37 +126,41 @@ void comm_process_calc_next_comm(void)
 
 void run_comm_process(void)
 {
-	if(comm_process_state.pwm_count < comm_params.hold_off){
+	if (comm_process_state.pwm_count < comm_params.hold_off) {
 		comm_process_state.pwm_count++;
 		comm_process_state.prev_phase_voltage = sensors.phase_voltage;
 		LED_ORANGE_OFF();
 		return;
 	}
 
-	if((sensors.phase_voltage > 500) &&
-		(sensors.phase_voltage < (0xFFF - 500))){
-		if(comm_process_state.rising){
-			if((comm_process_state.prev_phase_voltage < sensors.phase_voltage) &&
-				(sensors.phase_voltage >= sensors.half_battery_voltage) &&
-				(!comm_data.bemf_crossing_detected)){
+	if ((sensors.phase_voltage > 500) &&
+	    (sensors.phase_voltage < (0xFFF - 500))) {
+		if (comm_process_state.rising) {
+			if ((comm_process_state.prev_phase_voltage <
+			     sensors.phase_voltage)
+			    && (sensors.phase_voltage >=
+				sensors.half_battery_voltage)
+			    && (!comm_data.bemf_crossing_detected)) {
 				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
 				LED_ORANGE_ON();
-			}else{
+			} else {
 				LED_ORANGE_OFF();
 			}
-		}else{
-			if((comm_process_state.prev_phase_voltage > sensors.phase_voltage) &&
-				(sensors.phase_voltage <= sensors.half_battery_voltage) &&
-				(!comm_data.bemf_crossing_detected)){
+		} else {
+			if ((comm_process_state.prev_phase_voltage >
+			     sensors.phase_voltage)
+			    && (sensors.phase_voltage <=
+				sensors.half_battery_voltage)
+			    && (!comm_data.bemf_crossing_detected)) {
 				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
 				LED_ORANGE_ON();
-			}else{
+			} else {
 				LED_ORANGE_OFF();
 			}
 		}
-	}else{
+	} else {
 		LED_ORANGE_OFF();
 	}
 

@@ -35,12 +35,14 @@
 
 bool demo;
 
-void system_init(void){
+void system_init(void)
+{
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
 }
 
-int main(void){
+int main(void)
+{
 	int demo_counter;
 	int demo_dir;
 
@@ -59,29 +61,29 @@ int main(void){
 	demo_dir = 1;
 	demo = false;
 
-	while(1){
-		if(adc_new_data_trigger){
+	while (1) {
+		if (adc_new_data_trigger) {
 			adc_new_data_trigger = false;
 			run_sensor_process();
 			run_comm_process();
 		}
-		if(comm_tim_trigger){
+		if (comm_tim_trigger) {
 			comm_tim_trigger = false;
 			run_control_process();
 		}
 
-		if(demo){
-			if(demo_counter == 0){
+		if (demo) {
+			if (demo_counter == 0) {
 				demo_counter = 300;
-			        pwm_val += demo_dir;
-				if(pwm_val > 2000){
+				pwm_val += demo_dir;
+				if (pwm_val > 2000) {
 					demo_dir = -1;
 				}
 
-				if(pwm_val < 500){
+				if (pwm_val < 500) {
 					demo_dir = 1;
 				}
-			}else{
+			} else {
 				demo_counter--;
 			}
 		}

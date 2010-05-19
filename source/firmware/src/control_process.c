@@ -66,7 +66,8 @@ void control_process_reset(void)
 	control_process.state = cps_idle;
 	control_process.align_time = CONTROL_PROCESS_ALIGN_TIME;
 	control_process.coarce_spinup_time = 0;
-	control_process.coarce_spinup_step = CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP;
+	control_process.coarce_spinup_step =
+	    CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP;
 	control_process.ignite = false;
 	control_process.kill = false;
 	control_process.bemf_crossing_counter = 0;
@@ -92,59 +93,61 @@ void control_process_kill(void)
 
 void run_control_process(void)
 {
-	switch(control_process.state){
+	switch (control_process.state) {
 	case cps_idle:
-		if(control_process.ignite){
+		if (control_process.ignite) {
 			comm_tim_trigger_comm_once = true;
 			control_process.ignite = false;
 			control_process.state = cps_aligning;
 		}
 		break;
 	case cps_aligning:
-		if(control_process.align_time == 0){
+		if (control_process.align_time == 0) {
 			control_process.state = cps_coarce_spinup;
-		}else{
+		} else {
 			control_process.align_time--;
 		}
 		break;
 	case cps_coarce_spinup:
-		if(control_process.coarce_spinup_step > 0){
-			if(control_process.coarce_spinup_time == 0){
+		if (control_process.coarce_spinup_step > 0) {
+			if (control_process.coarce_spinup_time == 0) {
 				comm_tim_trigger_comm_once = true;
 
 				control_process.coarce_spinup_time =
-					control_process.coarce_spinup_step;
+				    control_process.coarce_spinup_step;
 
-				if((control_process.coarce_spinup_step /
-						CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV) == 0){
+				if ((control_process.coarce_spinup_step /
+				     CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV) ==
+				    0) {
 					control_process.coarce_spinup_step--;
-				}else{
+				} else {
 					control_process.coarce_spinup_step =
-						control_process.coarce_spinup_step -
-						(control_process.coarce_spinup_step /
-							CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV);
+					    control_process.coarce_spinup_step -
+					    (control_process.
+					     coarce_spinup_step /
+					     CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV);
 				}
-			}else{
+			} else {
 				control_process.coarce_spinup_time--;
 			}
-		}else{
+		} else {
 			comm_tim_trigger_comm = true;
 			control_process.state = cps_spinup;
 		}
 		break;
 	case cps_spinup:
-		if(comm_data.bemf_crossing_detected){
+		if (comm_data.bemf_crossing_detected) {
 			comm_data.bemf_crossing_detected = false;
 			control_process.bemf_crossing_counter++;
 			control_process.bemf_lost_crossing_counter = 0;
-		}else{
+		} else {
 			control_process.bemf_crossing_counter = 0;
 			control_process.bemf_lost_crossing_counter++;
 		}
 
-		if((control_process.bemf_crossing_counter > 2) &&
-			(comm_tim_data.freq < 30000) &&
-			(comm_data.in_range_counter > 2)){
+		if ((control_process.bemf_crossing_counter > 2) &&
+		    (comm_tim_data.freq < 30000) &&
+		    (comm_data.in_range_counter > 2)) {
 			comm_process_closed_loop_on();
 			control_process.state = cps_spinning;
 			LED_RED_ON();
@@ -152,26 +155,25 @@ void run_control_process(void)
 		}
 
 		comm_tim_data.freq =
-			comm_tim_data.freq -
-			(comm_tim_data.freq /
-				CONTROL_PROCESS_SPINUP_DEC_DIV);
-		if(comm_tim_data.freq < 10000){
+		    comm_tim_data.freq -
+		    (comm_tim_data.freq / CONTROL_PROCESS_SPINUP_DEC_DIV);
+		if (comm_tim_data.freq < 10000) {
 			control_process_kill();
 		}
 		break;
 	case cps_spinning:
-		if(comm_data.bemf_crossing_detected){
+		if (comm_data.bemf_crossing_detected) {
 			comm_data.bemf_crossing_detected = false;
 			control_process.bemf_crossing_counter++;
 			control_process.bemf_lost_crossing_counter = 0;
 			LED_RED_ON();
-		}else{
+		} else {
 			control_process.bemf_crossing_counter = 0;
 			control_process.bemf_lost_crossing_counter++;
 			LED_RED_OFF();
 		}
 
-		if(control_process.bemf_lost_crossing_counter > 10){
+		if (control_process.bemf_lost_crossing_counter > 10) {
 			comm_process_closed_loop_off();
 			control_process_kill();
 		}

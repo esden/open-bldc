@@ -38,7 +38,7 @@ void usart_init(void)
 	GPIO_InitTypeDef gpio;
 	USART_InitTypeDef usart;
 
-	/* enable clock for USART3 peripherial*/
+	/* enable clock for USART3 peripherial */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
 
 	/* Enable the USART3 interrupts */
@@ -49,23 +49,23 @@ void usart_init(void)
 	NVIC_Init(&nvic);
 
 	/* GPIOB: USART3 Tx push-pull */
-	gpio.GPIO_Pin   = GPIO_Pin_10;
-	gpio.GPIO_Mode  = GPIO_Mode_AF_PP;
+	gpio.GPIO_Pin = GPIO_Pin_10;
+	gpio.GPIO_Mode = GPIO_Mode_AF_PP;
 	gpio.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &gpio);
 
 	/* GPIOB: USART3 Rx pin as floating input */
-	gpio.GPIO_Pin   = GPIO_Pin_11;
-	gpio.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
+	gpio.GPIO_Pin = GPIO_Pin_11;
+	gpio.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOB, &gpio);
 
 	/* Initialize the usart subsystem */
-	usart.USART_BaudRate            = 115200;
-	usart.USART_WordLength          = USART_WordLength_8b;
-	usart.USART_StopBits            = USART_StopBits_1;
-	usart.USART_Parity              = USART_Parity_No;
+	usart.USART_BaudRate = 115200;
+	usart.USART_WordLength = USART_WordLength_8b;
+	usart.USART_StopBits = USART_StopBits_1;
+	usart.USART_Parity = USART_Parity_No;
 	usart.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	usart.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
+	usart.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
 	/* Configure USART3 */
 	USART_Init(USART3, &usart);
@@ -92,22 +92,22 @@ void usart3_irq_handler(void)
 {
 
 	/* input (RX) handler */
-	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
+	if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) {
 		data_buf = USART_ReceiveData(USART3);
 
-		if(!gpc_handle_byte(data_buf)){
+		if (!gpc_handle_byte(data_buf)) {
 			//LED_GREEN_TOGGLE();
-		}else{
+		} else {
 			//LED_RED_ON();
 		}
 	}
 
 	/* output (TX) handler */
-	if(USART_GetITStatus(USART3, USART_IT_TXE) != RESET){
-		if((data_buf = gpc_pickup_byte()) >= 0){
+	if (USART_GetITStatus(USART3, USART_IT_TXE) != RESET) {
+		if ((data_buf = gpc_pickup_byte()) >= 0) {
 			USART_SendData(USART3, data_buf);
 			//LED_GREEN_TOGGLE();
-		}else{
+		} else {
 			usart_disable_send();
 		}
 	}

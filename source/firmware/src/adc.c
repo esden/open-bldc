@@ -84,11 +84,15 @@ void adc_init(void)
 
 	ADC_InjectedSequencerLengthConfig(ADC1, 3);
 
-	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_C, 1, ADC_SampleTime_41Cycles5);
-	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_HALF_BATTERY_VOLTAGE, 2, ADC_SampleTime_41Cycles5);
-	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_GLOBAL_CURRENT, 3, ADC_SampleTime_41Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_C, 1,
+				  ADC_SampleTime_41Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_HALF_BATTERY_VOLTAGE, 2,
+				  ADC_SampleTime_41Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_GLOBAL_CURRENT, 3,
+				  ADC_SampleTime_41Cycles5);
 
-	ADC_ExternalTrigInjectedConvConfig(ADC1, ADC_ExternalTrigInjecConv_T1_CC4);
+	ADC_ExternalTrigInjectedConvConfig(ADC1,
+					   ADC_ExternalTrigInjecConv_T1_CC4);
 
 	ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
 
@@ -102,13 +106,13 @@ void adc_init(void)
 	ADC_ResetCalibration(ADC1);
 
 	/* Check the end of ADC1 reset calibration */
-	while(ADC_GetResetCalibrationStatus(ADC1));
+	while (ADC_GetResetCalibrationStatus(ADC1)) ;
 
 	/* Start ADC1 calibaration */
 	ADC_StartCalibration(ADC1);
 
 	/* Check the end of ADC1 calibration */
-	while(ADC_GetCalibrationStatus(ADC1));
+	while (ADC_GetCalibrationStatus(ADC1)) ;
 
 	/* Enable ADC1 External Trigger */
 	ADC_ExternalTrigConvCmd(ADC1, ENABLE);
@@ -125,14 +129,18 @@ void adc_set(u8 channel)
 	ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
 }
 
-void adc1_2_irq_handler(void){
+void adc1_2_irq_handler(void)
+{
 	ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
 
 	comm_tim_capture_time();
 
-	adc_data.phase_voltage = ADC_GetInjectedConversionValue(ADC1, ADC_PHASE_VOLTAGE);
-	adc_data.half_battery_voltage = ADC_GetInjectedConversionValue(ADC1, ADC_HALF_BATTERY_VOLTAGE);
-	adc_data.global_current = ADC_GetInjectedConversionValue(ADC1, ADC_GLOBAL_CURRENT);
+	adc_data.phase_voltage =
+	    ADC_GetInjectedConversionValue(ADC1, ADC_PHASE_VOLTAGE);
+	adc_data.half_battery_voltage =
+	    ADC_GetInjectedConversionValue(ADC1, ADC_HALF_BATTERY_VOLTAGE);
+	adc_data.global_current =
+	    ADC_GetInjectedConversionValue(ADC1, ADC_GLOBAL_CURRENT);
 
 	adc_new_data_trigger = true;
 }

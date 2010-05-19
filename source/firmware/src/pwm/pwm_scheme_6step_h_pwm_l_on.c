@@ -53,69 +53,70 @@
 
 #include "pwm_scheme_6step_h_pwm_l_on.h"
 
-inline void pwm_scheme_6step_h_pwm_l_on(void){
-    static int pwm_phase = 1;
+inline void pwm_scheme_6step_h_pwm_l_on(void)
+{
+	static int pwm_phase = 1;
 
-    switch(pwm_phase){
-    case 1: // 000º
+	switch (pwm_phase) {
+	case 1:		// 000º
 
-        adc_set(ADC_CHANNEL_B);
-	comm_process_config_and_reset(COMM_PROCESS_FALLING);
+		adc_set(ADC_CHANNEL_B);
+		comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
-        /* Configure step 2 */
-	pwm_set_a_hpwm_b_low__c_off();
+		/* Configure step 2 */
+		pwm_set_a_hpwm_b_low__c_off();
 
-        pwm_phase++;
-        break;
-    case 2: // 060º
+		pwm_phase++;
+		break;
+	case 2:		// 060º
 
-        adc_set(ADC_CHANNEL_C);
-	comm_process_config(COMM_PROCESS_RISING);
+		adc_set(ADC_CHANNEL_C);
+		comm_process_config(COMM_PROCESS_RISING);
 
-        /* Configure step 3 */
-	pwm_set_a_off__b_low__c_hpwm();
+		/* Configure step 3 */
+		pwm_set_a_off__b_low__c_hpwm();
 
-        pwm_phase++;
-        break;
-    case 3: // 120º
+		pwm_phase++;
+		break;
+	case 3:		// 120º
 
-        adc_set(ADC_CHANNEL_A);
-	comm_process_config_and_reset(COMM_PROCESS_FALLING);
+		adc_set(ADC_CHANNEL_A);
+		comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
-        /* Configure step 4 */
-	pwm_set_a_low__b_off__c_hpwm();
+		/* Configure step 4 */
+		pwm_set_a_low__b_off__c_hpwm();
 
-        pwm_phase++;
-        break;
-    case 4: // 180º
+		pwm_phase++;
+		break;
+	case 4:		// 180º
 
-        adc_set(ADC_CHANNEL_B);
-	comm_process_config_and_reset(COMM_PROCESS_RISING);
+		adc_set(ADC_CHANNEL_B);
+		comm_process_config_and_reset(COMM_PROCESS_RISING);
 
-        /* Configure step 4 */
-	pwm_set_a_low__b_hpwm_c_off();
+		/* Configure step 4 */
+		pwm_set_a_low__b_hpwm_c_off();
 
-        pwm_phase++;
-        break;
-    case 5: // 220º
+		pwm_phase++;
+		break;
+	case 5:		// 220º
 
-        adc_set(ADC_CHANNEL_C);
-	comm_process_config_and_reset(COMM_PROCESS_FALLING);
+		adc_set(ADC_CHANNEL_C);
+		comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
-        /* Configure step 4 */
-	pwm_set_a_off__b_hpwm_c_low();
+		/* Configure step 4 */
+		pwm_set_a_off__b_hpwm_c_low();
 
-        pwm_phase++;
-        break;
-    case 6: // 280º
+		pwm_phase++;
+		break;
+	case 6:		// 280º
 
-        adc_set(ADC_CHANNEL_A);
-	comm_process_config_and_reset(COMM_PROCESS_RISING);
+		adc_set(ADC_CHANNEL_A);
+		comm_process_config_and_reset(COMM_PROCESS_RISING);
 
-        /* Configure step 4 */
-	pwm_set_a_hpwm_b_off__c_low();
+		/* Configure step 4 */
+		pwm_set_a_hpwm_b_off__c_low();
 
-        pwm_phase=1;
-        break;
-    }
+		pwm_phase = 1;
+		break;
+	}
 }

@@ -67,55 +67,56 @@ void run_sensor_process(void)
 
 	//LED_RED_ON();
 	/* High priority sensors */
-	if(sensors.phase_voltage == 0){
+	if (sensors.phase_voltage == 0) {
 		sensors.phase_voltage = 1;
-	}else if(sensors.phase_voltage == 1){
+	} else if (sensors.phase_voltage == 1) {
 		sensors.phase_voltage = phase_voltage;
-	}else if(sensors.phase_voltage == 65535){
+	} else if (sensors.phase_voltage == 65535) {
 		sensors.phase_voltage = 65534;
-	}else if(sensors.phase_voltage == 65534){
+	} else if (sensors.phase_voltage == 65534) {
 		sensors.phase_voltage = phase_voltage;
-	}else{
+	} else {
 		sensors.phase_voltage = SENSOR_OFFSET_IIR(sensors.phase_voltage,
 							  phase_voltage,
-							  sensor_params.pv.offset,
+							  sensor_params.pv.
+							  offset,
 							  sensor_params.pv.iir);
 
 	}
 
 	/* Low priority sensors */
-	if(sensor_process_low_prio_update_cnt == 211){
+	if (sensor_process_low_prio_update_cnt == 211) {
 		sensor_process_low_prio_update_cnt = 0;
 
 		/* Jump to the current battery voltage when initializing */
-		if(sensors.half_battery_voltage == 0){
+		if (sensors.half_battery_voltage == 0) {
 			sensors.half_battery_voltage = half_battery_voltage;
 		}
 		/* Adjust slowly the half battery voltage according to measurement */
-		if((half_battery_voltage + sensor_params.hbv.offset) >
-			sensors.half_battery_voltage){
+		if ((half_battery_voltage + sensor_params.hbv.offset) >
+		    sensors.half_battery_voltage) {
 			sensors.half_battery_voltage++;
-		}else if((half_battery_voltage + sensor_params.hbv.offset) <
-			sensors.half_battery_voltage){
+		} else if ((half_battery_voltage + sensor_params.hbv.offset) <
+			   sensors.half_battery_voltage) {
 			sensors.half_battery_voltage--;
 		}
 
 		/* Calculate global current */
-		sensors.global_current = SENSOR_OFFSET_IIR(sensors.global_current,
-							   global_current,
-							   (sensor_params.gc.zero_current +
-							    sensor_params.gc.zero_current_offset),
-							   sensor_params.gc.iir);
-	}else{
+		sensors.global_current =
+		    SENSOR_OFFSET_IIR(sensors.global_current, global_current,
+				      (sensor_params.gc.zero_current +
+				       sensor_params.gc.zero_current_offset),
+				      sensor_params.gc.iir);
+	} else {
 		sensor_process_low_prio_update_cnt++;
 	}
 
-	if(sensor_trigger_debug_output == 100){
+	if (sensor_trigger_debug_output == 100) {
 		sensor_trigger_debug_output = 0;
 		gpc_register_touched(GPROT_ADC_ZERO_VALUE_REG_ADDR);
 		gpc_register_touched(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR);
 		gpc_register_touched(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR);
-	}else{
+	} else {
 		sensor_trigger_debug_output++;
 	}
 	//LED_RED_OFF();

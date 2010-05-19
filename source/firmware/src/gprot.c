@@ -64,13 +64,18 @@ void gprot_init()
 	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
 	gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
 	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &(comm_tim_data.freq));
-	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR, (u16 *)&(sensors.half_battery_voltage));
-	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR, (u16 *)&(comm_params.spark_advance));
-	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR, &(comm_params.direct_cutoff));
+	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR,
+		      (u16 *) & (sensors.half_battery_voltage));
+	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR,
+		      (u16 *) & (comm_params.spark_advance));
+	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR,
+		      &(comm_params.direct_cutoff));
 	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &(comm_params.iir));
-	gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR, (u16 *)&(sensors.global_current));
-	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR, (u16 *)&(sensors.phase_voltage));
-	gpc_setup_reg(10, (u16 *)&new_cycle_time);
+	gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR,
+		      (u16 *) & (sensors.global_current));
+	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR,
+		      (u16 *) & (sensors.phase_voltage));
+	gpc_setup_reg(10, (u16 *) & new_cycle_time);
 }
 
 void gprot_trigger_output(void *data)
@@ -82,48 +87,48 @@ void gprot_trigger_output(void *data)
 void gprot_register_changed(void *data, u8 addr)
 {
 	data = data;
-	if(addr == GPROT_FLAG_REG_ADDR){
+	if (addr == GPROT_FLAG_REG_ADDR) {
 		gprot_update_flags();
 	}
 }
 
 void gprot_update_flags(void)
 {
-	if(gprot_flag_reg & GPROT_FLAG_PWM_COMM){
+	if (gprot_flag_reg & GPROT_FLAG_PWM_COMM) {
 		pwm_comm();
 		return;
 	}
 
-	if(gprot_flag_reg & GPROT_FLAG_COMM_TIM){
-		if(!(gprot_flag_reg_old & GPROT_FLAG_COMM_TIM)){
+	if (gprot_flag_reg & GPROT_FLAG_COMM_TIM) {
+		if (!(gprot_flag_reg_old & GPROT_FLAG_COMM_TIM)) {
 			control_process_ignite();
 		}
-	}else{
-		if(gprot_flag_reg_old & GPROT_FLAG_COMM_TIM){
+	} else {
+		if (gprot_flag_reg_old & GPROT_FLAG_COMM_TIM) {
 			control_process_kill();
 		}
 	}
 
-	if(gprot_flag_reg & GPROT_FLAG_ADC_COMM){
+	if (gprot_flag_reg & GPROT_FLAG_ADC_COMM) {
 		demo = true;
-	}else{
-		if(gprot_flag_reg_old & GPROT_FLAG_ADC_COMM){
+	} else {
+		if (gprot_flag_reg_old & GPROT_FLAG_ADC_COMM) {
 			demo = false;
 		}
 	}
 
-	if(gprot_flag_reg & GPROT_FLAG_ALL_LO){
+	if (gprot_flag_reg & GPROT_FLAG_ALL_LO) {
 		pwm_all_lo();
-	}else{
-		if(gprot_flag_reg_old & GPROT_FLAG_ALL_LO){
+	} else {
+		if (gprot_flag_reg_old & GPROT_FLAG_ALL_LO) {
 			pwm_off();
 		}
 	}
 
-	if(gprot_flag_reg & GPROT_FLAG_ALL_HI){
+	if (gprot_flag_reg & GPROT_FLAG_ALL_HI) {
 		pwm_all_hi();
-	}else{
-		if(gprot_flag_reg_old & GPROT_FLAG_ALL_HI){
+	} else {
+		if (gprot_flag_reg_old & GPROT_FLAG_ALL_HI) {
 			pwm_off();
 		}
 	}

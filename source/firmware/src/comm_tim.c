@@ -40,7 +40,7 @@ void comm_tim_init(void)
 {
 	NVIC_InitTypeDef nvic;
 	TIM_TimeBaseInitTypeDef tim_base;
-	TIM_OCInitTypeDef       tim_oc;
+	TIM_OCInitTypeDef tim_oc;
 
 	comm_tim_data.freq = 65535;
 
@@ -100,21 +100,21 @@ void comm_tim_capture_time(void)
 
 void comm_tim_update_freq()
 {
-	TIM_SetCompare1(TIM2, comm_tim_data.last_capture_time + comm_tim_data.freq);
+	TIM_SetCompare1(TIM2,
+			comm_tim_data.last_capture_time + comm_tim_data.freq);
 }
 
 void tim2_irq_handler(void)
 {
 
-	if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET){
+	if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET) {
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 
 		/* prepare for next comm */
 		comm_tim_data.last_capture_time = TIM_GetCapture1(TIM2);
 
 		/* triggering commutation event */
-		if(comm_tim_trigger_comm ||
-			comm_tim_trigger_comm_once){
+		if (comm_tim_trigger_comm || comm_tim_trigger_comm_once) {
 			TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
 			//TIM_GenerateEvent(TIM1, TIM_EventSource_COM | TIM_EventSource_Update);
 		}
@@ -124,6 +124,8 @@ void tim2_irq_handler(void)
 		comm_tim_trigger = true;
 
 		/* Set next comm time */
-		TIM_SetCompare1(TIM2, comm_tim_data.last_capture_time + comm_tim_data.freq);
+		TIM_SetCompare1(TIM2,
+				comm_tim_data.last_capture_time +
+				comm_tim_data.freq);
 	}
 }

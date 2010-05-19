@@ -23,7 +23,6 @@
 #define PWM_PHASE_B TIM_Channel_2
 #define PWM_PHASE_C TIM_Channel_3
 
-
 /* Channel output on/off manipulation */
 #define PWM_HI_ON TIM_CCx_Enable
 #define PWM_HI_OFF TIM_CCx_Disable

@@ -56,129 +56,130 @@
 
 #include "pwm_scheme_12step_pwm_on_pwm.h"
 
-void pwm_scheme_12step_pwm_on_pwm(void){
-    static int pwm_phase =1;
+void pwm_scheme_12step_pwm_on_pwm(void)
+{
+	static int pwm_phase = 1;
 
-    switch(pwm_phase){
-    case 1: // 000º
-        pwm_trigger(1);
+	switch (pwm_phase) {
+	case 1:		// 000º
+		pwm_trigger(1);
 
-        /* Configure step 2 */
-        pwm_set_____hi(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_pwm_lo(PWM_PHASE_C);
+		/* Configure step 2 */
+		pwm_set_____hi(PWM_PHASE_A);
+		pwm_set____off(PWM_PHASE_B);
+		pwm_set_pwm_lo(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 2: // 030º
-        pwm_trigger(2);
+		pwm_phase++;
+		break;
+	case 2:		// 030º
+		pwm_trigger(2);
 
-        /* Configure step 3 */
-        pwm_set_____hi(PWM_PHASE_A);
-        pwm_set_pwm_lo(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
+		/* Configure step 3 */
+		pwm_set_____hi(PWM_PHASE_A);
+		pwm_set_pwm_lo(PWM_PHASE_B);
+		pwm_set____off(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 3: // 060º
-        pwm_trigger(3);
+		pwm_phase++;
+		break;
+	case 3:		// 060º
+		pwm_trigger(3);
 
-        /* Configure step 4 */
-        pwm_set_pwm_hi(PWM_PHASE_A);
-        pwm_set_____lo(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
+		/* Configure step 4 */
+		pwm_set_pwm_hi(PWM_PHASE_A);
+		pwm_set_____lo(PWM_PHASE_B);
+		pwm_set____off(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 4: // 090º
-        pwm_trigger(4);
+		pwm_phase++;
+		break;
+	case 4:		// 090º
+		pwm_trigger(4);
 
-        /* Configure step 5 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_____lo(PWM_PHASE_B);
-        pwm_set_pwm_hi(PWM_PHASE_C);
+		/* Configure step 5 */
+		pwm_set____off(PWM_PHASE_A);
+		pwm_set_____lo(PWM_PHASE_B);
+		pwm_set_pwm_hi(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 5: // 120º
-        pwm_trigger(5);
+		pwm_phase++;
+		break;
+	case 5:		// 120º
+		pwm_trigger(5);
 
-        /* Configure step 6 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_pwm_lo(PWM_PHASE_B);
-        pwm_set_____hi(PWM_PHASE_C);
+		/* Configure step 6 */
+		pwm_set____off(PWM_PHASE_A);
+		pwm_set_pwm_lo(PWM_PHASE_B);
+		pwm_set_____hi(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 6: // 150º
-        pwm_trigger(6);
+		pwm_phase++;
+		break;
+	case 6:		// 150º
+		pwm_trigger(6);
 
-        /* Configure step 7 */
-        pwm_set_pwm_lo(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_____hi(PWM_PHASE_C);
+		/* Configure step 7 */
+		pwm_set_pwm_lo(PWM_PHASE_A);
+		pwm_set____off(PWM_PHASE_B);
+		pwm_set_____hi(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 7: // 180º
-        pwm_trigger(7);
+		pwm_phase++;
+		break;
+	case 7:		// 180º
+		pwm_trigger(7);
 
-        /* Configure step 8 */
-        pwm_set_____lo(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_pwm_hi(PWM_PHASE_C);
+		/* Configure step 8 */
+		pwm_set_____lo(PWM_PHASE_A);
+		pwm_set____off(PWM_PHASE_B);
+		pwm_set_pwm_hi(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 8: // 210º
-        pwm_trigger(8);
+		pwm_phase++;
+		break;
+	case 8:		// 210º
+		pwm_trigger(8);
 
-        /* Configure step 9 */
-        pwm_set_____lo(PWM_PHASE_A);
-        pwm_set_pwm_hi(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
+		/* Configure step 9 */
+		pwm_set_____lo(PWM_PHASE_A);
+		pwm_set_pwm_hi(PWM_PHASE_B);
+		pwm_set____off(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 9: // 240º
-        pwm_trigger(9);
+		pwm_phase++;
+		break;
+	case 9:		// 240º
+		pwm_trigger(9);
 
-        /* Configure step 10 */
-        pwm_set_pwm_lo(PWM_PHASE_A);
-        pwm_set_____hi(PWM_PHASE_B);
-        pwm_set____off(PWM_PHASE_C);
+		/* Configure step 10 */
+		pwm_set_pwm_lo(PWM_PHASE_A);
+		pwm_set_____hi(PWM_PHASE_B);
+		pwm_set____off(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 10: // 270º
-        pwm_trigger(10);
+		pwm_phase++;
+		break;
+	case 10:		// 270º
+		pwm_trigger(10);
 
-        /* Configure step 11 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_____hi(PWM_PHASE_B);
-        pwm_set_pwm_lo(PWM_PHASE_C);
+		/* Configure step 11 */
+		pwm_set____off(PWM_PHASE_A);
+		pwm_set_____hi(PWM_PHASE_B);
+		pwm_set_pwm_lo(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 11: // 300º
-        pwm_trigger(11);
+		pwm_phase++;
+		break;
+	case 11:		// 300º
+		pwm_trigger(11);
 
-        /* Configure step 12 */
-        pwm_set____off(PWM_PHASE_A);
-        pwm_set_pwm_hi(PWM_PHASE_B);
-        pwm_set_____lo(PWM_PHASE_C);
+		/* Configure step 12 */
+		pwm_set____off(PWM_PHASE_A);
+		pwm_set_pwm_hi(PWM_PHASE_B);
+		pwm_set_____lo(PWM_PHASE_C);
 
-        pwm_phase++;
-        break;
-    case 12: // 330º
-        pwm_trigger(12);
+		pwm_phase++;
+		break;
+	case 12:		// 330º
+		pwm_trigger(12);
 
-        /* Configure step 1 */
-        pwm_set_pwm_hi(PWM_PHASE_A);
-        pwm_set____off(PWM_PHASE_B);
-        pwm_set_____lo(PWM_PHASE_C);
+		/* Configure step 1 */
+		pwm_set_pwm_hi(PWM_PHASE_A);
+		pwm_set____off(PWM_PHASE_B);
+		pwm_set_____lo(PWM_PHASE_C);
 
-        pwm_phase=1;
-        break;
-    }
+		pwm_phase = 1;
+		break;
+	}
 }

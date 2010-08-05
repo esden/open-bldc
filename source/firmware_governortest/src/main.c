@@ -45,7 +45,6 @@ void my_delay(unsigned long delay)
 
 int main(void)
 {
-	//int i,j;
 	u16 test_counter;
 
 	system_init();
@@ -60,23 +59,5 @@ int main(void)
 		my_delay(500000);
 		test_counter++;
 		gpc_register_touched(5);
-/*
-		for(j=0; j<20; j++){
-			for(i=0; i< 125; i++){
-				LED_ORANGE_ON();
-				my_delay(50*j);
-				LED_ORANGE_OFF();
-				my_delay(1200-50*j);
-			}
-		}
-		for(j=0; j<20; j++){
-			for(i=0; i< 125; i++){
-				LED_ORANGE_OFF();
-				my_delay(200+50*j);
-				LED_ORANGE_ON();
-				my_delay(1000-50*j);
-			}
-		}
-*/
 	}
 }

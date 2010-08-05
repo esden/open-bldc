@@ -1,6 +1,7 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (c) 2009 Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (c) 2009-2010 Piotr Esden-Tempski <piotr@esden.net>,
+ *                         Antoine Drouin <poinix@gmail.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -25,8 +26,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* Memory Spaces Definitions */
+MEMORY
+{
+  RAM     (xrw): ORIGIN = 0x20000000, LENGTH = 20K
+  FLASH   (rx) : ORIGIN = 0x8000000,  LENGTH = 128K
+  FLASHB1 (rx) : ORIGIN = 0x00000000, LENGTH = 0
+}
+
+/* User mode stack top */
+_estack = 0x20005000;
+
 /* Stack size and address definitions */
-__Stack_Size = 1024 ;
+__Stack_Size = 0x1000 ;
 
 PROVIDE ( _Stack_Size = __Stack_Size ) ;
 
@@ -35,17 +47,10 @@ __Stack_Init = _estack  - __Stack_Size ;
 PROVIDE ( _Stack_Init = __Stack_Init ) ;
 
 /* Enforce a linker error if there is not enough space left in ram for the stack */
-_Minimum_Stack_Size = 0x100 ;
+_Minimum_Stack_Size = 0x800 ;
 
-/* Memory Spaces Definitions */
-MEMORY
-{
-  RAM   (xrw) : ORIGIN = 0x20000000, LENGTH = 20K
-  FLASH (rx)  : ORIGIN = 0x8000000,  LENGTH = 64K
-}
-
-/* User mode stack top */
-_estack = 0x20000800;
+/* Check valid alignment for VTOR */
+ASSERT(ORIGIN(FLASH) == ALIGN(ORIGIN(FLASH), 0x80), "Start of memory region flash not aligned for startup vector table");
 
 /* Sections Definitions */
 
@@ -86,6 +91,8 @@ SECTIONS
    	_sidata = _etext;
     } >FLASH
 
+
+
     /* This is the initialized data section
     The program executes knowing that the data is in the RAM
     but the loader puts the initial values in the FLASH (inidata).
@@ -113,7 +120,9 @@ SECTIONS
         /* This is used by the startup in order to initialize the .bss secion */
         _sbss = .;
 
-        *(.bss)
+        *(.dynbss)
+        *(.bss .bss.* .gnu.linkonce.b.*)
+	  /*        *(.bss) */
         *(COMMON)
 
         . = ALIGN(4);
@@ -137,11 +146,21 @@ SECTIONS
         _eusrstack = . ;
     } >RAM
 
+   .b1text :
+    {
+        *(.b1text)                   /* remaining code */
+        *(.b1rodata)                 /* read-only data (constants) */
+        *(.b1rodata*)
+    } >FLASHB1
+
+    __exidx_start = .;
+    .ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
+   __exidx_end = .;
 
     /* after that it's only debugging information. */
 
     /* remove the debugging information from the standard libraries */
-    /*DISCARD :
+    /*DISCARD/ :
     {
      libc.a ( * )
      libm.a ( * )

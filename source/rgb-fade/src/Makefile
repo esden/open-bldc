@@ -26,9 +26,9 @@
 #
 
 NAME		?= led_fade
-PREFIX		?= arm-elf
-OOCD_INTERFACE	?= jtagkey-tiny
-OOCD_TARGET	?= olimex_stm32_h103
+PREFIX		?= arm-none-eabi
+OOCD_INTERFACE	?= flossjtag
+OOCD_TARGET	?= open-bldc
 
 VERBOSE		?= 0
 

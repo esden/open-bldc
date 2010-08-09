@@ -31,13 +31,13 @@
 
 //#define PWM_VALUE 700;
 //#define PWM_OFFSET 250;
-#define PWM_VALUE 525;
+#define PWM_VALUE 300;
 #define PWM_OFFSET 187;
 
 //volatile uint16_t pwm_val = 700;
 //volatile uint16_t pwm_offset = 250;
-volatile uint16_t pwm_val = 525;
-volatile uint16_t pwm_offset = 187;
+volatile uint16_t pwm_val = PWM_VALUE;
+volatile uint16_t pwm_offset = PWM_OFFSET;
 volatile int pwm_trig_led = 0;
 
 void pwm_init(void)
@@ -95,7 +95,7 @@ void pwm_init(void)
 	tim_oc.TIM_OCMode = TIM_OCMode_Timing;
 	tim_oc.TIM_OutputState = TIM_OutputState_Enable;
 	tim_oc.TIM_OutputNState = TIM_OutputNState_Enable;
-	tim_oc.TIM_Pulse = PWM_VALUE;
+	tim_oc.TIM_Pulse = pwm_val;
 	tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
 	tim_oc.TIM_OCNPolarity = TIM_OCNPolarity_High;
 	tim_oc.TIM_OCIdleState = TIM_OCIdleState_Set;
@@ -110,7 +110,7 @@ void pwm_init(void)
 
 	/* TIM1 configure channel 4 as adc trigger source */
 	tim_oc.TIM_OCMode = TIM_OCMode_PWM2;
-	tim_oc.TIM_Pulse = PWM_OFFSET;
+	tim_oc.TIM_Pulse = pwm_offset;
 	TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
 	TIM_OC4Init(TIM1, &tim_oc);
 

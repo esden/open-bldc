@@ -36,6 +36,7 @@ void my_delay(unsigned long delay)
 
 	while (delay) {
 		delay--;
+		__asm("nop");
 	}
 }
 

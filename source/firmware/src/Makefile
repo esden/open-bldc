@@ -61,43 +61,60 @@ CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x
 
-OBJECTS = main.o \
-	  exceptions.o \
-	  vector_table.o \
-	  led.o \
-	  usart.o \
-	  adc.o \
-	  pwm/pwm.o \
-	  pwm/pwm_scheme_6step_h_pwm_l_on.o \
-	  comm_tim.o \
-	  gprot.o \
-	  sensor_process.o \
-	  comm_process.o \
-	  control_process.o
+DEFAULT_TARGET = mc
 
-all: gccversion images size
+TARGETS = mc test_blink
+
+mc.OBJECTS = mc_main.o \
+	     exceptions.o \
+	     vector_table.o \
+	     led.o \
+	     usart.o \
+	     adc.o \
+	     pwm/pwm.o \
+	     pwm/pwm_scheme_6step_h_pwm_l_on.o \
+	     comm_tim.o \
+	     gprot.o \
+	     sensor_process.o \
+	     comm_process.o \
+	     control_process.o
+
+test_blink.OBJECTS = test_blink_main.o \
+		   exceptions.o \
+		   vector_table.o \
+		   led.o
+
+OBJECTS = $(test_blink.OBJECTS) $(mc.OBJECTS)
 
 .SUFFIXES: .elf .bin .hex .srec .lst
+.SECONDEXPANSION:
+.SECONDARY:
 
-images: $(NAME).bin $(NAME).hex $(NAME).srec $(NAME).lst
+all: $(DEFAULT_TARGET).all
 
-$(NAME).elf: $(OBJECTS)
-	@echo "  LD    $@"
-	$(Q)$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
+clean: $(DEFAULT_TARGET).clean
 
-clean:
-	@for i in $(OBJECTS) $(OBJECTS:.o=.d) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; do \
+flash: $(DEFAULT_TARGET).flash
+
+%.all: $$(*).target_exists $$(*).images $$(*).size
+	@echo "*** Finished building $* target ***"
+
+%.images: %.bin %.hex %.srec %.lst
+	@echo "*** $* images generated ***"
+
+%.clean: $$(*).target_exists
+	@for i in $($(*).OBJECTS) $($(*).OBJECTS:.o=.d) $*.elf $*.hex $*.bin $*.lst $*.srec; do \
 		echo "  CLEAN $$i"; \
 		rm -f $$i; \
 	done
 
-flash: $(NAME).hex
+%.flash: $$(*).target_exists $$(*).hex
 	@echo "  OOCD  $<"
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		    -f board/$(OOCD_TARGET).cfg \
 		    -c init \
 		    -c "reset halt" \
-		    -c "flash write_image erase $(NAME).hex" \
+		    -c "flash write_image erase $*.hex" \
 		    -c reset \
 		    -c shutdown
 
@@ -109,32 +126,39 @@ halt:
 		    -c "reset halt" \
 		    -c shutdown
 
-gccversion:
-	@$(CC) --version
-
-size: $(NAME).elf
+%.size: $$(*).elf
 	@echo
 	$(Q)$(SIZE) $(SIZEFLAGS) $<
 
+%.elf: $$($$(*).OBJECTS)
+	@echo "  LD    $@"
+	$(Q)$(LD) $(LDFLAGS) -o $@ $($(*).OBJECTS) $(LDLIBS)
+
+%.target_exists:
+	@if [ "_$($(*).OBJECTS)" == "_" ] ; then \
+		echo "*** Target $* does not exist ***"; \
+		exit 1; \
+	fi
+
 # Suffix rules
 
-.elf.bin:
+%.bin: %.elf
 	@echo "  CP    $@"
 	$(Q)$(CP) $(CPFLAGS) -Obinary $< $@
 
-.elf.hex:
+%.hex: %.elf
 	@echo "  CP    $@"
 	$(Q)$(CP) $(CPFLAGS) -Oihex $< $@
 
-.elf.srec:
+%.srec: %.elf
 	@echo "  CP    $@"
 	$(Q)$(CP) $(CPFLAGS) -Osrec $< $@
 
-.elf.lst:
+%.lst: %.elf
 	@echo "  OD    $@"
-	$(Q)$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
+	$(Q)$(OD) $(ODFLAGS) $< > $@
 
-.c.o:
+%.o: %.c
 	@echo "  CC    $@"
 	$(Q)$(CC) $(CFLAGS) -c $*.c -o $*.o
 

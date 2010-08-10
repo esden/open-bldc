@@ -10,3 +10,4 @@
 *.dylib.dSYM
 *.so
 *.info
+*.d

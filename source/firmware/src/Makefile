@@ -48,7 +48,9 @@ OOCD		= openocd
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-CFLAGS          = -I. -Ipwm -I../../libgovernor/include -Wall -ansi -std=c99 -c \
+
+INCDIRS		= -I. -Ipwm -Idriver -I../../libgovernor/include
+CFLAGS          = $(INCDIRS) -Wall -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections
 ASFLAGS         = -ahls -mapcs-32
@@ -72,10 +74,6 @@ OBJECTS = main.o \
 	  sensor_process.o \
 	  comm_process.o \
 	  control_process.o
-	  #pwm/pwm_scheme_6step_h_on_l_pwm.o \
-	  #pwm/pwm_scheme_6step_on_pwm.o \
-	  #pwm/pwm_scheme_6step_pwm_on.o \
-	  #pwm/pwm_scheme_12step_pwm_on_pwm.o \
 
 all: gccversion images size
 
@@ -88,7 +86,7 @@ $(NAME).elf: $(OBJECTS)
 	$(Q)$(LD) $(LDFLAGS) -o $(NAME).elf $(OBJECTS) $(LDLIBS)
 
 clean:
-	@for i in $(OBJECTS) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; do \
+	@for i in $(OBJECTS) $(OBJECTS:.o=.d) $(NAME).elf $(NAME).hex $(NAME).bin $(NAME).lst $(NAME).srec; do \
 		echo "  CLEAN $$i"; \
 		rm -f $$i; \
 	done
@@ -136,6 +134,18 @@ size: $(NAME).elf
 	@echo "  OD    $@"
 	$(Q)$(OD) $(ODFLAGS) $(NAME).elf > $(NAME).lst
 
-%.o: %.c %.h
+.c.o:
 	@echo "  CC    $@"
-	$(Q)$(CC) $(CFLAGS) -c $< -o $@
+	$(Q)$(CC) $(CFLAGS) -c $*.c -o $*.o
+
+%.d: %.c
+	@echo "  DEP   $@"
+	$(Q)$(CC) -MM $(CFLAGS) $*.c -MF $*.d
+	@cp -f $*.d $*.d.tmp
+	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
+	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
+	 sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
+	@rm -f $*.d.tmp
+
+# include header dependency information
+-include $(OBJECTS:.o=.d))

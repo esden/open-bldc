@@ -61,48 +61,47 @@ CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x
 
+COMMON_OBJECTS = exceptions.o \
+		 vector_table.o \
+		 led.o
+
 DEFAULT_TARGET = mc
 
 TARGETS = mc test_blink test_governor test_rgb_fade test_32bit_tim
 
-mc.OBJECTS = mc_main.o \
-	     exceptions.o \
-	     vector_table.o \
-	     led.o \
-	     usart.o \
-	     adc.o \
-	     pwm/pwm.o \
-	     pwm/pwm_scheme_6step_h_pwm_l_on.o \
-	     comm_tim.o \
-	     gprot.o \
-	     sensor_process.o \
-	     comm_process.o \
-	     control_process.o
+mc.OBJECTS = \
+	mc_main.o \
+	usart.o \
+	adc.o \
+	pwm/pwm.o \
+	pwm/pwm_scheme_6step_h_pwm_l_on.o \
+	comm_tim.o \
+	gprot.o \
+	sensor_process.o \
+	comm_process.o \
+	control_process.o \
+	$(COMMON_OBJECTS)
 
-test_blink.OBJECTS = test_blink_main.o \
-		   exceptions.o \
-		   vector_table.o \
-		   led.o
+test_blink.OBJECTS = \
+	test_blink_main.o \
+	$(COMMON_OBJECTS)
 
-test_governor.OBJECTS = test_governor_main.o \
-			exceptions.o \
-			vector_table.o \
-			led.o \
-			usart.o \
-			gprot_test_governor.o
+test_governor.OBJECTS = \
+	test_governor_main.o \
+	usart.o \
+	gprot_test_governor.o \
+	$(COMMON_OBJECTS)
 
-test_rgb_fade.OBJECTS = test_rgb_fade_main.o \
-			exceptions.o \
-			vector_table.o \
-			led.o \
-			led_fade.o
+test_rgb_fade.OBJECTS = \
+	test_rgb_fade_main.o \
+	led_fade.o \
+	$(COMMON_OBJECTS)
 
-test_32bit_tim.OBJECTS = test_32bit_tim_main.o \
-			 exceptions.o \
-			 vector_table.o \
-			 led.o \
-			 32bit_tim.o \
-			 test_32bit_tim_ref_tim.o
+test_32bit_tim.OBJECTS = \
+	test_32bit_tim_main.o \
+	32bit_tim.o \
+	test_32bit_tim_ref_tim.o \
+	$(COMMON_OBJECTS)
 
 OBJECTS = $(test_blink.OBJECTS) $(mc.OBJECTS) $(test_governor.OBJECTS) $(test_rgb_fade.OBJECTS) $(test_32bit_tim.OBJECTS)
 
@@ -116,14 +115,14 @@ clean: $(patsubst %,%.clean,$(TARGETS))
 
 flash: $(DEFAULT_TARGET).flash
 
-%.all: $$(*).target_exists $$(*).images $$(*).size
+%.all: $$(*).target_exists $$(*).sources_exist $$(*).images $$(*).size
 	@echo "*** Finished building $* target ***"
 
 %.images: %.bin %.hex %.srec %.lst
 	@echo "*** $* images generated ***"
 
 %.clean: $$(*).target_exists
-	@for i in $($(*).OBJECTS) $($(*).OBJECTS:.o=.d) $*.elf $*.hex $*.bin $*.lst $*.srec; do \
+	@for i in $(COMMON_OBJECTS) $($(*).OBJECTS) $($(*).OBJECTS:.o=.d) $*.elf $*.hex $*.bin $*.lst $*.srec; do \
 		echo "  CLEAN $$i"; \
 		rm -f $$i; \
 	done
@@ -150,15 +149,23 @@ halt:
 	@echo
 	$(Q)$(SIZE) $(SIZEFLAGS) $<
 
-%.elf: $$($$(*).OBJECTS)
+%.elf: $(COMMON_OBJECTS) $$($$(*).OBJECTS)
 	@echo "  LD    $@"
-	$(Q)$(LD) $(LDFLAGS) -o $@ $($(*).OBJECTS) $(LDLIBS)
+	$(Q)$(LD) $(LDFLAGS) -o $@ $(COMMON_OBJECTS) $($(*).OBJECTS) $(LDLIBS)
 
 %.target_exists:
 	@if [ "_$($(*).OBJECTS)" == "_" ] ; then \
 		echo "*** Target $* does not exist ***"; \
 		exit 1; \
 	fi
+
+%.sources_exist:
+	@for i in $($(*).OBJECTS:.o=.c); do \
+		if [ ! -f $$i ] ; then \
+			echo "*** $$i does not exist, aborting ***"; \
+			exit 1; \
+		fi \
+	done
 
 # Suffix rules
 

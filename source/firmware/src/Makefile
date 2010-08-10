@@ -63,7 +63,7 @@ SIZEFLAGS       = -A -x
 
 DEFAULT_TARGET = mc
 
-TARGETS = mc test_blink test_governor test_rgb_fade
+TARGETS = mc test_blink test_governor test_rgb_fade test_32bit_tim
 
 mc.OBJECTS = mc_main.o \
 	     exceptions.o \
@@ -97,15 +97,22 @@ test_rgb_fade.OBJECTS = test_rgb_fade_main.o \
 			led.o \
 			led_fade.o
 
-OBJECTS = $(test_blink.OBJECTS) $(mc.OBJECTS) $(test_governor.OBJECTS) $(test_rgb_fade.OBJECTS)
+test_32bit_tim.OBJECTS = test_32bit_tim_main.o \
+			 exceptions.o \
+			 vector_table.o \
+			 led.o \
+			 32bit_tim.o \
+			 test_32bit_tim_ref_tim.o
+
+OBJECTS = $(test_blink.OBJECTS) $(mc.OBJECTS) $(test_governor.OBJECTS) $(test_rgb_fade.OBJECTS) $(test_32bit_tim.OBJECTS)
 
 .SUFFIXES: .elf .bin .hex .srec .lst
 .SECONDEXPANSION:
 .SECONDARY:
 
-all: $(DEFAULT_TARGET).all test_blink.all test_governor.all test_rgb_fade.all
+all: $(DEFAULT_TARGET).all test_blink.all test_governor.all test_rgb_fade.all test_32bit_tim.all
 
-clean: $(DEFAULT_TARGET).clean test_blink.clean test_governor.clean test_rgb_fade.clean
+clean: $(DEFAULT_TARGET).clean test_blink.clean test_governor.clean test_rgb_fade.clean test_32bit_tim.clean
 
 flash: $(DEFAULT_TARGET).flash
 

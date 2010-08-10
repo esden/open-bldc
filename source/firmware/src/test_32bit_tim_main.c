@@ -16,28 +16,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "exceptions.h"
+#include <stm32/rcc.h>
+#include <stm32/flash.h>
+#include <stm32/misc.h>
+#include <stm32/gpio.h>
 
-void nmi_exception(void)
+#include "types.h"
+#include "led.h"
+#include "test_32bit_tim_ref_tim.h"
+#include "32bit_tim.h"
+
+void system_init(void)
 {
+	/* Initialize the microcontroller system. Initialize clocks. */
+	SystemInit();
 }
 
-void hard_fault_exception(void)
+void my_delay(unsigned long delay)
 {
-	while (1) ;
+
+	while (delay) {
+		delay--;
+	}
 }
 
-void mem_manage_exception(void)
+int main(void)
 {
-	while (1) ;
-}
+	int dir = 1;
 
-void bus_fault_exception(void)
-{
-	while (1) ;
-}
+	system_init();
+	led_init();
+	test_tim_init();
+	tim_init();
 
-void usage_fault_exception(void)
-{
-	while (1) ;
+	while (1) {
+
+		if (dir > 0) {
+			test_tim_update(test_tim_freq + 1);
+		} else if (dir < 0) {
+			test_tim_update(test_tim_freq - 1);
+		}
+		if (test_tim_freq <= 10) {
+			dir = 1;
+		} else if (test_tim_freq >= 50000) {
+			dir = -1;
+		}
+		my_delay(1000);
+		//LED_GREEN_TOGGLE();
+	}
 }

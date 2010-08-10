@@ -21,7 +21,7 @@
 #include <stm32/tim.h>
 
 #include "types.h"
-#include "tim.h"
+#include "32bit_tim.h"
 
 #include "led.h"
 

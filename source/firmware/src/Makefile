@@ -63,7 +63,7 @@ SIZEFLAGS       = -A -x
 
 DEFAULT_TARGET = mc
 
-TARGETS = mc test_blink
+TARGETS = mc test_blink test_governor
 
 mc.OBJECTS = mc_main.o \
 	     exceptions.o \
@@ -84,7 +84,14 @@ test_blink.OBJECTS = test_blink_main.o \
 		   vector_table.o \
 		   led.o
 
-OBJECTS = $(test_blink.OBJECTS) $(mc.OBJECTS)
+test_governor.OBJECTS = test_governor_main.o \
+			exceptions.o \
+			vector_table.o \
+			led.o \
+			usart.o \
+			gprot_test_governor.o
+
+OBJECTS = $(test_blink.OBJECTS) $(mc.OBJECTS) $(test_governor.OBJECTS)
 
 .SUFFIXES: .elf .bin .hex .srec .lst
 .SECONDEXPANSION:

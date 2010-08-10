@@ -110,9 +110,9 @@ OBJECTS = $(test_blink.OBJECTS) $(mc.OBJECTS) $(test_governor.OBJECTS) $(test_rg
 .SECONDEXPANSION:
 .SECONDARY:
 
-all: $(DEFAULT_TARGET).all test_blink.all test_governor.all test_rgb_fade.all test_32bit_tim.all
+all: $(patsubst %,%.all,$(TARGETS))
 
-clean: $(DEFAULT_TARGET).clean test_blink.clean test_governor.clean test_rgb_fade.clean test_32bit_tim.clean
+clean: $(patsubst %,%.clean,$(TARGETS))
 
 flash: $(DEFAULT_TARGET).flash
 

@@ -57,7 +57,7 @@ OBJECTS += $(test_blink.OBJECTS)
 test_governor.OBJECTS = \
 	test/governor_main.o \
 	driver/usart.o \
-	gprot_test_governor.o
+	test/gprot_test_governor.o
 
 OBJECTS += $(test_governor.OBJECTS)
 

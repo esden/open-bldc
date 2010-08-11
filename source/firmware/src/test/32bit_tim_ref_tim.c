@@ -22,7 +22,7 @@
 #include <stm32/gpio.h>
 
 #include "types.h"
-#include "test_32bit_tim_ref_tim.h"
+#include "test/32bit_tim_ref_tim.h"
 #include "32bit_tim.h"
 
 #include "led.h"

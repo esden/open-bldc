@@ -50,26 +50,26 @@ mc.OBJECTS = \
 OBJECTS += $(mc.OBJECTS)
 
 test_blink.OBJECTS = \
-	test_blink_main.o
+	test/blink_main.o
 
 OBJECTS += $(test_blink.OBJECTS)
 
 test_governor.OBJECTS = \
-	test_governor_main.o \
+	test/governor_main.o \
 	driver/usart.o \
 	gprot_test_governor.o
 
 OBJECTS += $(test_governor.OBJECTS)
 
 test_rgb_fade.OBJECTS = \
-	test_rgb_fade_main.o \
+	test/rgb_fade_main.o \
 	led_fade.o
 
 OBJECTS += $(test_rgb_fade.OBJECTS)
 
 test_32bit_tim.OBJECTS = \
-	test_32bit_tim_main.o \
+	test/32bit_tim_main.o \
 	driver/32bit_tim.o \
-	test_32bit_tim_ref_tim.o
+	test/32bit_tim_ref_tim.o
 
 OBJECTS += $(test_32bit_tim.OBJECTS)

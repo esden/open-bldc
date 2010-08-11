@@ -25,6 +25,11 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+################################################################################
+# Please edit the Makefile.targets file when adding targets not this one here
+# You will hurt yourself doing that. :)
+################################################################################
+
 NAME		?= open-bldc
 PREFIX		?= arm-none-eabi
 OOCD_INTERFACE	?= flossjtag
@@ -61,54 +66,11 @@ CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x
 
-COMMON_OBJECTS = exceptions.o \
-		 vector_table.o \
-		 led.o
+###############################################################################
+# Edit after this point only when you really know what you are doing!!!
+###############################################################################
 
-OBJECTS = $(COMMON_OBJECTS)
-
-DEFAULT_TARGET = mc
-
-TARGETS = mc test_blink test_governor test_rgb_fade test_32bit_tim
-
-mc.OBJECTS = \
-	mc_main.o \
-	usart.o \
-	adc.o \
-	pwm/pwm.o \
-	pwm/pwm_scheme_6step_h_pwm_l_on.o \
-	comm_tim.o \
-	gprot.o \
-	sensor_process.o \
-	comm_process.o \
-	control_process.o
-
-OBJECTS += $(mc.OBJECTS)
-
-test_blink.OBJECTS = \
-	test_blink_main.o
-
-OBJECTS += $(test_blink.OBJECTS)
-
-test_governor.OBJECTS = \
-	test_governor_main.o \
-	usart.o \
-	gprot_test_governor.o
-
-OBJECTS += $(test_governor.OBJECTS)
-
-test_rgb_fade.OBJECTS = \
-	test_rgb_fade_main.o \
-	led_fade.o
-
-OBJECTS += $(test_rgb_fade.OBJECTS)
-
-test_32bit_tim.OBJECTS = \
-	test_32bit_tim_main.o \
-	32bit_tim.o \
-	test_32bit_tim_ref_tim.o
-
-OBJECTS += $(test_32bit_tim.OBJECTS)
+-include Makefile.targets
 
 .SUFFIXES: .elf .bin .hex .srec .lst
 .SECONDEXPANSION:

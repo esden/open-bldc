@@ -27,7 +27,7 @@
 
 COMMON_OBJECTS = exceptions.o \
 		 vector_table.o \
-		 led.o
+		 driver/led.o
 
 OBJECTS = $(COMMON_OBJECTS)
 
@@ -37,8 +37,8 @@ TARGETS = mc test_blink test_governor test_rgb_fade test_32bit_tim
 
 mc.OBJECTS = \
 	mc_main.o \
-	usart.o \
-	adc.o \
+	driver/usart.o \
+	driver/adc.o \
 	pwm/pwm.o \
 	pwm/pwm_scheme_6step_h_pwm_l_on.o \
 	comm_tim.o \
@@ -56,7 +56,7 @@ OBJECTS += $(test_blink.OBJECTS)
 
 test_governor.OBJECTS = \
 	test_governor_main.o \
-	usart.o \
+	driver/usart.o \
 	gprot_test_governor.o
 
 OBJECTS += $(test_governor.OBJECTS)
@@ -69,7 +69,7 @@ OBJECTS += $(test_rgb_fade.OBJECTS)
 
 test_32bit_tim.OBJECTS = \
 	test_32bit_tim_main.o \
-	32bit_tim.o \
+	driver/32bit_tim.o \
 	test_32bit_tim_ref_tim.o
 
 OBJECTS += $(test_32bit_tim.OBJECTS)

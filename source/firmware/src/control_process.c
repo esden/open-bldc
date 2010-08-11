@@ -123,8 +123,8 @@ void run_control_process(void)
 				} else {
 					control_process.coarce_spinup_step =
 					    control_process.coarce_spinup_step -
-					    (control_process.
-					     coarce_spinup_step /
+					    (control_process.coarce_spinup_step
+					     /
 					     CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV);
 				}
 			} else {

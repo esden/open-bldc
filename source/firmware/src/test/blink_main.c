@@ -42,7 +42,7 @@ void my_delay(unsigned long delay)
 
 void led_on(int id)
 {
-	switch(id) {
+	switch (id) {
 	case 0:
 		LED_RED_ON();
 		break;
@@ -60,7 +60,7 @@ void led_on(int id)
 
 void led_off(int id)
 {
-	switch(id) {
+	switch (id) {
 	case 0:
 		LED_RED_OFF();
 		break;

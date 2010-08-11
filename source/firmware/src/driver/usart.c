@@ -40,8 +40,8 @@ void usart_init(void)
 
 	/* enable clock for USART1 peripherial */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 |
-			RCC_APB2Periph_GPIOB |
-			RCC_APB2Periph_AFIO, ENABLE);
+			       RCC_APB2Periph_GPIOB |
+			       RCC_APB2Periph_AFIO, ENABLE);
 
 	/* Enable the USART1 interrupts */
 	nvic.NVIC_IRQChannel = USART1_IRQn;

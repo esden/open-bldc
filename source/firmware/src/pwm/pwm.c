@@ -50,8 +50,8 @@ void pwm_init(void)
 
 	/* Enable clock for TIM1 subsystem */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |
-			RCC_APB2Periph_GPIOA |
-			RCC_APB2Periph_GPIOB, ENABLE);
+			       RCC_APB2Periph_GPIOA |
+			       RCC_APB2Periph_GPIOB, ENABLE);
 
 	/* Enable TIM1 interrupt */
 	nvic.NVIC_IRQChannel = TIM1_TRG_COM_IRQn;

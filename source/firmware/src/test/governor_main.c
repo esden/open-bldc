@@ -25,9 +25,9 @@
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
-#include "led.h"
-#include "gprot.h"
-#include "usart.h"
+#include "driver/led.h"
+#include "gprot_test_governor.h"
+#include "driver/usart.h"
 
 void system_init(void)
 {

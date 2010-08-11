@@ -22,7 +22,7 @@
 #include <stm32/gpio.h>
 
 #include "types.h"
-#include "led.h"
+#include "driver/led.h"
 
 #include "led_fade.h"
 

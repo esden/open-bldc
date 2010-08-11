@@ -28,10 +28,10 @@
 
 #include "config.h"
 
-#include "adc.h"
+#include "driver/adc.h"
 
-#include "led.h"
-#include "pwm.h"
+#include "driver/led.h"
+#include "pwm/pwm.h"
 #include "comm_tim.h"
 #include "gprot.h"
 

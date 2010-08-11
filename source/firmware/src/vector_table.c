@@ -24,11 +24,6 @@
 
 #include "vector_table.h"
 
-#include "usart.h"
-#include "pwm.h"
-#include "comm_tim.h"
-#include "adc.h"
-
 #define WEAK __attribute__ ((weak))
 
 /* addresses defined in the linker script */

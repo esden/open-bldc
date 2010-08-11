@@ -21,8 +21,8 @@
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
-#include "led.h"
-#include "adc.h"
+#include "driver/led.h"
+#include "driver/adc.h"
 #include "gprot.h"
 
 #include "sensor_process.h"

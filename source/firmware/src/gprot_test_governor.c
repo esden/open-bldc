@@ -26,9 +26,9 @@
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
-#include "gprot.h"
-#include "led.h"
-#include "usart.h"
+#include "gprot_test_governor.h"
+#include "driver/led.h"
+#include "driver/usart.h"
 
 void gprot_trigger_output(void *data);
 void gprot_register_changed(void *data, u8 addr);

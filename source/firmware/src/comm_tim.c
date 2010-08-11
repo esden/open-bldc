@@ -27,8 +27,8 @@
 #include "comm_tim.h"
 
 #include "gprot.h"
-#include "led.h"
-#include "adc.h"
+#include "driver/led.h"
+#include "driver/adc.h"
 #include "pwm/pwm.h"
 
 struct comm_tim_data comm_tim_data;

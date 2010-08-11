@@ -23,9 +23,9 @@
 
 #include "types.h"
 #include "test/32bit_tim_ref_tim.h"
-#include "32bit_tim.h"
+#include "driver/32bit_tim.h"
 
-#include "led.h"
+#include "driver/led.h"
 
 //volatile u16 test_tim_freq = 10;
 volatile u16 test_tim_freq = 50000;

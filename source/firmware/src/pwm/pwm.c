@@ -25,9 +25,9 @@
 #include "pwm_schemes.h"
 #include "pwm_utils.h"
 
-#include "pwm.h"
+#include "pwm/pwm.h"
 
-#include "led.h"
+#include "driver/led.h"
 
 //#define PWM_VALUE 700;
 //#define PWM_OFFSET 250;

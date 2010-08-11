@@ -23,11 +23,11 @@
 #include <stm32/tim.h>
 
 #include "types.h"
-#include "led.h"
+#include "driver/led.h"
 #include "gprot.h"
-#include "usart.h"
-#include "adc.h"
-#include "pwm.h"
+#include "driver/usart.h"
+#include "driver/adc.h"
+#include "pwm/pwm.h"
 #include "comm_tim.h"
 #include "comm_process.h"
 #include "sensor_process.h"

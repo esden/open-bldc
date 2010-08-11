@@ -56,8 +56,6 @@ TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
 INCDIRS		= \
 	-I. \
-	-Ipwm \
-	-Idriver \
 	-I../../libgovernor/include
 CFLAGS          = $(INCDIRS) -Wall -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \

@@ -18,9 +18,9 @@
 
 #include "types.h"
 #include "comm_tim.h"
-#include "pwm.h"
+#include "pwm/pwm.h"
 #include "comm_process.h"
-#include "led.h"
+#include "driver/led.h"
 
 #include "control_process.h"
 

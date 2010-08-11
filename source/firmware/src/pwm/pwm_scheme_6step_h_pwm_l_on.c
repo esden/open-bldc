@@ -47,8 +47,8 @@
 #include <stm32/adc.h>
 
 #include "types.h"
-#include "pwm_utils.h"
-#include "adc.h"
+#include "pwm/pwm_utils.h"
+#include "driver/adc.h"
 #include "comm_process.h"
 
 #include "pwm_scheme_6step_h_pwm_l_on.h"

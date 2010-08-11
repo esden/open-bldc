@@ -27,11 +27,11 @@
 #include <lg/gprotc.h>
 
 #include "gprot.h"
-#include "led.h"
-#include "usart.h"
-#include "pwm.h"
+#include "driver/led.h"
+#include "driver/usart.h"
+#include "pwm/pwm.h"
 #include "comm_tim.h"
-#include "adc.h"
+#include "driver/adc.h"
 #include "sensor_process.h"
 #include "comm_process.h"
 #include "control_process.h"

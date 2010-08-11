@@ -23,7 +23,7 @@
 #include <stm32/tim.h>
 
 #include "types.h"
-#include "led.h"
+#include "driver/led.h"
 
 void system_init(void)
 {

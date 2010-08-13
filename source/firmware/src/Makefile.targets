@@ -33,7 +33,7 @@ OBJECTS = $(COMMON_OBJECTS)
 
 DEFAULT_TARGET = mc
 
-TARGETS = mc test_blink test_governor test_rgb_fade test_32bit_tim
+TARGETS = mc test_blink test_governor test_rgb_fade test_32bit_tim test_sys_tick
 
 mc.OBJECTS = \
 	mc_main.o \
@@ -73,3 +73,9 @@ test_32bit_tim.OBJECTS = \
 	test/32bit_tim_ref_tim.o
 
 OBJECTS += $(test_32bit_tim.OBJECTS)
+
+test_sys_tick.OBJECTS = \
+	test/sys_tick_main.o \
+	driver/sys_tick.o
+
+OBJECTS += $(test_sys_tick.OBJECTS)

@@ -23,12 +23,30 @@
 
 #include "driver/led.h"
 
+#define SYS_TICK_TIMER_NUM 5
+
 u32 sys_tick_global_counter = 0;
+
+struct sys_tick_timer {
+	sys_tick_timer_callback_t callback;
+	u32 start_time;
+	u32 delta_time;
+};
+
+struct sys_tick_timer sys_tick_timers[SYS_TICK_TIMER_NUM];
 
 void sys_tick_init(void)
 {
+	int i;
+
 	/* Setup SysTick Timer for 1uSec Interrupts */
 	SysTick_Config(72000000 / 10000);
+
+	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
+		sys_tick_timers[i].callback = 0;
+		sys_tick_timers[i].start_time = 0;
+		sys_tick_timers[i].delta_time = 0;
+	}
 }
 
 u32 sys_tick_get_timer(void)
@@ -47,5 +65,34 @@ int sys_tick_check_timer(u32 timer, u32 time)
 
 void sys_tick_handler(void)
 {
+	int i;
+
 	sys_tick_global_counter++;
+
+	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
+		if(sys_tick_timers[i].callback &&
+			sys_tick_check_timer(
+				sys_tick_timers[i].start_time,
+				sys_tick_timers[i].delta_time)) {
+			sys_tick_timers[i].start_time = sys_tick_global_counter;
+			sys_tick_timers[i].callback();
+		}
+	}
+}
+
+int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time)
+{
+	int i;
+	u32 start_time = sys_tick_global_counter;
+
+	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
+		if(!sys_tick_timers[i].callback){
+			sys_tick_timers[i].callback = callback;
+			sys_tick_timers[i].start_time = start_time;
+			sys_tick_timers[i].delta_time = time;
+			return 0;
+		}
+	}
+
+	return 1;
 }

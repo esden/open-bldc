@@ -32,6 +32,11 @@ void system_init(void)
 	SystemInit();
 }
 
+void sys_tick_timer_callback(void)
+{
+	LED_ORANGE_TOGGLE();
+}
+
 int main(void)
 {
 	u32 timer;
@@ -40,9 +45,11 @@ int main(void)
 	led_init();
 	sys_tick_init();
 
+	sys_tick_timer_register(sys_tick_timer_callback, 5000);
+
 	while (1) {
 		timer = sys_tick_get_timer();
-		while(!sys_tick_check_timer(timer, 1000)){
+		while(!sys_tick_check_timer(timer, 500)){
 			__asm("nop");
 		}
 		LED_RED_TOGGLE();

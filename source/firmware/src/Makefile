@@ -97,7 +97,7 @@ flash: $(DEFAULT_TARGET).flash
 	done
 
 %.flash: $$(*).target_exists $$(*).hex
-	@echo "  OOCD  $<"
+	@echo "  OOCD  $(*).hex"
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		    -f board/$(OOCD_TARGET).cfg \
 		    -c init \

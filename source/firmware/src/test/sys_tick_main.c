@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:41:29 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -37,7 +37,7 @@
 #include "driver/sys_tick.h"
 
 /**
- * TODO
+ * @todo document
  *
  */
 void system_init(void)
@@ -47,7 +47,7 @@ void system_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void sys_tick_timer_callback(void)
@@ -56,7 +56,7 @@ void sys_tick_timer_callback(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 int main(void)

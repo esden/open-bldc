@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:39:14 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 #include <cmsis/stm32.h>
 
@@ -196,7 +196,7 @@ void reset_handler_stage1(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void reset_handler_stage2(void)
@@ -218,7 +218,7 @@ void reset_handler_stage2(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void null_handler(void)
@@ -226,7 +226,7 @@ void null_handler(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void assert_param(void)

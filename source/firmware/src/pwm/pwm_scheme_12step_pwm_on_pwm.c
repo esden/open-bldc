@@ -63,7 +63,7 @@
 #include "pwm_scheme_12step_pwm_on_pwm.h"
 
 /**
- * TODO
+ * @todo document
  *
  */
 void pwm_scheme_12step_pwm_on_pwm(void)

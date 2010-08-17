@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:27:42 2010
  *
- * @brief TODO
+ * @brief @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include "types.h"
@@ -67,7 +67,7 @@ void control_process_reset(void);
 
 /* function implementations */
 /**
- * TODO
+ * @todo document
  */
 void control_process_init(void)
 {
@@ -75,7 +75,7 @@ void control_process_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  */
 void control_process_reset(void)
 {
@@ -91,7 +91,7 @@ void control_process_reset(void)
 }
 
 /**
- * TODO
+ * @todo document
  */
 void control_process_ignite(void)
 {
@@ -101,7 +101,7 @@ void control_process_ignite(void)
 }
 
 /**
- * TODO
+ * @todo document
  */
 void control_process_kill(void)
 {
@@ -114,7 +114,7 @@ void control_process_kill(void)
 }
 
 /**
- * TODO
+ * @todo document
  */
 void run_control_process(void)
 {

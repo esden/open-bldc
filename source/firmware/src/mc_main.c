@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:58:50 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -46,7 +46,7 @@
 bool demo;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void system_init(void)
@@ -56,7 +56,7 @@ void system_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 int main(void)

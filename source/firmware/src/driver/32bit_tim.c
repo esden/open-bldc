@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:04:46 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -40,7 +40,7 @@ u32 tim_was_updated = 0;
 u32 tim_last_upd = 0;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim_init(void)
@@ -143,7 +143,7 @@ void tim_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim_update(void)
@@ -184,7 +184,7 @@ void tim_update(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim2_irq_handler(void)
@@ -212,7 +212,7 @@ void tim2_irq_handler(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim3_irq_handler(void)

@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:02:15 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -43,7 +43,7 @@
 volatile s16 data_buf;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void usart_init(void)
@@ -99,7 +99,7 @@ void usart_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void usart_enable_send(void)
@@ -108,7 +108,7 @@ void usart_enable_send(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void usart_disable_send(void)
@@ -117,7 +117,7 @@ void usart_disable_send(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void usart1_irq_handler(void)

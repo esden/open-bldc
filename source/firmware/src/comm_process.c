@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:06:02 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include "types.h"
@@ -47,7 +47,7 @@ struct comm_params comm_params;
 s32 new_cycle_time;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_process_init(void)
@@ -69,7 +69,7 @@ void comm_process_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_process_reset(void)
@@ -78,9 +78,9 @@ void comm_process_reset(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param rising TODO
+ * @param rising @todo document
  */
 void comm_process_config(bool rising)
 {
@@ -88,9 +88,9 @@ void comm_process_config(bool rising)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param rising TODO
+ * @param rising @todo document
  */
 void comm_process_config_and_reset(bool rising)
 {
@@ -106,7 +106,7 @@ void comm_process_config_and_reset(bool rising)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_process_closed_loop_on(void)
@@ -115,7 +115,7 @@ void comm_process_closed_loop_on(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_process_closed_loop_off(void)
@@ -124,7 +124,7 @@ void comm_process_closed_loop_off(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_process_calc_next_comm(void)
@@ -165,7 +165,7 @@ void comm_process_calc_next_comm(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void run_comm_process(void)

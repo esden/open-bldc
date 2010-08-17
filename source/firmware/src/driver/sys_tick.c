@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:02:50 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <cmsis/stm32.h>
@@ -46,7 +46,7 @@ struct sys_tick_timer {
 struct sys_tick_timer sys_tick_timers[SYS_TICK_TIMER_NUM];
 
 /**
- * TODO
+ * @todo document
  *
  */
 void sys_tick_init(void)
@@ -64,9 +64,9 @@ void sys_tick_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @return TODO
+ * @return @todo document
  */
 u32 sys_tick_get_timer(void)
 {
@@ -74,12 +74,12 @@ u32 sys_tick_get_timer(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param timer TODO
- * @param time TODO
+ * @param timer @todo document
+ * @param time @todo document
  *
- * @return TODO
+ * @return @todo document
  */
 int sys_tick_check_timer(u32 timer, u32 time)
 {
@@ -91,7 +91,7 @@ int sys_tick_check_timer(u32 timer, u32 time)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void sys_tick_handler(void)
@@ -112,12 +112,12 @@ void sys_tick_handler(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param callback TODO
- * @param time TODO
+ * @param callback @todo document
+ * @param time @todo document
  *
- * @return TODO
+ * @return @todo document
  */
 int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time)
 {

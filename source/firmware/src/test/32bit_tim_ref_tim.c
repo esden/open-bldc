@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:48:56 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -43,7 +43,7 @@ volatile u16 test_tim_capture = 0;
 volatile u32 test_tim_count = 0;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void test_tim_init(void)
@@ -95,9 +95,9 @@ void test_tim_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param freq TODO
+ * @param freq @todo document
  */
 void test_tim_update(u16 freq)
 {
@@ -107,7 +107,7 @@ void test_tim_update(u16 freq)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim4_irq_handler(void)

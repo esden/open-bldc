@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:04:11 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -49,7 +49,7 @@ struct adc_data adc_data;
 volatile bool adc_new_data_trigger;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void adc_init(void)
@@ -134,9 +134,9 @@ void adc_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param channel TODO
+ * @param channel @todo document
  */
 void adc_set(u8 channel)
 {
@@ -149,7 +149,7 @@ void adc_set(u8 channel)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void adc1_2_irq_handler(void)

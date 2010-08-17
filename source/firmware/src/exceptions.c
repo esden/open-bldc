@@ -21,16 +21,16 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:01:35 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 
 #include "exceptions.h"
 
 /**
- * TODO
+ * @todo document
  *
  */
 void nmi_exception(void)
@@ -38,7 +38,7 @@ void nmi_exception(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void hard_fault_exception(void)
@@ -47,7 +47,7 @@ void hard_fault_exception(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void mem_manage_exception(void)
@@ -56,7 +56,7 @@ void mem_manage_exception(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void bus_fault_exception(void)
@@ -65,7 +65,7 @@ void bus_fault_exception(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void usage_fault_exception(void)

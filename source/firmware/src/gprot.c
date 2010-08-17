@@ -23,7 +23,7 @@
  *
  * @brief  Here you find the implementation of the Governor PC software protocol.
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/gpio.h>
@@ -60,7 +60,7 @@ void gprot_update_flags(void);
 
 /* Function implementations */
 /**
- * TODO
+ * @todo document
  *
  */
 void gprot_init()
@@ -89,9 +89,9 @@ void gprot_init()
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param data TODO
+ * @param data @todo document
  */
 void gprot_trigger_output(void *data)
 {
@@ -100,10 +100,10 @@ void gprot_trigger_output(void *data)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param data TODO
- * @param addr TODO
+ * @param data @todo document
+ * @param addr @todo document
  */
 void gprot_register_changed(void *data, u8 addr)
 {
@@ -114,7 +114,7 @@ void gprot_register_changed(void *data, u8 addr)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void gprot_update_flags(void)

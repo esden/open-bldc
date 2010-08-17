@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:59:14 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -97,7 +97,7 @@ u16 rcnt;
 s16 rdir;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void led_fade_init(void)
@@ -199,9 +199,9 @@ void led_fade_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param val TODO
+ * @param val @todo document
  */
 void led_fade_set_orange(u8 val)
 {
@@ -210,9 +210,9 @@ void led_fade_set_orange(u8 val)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param val TODO
+ * @param val @todo document
  */
 void led_fade_set_red(u8 val)
 {
@@ -221,9 +221,9 @@ void led_fade_set_red(u8 val)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param val TODO
+ * @param val @todo document
  */
 void led_fade_set_green(u8 val)
 {
@@ -232,9 +232,9 @@ void led_fade_set_green(u8 val)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param val TODO
+ * @param val @todo document
  */
 void led_fade_set_blue(u8 val)
 {
@@ -243,7 +243,7 @@ void led_fade_set_blue(u8 val)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim3_irq_handler(void)

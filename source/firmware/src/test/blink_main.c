@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:47:20 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -36,7 +36,7 @@
 #include "driver/led.h"
 
 /**
- * TODO
+ * @todo document
  *
  */
 void system_init(void)
@@ -46,9 +46,9 @@ void system_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param delay TODO
+ * @param delay @todo document
  */
 void my_delay(unsigned long delay)
 {
@@ -60,9 +60,9 @@ void my_delay(unsigned long delay)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param id TODO
+ * @param id @todo document
  */
 void led_on(int id)
 {
@@ -83,9 +83,9 @@ void led_on(int id)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param id TODO
+ * @param id @todo document
  */
 void led_off(int id)
 {
@@ -106,9 +106,9 @@ void led_off(int id)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @return TODO
+ * @return @todo document
  */
 int main(void)
 {

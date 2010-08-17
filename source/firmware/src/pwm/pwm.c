@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:57:56 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -51,7 +51,7 @@ volatile uint16_t pwm_offset = PWM_OFFSET;
 volatile int pwm_trig_led = 0;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void pwm_init(void)
@@ -153,7 +153,7 @@ void pwm_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void pwm_comm(void)
@@ -162,7 +162,7 @@ void pwm_comm(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void pwm_off(void)
@@ -172,7 +172,7 @@ void pwm_off(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void pwm_all_lo(void)
@@ -182,7 +182,7 @@ void pwm_all_lo(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void pwm_all_hi(void)
@@ -192,7 +192,7 @@ void pwm_all_hi(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim1_trg_com_irq_handler(void)
@@ -211,7 +211,7 @@ void tim1_trg_com_irq_handler(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim1_cc_irq_handler(void)

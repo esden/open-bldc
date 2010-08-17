@@ -56,7 +56,7 @@
 #include "pwm_scheme_6step_h_on_l_pwm.h"
 
 /**
- * TODO
+ * @todo document
  */
 void pwm_scheme_6step_h_on_l_pwm(void)
 {

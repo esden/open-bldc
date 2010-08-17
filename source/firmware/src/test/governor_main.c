@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:46:21 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 #include <stm32/rcc.h>
 #include <stm32/flash.h>
@@ -39,7 +39,7 @@
 #include "driver/usart.h"
 
 /**
- * TODO
+ * @todo document
  *
  */
 void system_init(void)
@@ -49,9 +49,9 @@ void system_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
- * @param delay TODO
+ * @param delay @todo document
  */
 void my_delay(unsigned long delay)
 {
@@ -62,7 +62,7 @@ void my_delay(unsigned long delay)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 int main(void)

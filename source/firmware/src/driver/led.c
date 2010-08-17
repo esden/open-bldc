@@ -21,16 +21,16 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:03:55 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
 #include <stm32/gpio.h>
 
 /**
- * TODO
+ * @todo document
  *
  */
 void led_init(void)

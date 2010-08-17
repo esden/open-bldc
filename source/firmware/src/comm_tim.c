@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:05:17 2010
  *
- * @brief  TODO
+ * @brief  @todo document
  *
- * TODO
+ * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -47,7 +47,7 @@ bool comm_tim_trigger_comm_once = false;
 bool comm_tim_trigger = false;
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_tim_init(void)
@@ -99,7 +99,7 @@ void comm_tim_init(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_tim_reset(void)
@@ -110,7 +110,7 @@ void comm_tim_reset(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_tim_capture_time(void)
@@ -121,7 +121,7 @@ void comm_tim_capture_time(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void comm_tim_update_freq(void)
@@ -131,7 +131,7 @@ void comm_tim_update_freq(void)
 }
 
 /**
- * TODO
+ * @todo document
  *
  */
 void tim2_irq_handler(void)

@@ -33,7 +33,7 @@ OBJECTS = $(COMMON_OBJECTS)
 
 DEFAULT_TARGET = mc
 
-TARGETS = mc test_blink test_governor test_rgb_fade test_32bit_tim test_sys_tick
+TARGETS = mc test_blink test_governor test_32bit_tim test_sys_tick
 
 mc.OBJECTS = \
 	mc_main.o \
@@ -60,12 +60,6 @@ test_governor.OBJECTS = \
 	test/gprot_test_governor.o
 
 OBJECTS += $(test_governor.OBJECTS)
-
-test_rgb_fade.OBJECTS = \
-	test/rgb_fade_main.o \
-	led_fade.o
-
-OBJECTS += $(test_rgb_fade.OBJECTS)
 
 test_32bit_tim.OBJECTS = \
 	test/32bit_tim_main.o \

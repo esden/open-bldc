@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:39:14 2010
  *
- * @brief  @todo document
+ * @brief  STM32 vector table implementation.
  *
- * @todo document
+ * This is where everything begins and ends.
  */
 #include <cmsis/stm32.h>
 

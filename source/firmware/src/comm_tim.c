@@ -21,9 +21,13 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:05:17 2010
  *
- * @brief  @todo document
+ * @brief  Commutation timer hardware implementation.
  *
- * @todo document
+ * Implements the timer that is directly triggering the commutation event of
+ * the PWM generation subsystem.
+ *
+ * @todo The comm timer should use a timer driver and not combine timer
+ * peripheral handling code together with the commutation handling part.
  */
 
 #include <stm32/rcc.h>
@@ -41,14 +45,13 @@
 #include "driver/adc.h"
 #include "pwm/pwm.h"
 
-struct comm_tim_data comm_tim_data;		/**< @todo document */
-bool comm_tim_trigger_comm = false;		/**< @todo document */
-bool comm_tim_trigger_comm_once = false;	/**< @todo document */
-bool comm_tim_trigger = false;			/**< @todo document */
+struct comm_tim_data comm_tim_data;		/**< Commutation timer data instance */
+bool comm_tim_trigger_comm = false;		/**< Commutation timer trigger commutations flag */
+bool comm_tim_trigger_comm_once = false;	/**< Commutation timer trigger one commutation flag */
+bool comm_tim_trigger = false;			/**< Commutation timer trigger (it's an output not input) */
 
 /**
- * @todo document
- *
+ * Commutation timer hardware initialization.
  */
 void comm_tim_init(void)
 {
@@ -99,8 +102,7 @@ void comm_tim_init(void)
 }
 
 /**
- * @todo document
- *
+ * Reset the commutation timer internal state.
  */
 void comm_tim_reset(void)
 {
@@ -110,8 +112,7 @@ void comm_tim_reset(void)
 }
 
 /**
- * @todo document
- *
+ * Record the time of the last commutation
  */
 void comm_tim_capture_time(void)
 {
@@ -121,8 +122,8 @@ void comm_tim_capture_time(void)
 }
 
 /**
- * @todo document
- *
+ * Update the commutation timer frequency using the value stored in
+ * @ref comm_tim_data.freq
  */
 void comm_tim_update_freq(void)
 {
@@ -131,8 +132,7 @@ void comm_tim_update_freq(void)
 }
 
 /**
- * @todo document
- *
+ * Timer 2 interrupt handler
  */
 void tim2_irq_handler(void)
 {

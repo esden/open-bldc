@@ -21,25 +21,26 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:01:35 2010
  *
- * @brief  @todo document
+ * @brief  STM32 exception handler function implementations.
  *
- * @todo document
+ * @todo Maybe do something more sensible then only falling into a endless
+ * while loop?
  */
 
 
 #include "exceptions.h"
 
 /**
- * @todo document
- *
+ * Non maskable interrupt exception
  */
 void nmi_exception(void)
 {
 }
 
 /**
- * @todo document
+ * Hard fault excpetion
  *
+ * @todo elaborate
  */
 void hard_fault_exception(void)
 {
@@ -47,8 +48,11 @@ void hard_fault_exception(void)
 }
 
 /**
- * @todo document
+ * Memory access violation exception.
  *
+ * This exception is being called when you try to access a memory area of the
+ * STM32 that is invalid. For example trying to write to the read only flash
+ * memory of the STM32.
  */
 void mem_manage_exception(void)
 {
@@ -56,8 +60,9 @@ void mem_manage_exception(void)
 }
 
 /**
- * @todo document
+ * Bus fault exception
  *
+ * @todo elaborate
  */
 void bus_fault_exception(void)
 {
@@ -65,8 +70,9 @@ void bus_fault_exception(void)
 }
 
 /**
- * @todo document
+ * Usage fault exception
  *
+ * @todo elaborate
  */
 void usage_fault_exception(void)
 {

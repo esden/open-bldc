@@ -21,9 +21,10 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:06:02 2010
  *
- * @brief  @todo document
+ * @brief  Commutation control userspace process implementation.
  *
- * @todo document
+ * This process is being called periodically from the main while loop and
+ * generates commutation events.
  */
 
 #include "types.h"
@@ -52,8 +53,7 @@ s32 new_cycle_time;				/**< New commutation time
 						  remove */
 
 /**
- * @todo document
- *
+ * Initialize commutation process
  */
 void comm_process_init(void)
 {
@@ -74,8 +74,7 @@ void comm_process_init(void)
 }
 
 /**
- * @todo document
- *
+ * Reset commutation process internal state.
  */
 void comm_process_reset(void)
 {
@@ -83,9 +82,10 @@ void comm_process_reset(void)
 }
 
 /**
- * @todo document
+ * Commutation process configuration
  *
- * @param rising @todo document
+ * @param rising true selects rising edge of bemf and false the falling edge of
+ * the BEMF
  */
 void comm_process_config(bool rising)
 {
@@ -93,9 +93,10 @@ void comm_process_config(bool rising)
 }
 
 /**
- * @todo document
+ * Reset and configure commutation process.
  *
- * @param rising @todo document
+ * @param rising true selects rising edge of BEMF and false the falling edge of
+ * the BEMF
  */
 void comm_process_config_and_reset(bool rising)
 {
@@ -111,8 +112,7 @@ void comm_process_config_and_reset(bool rising)
 }
 
 /**
- * @todo document
- *
+ * Switch on the closed loop control system
  */
 void comm_process_closed_loop_on(void)
 {
@@ -120,8 +120,7 @@ void comm_process_closed_loop_on(void)
 }
 
 /**
- * @todo document
- *
+ * Switch off the closed loop control system
  */
 void comm_process_closed_loop_off(void)
 {
@@ -129,8 +128,7 @@ void comm_process_closed_loop_off(void)
 }
 
 /**
- * @todo document
- *
+ * Calculate the next commutation time
  */
 void comm_process_calc_next_comm(void)
 {
@@ -170,8 +168,7 @@ void comm_process_calc_next_comm(void)
 }
 
 /**
- * @todo document
- *
+ * Main periodic body of the commutation process
  */
 void run_comm_process(void)
 {

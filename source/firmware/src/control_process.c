@@ -21,9 +21,11 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:27:42 2010
  *
- * @brief @todo document
+ * @brief  User space control process implementation.
  *
- * @todo document
+ * This process is being called periodically from the main while loop and
+ * handles the high level control of the system. The main state machine of the
+ * whole controller is implemented here.
  */
 
 #include "types.h"
@@ -89,12 +91,12 @@ struct control_process {
 
 struct control_process control_process; /**< Internal state struct instance */
 
-/* local functions */
+/* local function forward declarations */
 void control_process_reset(void);
 
 /* function implementations */
 /**
- * @todo document
+ * Initialize internal state of the control process
  */
 void control_process_init(void)
 {
@@ -102,7 +104,7 @@ void control_process_init(void)
 }
 
 /**
- * @todo document
+ * Reset the internal state of the control process
  */
 void control_process_reset(void)
 {
@@ -118,7 +120,7 @@ void control_process_reset(void)
 }
 
 /**
- * @todo document
+ * Trigger motor ignition
  */
 void control_process_ignite(void)
 {
@@ -128,7 +130,10 @@ void control_process_ignite(void)
 }
 
 /**
- * @todo document
+ * Immediately kill the motor
+ *
+ * Calling this function will immediately stop sending any signals to the power
+ * stage. Can be used for example when a fault is being detected.
  */
 void control_process_kill(void)
 {
@@ -141,7 +146,9 @@ void control_process_kill(void)
 }
 
 /**
- * @todo document
+ * Main periodic control process body.
+ *
+ * It implements the main state machine of the motor controller.
  */
 void run_control_process(void)
 {

@@ -21,9 +21,12 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:00:29 2010
  *
- * @brief  Here you find the implementation of the Governor PC software protocol.
+ * @brief  Application specific part of Governor PC software protocol implementation
  *
- * @todo document
+ * Governor protocol is a library implementing a very thin protocol for
+ * realtime applications. In this file all the initialization and hook
+ * assignement is being done that obviously can not be done in a general
+ * purpose protocol library.
  */
 
 #include <stm32/gpio.h>
@@ -84,8 +87,7 @@ void gprot_update_flags(void);
 
 /* Function implementations */
 /**
- * @todo document
- *
+ * Initialize all necessary registers and callback hooks.
  */
 void gprot_init()
 {
@@ -113,9 +115,9 @@ void gprot_init()
 }
 
 /**
- * @todo document
+ * Callback from the libgovernor enabeling transmission.
  *
- * @param data @todo document
+ * @param data Callback passed thorough data. Ignored here.
  */
 void gprot_trigger_output(void *data)
 {
@@ -124,10 +126,10 @@ void gprot_trigger_output(void *data)
 }
 
 /**
- * @todo document
+ * Callback from libgovernor indicating that a register content has changed.
  *
- * @param data @todo document
- * @param addr @todo document
+ * @param data Callback passed through data. Ignored here.
+ * @param addr Address of the register that has changed.
  */
 void gprot_register_changed(void *data, u8 addr)
 {
@@ -138,8 +140,9 @@ void gprot_register_changed(void *data, u8 addr)
 }
 
 /**
- * @todo document
+ * Automatically called by @ref gprot_register_changed()
  *
+ * Implements the logic associated with the application specific flag register.
  */
 void gprot_update_flags(void)
 {

@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:58:50 2010
  *
- * @brief  @todo document
+ * @brief  Motor controller main file.
  *
- * @todo document
+ * Implements the main() function of the motor controller.
  */
 
 #include <stm32/rcc.h>
@@ -49,8 +49,7 @@
 bool demo;
 
 /**
- * @todo document
- *
+ * Initialize STM32 system specific subsystems.
  */
 void system_init(void)
 {
@@ -59,8 +58,7 @@ void system_init(void)
 }
 
 /**
- * @todo document
- *
+ * Main function of the motor controller.
  */
 int main(void)
 {

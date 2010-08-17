@@ -24,7 +24,7 @@
  * @brief  Implementation of 6step PWM ON scheme
  *
  * Table of the pwm scheme zone configurations:
- *
+ * @verbatim
  *  | 1| 2| 3| 4| 5| 6|
  * -+--+--+--+--+--+--+
  * A|p+|++|  |p-|--|  |
@@ -47,6 +47,7 @@
  * --: Low side on
  * ++: High side on
  *   : Floating/NC
+ * @endverbatim
  */
 
 #include <stm32/tim.h>

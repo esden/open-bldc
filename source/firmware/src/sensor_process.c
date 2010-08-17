@@ -16,6 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   sensor_process.c
+ * @author Piotr Esden-Tempski <esden@esden.net>
+ * @date   Tue Aug 17 00:29:15 2010
+ *
+ * @brief  Sensory input postprocessing user land process.
+ *
+ * Implementation of the sensor user land process which is being called each
+ * time new sensor data arrive through the interrupt system.
+ */
+
 #include "types.h"
 
 #include <lg/gpdef.h>
@@ -36,6 +47,11 @@ int sensor_trigger_debug_output;
 
 int sensor_process_low_prio_update_cnt = 0;
 
+/**
+ * Sensor process initializer.
+ *
+ * Resets all global presets.
+ */
 void sensor_process_init(void)
 {
 	sensors.phase_voltage = 0;
@@ -54,11 +70,20 @@ void sensor_process_init(void)
 	sensor_process_low_prio_update_cnt = 0;
 }
 
+/**
+ * Resets all current sensor data to default values.
+ */
 void sensor_process_reset(void)
 {
 	sensors.phase_voltage = 0;
 }
 
+/**
+ * The main periodic process implementation.
+ *
+ * This function is being called every time new sensor data arrives through the
+ * interrupt system.
+ */
 void run_sensor_process(void)
 {
 	u16 phase_voltage = adc_data.phase_voltage;

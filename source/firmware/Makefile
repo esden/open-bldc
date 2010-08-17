@@ -37,3 +37,12 @@ clean:
 
 flash:
 	make -w -C src flash
+
+%.all:
+	make -w -C src $(*).all
+
+%.clean:
+	make -w -C src $(*).clean
+
+%.flash:
+	make -w -C src $(*).flash

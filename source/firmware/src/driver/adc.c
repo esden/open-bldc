@@ -45,7 +45,17 @@
 #include "comm_tim.h"
 #include "gprot.h"
 
+/**
+ * ADC data instance
+ */
 struct adc_data adc_data;
+
+/**
+ * ADC output trigger
+ *
+ * Can be used to trigger actions in the userspace every time new data is
+ * available from the ADC.
+ */
 volatile bool adc_new_data_trigger;
 
 /**

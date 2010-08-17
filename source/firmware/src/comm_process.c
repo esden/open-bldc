@@ -34,17 +34,22 @@
 
 #include "sensor_process.h"
 
+/**
+ * Internal state of the comm process struct.
+ */
 struct comm_process_state {
-	volatile bool rising;
-	int pwm_count;
-	bool closed_loop;
-	u32 prev_phase_voltage;
+	volatile bool rising;	/**< Waiting for rising or falling edge of BEMF */
+	int pwm_count;		/**< PWM cycle counter in the current commutation */
+	bool closed_loop;	/**< Running in closed loop control flag */
+	u32 prev_phase_voltage; /**< Previous PWM cycle phase voltage memory */
 };
 
-struct comm_process_state comm_process_state;
-struct comm_data comm_data;
-struct comm_params comm_params;
-s32 new_cycle_time;
+struct comm_process_state comm_process_state;	/**< Internal state instance */
+struct comm_data comm_data;			/**< Public data instance */
+struct comm_params comm_params;			/**< Parameters */
+s32 new_cycle_time;				/**< New commutation time
+						  temporary variable, @todo
+						  remove */
 
 /**
  * @todo document

@@ -33,17 +33,30 @@
 
 #include "vector_table.h"
 
+/** Abbreviation for weak declaration attribute */
 #define WEAK __attribute__ ((weak))
 
-/* addresses defined in the linker script */
-extern unsigned long _etext;	/* end addr of .text section */
-extern unsigned long _sidata;	/* init values for .data section */
-extern unsigned long _sdata;	/* start addr of .data section */
-extern unsigned long _edata;	/* end addr of .data section */
-extern unsigned long _sbss;	/* start addr of .bss section */
-extern unsigned long _ebss;	/* end addr of .bss section */
-extern void _estack;		/* stack pointer init value */
+/*@{*/
+/** addresses defined in the linker script */
+extern unsigned long _etext;	/**< end addr of .text section */
+extern unsigned long _sidata;	/**< init values for .data section */
+extern unsigned long _sdata;	/**< start addr of .data section */
+extern unsigned long _edata;	/**< end addr of .data section */
+extern unsigned long _sbss;	/**< start addr of .bss section */
+extern unsigned long _ebss;	/**< end addr of .bss section */
+extern void _estack;		/**< stack pointer init value */
+/*@}*/
 
+/*@{*/
+/** 
+ * Weak interrupt service routine forward declaration
+ * 
+ * Using weak makes it possible that the vector table does not have to know at
+ * compile time if the irq handler is defined. The linker will automatically
+ * realize that there is an actual implementation of the interrupt service
+ * routine and will use it instead of the empty placeholder bound in the bottom
+ * of this file.
+ */
 void WEAK svc_handler(void);
 void WEAK debug_monitor(void);
 void WEAK pend_svc(void);
@@ -108,6 +121,7 @@ void WEAK dma2_channel1_irq_handler(void);
 void WEAK dma2_channel2_irq_handler(void);
 void WEAK dma2_channel3_irq_handler(void);
 void WEAK dma2_channel4_5_irq_handler(void);
+/*@}*/
 
 void reset_handler_stage1(void) __attribute__ ((__interrupt__));
 void reset_handler_stage2(void);
@@ -184,8 +198,12 @@ void (*const vector_table[]) (void) =
 	    dma2_channel3_irq_handler, dma2_channel4_5_irq_handler};
 
 /**
- * First setup stage, get's called directly after mcu reset
+ * First setup stage. 
  *
+ * Get's called directly after mcu reset.
+ *
+ * It needs to setup the stack alignment right so that further functions can be
+ * called and comply to the GCC EABI expectations.
  */
 void reset_handler_stage1(void)
 {
@@ -196,8 +214,9 @@ void reset_handler_stage1(void)
 }
 
 /**
- * @todo document
+ * Second setup stage 
  *
+ * Copies global variables from flash to ram, and calls main().
  */
 void reset_handler_stage2(void)
 {
@@ -218,7 +237,8 @@ void reset_handler_stage2(void)
 }
 
 /**
- * @todo document
+ * This is an empty interrupt handler that is used when no real implementation
+ * of a handlar is available.
  *
  */
 void null_handler(void)
@@ -226,8 +246,13 @@ void null_handler(void)
 }
 
 /**
- * @todo document
+ * Assert function used in libstm32
  *
+ * This function is being called by libstm32 to indicate a problem when the
+ * parameters passed to the libstm32 functions are wrong.
+ *
+ * @todo Check if we should insert some sensible code in that function.
+ * while(true)?
  */
 void assert_param(void)
 {

@@ -19,25 +19,40 @@
 #ifndef __SENSOR_PROCESS_H
 #define __SENSOR_PROCESS_H
 
+/**
+ * Sensor values
+ */
 struct sensors {
-	u16 phase_voltage;
-	u32 half_battery_voltage;
-	u16 global_current;
+	u16 phase_voltage;        /**< Voltage of the currently selected phase */
+	u32 half_battery_voltage; /**< Half of the supply rail voltage */
+	u16 global_current;       /**< Global controller current */
 };
 
+/**
+ * Parameters for sensor data post processing
+ */
 struct sensor_params {
+	/**
+	 * Phase voltage post processing parameters
+	 */
 	struct pv {
-		s32 offset;
-		u32 iir;
+		s32 offset; /**< how much to offset the value */
+		u32 iir;    /**< IIR filter value */
 	} pv;
+	/**
+	 * Half supply rail voltage post processing parameters
+	 */
 	struct hbv {
-		s32 offset;
-		u32 iir;
+		s32 offset; /**< how much to offset the value */
+		u32 iir;    /**< IIR filter value */
 	} hbv;
+	/**
+	 * Global controller current
+	 */
 	struct gc {
-		s32 zero_current_offset;
-		s32 zero_current;
-		u32 iir;
+		s32 zero_current_offset; /**< Zero current offset value */
+		s32 zero_current;        /**< The value of zero */
+		u32 iir;                 /**< IIR filter value */
 	} gc;
 };
 

@@ -43,6 +43,9 @@
 #include "sensor_process.h"
 #include "control_process.h"
 
+/**
+ * Running in demo mode flag
+ */
 bool demo;
 
 /**

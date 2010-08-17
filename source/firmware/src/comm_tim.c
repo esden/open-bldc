@@ -41,10 +41,10 @@
 #include "driver/adc.h"
 #include "pwm/pwm.h"
 
-struct comm_tim_data comm_tim_data;
-bool comm_tim_trigger_comm = false;
-bool comm_tim_trigger_comm_once = false;
-bool comm_tim_trigger = false;
+struct comm_tim_data comm_tim_data;		/**< @todo document */
+bool comm_tim_trigger_comm = false;		/**< @todo document */
+bool comm_tim_trigger_comm_once = false;	/**< @todo document */
+bool comm_tim_trigger = false;			/**< @todo document */
 
 /**
  * @todo document

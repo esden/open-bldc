@@ -19,14 +19,27 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+/**
+ * Enable and configure PWM phase reference signal generation.
+ *
+ * If set to value 1 - 6 or 1 - 12 depending on selected PWM scheme the
+ * commutation subsystem will generate a signal on one of the LEDS that matches
+ * the start of a selected PWM phase. To disable set it to -1.
+ */
 #define PWM_PHASE_TRIGGER 1
-//#define PWM_PHASE_TRIGGER -1
+
 //#define ADC_COMM_TRIGGER 1
 
+/**
+ * Selection of PWM scheme.
+ *
+ * Set to one of the following:
+ * - pwm_scheme_6step_h_pwm_l_on
+ * - pwm_scheme_6step_h_on_l_pwm
+ * - pwm_scheme_6step_on_pwm
+ * - pwm_scheme_6step_pwm_on
+ * - pwm_scheme_12step_pwm_on_pwm
+ */
 #define PWM_SCHEME pwm_scheme_6step_h_pwm_l_on
-//#define PWM_SCHEME pwm_scheme_6step_h_on_l_pwm
-//#define PWM_SCHEME pwm_scheme_6step_on_pwm
-//#define PWM_SCHEME pwm_scheme_6step_pwm_on
-//#define PWM_SCHEME pwm_scheme_12step_pwm_on_pwm
 
 #endif /* __CONFIG_H */

@@ -39,15 +39,20 @@
 
 #include "driver/led.h"
 
-//#define PWM_VALUE 700;
-//#define PWM_OFFSET 250;
-#define PWM_VALUE 300;
-#define PWM_OFFSET 187;
+//#define PWM_VALUE 700
+//#define PWM_OFFSET 250
+/** Default PWM duty cycle value */
+#define PWM_VALUE 300
+/** Default PWM offset for ADC triggering */
+#define PWM_OFFSET 187
 
 //volatile uint16_t pwm_val = 700;
 //volatile uint16_t pwm_offset = 250;
+/** Current PWM duty cycle */
 volatile uint16_t pwm_val = PWM_VALUE;
+/** Current PWM offset for ADC triggering */
 volatile uint16_t pwm_offset = PWM_OFFSET;
+/** Phase reference signal generation trigger */
 volatile int pwm_trig_led = 0;
 
 /**

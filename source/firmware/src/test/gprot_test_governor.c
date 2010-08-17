@@ -41,6 +41,9 @@
 void gprot_trigger_output(void *data);
 void gprot_register_changed(void *data, u8 addr);
 
+/**
+ * Test governor registers.
+ */
 u16 test_regs[32];
 
 /* Function implementations */

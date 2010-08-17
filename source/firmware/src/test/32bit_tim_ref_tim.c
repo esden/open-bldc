@@ -37,10 +37,10 @@
 
 #include "driver/led.h"
 
-//volatile u16 test_tim_freq = 10;
+/**
+ * Timer frequency
+ */
 volatile u16 test_tim_freq = 50000;
-volatile u16 test_tim_capture = 0;
-volatile u32 test_tim_count = 0;
 
 /**
  * @todo document
@@ -103,7 +103,6 @@ void test_tim_update(u16 freq)
 {
 	TIM_SetCompare1(TIM4, freq);
 	test_tim_freq = freq;
-	test_tim_count = 0;
 }
 
 /**

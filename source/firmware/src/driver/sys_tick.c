@@ -33,16 +33,30 @@
 
 #include "driver/led.h"
 
+/**
+ * Amount of available Sys Tick based soft timer slots.
+ *
+ * @todo move to global config header
+ */
 #define SYS_TICK_TIMER_NUM 5
 
+/**
+ * Private global sys tick counter.
+ */
 u32 sys_tick_global_counter = 0;
 
+/**
+ * Represents one Sys Tick based soft timer.
+ */
 struct sys_tick_timer {
-	sys_tick_timer_callback_t callback;
-	u32 start_time;
-	u32 delta_time;
+	sys_tick_timer_callback_t callback; /**< Callback function pointer */
+	u32 start_time; /**< Start timestamp of the timer */
+	u32 delta_time; /**< Duration of the timer */
 };
 
+/**
+ * Instances of available Sys Tick timer slots.
+ */
 struct sys_tick_timer sys_tick_timers[SYS_TICK_TIMER_NUM];
 
 /**

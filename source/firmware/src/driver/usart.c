@@ -40,6 +40,9 @@
 
 #include "led.h"
 
+/**
+ * Data buffer used for incoming and outgoing data.
+ */
 volatile s16 data_buf;
 
 /**

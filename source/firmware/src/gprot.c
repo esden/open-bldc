@@ -43,14 +43,38 @@
 #include "control_process.h"
 #include "main.h"
 
+/**
+ * Commutate once trigger flag
+ */
 #define GPROT_FLAG_PWM_COMM (1 << 0)
+/**
+ * Run commutation timer flag
+ */
 #define GPROT_FLAG_COMM_TIM (1 << 1)
+/**
+ * Run closed loop control flag
+ */
 #define GPROT_FLAG_ADC_COMM (1 << 2)
+/**
+ * Pull all phases low flag
+ */
 #define GPROT_FLAG_ALL_LO (1 << 3)
+/**
+ * Pull all phases high flag
+ */
 #define GPROT_FLAG_ALL_HI (1 << 4)
 
+/**
+ * Dummy value...
+ */
 u16 gprot_dummy_val;
+/**
+ * Flags register
+ */
 u16 gprot_flag_reg;
+/**
+ * Previous value of the flag register for detection of flag transitions.
+ */
 u16 gprot_flag_reg_old;
 
 /* Private function declarations */

@@ -36,8 +36,8 @@
 
 #include "led_fade.h"
 
-/* Gamma correction table
- * Gamma value 2.5
+/**
+ * Gamma correction table with gamma value of 2.5
  */
 static const u16 gamma_table[] = {
 	0, 0, 0, 1, 2, 4, 6, 8,
@@ -74,26 +74,38 @@ static const u16 gamma_table[] = {
 	61130, 61748, 62370, 62995, 63624, 64258, 64894, 65535
 };
 
+/**
+ * Color channel state structure
+ */
 struct color_channel {
-	u16 curr_end_reload;
-	u32 curr_val;
-	u32 next_val;
-	u16 reloads;
+	u16 curr_end_reload;	/**< @todo document */
+	u32 curr_val;		/**< @todo document */
+	u32 next_val;		/**< @todo document */
+	u16 reloads;		/**< @todo document */
 };
 
+/**
+ * Color channel instances
+ */
 struct color_channels {
-	struct color_channel o;
-	struct color_channel r;
-	struct color_channel g;
-	struct color_channel b;
+	struct color_channel o; /**< @todo document */
+	struct color_channel r; /**< @todo document */
+	struct color_channel g; /**< @todo document */
+	struct color_channel b; /**< @todo document */
 } color_channels;
 
+/** @todo document */
 u16 delay;
+/** @todo document */
 u16 cnt;
+/** @todo document */
 s16 dir;
 
+/** @todo document */
 u16 rdelay;
+/** @todo document */
 u16 rcnt;
+/** @todo document */
 s16 rdir;
 
 /**

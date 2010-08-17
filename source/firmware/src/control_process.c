@@ -34,12 +34,37 @@
 
 #include "control_process.h"
 
-/* local definitions */
+/**
+ * Default motor alignment time.
+ *
+ * @todo move to central configuration header
+ */
 #define CONTROL_PROCESS_ALIGN_TIME 200
+
+/**
+ * Default maximum delay between commutations while in coarce spinup state.
+ *
+ * @todo move to central configuration header
+ */
 #define CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP 30
+
+/**
+ * Default decrement divider for coarce spinup.
+ *
+ * @todo move to central configuration header
+ */
 #define CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV 50
+
+/**
+ * Default decrement divider for fine spinup.
+ *
+ * @todo move to central configuration header
+ */
 #define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
 
+/**
+ * Control process state machine states
+ */
 enum control_process_states {
 	cps_idle,
 	cps_aligning,
@@ -48,19 +73,21 @@ enum control_process_states {
 	cps_spinning
 };
 
-/* local variables */
+/**
+ * Internal state structure
+ */
 struct control_process {
-	enum control_process_states state;
-	int align_time;
-	int coarce_spinup_time;
-	int coarce_spinup_step;
-	bool ignite;
-	bool kill;
-	u32 bemf_crossing_counter;
-	u32 bemf_lost_crossing_counter;
+	enum control_process_states state; /**< State machine state */
+	int align_time;			   /**< Allignement timer */
+	int coarce_spinup_time;		   /**< Coarce spinup timer */
+	int coarce_spinup_step;		   /**< Current coarce spinup step */
+	bool ignite;			   /**< Ignite mode trigger */
+	bool kill;			   /**< Kill motor trigger */
+	u32 bemf_crossing_counter;	   /**< Valid BEMF crossing detection counter */
+	u32 bemf_lost_crossing_counter;    /**< Invalid BEMF crossing detection counter */
 };
 
-struct control_process control_process;
+struct control_process control_process; /**< Internal state struct instance */
 
 /* local functions */
 void control_process_reset(void);

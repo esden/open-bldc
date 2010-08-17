@@ -22,18 +22,26 @@
 #define COMM_PROCESS_FALLING FALSE
 #define COMM_PROCESS_RISING TRUE
 
+/**
+ * Comm process parameters
+ *
+ * @todo clean up documentation
+ */
 struct comm_params {
-	s16 spark_advance;
-	u16 direct_cutoff;
-	u16 direct_cutoff_slope;
-	u16 iir;
-	u16 hold_off;
+	s16 spark_advance;	 /**< advance commutation relative to calculated time */
+	u16 direct_cutoff;	 /**< distance from the last calc time that makes the new invalid */
+	u16 direct_cutoff_slope; /**< what is the control slope when outside the direct control window */
+	u16 iir;		 /**< IIR value for the commutation time */
+	u16 hold_off;		 /**< how many bemf samples after a commutation should be dropped */
 };
 
+/**
+ * Commutation control process output data
+ */
 struct comm_data {
-	bool bemf_crossing_detected;
-	u16 calculated_freq;
-	u32 in_range_counter;
+	bool bemf_crossing_detected; /**< valid BEMF crossing detected flag */
+	u16 calculated_freq;	     /**< calculated commutation frequency */
+	u32 in_range_counter;        /**< how long are we in a valid direct control window */
 };
 
 extern struct comm_params comm_params;

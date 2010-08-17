@@ -35,8 +35,21 @@
 
 #include "led.h"
 
+/**
+ * Current 32bit timer frequency 
+ */
 volatile u32 tim_freq = 1030;
+
+/**
+ * Timer got updated flag
+ */
 u32 tim_was_updated = 0;
+
+/**
+ * @todo document
+ *
+ * ???
+ */
 u32 tim_last_upd = 0;
 
 /**

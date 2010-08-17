@@ -19,6 +19,10 @@
 #ifndef __GPROT_H
 #define __GPROT_H
 
+/*@{*/
+/**
+ * Governor register address definition.
+ */
 #define GPROT_FLAG_REG_ADDR 0
 #define GPROT_PWM_OFFSET_REG_ADDR 1
 #define GPROT_PWM_VAL_REG_ADDR 2
@@ -29,6 +33,7 @@
 #define GPROT_COMM_TIM_IIR_POLE_REG_ADDR 7
 #define GPROT_ADC_GLOBAL_CURRENT_REG_ADDR 8
 #define GPROT_ADC_PHASE_VOLTAGE_REG_ADDR 9
+/*@}*/
 
 void gprot_init();
 

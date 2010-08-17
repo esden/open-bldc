@@ -19,6 +19,9 @@
 #ifndef SYS_TICK_H
 #define SYS_TICK_H
 
+/**
+ * Sys Tick based soft timer callback type
+ */
 typedef void (* sys_tick_timer_callback_t)(void);
 
 void sys_tick_init(void);

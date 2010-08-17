@@ -19,11 +19,14 @@
 #ifndef __COMM_TIM_H
 #define __COMM_TIM_H
 
+/**
+ * Commutation timer output data
+ */
 struct comm_tim_data {
-	volatile u16 last_capture_time;
-	volatile u16 curr_time;
-	volatile u16 prev_time;
-	volatile u16 freq;
+	volatile u16 last_capture_time;	/**< Timestamp of the last timer capture */
+	volatile u16 curr_time;		/**< Current commutation timestamp */
+	volatile u16 prev_time;		/**< Previous commutation timestamp */
+	volatile u16 freq;		/**< Current commutation frequency */
 };
 
 extern struct comm_tim_data comm_tim_data;

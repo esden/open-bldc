@@ -38,13 +38,30 @@
 
 #include "sensor_process.h"
 
+/**
+ * Sensor value struct instance
+ */
 struct sensors sensors;
+
+/**
+ * Sensor post processing parameters instance
+ */
 struct sensor_params sensor_params;
+
+/**
+ * Generate debug output flag
+ */
 int sensor_trigger_debug_output;
 
+/**
+ * Infinite Impulse Response filter calculation
+ */
 #define SENSOR_OFFSET_IIR(VALUE, NEW_VALUE, OFFSET, IIR) \
 	(((VALUE * IIR) + (NEW_VALUE + OFFSET)) / (IIR + 1))
 
+/**
+ * Delay counter for low priority sensor updates
+ */
 int sensor_process_low_prio_update_cnt = 0;
 
 /**

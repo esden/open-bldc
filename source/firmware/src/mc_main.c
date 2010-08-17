@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   mc_main.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:58:50 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/flash.h>
 #include <stm32/misc.h>
@@ -35,12 +45,20 @@
 
 bool demo;
 
+/**
+ * TODO
+ *
+ */
 void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
 }
 
+/**
+ * TODO
+ *
+ */
 int main(void)
 {
 	int demo_counter;

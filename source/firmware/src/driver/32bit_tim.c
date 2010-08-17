@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   32bit_tim.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:04:46 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/tim.h>
@@ -29,6 +39,10 @@ volatile u32 tim_freq = 1030;
 u32 tim_was_updated = 0;
 u32 tim_last_upd = 0;
 
+/**
+ * TODO
+ *
+ */
 void tim_init(void)
 {
 	NVIC_InitTypeDef nvic;
@@ -128,6 +142,10 @@ void tim_init(void)
 
 }
 
+/**
+ * TODO
+ *
+ */
 void tim_update(void)
 {
 	u16 curr_time_lsb = TIM_GetCounter(TIM2);
@@ -165,6 +183,10 @@ void tim_update(void)
 	}
 }
 
+/**
+ * TODO
+ *
+ */
 void tim2_irq_handler(void)
 {
 	u16 last_capture_lsb = TIM_GetCapture1(TIM2);
@@ -189,6 +211,10 @@ void tim2_irq_handler(void)
 	}
 }
 
+/**
+ * TODO
+ *
+ */
 void tim3_irq_handler(void)
 {
 

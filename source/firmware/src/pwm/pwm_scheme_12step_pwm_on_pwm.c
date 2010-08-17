@@ -16,7 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
+/**
+ * @file   pwm_scheme_12step_pwm_on_pwm.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:57:17 2010
+ *
+ * @brief  Implementation of the 12step PWM ON PWM scheme.
+ *
  * Table of the pwm scheme zone configurations:
  *
  *  | 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|
@@ -56,6 +62,10 @@
 
 #include "pwm_scheme_12step_pwm_on_pwm.h"
 
+/**
+ * TODO
+ *
+ */
 void pwm_scheme_12step_pwm_on_pwm(void)
 {
 	static int pwm_phase = 1;

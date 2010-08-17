@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   usart.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:02:15 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/usart.h>
@@ -32,6 +42,10 @@
 
 volatile s16 data_buf;
 
+/**
+ * TODO
+ *
+ */
 void usart_init(void)
 {
 	NVIC_InitTypeDef nvic;
@@ -84,16 +98,28 @@ void usart_init(void)
 	USART_Cmd(USART1, ENABLE);
 }
 
+/**
+ * TODO
+ *
+ */
 void usart_enable_send(void)
 {
 	USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 }
 
+/**
+ * TODO
+ *
+ */
 void usart_disable_send(void)
 {
 	USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
 }
 
+/**
+ * TODO
+ *
+ */
 void usart1_irq_handler(void)
 {
 

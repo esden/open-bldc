@@ -17,7 +17,15 @@
  */
 
 /*
- * Here you find the implementation of the Governor PC software protocol.
+ */
+/**
+ * @file   gprot_test_governor.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:43:25 2010
+ *
+ * @brief  Here you find the implementation of the Governor PC software protocol.
+ *
+ * TODO
  */
 
 #include <stm32/gpio.h>
@@ -36,6 +44,10 @@ void gprot_register_changed(void *data, u8 addr);
 u16 test_regs[32];
 
 /* Function implementations */
+/**
+ * TODO
+ *
+ */
 void gprot_init()
 {
 	int i;
@@ -51,6 +63,11 @@ void gprot_init()
 
 }
 
+/**
+ * TODO
+ *
+ * @param data TODO
+ */
 void gprot_trigger_output(void *data)
 {
 	data = data;
@@ -58,6 +75,12 @@ void gprot_trigger_output(void *data)
 	usart_enable_send();
 }
 
+/**
+ * TODO
+ *
+ * @param data TODO
+ * @param addr TODO
+ */
 void gprot_register_changed(void *data, u8 addr)
 {
 	data = data;

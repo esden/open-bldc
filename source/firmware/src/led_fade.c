@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   led_fade.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:59:14 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/tim.h>
@@ -86,6 +96,10 @@ u16 rdelay;
 u16 rcnt;
 s16 rdir;
 
+/**
+ * TODO
+ *
+ */
 void led_fade_init(void)
 {
 	NVIC_InitTypeDef nvic;
@@ -184,30 +198,54 @@ void led_fade_init(void)
 	led_fade_set_blue(0);
 }
 
+/**
+ * TODO
+ *
+ * @param val TODO
+ */
 void led_fade_set_orange(u8 val)
 {
 	TIM_SetCompare1(TIM3, gamma_table[val]);
 	color_channels.o.curr_val = gamma_table[val];
 }
 
+/**
+ * TODO
+ *
+ * @param val TODO
+ */
 void led_fade_set_red(u8 val)
 {
 	TIM_SetCompare2(TIM3, gamma_table[val]);
 	color_channels.r.curr_val = gamma_table[val];
 }
 
+/**
+ * TODO
+ *
+ * @param val TODO
+ */
 void led_fade_set_green(u8 val)
 {
 	TIM_SetCompare3(TIM3, gamma_table[val]);
 	color_channels.g.curr_val = gamma_table[val];
 }
 
+/**
+ * TODO
+ *
+ * @param val TODO
+ */
 void led_fade_set_blue(u8 val)
 {
 	TIM_SetCompare4(TIM3, gamma_table[val]);
 	color_channels.b.curr_val = gamma_table[val];
 }
 
+/**
+ * TODO
+ *
+ */
 void tim3_irq_handler(void)
 {
 

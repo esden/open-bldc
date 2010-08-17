@@ -16,27 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   exceptions.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:01:35 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
+
 #include "exceptions.h"
 
+/**
+ * TODO
+ *
+ */
 void nmi_exception(void)
 {
 }
 
+/**
+ * TODO
+ *
+ */
 void hard_fault_exception(void)
 {
 	while (1) ;
 }
 
+/**
+ * TODO
+ *
+ */
 void mem_manage_exception(void)
 {
 	while (1) ;
 }
 
+/**
+ * TODO
+ *
+ */
 void bus_fault_exception(void)
 {
 	while (1) ;
 }
 
+/**
+ * TODO
+ *
+ */
 void usage_fault_exception(void)
 {
 	while (1) ;

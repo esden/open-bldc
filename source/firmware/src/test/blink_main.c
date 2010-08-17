@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   blink_main.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:47:20 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/flash.h>
 #include <stm32/misc.h>
@@ -25,12 +35,21 @@
 #include "types.h"
 #include "driver/led.h"
 
+/**
+ * TODO
+ *
+ */
 void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
 }
 
+/**
+ * TODO
+ *
+ * @param delay TODO
+ */
 void my_delay(unsigned long delay)
 {
 
@@ -40,6 +59,11 @@ void my_delay(unsigned long delay)
 	}
 }
 
+/**
+ * TODO
+ *
+ * @param id TODO
+ */
 void led_on(int id)
 {
 	switch (id) {
@@ -58,6 +82,11 @@ void led_on(int id)
 	}
 }
 
+/**
+ * TODO
+ *
+ * @param id TODO
+ */
 void led_off(int id)
 {
 	switch (id) {
@@ -76,6 +105,11 @@ void led_off(int id)
 	}
 }
 
+/**
+ * TODO
+ *
+ * @return TODO
+ */
 int main(void)
 {
 	int i, j, led_id;

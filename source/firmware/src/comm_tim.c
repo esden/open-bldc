@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   comm_tim.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:05:17 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/tim.h>
@@ -36,6 +46,10 @@ bool comm_tim_trigger_comm = false;
 bool comm_tim_trigger_comm_once = false;
 bool comm_tim_trigger = false;
 
+/**
+ * TODO
+ *
+ */
 void comm_tim_init(void)
 {
 	NVIC_InitTypeDef nvic;
@@ -84,6 +98,10 @@ void comm_tim_init(void)
 	comm_tim_reset();
 }
 
+/**
+ * TODO
+ *
+ */
 void comm_tim_reset(void)
 {
 	comm_tim_trigger_comm = false;
@@ -91,6 +109,10 @@ void comm_tim_reset(void)
 	comm_tim_data.freq = 65535;
 }
 
+/**
+ * TODO
+ *
+ */
 void comm_tim_capture_time(void)
 {
 	u16 new_time = TIM_GetCounter(TIM2);
@@ -98,12 +120,20 @@ void comm_tim_capture_time(void)
 	comm_tim_data.curr_time = new_time;
 }
 
-void comm_tim_update_freq()
+/**
+ * TODO
+ *
+ */
+void comm_tim_update_freq(void)
 {
 	TIM_SetCompare1(TIM2,
 			comm_tim_data.last_capture_time + comm_tim_data.freq);
 }
 
+/**
+ * TODO
+ *
+ */
 void tim2_irq_handler(void)
 {
 

@@ -16,6 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   vector_table.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:39:14 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
 #include <cmsis/stm32.h>
 
 #include "types.h"
@@ -112,7 +121,7 @@ void (*const vector_table[]) (void) =
 	    reset_handler_stage1,	/* pc init value */
 	    nmi_exception, hard_fault_exception, mem_manage_exception, bus_fault_exception, usage_fault_exception, 0, 0, 0, 0,	/* reserved */
 	    svc_handler, debug_monitor, 0,	/* reserved */
-pend_svc,
+	    pend_svc,
 	    sys_tick_handler,
 	    wwdg_irq_handler,
 	    pvd_irq_handler,
@@ -174,7 +183,10 @@ pend_svc,
 	    dma2_channel2_irq_handler,
 	    dma2_channel3_irq_handler, dma2_channel4_5_irq_handler};
 
-/* Get's called directly after mcu reset */
+/**
+ * First setup stage, get's called directly after mcu reset
+ *
+ */
 void reset_handler_stage1(void)
 {
 	/* set stack align */
@@ -183,6 +195,10 @@ void reset_handler_stage1(void)
 	reset_handler_stage2();
 }
 
+/**
+ * TODO
+ *
+ */
 void reset_handler_stage2(void)
 {
 	unsigned long *pul_src, *pul_dest;
@@ -201,10 +217,18 @@ void reset_handler_stage2(void)
 	main();
 }
 
+/**
+ * TODO
+ *
+ */
 void null_handler(void)
 {
 }
 
+/**
+ * TODO
+ *
+ */
 void assert_param(void)
 {
 }

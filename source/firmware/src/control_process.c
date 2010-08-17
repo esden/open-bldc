@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   control_process.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:27:42 2010
+ *
+ * @brief TODO
+ *
+ * TODO
+ */
+
 #include "types.h"
 #include "comm_tim.h"
 #include "pwm/pwm.h"
@@ -56,11 +66,17 @@ struct control_process control_process;
 void control_process_reset(void);
 
 /* function implementations */
+/**
+ * TODO
+ */
 void control_process_init(void)
 {
 	control_process_reset();
 }
 
+/**
+ * TODO
+ */
 void control_process_reset(void)
 {
 	control_process.state = cps_idle;
@@ -74,6 +90,9 @@ void control_process_reset(void)
 	control_process.bemf_lost_crossing_counter = 0;
 }
 
+/**
+ * TODO
+ */
 void control_process_ignite(void)
 {
 	control_process_reset();
@@ -81,6 +100,9 @@ void control_process_ignite(void)
 	control_process.ignite = true;
 }
 
+/**
+ * TODO
+ */
 void control_process_kill(void)
 {
 	pwm_off();
@@ -91,6 +113,9 @@ void control_process_kill(void)
 	comm_process_closed_loop_off();
 }
 
+/**
+ * TODO
+ */
 void run_control_process(void)
 {
 	switch (control_process.state) {

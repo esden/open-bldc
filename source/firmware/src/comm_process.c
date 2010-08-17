@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   comm_process.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:06:02 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include "types.h"
 
 #include "driver/led.h"
@@ -36,6 +46,10 @@ struct comm_data comm_data;
 struct comm_params comm_params;
 s32 new_cycle_time;
 
+/**
+ * TODO
+ *
+ */
 void comm_process_init(void)
 {
 	comm_process_state.rising = true;
@@ -54,16 +68,30 @@ void comm_process_init(void)
 	comm_params.hold_off = 1;
 }
 
+/**
+ * TODO
+ *
+ */
 void comm_process_reset(void)
 {
 	comm_process_state.pwm_count = 0;
 }
 
+/**
+ * TODO
+ *
+ * @param rising TODO
+ */
 void comm_process_config(bool rising)
 {
 	comm_process_state.rising = rising;
 }
 
+/**
+ * TODO
+ *
+ * @param rising TODO
+ */
 void comm_process_config_and_reset(bool rising)
 {
 	comm_process_state.rising = rising;
@@ -77,16 +105,28 @@ void comm_process_config_and_reset(bool rising)
 	comm_process_state.pwm_count = 0;
 }
 
+/**
+ * TODO
+ *
+ */
 void comm_process_closed_loop_on(void)
 {
 	comm_process_state.closed_loop = true;
 }
 
+/**
+ * TODO
+ *
+ */
 void comm_process_closed_loop_off(void)
 {
 	comm_process_state.closed_loop = false;
 }
 
+/**
+ * TODO
+ *
+ */
 void comm_process_calc_next_comm(void)
 {
 	s32 old_cycle_time = comm_tim_data.freq;
@@ -124,6 +164,10 @@ void comm_process_calc_next_comm(void)
 	}
 }
 
+/**
+ * TODO
+ *
+ */
 void run_comm_process(void)
 {
 	if (comm_process_state.pwm_count < comm_params.hold_off) {

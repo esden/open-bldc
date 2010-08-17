@@ -16,6 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   rgb_fade_main.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:42:06 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
 #include <stm32/rcc.h>
 #include <stm32/flash.h>
 #include <stm32/misc.h>
@@ -26,12 +35,21 @@
 #include "driver/led.h"
 #include "led_fade.h"
 
+/**
+ * TODO
+ *
+ */
 void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
 }
 
+/**
+ * TODO
+ *
+ * @param delay TODO
+ */
 void my_delay(unsigned long delay)
 {
 
@@ -40,6 +58,10 @@ void my_delay(unsigned long delay)
 	}
 }
 
+/**
+ * TODO
+ *
+ */
 int main(void)
 {
 	int i, d, on;

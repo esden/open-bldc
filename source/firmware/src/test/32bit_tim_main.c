@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   32bit_tim_main.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:52:28 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/flash.h>
 #include <stm32/misc.h>
@@ -26,12 +36,21 @@
 #include "test/32bit_tim_ref_tim.h"
 #include "driver/32bit_tim.h"
 
+/**
+ * TODO
+ *
+ */
 void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
 }
 
+/**
+ * TODO
+ *
+ * @param delay TODO
+ */
 void my_delay(unsigned long delay)
 {
 
@@ -40,6 +59,11 @@ void my_delay(unsigned long delay)
 	}
 }
 
+/**
+ * TODO
+ *
+ * @return TODO
+ */
 int main(void)
 {
 	int dir = 1;

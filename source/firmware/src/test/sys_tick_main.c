@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   sys_tick_main.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:41:29 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/flash.h>
 #include <stm32/misc.h>
@@ -26,17 +36,29 @@
 #include "driver/led.h"
 #include "driver/sys_tick.h"
 
+/**
+ * TODO
+ *
+ */
 void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
 }
 
+/**
+ * TODO
+ *
+ */
 void sys_tick_timer_callback(void)
 {
 	LED_ORANGE_TOGGLE();
 }
 
+/**
+ * TODO
+ *
+ */
 int main(void)
 {
 	u32 timer;

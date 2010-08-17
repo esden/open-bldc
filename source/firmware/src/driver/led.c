@@ -16,9 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   led.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:03:55 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/gpio.h>
 
+/**
+ * TODO
+ *
+ */
 void led_init(void)
 {
 	GPIO_InitTypeDef gpio;

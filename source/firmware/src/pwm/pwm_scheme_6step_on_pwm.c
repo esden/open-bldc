@@ -16,7 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
+/**
+ * @file   pwm_scheme_6step_on_pwm.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:54:41 2010
+ *
+ * @brief  Implementation of the 6step ON PWM scheme.
+ *
  * Table of the pwm scheme zone configurations:
  *
  *  | 1| 2| 3| 4| 5| 6|
@@ -49,6 +55,10 @@
 
 #include "pwm_scheme_6step_on_pwm.h"
 
+/**
+ * TODO
+ *
+ */
 void pwm_scheme_6step_on_pwm(void)
 {
 	static int pwm_phase = 1;

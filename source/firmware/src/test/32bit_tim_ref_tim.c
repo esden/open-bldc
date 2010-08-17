@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   32bit_tim_ref_tim.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:48:56 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/tim.h>
@@ -32,6 +42,10 @@ volatile u16 test_tim_freq = 50000;
 volatile u16 test_tim_capture = 0;
 volatile u32 test_tim_count = 0;
 
+/**
+ * TODO
+ *
+ */
 void test_tim_init(void)
 {
 	NVIC_InitTypeDef nvic;
@@ -80,6 +94,11 @@ void test_tim_init(void)
 	TIM_Cmd(TIM4, ENABLE);
 }
 
+/**
+ * TODO
+ *
+ * @param freq TODO
+ */
 void test_tim_update(u16 freq)
 {
 	TIM_SetCompare1(TIM4, freq);
@@ -87,6 +106,10 @@ void test_tim_update(u16 freq)
 	test_tim_count = 0;
 }
 
+/**
+ * TODO
+ *
+ */
 void tim4_irq_handler(void)
 {
 

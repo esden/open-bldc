@@ -16,8 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * Here you find the implementation of the Governor PC software protocol.
+/**
+ * @file   gprot.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:00:29 2010
+ *
+ * @brief  Here you find the implementation of the Governor PC software protocol.
+ *
+ * TODO
  */
 
 #include <stm32/gpio.h>
@@ -53,6 +59,10 @@ void gprot_register_changed(void *data, u8 addr);
 void gprot_update_flags(void);
 
 /* Function implementations */
+/**
+ * TODO
+ *
+ */
 void gprot_init()
 {
 	gpc_init(gprot_trigger_output, 0, gprot_register_changed, 0);
@@ -78,12 +88,23 @@ void gprot_init()
 	gpc_setup_reg(10, (u16 *) & new_cycle_time);
 }
 
+/**
+ * TODO
+ *
+ * @param data TODO
+ */
 void gprot_trigger_output(void *data)
 {
 	data = data;
 	usart_enable_send();
 }
 
+/**
+ * TODO
+ *
+ * @param data TODO
+ * @param addr TODO
+ */
 void gprot_register_changed(void *data, u8 addr)
 {
 	data = data;
@@ -92,6 +113,10 @@ void gprot_register_changed(void *data, u8 addr)
 	}
 }
 
+/**
+ * TODO
+ *
+ */
 void gprot_update_flags(void)
 {
 	if (gprot_flag_reg & GPROT_FLAG_PWM_COMM) {

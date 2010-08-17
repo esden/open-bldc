@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   adc.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 02:04:11 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/adc.h>
@@ -38,6 +48,10 @@
 struct adc_data adc_data;
 volatile bool adc_new_data_trigger;
 
+/**
+ * TODO
+ *
+ */
 void adc_init(void)
 {
 	NVIC_InitTypeDef nvic;
@@ -119,6 +133,11 @@ void adc_init(void)
 
 }
 
+/**
+ * TODO
+ *
+ * @param channel TODO
+ */
 void adc_set(u8 channel)
 {
 
@@ -129,6 +148,10 @@ void adc_set(u8 channel)
 	ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
 }
 
+/**
+ * TODO
+ *
+ */
 void adc1_2_irq_handler(void)
 {
 	ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);

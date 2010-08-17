@@ -16,6 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file   pwm.c
+ * @author Piotr Esden-Tempski <piotr@esden.net>
+ * @date   Tue Aug 17 01:57:56 2010
+ *
+ * @brief  TODO
+ *
+ * TODO
+ */
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/tim.h>
@@ -40,6 +50,10 @@ volatile uint16_t pwm_val = PWM_VALUE;
 volatile uint16_t pwm_offset = PWM_OFFSET;
 volatile int pwm_trig_led = 0;
 
+/**
+ * TODO
+ *
+ */
 void pwm_init(void)
 {
 	NVIC_InitTypeDef nvic;
@@ -138,29 +152,49 @@ void pwm_init(void)
 	TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 
+/**
+ * TODO
+ *
+ */
 void pwm_comm(void)
 {
 	TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
 }
 
+/**
+ * TODO
+ *
+ */
 void pwm_off(void)
 {
 	pwm_set_all_off();
 	pwm_comm();
 }
 
+/**
+ * TODO
+ *
+ */
 void pwm_all_lo(void)
 {
 	pwm_set_all_low();
 	pwm_comm();
 }
 
+/**
+ * TODO
+ *
+ */
 void pwm_all_hi(void)
 {
 	pwm_set_all_high();
 	pwm_comm();
 }
 
+/**
+ * TODO
+ *
+ */
 void tim1_trg_com_irq_handler(void)
 {
 	TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
@@ -176,6 +210,10 @@ void tim1_trg_com_irq_handler(void)
 	LED_BLUE_OFF();
 }
 
+/**
+ * TODO
+ *
+ */
 void tim1_cc_irq_handler(void)
 {
 	if (TIM_GetITStatus(TIM1, TIM_IT_CC4) != RESET) {

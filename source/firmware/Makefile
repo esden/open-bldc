@@ -29,7 +29,9 @@ NAME		= open-bldc
 OOCD_INTERFACE	= flossjtag
 OOCD_TARGET	= open-bldc
 
-all:
+.PHONY: doc
+
+all: doc
 	make -w -C src all
 
 clean:
@@ -37,6 +39,10 @@ clean:
 
 flash:
 	make -w -C src flash
+
+doc:
+	@mkdir -p doc
+	@doxygen doxygen.conf
 
 %.all:
 	make -w -C src $(*).all

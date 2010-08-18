@@ -21,9 +21,8 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:41:29 2010
  *
- * @brief  @todo document
+ * @brief  Sys Tick soft timer test implementation.
  *
- * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -37,8 +36,7 @@
 #include "driver/sys_tick.h"
 
 /**
- * @todo document
- *
+ * Initialize the STM32
  */
 void system_init(void)
 {
@@ -47,8 +45,7 @@ void system_init(void)
 }
 
 /**
- * @todo document
- *
+ * Callback from the soft sys tick timer
  */
 void sys_tick_timer_callback(void)
 {
@@ -56,8 +53,7 @@ void sys_tick_timer_callback(void)
 }
 
 /**
- * @todo document
- *
+ * Sys Tick soft timer test main function
  */
 int main(void)
 {

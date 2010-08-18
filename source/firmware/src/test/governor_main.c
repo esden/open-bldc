@@ -21,9 +21,8 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:46:21 2010
  *
- * @brief  @todo document
+ * @brief  Governor protocol test implementation
  *
- * @todo document
  */
 #include <stm32/rcc.h>
 #include <stm32/flash.h>
@@ -39,8 +38,7 @@
 #include "driver/usart.h"
 
 /**
- * @todo document
- *
+ * Initialize STM32
  */
 void system_init(void)
 {
@@ -49,9 +47,11 @@ void system_init(void)
 }
 
 /**
- * @todo document
+ * Crude delay implementation.
  *
- * @param delay @todo document
+ * Burn some MCU cycles.
+ *
+ * @param delay "time" delay
  */
 void my_delay(unsigned long delay)
 {
@@ -62,8 +62,7 @@ void my_delay(unsigned long delay)
 }
 
 /**
- * @todo document
- *
+ * Governor protocol test main function
  */
 int main(void)
 {

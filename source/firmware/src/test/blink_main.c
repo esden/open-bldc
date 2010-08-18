@@ -21,9 +21,8 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:47:20 2010
  *
- * @brief  @todo document
+ * @brief  Blink test implementation
  *
- * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -36,8 +35,7 @@
 #include "driver/led.h"
 
 /**
- * @todo document
- *
+ * Initialize the STM32
  */
 void system_init(void)
 {
@@ -46,9 +44,11 @@ void system_init(void)
 }
 
 /**
- * @todo document
+ * Crude delay implementation.
  *
- * @param delay @todo document
+ * Just burn some MCU cycles
+ *
+ * @param delay "time" to wait
  */
 void my_delay(unsigned long delay)
 {
@@ -60,9 +60,9 @@ void my_delay(unsigned long delay)
 }
 
 /**
- * @todo document
+ * Turn on LED by id.
  *
- * @param id @todo document
+ * @param id LED id
  */
 void led_on(int id)
 {
@@ -83,9 +83,9 @@ void led_on(int id)
 }
 
 /**
- * @todo document
+ * Turn off LED by id
  *
- * @param id @todo document
+ * @param id LED id
  */
 void led_off(int id)
 {
@@ -106,9 +106,9 @@ void led_off(int id)
 }
 
 /**
- * @todo document
+ * Blink test main function
  *
- * @return @todo document
+ * @return Nothing really...
  */
 int main(void)
 {

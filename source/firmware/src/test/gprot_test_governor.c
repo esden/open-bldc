@@ -23,9 +23,8 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:43:25 2010
  *
- * @brief  Here you find the implementation of the Governor PC software protocol.
+ * @brief  Governor application specific implemetation used for the governor test
  *
- * @todo document
  */
 
 #include <stm32/gpio.h>
@@ -48,8 +47,7 @@ u16 test_regs[32];
 
 /* Function implementations */
 /**
- * @todo document
- *
+ * Initialize the Governor protocol subsystem.
  */
 void gprot_init()
 {
@@ -67,9 +65,11 @@ void gprot_init()
 }
 
 /**
- * @todo document
+ * Is called by libgovernor when it wants to send data out.
  *
- * @param data @todo document
+ * In our case we enable the tx interrupt of the usart driver here.
+ *
+ * @param data Passthrough data of the callback. (ignored here)
  */
 void gprot_trigger_output(void *data)
 {
@@ -79,10 +79,10 @@ void gprot_trigger_output(void *data)
 }
 
 /**
- * @todo document
+ * Callback from libgovernor indicating a change in a register.
  *
- * @param data @todo document
- * @param addr @todo document
+ * @param data Passthrough data to the callback.
+ * @param addr Address of the register that changed.
  */
 void gprot_register_changed(void *data, u8 addr)
 {

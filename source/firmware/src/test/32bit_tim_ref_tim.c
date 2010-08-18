@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:48:56 2010
  *
- * @brief  @todo document
+ * @brief  32bit timer reference timer implementation
  *
- * @todo document
+ * This is used by the 32bit timer test
  */
 
 #include <stm32/rcc.h>
@@ -43,8 +43,7 @@
 volatile u16 test_tim_freq = 50000;
 
 /**
- * @todo document
- *
+ * Initialize the test timer peripheral.
  */
 void test_tim_init(void)
 {
@@ -95,9 +94,9 @@ void test_tim_init(void)
 }
 
 /**
- * @todo document
+ * Update the test timer based on frequency.
  *
- * @param freq @todo document
+ * @param freq Frequency...
  */
 void test_tim_update(u16 freq)
 {
@@ -106,8 +105,7 @@ void test_tim_update(u16 freq)
 }
 
 /**
- * @todo document
- *
+ * Test timer irq handler.
  */
 void tim4_irq_handler(void)
 {

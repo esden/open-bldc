@@ -21,9 +21,7 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:52:28 2010
  *
- * @brief  @todo document
- *
- * @todo document
+ * @brief  32bit timer test implementation.
  */
 
 #include <stm32/rcc.h>
@@ -37,8 +35,7 @@
 #include "driver/32bit_tim.h"
 
 /**
- * @todo document
- *
+ * Initialize the STM32
  */
 void system_init(void)
 {
@@ -47,9 +44,9 @@ void system_init(void)
 }
 
 /**
- * @todo document
+ * Very crude burn MCU cycles delay.
  *
- * @param delay @todo document
+ * @param delay How long to wait.
  */
 void my_delay(unsigned long delay)
 {
@@ -60,9 +57,9 @@ void my_delay(unsigned long delay)
 }
 
 /**
- * @todo document
+ * 32bit timer main funciton
  *
- * @return @todo document
+ * @return nothing really
  */
 int main(void)
 {

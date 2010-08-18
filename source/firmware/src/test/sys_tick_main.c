@@ -35,6 +35,9 @@
 #include "driver/led.h"
 #include "driver/sys_tick.h"
 
+void sys_tick_timer_callback(int id);
+void sys_tick_timer_callback_one_shot(int id);
+
 /**
  * Initialize the STM32
  */
@@ -47,9 +50,26 @@ void system_init(void)
 /**
  * Callback from the soft sys tick timer
  */
-void sys_tick_timer_callback(void)
+void sys_tick_timer_callback(int id)
 {
-	LED_ORANGE_TOGGLE();
+	LED_RED_TOGGLE();
+	sys_tick_timer_register(sys_tick_timer_callback_one_shot, 1000);
+}
+
+/**
+ * One shot callback from the soft Sys Tick timer
+ */
+void sys_tick_timer_callback_one_shot(int id)
+{
+	static int state = 0;
+	if(state == 0){
+		sys_tick_timer_update(id, 1000);
+		state++;
+	}else{
+		sys_tick_timer_unregister(id);
+		state--;
+	}
+	LED_GREEN_TOGGLE();
 }
 
 /**
@@ -70,6 +90,6 @@ int main(void)
 		while(!sys_tick_check_timer(timer, 500)){
 			__asm("nop");
 		}
-		LED_RED_TOGGLE();
+		LED_ORANGE_TOGGLE();
 	}
 }

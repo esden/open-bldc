@@ -108,6 +108,50 @@ int sys_tick_check_timer(u32 timer, u32 time)
 }
 
 /**
+ * Register a soft timer callback.
+ *
+ * @param callback Callback function that should be called after a time elapses.
+ * @param time Delay to wait for.
+ *
+ * @return ID of the soft timer, or -1 if no slots available.
+ */
+int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time)
+{
+	int i;
+	u32 start_time = sys_tick_global_counter;
+
+	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
+		if(!sys_tick_timers[i].callback){
+			sys_tick_timers[i].callback = callback;
+			sys_tick_timers[i].start_time = start_time;
+			sys_tick_timers[i].delta_time = time;
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+/**
+ * Unregister a soft timer.
+ */
+void sys_tick_timer_unregister(int id)
+{
+	sys_tick_timers[id].callback = 0;
+	sys_tick_timers[id].start_time = 0;
+	sys_tick_timers[id].delta_time = 0;
+}
+
+/**
+ * Update the time for a soft timer.
+ */
+void sys_tick_timer_update(int id, u32 time)
+{
+	sys_tick_timers[id].start_time = sys_tick_global_counter;
+	sys_tick_timers[id].delta_time = time;
+}
+
+/**
  * Sys Tick interrupt handler.
  */
 void sys_tick_handler(void)
@@ -122,32 +166,7 @@ void sys_tick_handler(void)
 				sys_tick_timers[i].start_time,
 				sys_tick_timers[i].delta_time)) {
 			sys_tick_timers[i].start_time = sys_tick_global_counter;
-			sys_tick_timers[i].callback();
+			sys_tick_timers[i].callback(i);
 		}
 	}
-}
-
-/**
- * Register a soft timer callback.
- *
- * @param callback Callback function that should be called after a time elapses.
- * @param time Delay to wait for.
- *
- * @return ID of the soft timer.
- */
-int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time)
-{
-	int i;
-	u32 start_time = sys_tick_global_counter;
-
-	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
-		if(!sys_tick_timers[i].callback){
-			sys_tick_timers[i].callback = callback;
-			sys_tick_timers[i].start_time = start_time;
-			sys_tick_timers[i].delta_time = time;
-			return 0;
-		}
-	}
-
-	return 1;
 }

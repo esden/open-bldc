@@ -21,9 +21,8 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:02:15 2010
  *
- * @brief  @todo document
+ * @brief  USART driver implementation
  *
- * @todo document
  */
 
 #include <stm32/rcc.h>
@@ -46,8 +45,7 @@
 volatile s16 data_buf;
 
 /**
- * @todo document
- *
+ * USART driver initialization.
  */
 void usart_init(void)
 {
@@ -102,8 +100,7 @@ void usart_init(void)
 }
 
 /**
- * @todo document
- *
+ * Enable USART send interrupt.
  */
 void usart_enable_send(void)
 {
@@ -111,8 +108,7 @@ void usart_enable_send(void)
 }
 
 /**
- * @todo document
- *
+ * Disable USART send interrupt.
  */
 void usart_disable_send(void)
 {
@@ -120,8 +116,7 @@ void usart_disable_send(void)
 }
 
 /**
- * @todo document
- *
+ * USART interrupt handler.
  */
 void usart1_irq_handler(void)
 {

@@ -21,17 +21,16 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:03:55 2010
  *
- * @brief  @todo document
+ * @brief  LED driver implementation
  *
- * @todo document
+ * Implementation of LED indicator subsystem.
  */
 
 #include <stm32/rcc.h>
 #include <stm32/gpio.h>
 
 /**
- * @todo document
- *
+ * Initialize LED reletated peripherals.
  */
 void led_init(void)
 {

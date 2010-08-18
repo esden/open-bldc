@@ -21,9 +21,12 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:04:11 2010
  *
- * @brief  @todo document
+ * @brief  ADC peripheral hardware handling implementation.
  *
- * @todo document
+ * The ADC is being used for a variety of sensory inputs.
+ *
+ * @todo This code should be divided more into hardware specific and
+ * application specific code.
  */
 
 #include <stm32/rcc.h>
@@ -59,8 +62,7 @@ struct adc_data adc_data;
 volatile bool adc_new_data_trigger;
 
 /**
- * @todo document
- *
+ * Initialize the ADC peripherals and internal state of the driver
  */
 void adc_init(void)
 {
@@ -144,9 +146,9 @@ void adc_init(void)
 }
 
 /**
- * @todo document
+ * Select the adc channel to sample.
  *
- * @param channel @todo document
+ * @param channel ID of the channel to be sampled.
  */
 void adc_set(u8 channel)
 {
@@ -159,8 +161,7 @@ void adc_set(u8 channel)
 }
 
 /**
- * @todo document
- *
+ * ADC1 interrupt hander
  */
 void adc1_2_irq_handler(void)
 {

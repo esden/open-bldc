@@ -21,9 +21,10 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:02:50 2010
  *
- * @brief  @todo document
+ * @brief  Sys Tick based soft timer driver implementation
  *
- * @todo document
+ * Sys Tick is a part of the Cortex M3 core and can be used as a system timer.
+ * This implementation uses it as a coarce soft timer source.
  */
 
 #include <cmsis/stm32.h>
@@ -60,8 +61,7 @@ struct sys_tick_timer {
 struct sys_tick_timer sys_tick_timers[SYS_TICK_TIMER_NUM];
 
 /**
- * @todo document
- *
+ * Initialize Sys Tick peripheral and the soft timer slots.
  */
 void sys_tick_init(void)
 {
@@ -78,9 +78,12 @@ void sys_tick_init(void)
 }
 
 /**
- * @todo document
+ * Get a new timer.
  *
- * @return @todo document
+ * Use this if you want busy wait for some time. To detect the new time use
+ * @ref sys_tick_check_timer()
+ *
+ * @return Timer ID
  */
 u32 sys_tick_get_timer(void)
 {
@@ -88,12 +91,12 @@ u32 sys_tick_get_timer(void)
 }
 
 /**
- * @todo document
+ * Check actively if a certain time elapsed.
  *
- * @param timer @todo document
- * @param time @todo document
+ * @param timer Timer aquired using @ref sys_tick_get_timer()
+ * @param time Time delay to check against.
  *
- * @return @todo document
+ * @return 0 if the time did not elapse yet, 1 if the time elapsed.
  */
 int sys_tick_check_timer(u32 timer, u32 time)
 {
@@ -105,8 +108,7 @@ int sys_tick_check_timer(u32 timer, u32 time)
 }
 
 /**
- * @todo document
- *
+ * Sys Tick interrupt handler.
  */
 void sys_tick_handler(void)
 {
@@ -126,12 +128,12 @@ void sys_tick_handler(void)
 }
 
 /**
- * @todo document
+ * Register a soft timer callback.
  *
- * @param callback @todo document
- * @param time @todo document
+ * @param callback Callback function that should be called after a time elapses.
+ * @param time Delay to wait for.
  *
- * @return @todo document
+ * @return ID of the soft timer.
  */
 int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time)
 {

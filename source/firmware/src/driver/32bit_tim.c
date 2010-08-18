@@ -21,9 +21,15 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 02:04:46 2010
  *
- * @brief  @todo document
+ * @brief  32bit timer driver implementation
  *
- * @todo document
+ * As the STM32 does not have a 32bit timer built in it is necessary to cascade
+ * two timers to create a 32bit timer.
+ *
+ * @warning Even if it looks trivial at the first glance, it is not!  It is a
+ * huge pile of hack so be careful when you fidddle around with this code! I
+ * also never worked out all of the corner cases involved with that beast. So
+ * if you like a puzzle I will appreciate a patch from you very much! (esden)
  */
 
 #include <stm32/rcc.h>
@@ -46,15 +52,12 @@ volatile u32 tim_freq = 1030;
 u32 tim_was_updated = 0;
 
 /**
- * @todo document
- *
- * ???
+ * Last update time of the 32bit timer
  */
 u32 tim_last_upd = 0;
 
 /**
- * @todo document
- *
+ * Initialize the 32bit timer peripherals
  */
 void tim_init(void)
 {
@@ -156,8 +159,7 @@ void tim_init(void)
 }
 
 /**
- * @todo document
- *
+ * Update the time values of the 32bit timer
  */
 void tim_update(void)
 {
@@ -197,8 +199,7 @@ void tim_update(void)
 }
 
 /**
- * @todo document
- *
+ * LSB timer interrupt handler
  */
 void tim2_irq_handler(void)
 {
@@ -225,8 +226,7 @@ void tim2_irq_handler(void)
 }
 
 /**
- * @todo document
- *
+ * MSB timer interrupt handler
  */
 void tim3_irq_handler(void)
 {

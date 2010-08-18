@@ -21,9 +21,9 @@
  * @author Piotr Esden-Tempski <piotr@esden.net>
  * @date   Tue Aug 17 01:57:56 2010
  *
- * @brief  @todo document
+ * @brief  PWM subsystem global implementation
  *
- * @todo document
+ * This is the umbrella above all the PWM schemes.
  */
 
 #include <stm32/rcc.h>
@@ -56,8 +56,7 @@ volatile uint16_t pwm_offset = PWM_OFFSET;
 volatile int pwm_trig_led = 0;
 
 /**
- * @todo document
- *
+ * Initialize the three phase (6outputs) PWM peripheral and internal state.
  */
 void pwm_init(void)
 {
@@ -158,8 +157,7 @@ void pwm_init(void)
 }
 
 /**
- * @todo document
- *
+ * Trigger one commutation event.
  */
 void pwm_comm(void)
 {
@@ -167,8 +165,7 @@ void pwm_comm(void)
 }
 
 /**
- * @todo document
- *
+ * Switch off all outputs
  */
 void pwm_off(void)
 {
@@ -177,8 +174,7 @@ void pwm_off(void)
 }
 
 /**
- * @todo document
- *
+ * Switch on the low side only
  */
 void pwm_all_lo(void)
 {
@@ -187,8 +183,7 @@ void pwm_all_lo(void)
 }
 
 /**
- * @todo document
- *
+ * Switch on high side only
  */
 void pwm_all_hi(void)
 {
@@ -197,8 +192,7 @@ void pwm_all_hi(void)
 }
 
 /**
- * @todo document
- *
+ * PWM timer commutation event interrupt handler
  */
 void tim1_trg_com_irq_handler(void)
 {
@@ -216,8 +210,7 @@ void tim1_trg_com_irq_handler(void)
 }
 
 /**
- * @todo document
- *
+ * PWM timer capture compare event interrupt handler
  */
 void tim1_cc_irq_handler(void)
 {

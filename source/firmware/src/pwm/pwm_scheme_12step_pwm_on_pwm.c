@@ -64,8 +64,7 @@
 #include "pwm_scheme_12step_pwm_on_pwm.h"
 
 /**
- * @todo document
- *
+ * PWM scheme configuration function
  */
 void pwm_scheme_12step_pwm_on_pwm(void)
 {

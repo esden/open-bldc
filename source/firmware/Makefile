@@ -43,6 +43,7 @@ flash:
 doc:
 	@mkdir -p doc
 	@doxygen doxygen.conf
+	@cp ../../art/open-bldc-logo.png doc/doxy/html/
 
 %.all:
 	make -w -C src $(*).all

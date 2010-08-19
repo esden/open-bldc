@@ -20,6 +20,26 @@
 #define __CONFIG_H
 
 /**
+ * Default motor alignment time.
+ */
+#define CONTROL_PROCESS_ALIGN_TIME 200
+
+/**
+ * Default maximum delay between commutations while in coarce spinup state.
+ */
+#define CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP 30
+
+/**
+ * Default decrement divider for coarce spinup.
+ */
+#define CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV 50
+
+/**
+ * Default decrement divider for fine spinup.
+ */
+#define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
+
+/**
  * Enable and configure PWM phase reference signal generation.
  *
  * If set to value 1 - 6 or 1 - 12 depending on selected PWM scheme the

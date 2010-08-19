@@ -28,6 +28,8 @@
  * whole controller is implemented here.
  */
 
+#include "config.h"
+
 #include "types.h"
 #include "comm_tim.h"
 #include "pwm/pwm.h"
@@ -35,34 +37,6 @@
 #include "driver/led.h"
 
 #include "control_process.h"
-
-/**
- * Default motor alignment time.
- *
- * @todo move to central configuration header
- */
-#define CONTROL_PROCESS_ALIGN_TIME 200
-
-/**
- * Default maximum delay between commutations while in coarce spinup state.
- *
- * @todo move to central configuration header
- */
-#define CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP 30
-
-/**
- * Default decrement divider for coarce spinup.
- *
- * @todo move to central configuration header
- */
-#define CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV 50
-
-/**
- * Default decrement divider for fine spinup.
- *
- * @todo move to central configuration header
- */
-#define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
 
 /**
  * Control process state machine states

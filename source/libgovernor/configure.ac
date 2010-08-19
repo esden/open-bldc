@@ -17,7 +17,22 @@ dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 AC_PREREQ(2.50)
 
 AC_INIT([libgovernor], [0.1], [piotr@esden.net])
-dnl LT_INIT
+
+#===============================
+# cross compilation
+#===============================
+
+case "$host" in
+	arm-*)
+		CFLAGS="$CFLAGS -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections"
+		LDFLAGS="$LDFLAGS -T${top_builddir}../firmware/src/stm32.ld -nostartfiles"
+	;;
+esac
+
+# =============================
+# init libtool
+# =============================
+LT_INIT
 dnl AC_CONFIG_SRCDIR([src/master.c])
 AM_INIT_AUTOMAKE([libgovernor], [0.1])
 

@@ -31,7 +31,7 @@ OOCD_TARGET	= open-bldc
 
 .PHONY: doc
 
-all: doc
+all:
 	make -w -C src all
 
 clean:

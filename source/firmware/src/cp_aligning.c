@@ -40,7 +40,7 @@
 bool *control_process_aligning_trigger = &comm_tim_trigger;
 
 /**
- * Internal process variables for aligning callback. 
+ * Internal process variables for aligning callback.
  */
 struct aligning_process {
 	int align_time;			   /**< Allignement timer */

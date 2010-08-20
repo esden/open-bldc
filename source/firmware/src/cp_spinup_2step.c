@@ -48,7 +48,7 @@
 bool *control_process_spinup_trigger = &comm_tim_trigger;
 
 /**
- * Internal process states for spinup callback. 
+ * Internal process states for spinup callback.
  */
 enum spinup_state {
 	spinup_state_coarse=0,
@@ -56,7 +56,7 @@ enum spinup_state {
 };
 
 /**
- * Internal process variables for spinup callback. 
+ * Internal process variables for spinup callback.
  */
 struct spinup_process {
 	int coarse_spinup_time;		   /**< Coarce spinup timer */
@@ -65,7 +65,7 @@ struct spinup_process {
 static struct spinup_process spinup_process;
 
 /**
- *	Current internal state of the spin up process. 
+ *	Current internal state of the spin up process.
  */
 enum spinup_state spinup_state;
 
@@ -134,12 +134,14 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
  * phase.
  */
 enum control_process_cb_state
-control_process_fine_spinup_cb(struct control_process * cps) {
+control_process_fine_spinup_cb(struct control_process * cps)
+{
 	if (comm_data.bemf_crossing_detected) {
 		comm_data.bemf_crossing_detected = false;
 		cps->bemf_crossing_counter++;
 		cps->bemf_lost_crossing_counter = 0;
-	} else {
+	}
+	else {
 		cps->bemf_crossing_counter = 0;
 		cps->bemf_lost_crossing_counter++;
 	}
@@ -185,4 +187,22 @@ control_process_spinup_cb(struct control_process * cps) {
 	}
 }
 
+/**
+ * Callback function called before entering control
+ * process state cps_spinup.
+ */
+enum control_process_cb_state
+control_process_spinup_state_in_cb(struct control_process * cps) {
+	return cps_cb_continue;
+}
+
+/**
+ * Callback function called after leaving control
+ * process state cps_spinup, before entering the
+ * next control process state.
+ */
+enum control_process_cb_state
+control_process_spinup_state_out_cb(struct control_process * cps) {
+	return cps_cb_continue;
+}
 

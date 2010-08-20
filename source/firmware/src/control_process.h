@@ -42,19 +42,19 @@ enum control_process_state {
 };
 
 /**
- * Control process callback return states. 
- * By evaluating these states in the calling 
- * control process, callbacks are enabled to 
- * influence the overall control process. 
- * 
- * Return states are: 
- * - cps_cb_error: A general, fatal error. 
- * - cps_cb_continue: No changes on process flow. 
- * - cps_cb_exit_control: Control process is told 
+ * Control process callback return states.
+ * By evaluating these states in the calling
+ * control process, callbacks are enabled to
+ * influence the overall control process.
+ *
+ * Return states are:
+ * - cps_cb_error: A general, fatal error.
+ * - cps_cb_continue: No changes on process flow.
+ * - cps_cb_exit_control: Control process is told
  *   to leave closed loop control and allow to
- *   resume it later. 
- * - cps_cb_resume_control: Control process is 
- *   tols to enter closed loop control. 
+ *   resume it later.
+ * - cps_cb_resume_control: Control process is
+ *   tols to enter closed loop control.
  *
  */
 enum control_process_cb_state {
@@ -69,11 +69,11 @@ enum control_process_cb_state {
  * Internal state structure
  */
 struct control_process {
-	enum control_process_state state; /**< State machine state */
-	unsigned char ignite;			   /**< Ignite mode trigger */
-	unsigned char kill;			   /**< Kill motor trigger */
-	uint32_t bemf_crossing_counter;	   /**< Valid BEMF crossing detection counter */
-	uint32_t bemf_lost_crossing_counter;    /**< Invalid BEMF crossing detection counter */
+	enum control_process_state state;    /**< State machine state */
+	unsigned char ignite;	               /**< Ignite mode trigger */
+	unsigned char kill;                  /**< Kill motor trigger */
+	uint32_t bemf_crossing_counter;	     /**< Valid BEMF crossing detection counter */
+	uint32_t bemf_lost_crossing_counter; /**< Invalid BEMF crossing detection counter */
 };
 
 
@@ -83,6 +83,8 @@ void control_process_kill(void);
 void run_control_process(void);
 void control_process_register_cb(enum control_process_state cp_state,
 				 bool *trigger,
-				 enum control_process_cb_state (*callback_fun)(struct control_process * cps));
+				 enum control_process_cb_state (*callback_fun)(struct control_process * cps),
+				 enum control_process_cb_state (*state_in_callback_fun)(struct control_process * cps),
+				 enum control_process_cb_state (*state_out_callback_fun)(struct control_process * cps));
 
 #endif /* __CONTROL_PROCESS_H */

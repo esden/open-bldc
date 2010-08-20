@@ -47,6 +47,7 @@
 
 /* local function forward declarations */
 void control_process_reset(void);
+void control_process_handle_cb_state(enum control_process_cb_state cb_ret);
 
 /* Note: control_process_<state>_cb is defined in external
  * <state> strategy that implements <state>.h.
@@ -63,8 +64,10 @@ typedef enum control_process_cb_state (*cps_callback)(struct control_process * c
  * Control process event hook slot definition.
  */
 struct cps_event_hook {
-	bool *trigger;         /**< The trigger the callback should be called upon */
-	cps_callback callback; /**< Pointer to the callback function */
+	bool *trigger;                    /**< Trigger the callback should be called upon */
+	cps_callback callback;            /**< Pointer to the callback function */
+	cps_callback state_in_callback;   /**< Pointer to the callback function */
+	cps_callback state_out_callback;  /**< Pointer to the callback function */
 };
 
 static struct cps_event_hook control_process_cb_hook_register[cps_num_states];
@@ -93,15 +96,21 @@ static struct cps_event_hook control_process_cb_hook_register[cps_num_states];
  *
  * Example from @ref control_process_init():
  * @code
- * control_process_register_cb(cps_idle, control_process_idle_trigger, control_process_idle_cb);
+ * control_process_register_cb(cps_idle,
+ * 			       control_process_idle_trigger,
+ * 			       control_process_idle_cb);
  * @endcode
  */
 void control_process_register_cb(enum control_process_state cp_state,
 				 bool *trigger,
-				 enum control_process_cb_state (*callback_fun)(struct control_process * cps))
+				 cps_callback callback_fun,
+				 cps_callback state_in_callback_fun,
+				 cps_callback state_out_callback_fun)
 {
-	control_process_cb_hook_register[cp_state].trigger = trigger;
-	control_process_cb_hook_register[cp_state].callback = callback_fun;
+	control_process_cb_hook_register[cp_state].trigger            = trigger;
+	control_process_cb_hook_register[cp_state].callback           = callback_fun;
+	control_process_cb_hook_register[cp_state].state_in_callback  = state_in_callback_fun;
+	control_process_cb_hook_register[cp_state].state_out_callback = state_out_callback_fun;
 }
 
 /**
@@ -121,19 +130,25 @@ void control_process_init(void)
 
 	control_process_register_cb(cps_idle,
 				    control_process_idle_trigger,
-				    control_process_idle_cb);
+				    control_process_idle_cb,
+				    0, 0);
 	control_process_register_cb(cps_aligning,
 				    control_process_aligning_trigger,
-				    control_process_aligning_cb);
+				    control_process_aligning_cb,
+				    0, 0);
 	control_process_register_cb(cps_spinup,
 				    control_process_spinup_trigger,
-				    control_process_spinup_cb);
+				    control_process_spinup_cb,
+				    control_process_spinup_state_in_cb,
+				    control_process_spinup_state_out_cb);
 	control_process_register_cb(cps_spinning,
 				    control_process_spinning_trigger,
-				    control_process_spinning_cb);
+				    control_process_spinning_cb,
+				    0, 0);
 	control_process_register_cb(cps_error,
 				    control_process_error_trigger,
-				    control_process_error_cb);
+				    control_process_error_cb,
+				    0, 0);
 }
 
 /**
@@ -174,12 +189,12 @@ void control_process_ignite(void)
  */
 void control_process_kill(void)
 {
+	comm_process_closed_loop_off();
 	pwm_off();
 	comm_tim_trigger_comm      = false;
 	comm_tim_trigger_comm_once = false;
 	control_process.kill       = true;
 	control_process.state      = cps_idle;
-	comm_process_closed_loop_off();
 }
 
 /**
@@ -194,28 +209,71 @@ void control_process_kill(void)
  *
  * Exits the closed loop and kills the control process if a
  * callback function returns cps_cb_exit_control.
+ *
+ * If the control process state changes during a callback function,
+ * the last state's state_out_callback and the current state's
+ * state_in_callback function is called.
+ *
+ * Order is:
+ *
+ *   current state -> callback (sets next state)
+ *   -> run_control_process notices state transition
+ *   current state -> state out callback
+ *   next state    -> state in  callback
+ *   -> next call of run_control_process
+ *   next state    -> callback
+ *
  */
 void run_control_process(void)
 {
-	enum control_process_cb_state cb_ret = cps_error;
-
+	enum control_process_cb_state cb_ret  = cps_error;
+	enum control_process_state last_state = control_process.state;
+	
 	if (*control_process_cb_hook_register[control_process.state].trigger) {
 		*control_process_cb_hook_register[control_process.state].trigger = false;
 		cb_ret = control_process_cb_hook_register[control_process.state].callback(&control_process);
 	}
 
+	control_process_handle_cb_state(cb_ret);
+
+	if (last_state != control_process.state) {
+		// Callback changed state of control process, so
+		// if set, we call the last state's state_out_callback ...
+		if (control_process_cb_hook_register[last_state].state_out_callback) {
+			cb_ret = control_process_cb_hook_register[last_state].state_out_callback(&control_process);
+			control_process_handle_cb_state(cb_ret);
+		}
+		// ... and the next state's state_in_callback
+		if (control_process_cb_hook_register[control_process.state].state_in_callback) {
+			cb_ret = control_process_cb_hook_register[control_process.state].state_in_callback(&control_process);
+			control_process_handle_cb_state(cb_ret);
+		}
+	}
+
+}
+
+/**
+ * Internal handler for reacting on the states returned
+ * by state callback functions.
+ */
+void control_process_handle_cb_state(enum control_process_cb_state cb_ret)
+{
+	if (cb_ret == cps_cb_continue) {
+		// Everything is fine
+		return;
+	}
 	if (cb_ret < 0 || cb_ret >= cps_num_states) {
+		// Callback state is undefined
 		control_process_cb_hook_register[cps_error].callback(&control_process);
 	}
 	// Could also be implemented in error handling strategy:
 	if (cb_ret == cps_cb_exit_control) {
-		// ??? this is also called in control_process_kill()
-		comm_process_closed_loop_off(); 
+		// Callback wants process to exit closed loop
 		control_process_kill();
 	}
 	else if (cb_ret == cps_cb_resume_control) {
-		comm_process_closed_loop_on(); 
+		// Callback wants us to enter closed loop
+		comm_process_closed_loop_on();
 	}
+
 }
-
-

@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,24 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __TYPES_H
-#define __TYPES_H
+/**
+ * @file   cp_error.c
+ * @author Tobias Fuchs <twh.fuchs@gmail.com>
+ * @date   Thu Aug 19 15:59:42 2010
+ *
+ * @brief  Controller process error strategy
+ *
+ * Default control process implementation for error state. 
+ */
 
-#include <cmsis/stm32.h>
+#include "cp_error.h"
+#include "control_process.h"
 
-#define false 0
-#define true 1
+#include "types.h"
+#include "comm_tim.h"
+#include "pwm/pwm.h"
+#include "comm_process.h"
+#include "driver/led.h"
 
-typedef unsigned char bool; 
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
+enum control_process_cb_state
+control_process_error_cb(struct control_process * cps) { 
+	// TODO: Error handling for undefined 
+	// control process state here. 
+	return cps_cb_continue;
+}
 
-typedef int8_t s8;
-typedef int16_t s16;
-typedef int32_t s32;
-typedef int64_t s64;
+void cp_error_reset(void) { 
+}
 
-#endif /* __TYPES_H */

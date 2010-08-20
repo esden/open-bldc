@@ -45,7 +45,11 @@ mc.OBJECTS = \
 	gprot.o \
 	sensor_process.o \
 	comm_process.o \
-	spinup_2step.o \
+	cp_idle.o \
+	cp_aligning.o \
+	cp_spinup_2step.o \
+	cp_spinning.o \
+	cp_error.o \
 	control_process.o
 
 OBJECTS += $(mc.OBJECTS)

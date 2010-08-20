@@ -28,31 +28,34 @@
  * whole controller is implemented here.
  */
 
-#include "config.h"
 
 #include "types.h"
+#include "config.h"
+
 #include "comm_tim.h"
 #include "pwm/pwm.h"
 #include "comm_process.h"
 #include "driver/led.h"
-#include "spinup.h"
+
+#include "cp_spinup.h"
+#include "cp_idle.h"
+#include "cp_aligning.h"
+#include "cp_spinning.h"
+#include "cp_error.h"
 
 #include "control_process.h"
 
 /* local function forward declarations */
 void control_process_reset(void);
 
-/* Note: control_process_spinup_cb is defined in external 
-   spinup strategy that implements spinup.h. 
+/* Note: control_process_<state>_cb is defined in external 
+   <state> strategy that implements <state>.h. 
 */
-enum control_process_cb_state control_process_idle_cb(struct control_process * cps);
-enum control_process_cb_state control_process_aligning_cb(struct control_process * cps);
-enum control_process_cb_state control_process_spinning_cb(struct control_process * cps);
-enum control_process_cb_state control_process_error_cb(struct control_process * cps);
 
 struct control_process control_process; /**< Internal state struct instance */
 
 typedef enum control_process_cb_state (*cps_callback)(struct control_process * cps);
+
 static cps_callback control_process_cb_register[cbs_num_states];
 
 /* function implementations */
@@ -64,7 +67,7 @@ static cps_callback control_process_cb_register[cbs_num_states];
  * 		control_process_register_cb(cps_idle, control_process_idle_cb);
  *
  */
-void control_process_register_cb(enum control_process_cb_state cp_state, 
+void control_process_register_cb(enum control_process_state cp_state, 
 																 enum control_process_cb_state (*callback_fun)(struct control_process * cps))
 { 
 	control_process_cb_register[cp_state] = callback_fun; 
@@ -76,8 +79,7 @@ void control_process_register_cb(enum control_process_cb_state cp_state,
 void control_process_init(void)
 {
 	control_process_reset();
-	spinup_reset(); 
-
+	
 	control_process_register_cb(cps_idle,     control_process_idle_cb);
 	control_process_register_cb(cps_aligning, control_process_aligning_cb);
 	control_process_register_cb(cps_spinup,   control_process_spinup_cb);
@@ -90,11 +92,13 @@ void control_process_init(void)
  */
 void control_process_reset(void)
 {
-	control_process.state = cps_idle;
-	control_process.align_time = CONTROL_PROCESS_ALIGN_TIME;
-	control_process.coarce_spinup_time = 0;
-	control_process.coarce_spinup_step =
-	    CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP;
+	cp_idle_reset(); 
+	cp_spinup_reset(); 
+	cp_aligning_reset(); 
+	cp_spinning_reset(); 
+	cp_error_reset(); 
+
+	control_process.state  = cps_idle;
 	control_process.ignite = false;
 	control_process.kill   = false;
 	control_process.bemf_crossing_counter      = 0;
@@ -125,54 +129,6 @@ void control_process_kill(void)
 	control_process.kill       = true;
 	control_process.state      = cps_idle;
 	comm_process_closed_loop_off();
-}
-
-enum control_process_cb_state
-control_process_idle_cb(struct control_process * cps) { 
-	if (cps->ignite) {
-		comm_tim_trigger_comm_once = true;
-		cps->ignite = false;
-		cps->state  = cps_aligning;
-	}
-	return cps_cb_continue;
-}
-
-enum control_process_cb_state
-control_process_aligning_cb(struct control_process * cps) { 
-	if (cps->align_time == 0) {
-		cps->state = cps_spinup;
-	} else {
-		cps->align_time--;
-	}
-	return cps_cb_continue;
-}
-
-
-enum control_process_cb_state
-control_process_spinning_cb(struct control_process * cps) { 
-	if (comm_data.bemf_crossing_detected) {
-		comm_data.bemf_crossing_detected = false;
-		cps->bemf_crossing_counter++;
-		cps->bemf_lost_crossing_counter = 0;
-		LED_RED_ON();
-	} else {
-		cps->bemf_crossing_counter = 0;
-		cps->bemf_lost_crossing_counter++;
-		LED_RED_OFF();
-	}
-
-	if (cps->bemf_lost_crossing_counter > 10) {
-		comm_process_closed_loop_off();
-		control_process_kill();
-	}
-	return cps_cb_continue;
-}
-
-enum control_process_cb_state
-control_process_error_cb(struct control_process * cps) { 
-	// TODO: Error handling for undefined 
-	// control process state here. 
-	return cps_cb_continue;
 }
 
 /**

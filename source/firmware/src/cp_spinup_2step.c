@@ -17,7 +17,7 @@
  */
 
 /**
- * @file   spinup.c
+ * @file   cp_spinup.c
  * @author Tobias Fuchs <twh.fuchs@gmail.com>
  * @date   Thu Aug 19 15:59:42 2010
  *
@@ -29,52 +29,82 @@
  * coarse_spinup that are switched automatically. 
  */
 
+#include "cp_spinup.h"
+#include "control_process.h"
+
 #include "types.h"
 #include "comm_tim.h"
-#include "spinup.h"
 #include "pwm/pwm.h"
 #include "comm_process.h"
 #include "driver/led.h"
-#include "control_process.h"
+
+/**
+ * Default maximum delay between commutations while in coarce spinup state.
+ *
+ * @todo move to central configuration header
+ */
+#define CONTROL_PROCESS_COARSE_MAX_SPINUP_STEP 30
+
+/**
+ * Default decrement divider for coarce spinup.
+ *
+ * @todo move to central configuration header
+ */
+#define CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV 50
+
+/**
+ * Default decrement divider for fine spinup.
+ *
+ * @todo move to central configuration header
+ */
+#define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
 
 enum spinup_state { 
 	spinup_state_coarse=0, 
 	spinup_state_fine
 };
 
+struct spinup_process { 
+	int coarse_spinup_time;		   /**< Coarce spinup timer */
+	int coarse_spinup_step;		   /**< Current coarce spinup step */
+};
+struct spinup_process spinup_process;
+
 enum spinup_state spinup_state; 
 
 enum control_process_cb_state control_process_fine_spinup_cb(struct control_process * cps);
 enum control_process_cb_state control_process_coarse_spinup_cb(struct control_process * cps);
 
-void spinup_reset(void)
+void cp_spinup_reset(void)
 {
 	spinup_state = spinup_state_coarse; 
-// TODO	cps->coarce_spinup_time = COARSE_COUNTDOWN;
+	spinup_process.coarse_spinup_time = 0;
+	spinup_process.coarse_spinup_step =
+	    CONTROL_PROCESS_COARSE_MAX_SPINUP_STEP;
 }
 
 enum control_process_cb_state
 control_process_coarse_spinup_cb(struct control_process * cps) { 
-	if (cps->coarce_spinup_step > 0) {
-		if (cps->coarce_spinup_time == 0) {
+	if (spinup_process.coarse_spinup_step > 0) {
+		if (spinup_process.coarse_spinup_time == 0) {
 			comm_tim_trigger_comm_once = true;
 
-			cps->coarce_spinup_time = cps->coarce_spinup_step;
+			spinup_process.coarse_spinup_time = spinup_process.coarse_spinup_step;
 
-			if ((cps->coarce_spinup_step /
-					 CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV) == 0) {
-				cps->coarce_spinup_step--;
+			if ((spinup_process.coarse_spinup_step /
+					 CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV) == 0) {
+				spinup_process.coarse_spinup_step--;
 			} 
 			else {
-				cps->coarce_spinup_step =
-						cps->coarce_spinup_step -
-						(cps->coarce_spinup_step
+				spinup_process.coarse_spinup_step =
+						 spinup_process.coarse_spinup_step -
+						(spinup_process.coarse_spinup_step
 						 /
-						 CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV);
+						 CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV);
 			}
 		} 
 		else {
-			cps->coarce_spinup_time--;
+			spinup_process.coarse_spinup_time--;
 		}
 	} 
 	else {

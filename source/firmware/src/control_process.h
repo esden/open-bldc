@@ -26,37 +26,18 @@
  */
 #define CONTROL_PROCESS_ALIGN_TIME 200
 
-/**
- * Default maximum delay between commutations while in coarce spinup state.
- *
- * @todo move to central configuration header
- */
-#define CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP 30
 
-/**
- * Default decrement divider for coarce spinup.
- *
- * @todo move to central configuration header
- */
-#define CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV 50
-
-/**
- * Default decrement divider for fine spinup.
- *
- * @todo move to central configuration header
- */
-#define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
-
+#include <cmsis/stm32.h>
 
 /**
  * Control process state machine states
  */
 enum control_process_state {
-	cps_idle=0,
+	cps_error=0, 
+	cps_idle,
 	cps_aligning,
 	cps_spinup,
 	cps_spinning, 
-	cps_error, 
 	cbs_num_states, 
 };
 
@@ -73,13 +54,10 @@ enum control_process_cb_state {
  */
 struct control_process {
 	enum control_process_state state; /**< State machine state */
-	int align_time;			   /**< Allignement timer */
-	int coarce_spinup_time;		   /**< Coarce spinup timer */
-	int coarce_spinup_step;		   /**< Current coarce spinup step */
-	bool ignite;			   /**< Ignite mode trigger */
-	bool kill;			   /**< Kill motor trigger */
-	u32 bemf_crossing_counter;	   /**< Valid BEMF crossing detection counter */
-	u32 bemf_lost_crossing_counter;    /**< Invalid BEMF crossing detection counter */
+	unsigned char ignite;			   /**< Ignite mode trigger */
+	unsigned char kill;			   /**< Kill motor trigger */
+	uint32_t bemf_crossing_counter;	   /**< Valid BEMF crossing detection counter */
+	uint32_t bemf_lost_crossing_counter;    /**< Invalid BEMF crossing detection counter */
 };
 
 
@@ -87,7 +65,7 @@ void control_process_init(void);
 void control_process_ignite(void);
 void control_process_kill(void);
 void run_control_process(void);
-void control_process_register_cb(enum control_process_cb_state cp_state, 
+void control_process_register_cb(enum control_process_state cp_state, 
 																 enum control_process_cb_state (*callback_fun)(struct control_process * cps));
 
 #endif /* __CONTROL_PROCESS_H */

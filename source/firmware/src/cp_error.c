@@ -49,9 +49,17 @@ control_process_error_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
+/**
+ * Initialization of the error state callback process, 
+ * currently empty. 
+ */
 void cp_error_init(void) {
 }
 
+/**
+ * Reset function of the error state callback process, 
+ * currently empty. 
+ */
 void cp_error_reset(void) {
 }
 

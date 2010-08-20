@@ -39,6 +39,13 @@
  */
 bool *control_process_idle_trigger = &comm_tim_trigger;
 
+/**
+ * Callback function to be hooked as handler for state
+ * cps_idle in control_process.c.
+ *
+ * Watches control_process.ignite and induces transition 
+ * to control process state cps_aligning if set. 
+ */
 enum control_process_cb_state
 control_process_idle_cb(struct control_process * cps) {
 	if (cps->ignite) {
@@ -49,9 +56,17 @@ control_process_idle_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
+/**
+ * Initialization of the idle state callback process, 
+ * currently empty. 
+ */
 void cp_idle_init(void) {
 }
 
+/**
+ * Reset function of the idle state callback process, 
+ * currently empty. 
+ */
 void cp_idle_reset(void) {
 }
 

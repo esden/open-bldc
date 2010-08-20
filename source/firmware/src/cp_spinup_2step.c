@@ -27,6 +27,8 @@
  * function for control state cps_spinup.
  * Consists two (private) delegate states fine_spinup and
  * coarse_spinup that are switched automatically.
+ * This implementation is known to be disfunctional and will be
+ * replaced by a working strategy soon.
  */
 
 #include "cp_spinup.h"
@@ -64,27 +66,45 @@
  */
 bool *control_process_spinup_trigger = &comm_tim_trigger;
 
+/**
+ * Internal process states for spinup callback. 
+ */
 enum spinup_state {
 	spinup_state_coarse=0,
 	spinup_state_fine
 };
 
+/**
+ * Internal process variables for spinup callback. 
+ */
 struct spinup_process {
 	int coarse_spinup_time;		   /**< Coarce spinup timer */
 	int coarse_spinup_step;		   /**< Current coarce spinup step */
 };
 static struct spinup_process spinup_process;
 
+/**
+ *	Current internal state of the spin up process. 
+ */
 enum spinup_state spinup_state;
 
 enum control_process_cb_state control_process_fine_spinup_cb(struct control_process * cps);
 enum control_process_cb_state control_process_coarse_spinup_cb(struct control_process * cps);
 
+/**
+ * Initialization of the spinup callback process, currently
+ * redirecting to @ref cp_spinup_reset.
+ */
 void cp_spinup_init(void)
 {
 	cp_spinup_reset();
 }
 
+/**
+ * Reset function for the spinup callback process.
+ * Sets spin up state to spinup_state_coarse and resets
+ * internal countdowns.
+ */
 void cp_spinup_reset(void)
 {
 	spinup_state = spinup_state_coarse;
@@ -93,6 +113,10 @@ void cp_spinup_reset(void)
 	    CONTROL_PROCESS_COARSE_MAX_SPINUP_STEP;
 }
 
+/**
+ * Internal spinup process for the coarse spin up
+ * phase.
+ */
 enum control_process_cb_state
 control_process_coarse_spinup_cb(struct control_process * cps) {
 	if (spinup_process.coarse_spinup_step > 0) {
@@ -124,6 +148,10 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
+/**
+ * Internal spinup process for the fine spin up
+ * phase.
+ */
 enum control_process_cb_state
 control_process_fine_spinup_cb(struct control_process * cps) {
 	if (comm_data.bemf_crossing_detected) {
@@ -153,6 +181,16 @@ control_process_fine_spinup_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
+/**
+ * Callback function to be hooked as handler for state
+ * cps_spinup in control_process.c.
+ * Implements a simplicistic 2-step spin up (coarse and
+ * fine).
+ * Coarse spin up process @ref control_process_coarse_spinup_cb()
+ * induces a transition to fine spin up by setting the local
+ * state variable #spinup_state from spinup_state_coarse
+ * to spinup_state_fine.
+ */
 enum control_process_cb_state
 control_process_spinup_cb(struct control_process * cps) {
 	switch(spinup_state) {
@@ -166,3 +204,5 @@ control_process_spinup_cb(struct control_process * cps) {
 			return cps_error;
 	}
 }
+
+

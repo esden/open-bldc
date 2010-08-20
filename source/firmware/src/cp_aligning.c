@@ -39,18 +39,21 @@
  */
 bool *control_process_aligning_trigger = &comm_tim_trigger;
 
+/**
+ * Internal process variables for aligning callback. 
+ */
 struct aligning_process {
 	int align_time;			   /**< Allignement timer */
 };
 static struct aligning_process aligning_process;
 
 /**
- * Callback function to be hooked as handler for state 
- * cps_aligning in control_process.c. 
+ * Callback function to be hooked as handler for state
+ * cps_aligning in control_process.c.
  * Implements a simple countdown from CONTROL_PROCESS_ALIGN_TIME
- * to 0. 
- * Finally sets transition to control process state spinup by 
- * setting control_process.state to cps_spinup. 
+ * to 0.
+ * Finally sets transition to control process state spinup by
+ * setting control_process.state to cps_spinup.
  */
 enum control_process_cb_state
 control_process_aligning_cb(struct control_process * cps) {
@@ -62,18 +65,18 @@ control_process_aligning_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
-/** 
+/**
  * Initialization of the aligning callback process, currently
- * redirecting to @ref cp_aligning_reset. 
+ * redirecting to #cp_aligning_reset.
  */
 void cp_aligning_init(void) {
-	cp_aligning_reset(); 
+	cp_aligning_reset();
 }
 
-/** 
- * Reset function for the aligning callback process. 
- * Sets countdown to state transition back to 
- * CONTROL_PROCESS_ALIGN_TIME. 
+/**
+ * Reset function for the aligning callback process.
+ * Sets countdown to state transition back to
+ * CONTROL_PROCESS_ALIGN_TIME.
  */
 void cp_aligning_reset(void) {
 	aligning_process.align_time = CONTROL_PROCESS_ALIGN_TIME;

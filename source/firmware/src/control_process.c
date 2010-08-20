@@ -75,7 +75,7 @@ static struct cps_event_hook control_process_cb_hook_register[cps_num_states];
  * Register a callback function for given control process state.
  *
  * These are:
- * (see @ref control_process.h -> #control_process_state)
+ * (see @ref control_process.h -> control_process_state)
  *
  * - cps_error
  * - cps_idle

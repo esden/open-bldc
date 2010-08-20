@@ -56,6 +56,11 @@ struct control_process control_process; /**< Internal state struct instance */
 
 typedef enum control_process_cb_state (*cps_callback)(struct control_process * cps);
 
+struct cps_event_hook {
+	bool *trigger;
+	cps_callback callback;
+};
+
 /**	Register of callback function for control process
  *  states. These are:
  *  (see control_process.h -> control_process_state)
@@ -75,7 +80,7 @@ typedef enum control_process_cb_state (*cps_callback)(struct control_process * c
  *    control_process_register_cb(<state>, <callback fun>);
  *
  */
-static cps_callback control_process_cb_register[cps_num_states];
+static struct cps_event_hook control_process_cb_hook_register[cps_num_states];
 
 /* function implementations */
 
@@ -83,13 +88,15 @@ static cps_callback control_process_cb_register[cps_num_states];
  *  process state.
  *  Example from control_process_init():
  *
- * 		control_process_register_cb(cps_idle, control_process_idle_cb);
+ *    control_process_register_cb(cps_idle, control_process_idle_trigger, control_process_idle_cb);
  *
  */
 void control_process_register_cb(enum control_process_state cp_state,
+				 bool *trigger,
 				 enum control_process_cb_state (*callback_fun)(struct control_process * cps))
 {
-	control_process_cb_register[cp_state] = callback_fun;
+	control_process_cb_hook_register[cp_state].trigger = trigger;
+	control_process_cb_hook_register[cp_state].callback = callback_fun;
 }
 
 /**
@@ -99,11 +106,21 @@ void control_process_init(void)
 {
 	control_process_reset();
 
-	control_process_register_cb(cps_idle,     control_process_idle_cb);
-	control_process_register_cb(cps_aligning, control_process_aligning_cb);
-	control_process_register_cb(cps_spinup,   control_process_spinup_cb);
-	control_process_register_cb(cps_spinning, control_process_spinning_cb);
-	control_process_register_cb(cps_error,    control_process_error_cb);
+	control_process_register_cb(cps_idle,
+				    control_process_idle_trigger,
+				    control_process_idle_cb);
+	control_process_register_cb(cps_aligning,
+				    control_process_aligning_trigger,
+				    control_process_aligning_cb);
+	control_process_register_cb(cps_spinup,
+				    control_process_spinup_trigger,
+				    control_process_spinup_cb);
+	control_process_register_cb(cps_spinning,
+				    control_process_spinning_trigger,
+				    control_process_spinning_cb);
+	control_process_register_cb(cps_error,
+				    control_process_error_trigger,
+				    control_process_error_cb);
 }
 
 /**
@@ -160,9 +177,13 @@ void control_process_kill(void)
 void run_control_process(void)
 {
 	enum control_process_cb_state cb_ret;
-	cb_ret = control_process_cb_register[control_process.state](&control_process);
+
+	if(*control_process_cb_hook_register[control_process.state].trigger){
+		*control_process_cb_hook_register[control_process.state].trigger = false;
+		cb_ret = control_process_cb_hook_register[control_process.state].callback(&control_process);
+	}
 
 	if(cb_ret < 0 || cb_ret >= cps_num_states) {
-		control_process_cb_register[cps_error](&control_process);
+		control_process_cb_hook_register[cps_error].callback(&control_process);
 	}
 }

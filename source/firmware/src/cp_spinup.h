@@ -21,6 +21,8 @@
 
 #include "control_process.h"
 
+extern bool *control_process_spinup_trigger;
+
 void cp_spinup_reset(void);
 enum control_process_cb_state control_process_spinup_cb(struct control_process * cps);
 

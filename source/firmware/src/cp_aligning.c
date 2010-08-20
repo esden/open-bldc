@@ -34,6 +34,11 @@
 #include "pwm/pwm.h"
 #include "comm_process.h"
 
+/**
+ * Trigger source for aligning state.
+ */
+bool *control_process_aligning_trigger = &comm_tim_trigger;
+
 struct aligning_process {
 	int align_time;			   /**< Allignement timer */
 };

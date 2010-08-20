@@ -86,10 +86,8 @@ int main(void)
 			run_sensor_process();
 			run_comm_process();
 		}
-		if (comm_tim_trigger) {
-			comm_tim_trigger = false;
-			run_control_process();
-		}
+
+		run_control_process();
 
 		if (demo) {
 			if (demo_counter == 0) {

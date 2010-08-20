@@ -35,6 +35,11 @@
 #include "comm_process.h"
 #include "driver/led.h"
 
+/**
+ * Trigger source for spinning state.
+ */
+bool *control_process_spinning_trigger = &comm_tim_trigger;
+
 enum control_process_cb_state
 control_process_spinning_cb(struct control_process * cps) {
 	if (comm_data.bemf_crossing_detected) {

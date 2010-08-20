@@ -59,6 +59,11 @@
  */
 #define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
 
+/**
+ * Trigger source for spinup state.
+ */
+bool *control_process_spinup_trigger = &comm_tim_trigger;
+
 enum spinup_state {
 	spinup_state_coarse=0,
 	spinup_state_fine

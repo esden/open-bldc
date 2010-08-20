@@ -34,6 +34,11 @@
 #include "pwm/pwm.h"
 #include "comm_process.h"
 
+/**
+ * Trigger source for the idle state.
+ */
+bool *control_process_idle_trigger = &comm_tim_trigger;
+
 enum control_process_cb_state
 control_process_idle_cb(struct control_process * cps) {
 	if (cps->ignite) {

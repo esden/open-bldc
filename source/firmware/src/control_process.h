@@ -66,6 +66,7 @@ void control_process_ignite(void);
 void control_process_kill(void);
 void run_control_process(void);
 void control_process_register_cb(enum control_process_state cp_state,
-																 enum control_process_cb_state (*callback_fun)(struct control_process * cps));
+				 bool *trigger,
+				 enum control_process_cb_state (*callback_fun)(struct control_process * cps));
 
 #endif /* __CONTROL_PROCESS_H */

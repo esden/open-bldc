@@ -49,47 +49,52 @@
 void control_process_reset(void);
 
 /* Note: control_process_<state>_cb is defined in external
-   <state> strategy that implements <state>.h.
-*/
+ * <state> strategy that implements <state>.h.
+ */
 
 struct control_process control_process; /**< Internal state struct instance */
 
+/**
+ * Control process state callback function pointer definition.
+ */
 typedef enum control_process_cb_state (*cps_callback)(struct control_process * cps);
 
+/**
+ * Control process event hook slot definition.
+ */
 struct cps_event_hook {
-	bool *trigger;
-	cps_callback callback;
+	bool *trigger;         /**< The trigger the callback should be called upon */
+	cps_callback callback; /**< Pointer to the callback function */
 };
 
-/**	Register of callback function for control process
- *  states. These are:
- *  (see control_process.h -> control_process_state)
- *
- *  - cps_error
- *  - cps_idle
- *  - cpd_aligning
- *  - cps_spinup
- *  - cps_spinning
- *
- *  The number of existing process states (currently 5) is
- *  stored in cps_num_states.
- *
- *  In order to register a callback for a specific process
- *  state, use
- *
- *    control_process_register_cb(<state>, <callback fun>);
- *
- */
 static struct cps_event_hook control_process_cb_hook_register[cps_num_states];
 
 /* function implementations */
 
-/** Register a callback function for given control
- *  process state.
- *  Example from control_process_init():
+/**
+ * Register a callback function for given control process state.
  *
- *    control_process_register_cb(cps_idle, control_process_idle_trigger, control_process_idle_cb);
+ * These are:
+ * (see @ref control_process.h -> #control_process_state)
  *
+ * - cps_error
+ * - cps_idle
+ * - cpd_aligning
+ * - cps_spinup
+ * - cps_spinning
+ *
+ * The number of existing process states (currently 5) is stored in
+ * cps_num_states.
+ *
+ * In order to register a callback for a specific process state, use
+ * @code
+ * control_process_register_cb(<state>, <callback fun>);
+ * @endcode
+ *
+ * Example from @ref control_process_init():
+ * @code
+ * control_process_register_cb(cps_idle, control_process_idle_trigger, control_process_idle_cb);
+ * @endcode
  */
 void control_process_register_cb(enum control_process_state cp_state,
 				 bool *trigger,

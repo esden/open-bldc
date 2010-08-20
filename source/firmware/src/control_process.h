@@ -41,6 +41,9 @@ enum control_process_state {
 	cps_num_states,
 };
 
+/**
+ * Control process callback return states
+ */
 enum control_process_cb_state {
 	cps_cb_error=0,
 	cps_cb_continue,

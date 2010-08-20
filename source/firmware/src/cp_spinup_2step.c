@@ -17,7 +17,7 @@
  */
 
 /**
- * @file   cp_spinup.c
+ * @file   cp_spinup_2step.c
  * @author Tobias Fuchs <twh.fuchs@gmail.com>
  * @date   Thu Aug 19 15:59:42 2010
  *
@@ -109,7 +109,7 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 	}
 	else {
 		comm_tim_trigger_comm = true;
-		cps->state = cps_spinup;
+		spinup_state  = spinup_state_fine; 
 	}
 	return cps_cb_continue;
 }
@@ -130,7 +130,7 @@ control_process_fine_spinup_cb(struct control_process * cps) {
 			(comm_data.in_range_counter > 2)) {
 		comm_process_closed_loop_on();
 		cps->state = cps_spinning;
-		LED_RED_ON();
+		LED_RED_ON(); 
 		return cps_cb_break;
 	}
 

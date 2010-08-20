@@ -49,5 +49,9 @@ control_process_idle_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
+void cp_idle_init(void) {
+}
+
 void cp_idle_reset(void) {
 }
+

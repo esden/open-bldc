@@ -80,6 +80,11 @@ enum spinup_state spinup_state;
 enum control_process_cb_state control_process_fine_spinup_cb(struct control_process * cps);
 enum control_process_cb_state control_process_coarse_spinup_cb(struct control_process * cps);
 
+void cp_spinup_init(void)
+{
+	cp_spinup_reset();
+}
+
 void cp_spinup_reset(void)
 {
 	spinup_state = spinup_state_coarse;
@@ -114,7 +119,7 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 	}
 	else {
 		comm_tim_trigger_comm = true;
-		spinup_state  = spinup_state_fine; 
+		spinup_state  = spinup_state_fine;
 	}
 	return cps_cb_continue;
 }
@@ -135,7 +140,7 @@ control_process_fine_spinup_cb(struct control_process * cps) {
 			(comm_data.in_range_counter > 2)) {
 		comm_process_closed_loop_on();
 		cps->state = cps_spinning;
-		LED_RED_ON(); 
+		LED_RED_ON();
 		return cps_cb_break;
 	}
 

@@ -40,6 +40,13 @@
  */
 bool *control_process_spinning_trigger = &comm_tim_trigger;
 
+/** Callback function to be hooked as handler for state
+ * cps_spinning in control_process.c.
+ * Implements watch process on BEMF signals. If it
+ * fails to detect a crossing 10 times in a row, it
+ * returns cps_cb_exit_control, thus telling the calling
+ * control process to exit the closed loop.
+ */
 enum control_process_cb_state
 control_process_spinning_cb(struct control_process * cps) {
 	if (comm_data.bemf_crossing_detected) {
@@ -54,11 +61,22 @@ control_process_spinning_cb(struct control_process * cps) {
 	}
 
 	if (cps->bemf_lost_crossing_counter > 10) {
-		comm_process_closed_loop_off();
-		control_process_kill();
+		return cps_cb_exit_control;
 	}
 	return cps_cb_continue;
 }
 
+/**
+ * Initialization of the aligning callback process, currently
+ * empty.
+ */
+void cp_spinning_init(void) {
+	cp_spinning_reset();
+}
+
+/**
+ * Reset function for the aligning callback process.
+ * Currently empty.
+ */
 void cp_spinning_reset(void) {
 }

@@ -47,7 +47,7 @@ enum control_process_state {
 enum control_process_cb_state {
 	cps_cb_error=0,
 	cps_cb_continue,
-	cps_cb_break,
+	cps_cb_exit_control,
 	cps_cb_finished,
 	cps_cb_num_states
 };

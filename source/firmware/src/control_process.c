@@ -106,10 +106,18 @@ void control_process_register_cb(enum control_process_state cp_state,
 
 /**
  * Initialize internal state of the control process
+ * Also calls callback init functions for every
+ * process state.
  */
 void control_process_init(void)
 {
 	control_process_reset();
+
+	cp_idle_init();
+	cp_spinup_init();
+	cp_aligning_init();
+	cp_spinning_init();
+	cp_error_init();
 
 	control_process_register_cb(cps_idle,
 				    control_process_idle_trigger,
@@ -178,17 +186,32 @@ void control_process_kill(void)
  * Main periodic control process body.
  *
  * It implements the main state machine of the motor controller.
+ *
+ * Calls registered callback functions according to the current
+ * state of the control process.
+ * If a callback function returns an invalid code, the callback
+ * function for state cps_error is called.
+ *
+ * Exits the closed loop and kills the control process if a
+ * callback function returns cps_cb_exit_control.
  */
 void run_control_process(void)
 {
 	enum control_process_cb_state cb_ret = cps_error;
 
-	if(*control_process_cb_hook_register[control_process.state].trigger){
+	if (*control_process_cb_hook_register[control_process.state].trigger) {
 		*control_process_cb_hook_register[control_process.state].trigger = false;
 		cb_ret = control_process_cb_hook_register[control_process.state].callback(&control_process);
 	}
 
-	if(cb_ret < 0 || cb_ret >= cps_num_states) {
+	if (cb_ret < 0 || cb_ret >= cps_num_states) {
 		control_process_cb_hook_register[cps_error].callback(&control_process);
 	}
+	// Could also be implemented in error handling strategy:
+	if (cb_ret == cps_cb_exit_control) {
+		comm_process_closed_loop_off();
+		control_process_kill();
+	}
 }
+
+

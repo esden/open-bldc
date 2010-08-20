@@ -44,6 +44,14 @@ struct aligning_process {
 };
 static struct aligning_process aligning_process;
 
+/**
+ * Callback function to be hooked as handler for state 
+ * cps_aligning in control_process.c. 
+ * Implements a simple countdown from CONTROL_PROCESS_ALIGN_TIME
+ * to 0. 
+ * Finally sets transition to control process state spinup by 
+ * setting control_process.state to cps_spinup. 
+ */
 enum control_process_cb_state
 control_process_aligning_cb(struct control_process * cps) {
 	if (aligning_process.align_time == 0) {
@@ -54,6 +62,21 @@ control_process_aligning_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
+/** 
+ * Initialization of the aligning callback process, currently
+ * redirecting to @ref cp_aligning_reset. 
+ */
+void cp_aligning_init(void) {
+	cp_aligning_reset(); 
+}
+
+/** 
+ * Reset function for the aligning callback process. 
+ * Sets countdown to state transition back to 
+ * CONTROL_PROCESS_ALIGN_TIME. 
+ */
 void cp_aligning_reset(void) {
 	aligning_process.align_time = CONTROL_PROCESS_ALIGN_TIME;
 }
+
+

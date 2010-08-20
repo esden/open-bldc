@@ -81,6 +81,7 @@ int main(void)
 	demo = false;
 
 	while (1) {
+		LED_GREEN_OFF(); 
 		if (adc_new_data_trigger) {
 			adc_new_data_trigger = false;
 			run_sensor_process();
@@ -88,6 +89,11 @@ int main(void)
 		}
 
 		run_control_process();
+		if (comm_tim_trigger) {
+			LED_GREEN_ON(); 
+			comm_tim_trigger = false;
+			run_control_process();
+		}
 
 		if (demo) {
 			if (demo_counter == 0) {
@@ -96,7 +102,7 @@ int main(void)
 				if (pwm_val > 2000) {
 					demo_dir = -1;
 				}
-
+				
 				if (pwm_val < 500) {
 					demo_dir = 1;
 				}

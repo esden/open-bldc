@@ -23,6 +23,7 @@
 
 extern bool *control_process_spinning_trigger;
 
+void cp_spinning_init(void);
 void cp_spinning_reset(void);
 enum control_process_cb_state control_process_spinning_cb(struct control_process * cps);
 

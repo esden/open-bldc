@@ -50,10 +50,15 @@ control_process_error_cb(struct control_process * cps) {
 }
 
 /**
- * Initialization of the error state callback process, 
- * currently empty. 
+ * Initialization of the error callback process.
+ * Registers control_process_error_cb as handler for
+ * control process state cps_error.
  */
 void cp_error_init(void) {
+	control_process_register_cb(cps_error,
+				    control_process_error_trigger,
+				    control_process_error_cb,
+				    0, 0);
 }
 
 /**

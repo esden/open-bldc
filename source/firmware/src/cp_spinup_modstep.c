@@ -69,6 +69,11 @@ static struct spinup_process spinup_process;
 void cp_spinup_init(void)
 {
 	cp_spinup_reset();
+	control_process_register_cb(cps_spinup,
+				    control_process_spinup_trigger,
+				    control_process_spinup_cb,
+				    control_process_spinup_state_in_cb,
+				    control_process_spinup_state_out_cb);
 }
 
 /**

@@ -73,12 +73,18 @@ enum control_process_cb_state control_process_fine_spinup_cb(struct control_proc
 enum control_process_cb_state control_process_coarse_spinup_cb(struct control_process * cps);
 
 /**
- * Initialization of the spinup callback process, currently
- * redirecting to @ref cp_spinup_reset.
+ * Initialization of the spin up callback process.
+ * Calls cp_spinup_reset and registers control_process_spinup_cb
+ * as handler for control process state cps_spinup.
  */
 void cp_spinup_init(void)
 {
 	cp_spinup_reset();
+	control_process_register_cb(cps_spinup,
+				    control_process_spinup_trigger,
+				    control_process_spinup_cb,
+				    control_process_spinup_state_in_cb,
+				    control_process_spinup_state_out_cb);
 }
 
 /**

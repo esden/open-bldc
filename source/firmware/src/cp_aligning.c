@@ -72,11 +72,16 @@ control_process_aligning_cb(struct control_process * cps) {
 }
 
 /**
- * Initialization of the aligning callback process, currently
- * redirecting to #cp_aligning_reset.
+ * Initialization of the aligning callback process.
+ * Calls cp_aligning_reset and registers control_process_aligning_cb
+ * as handler for control process state cps_aligning.
  */
 void cp_aligning_init(void) {
 	cp_aligning_reset();
+	control_process_register_cb(cps_aligning,
+				    control_process_aligning_trigger,
+				    control_process_aligning_cb,
+				    0, 0);
 }
 
 /**

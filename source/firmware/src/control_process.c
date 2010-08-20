@@ -127,28 +127,6 @@ void control_process_init(void)
 	cp_aligning_init();
 	cp_spinning_init();
 	cp_error_init();
-
-	control_process_register_cb(cps_idle,
-				    control_process_idle_trigger,
-				    control_process_idle_cb,
-				    0, 0);
-	control_process_register_cb(cps_aligning,
-				    control_process_aligning_trigger,
-				    control_process_aligning_cb,
-				    0, 0);
-	control_process_register_cb(cps_spinup,
-				    control_process_spinup_trigger,
-				    control_process_spinup_cb,
-				    control_process_spinup_state_in_cb,
-				    control_process_spinup_state_out_cb);
-	control_process_register_cb(cps_spinning,
-				    control_process_spinning_trigger,
-				    control_process_spinning_cb,
-				    0, 0);
-	control_process_register_cb(cps_error,
-				    control_process_error_trigger,
-				    control_process_error_cb,
-				    0, 0);
 }
 
 /**

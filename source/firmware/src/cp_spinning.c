@@ -67,11 +67,16 @@ control_process_spinning_cb(struct control_process * cps) {
 }
 
 /**
- * Initialization of the aligning callback process, currently
- * empty.
+ * Initialization of the spinning callback process.
+ * Calls cp_spinning_reset and registers control_process_spinning_cb
+ * as handler for control process state cps_spinning.
  */
 void cp_spinning_init(void) {
 	cp_spinning_reset();
+	control_process_register_cb(cps_spinning,
+				    control_process_spinning_trigger,
+				    control_process_spinning_cb,
+				    0, 0);
 }
 
 /**

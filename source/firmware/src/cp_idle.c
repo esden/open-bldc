@@ -57,10 +57,15 @@ control_process_idle_cb(struct control_process * cps) {
 }
 
 /**
- * Initialization of the idle state callback process,
- * currently empty.
+ * Initialization of the idle callback process.
+ * Registers control_process_spinning_cb as handler for
+ * control process state cps_idle.
  */
 void cp_idle_init(void) {
+	control_process_register_cb(cps_idle,
+				    control_process_idle_trigger,
+				    control_process_idle_cb,
+				    0, 0);
 }
 
 /**

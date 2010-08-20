@@ -91,7 +91,7 @@ void cp_spinup_reset(void)
 	spinup_state = spinup_state_coarse;
 	spinup_process.coarse_spinup_time = 0;
 	spinup_process.coarse_spinup_step =
-	    CONTROL_PROCESS_COARSE_MAX_SPINUP_STEP;
+		CP_STS_COARSE_MAX_STEP;
 }
 
 /**
@@ -107,7 +107,7 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 			spinup_process.coarse_spinup_time = spinup_process.coarse_spinup_step;
 
 			if ((spinup_process.coarse_spinup_step /
-					 CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV) == 0) {
+					 CP_STS_COARSE_DEC_DIV) == 0) {
 				spinup_process.coarse_spinup_step--;
 			}
 			else {
@@ -115,7 +115,7 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 						 spinup_process.coarse_spinup_step -
 						(spinup_process.coarse_spinup_step
 						 /
-						 CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV);
+						 CP_STS_COARSE_DEC_DIV);
 			}
 		}
 		else {
@@ -156,7 +156,7 @@ control_process_fine_spinup_cb(struct control_process * cps)
 
 	comm_tim_data.freq =
 			comm_tim_data.freq -
-			(comm_tim_data.freq / CONTROL_PROCESS_SPINUP_DEC_DIV);
+			(comm_tim_data.freq / CP_STS_FINE_DEC_DIV);
 	if (comm_tim_data.freq < 10000) {
 		return cps_cb_exit_control;
 	}

@@ -20,26 +20,6 @@
 #define __CONFIG_H
 
 /**
- * Default motor alignment time.
- */
-#define CONTROL_PROCESS_ALIGN_TIME 200
-
-/**
- * Default maximum delay between commutations while in coarse spinup state.
- */
-#define CONTROL_PROCESS_COARSE_MAX_SPINUP_STEP 30
-
-/**
- * Default decrement divider for coarse spinup.
- */
-#define CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV 50
-
-/**
- * Default decrement divider for fine spinup.
- */
-#define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
-
-/**
  * Enable and configure PWM phase reference signal generation.
  *
  * If set to value 1 - 6 or 1 - 12 depending on selected PWM scheme the
@@ -61,5 +41,45 @@
  * - pwm_scheme_12step_pwm_on_pwm
  */
 #define PWM_SCHEME pwm_scheme_6step_h_pwm_l_on
+
+/*============================================================================
+ * Control process configuration
+ *============================================================================*/
+
+/*----------------------------------------------------------------------------
+ * Alignment configuration
+ *----------------------------------------------------------------------------*/
+/**
+ * Enable motor alignment
+ */
+#define CP_ALIGN_ENABLE 1
+
+/**
+ * Default motor alignment time.
+ */
+#define CP_ALIGN_TIME 200
+
+/**
+ * Default motor alignement power.
+ */
+#define CP_ALIGN_POWER 300
+
+/*----------------------------------------------------------------------------
+ * Spinup two step configuration
+ *----------------------------------------------------------------------------*/
+/**
+ * Default maximum delay between commutations while in coarse spinup state.
+ */
+#define CP_STS_COARSE_MAX_STEP 30
+
+/**
+ * Default decrement divider for coarse spinup.
+ */
+#define CP_STS_COARSE_DEC_DIV 50
+
+/**
+ * Default decrement divider for fine spinup.
+ */
+#define CP_STS_FINE_DEC_DIV 60000
 
 #endif /* __CONFIG_H */

@@ -25,14 +25,14 @@
 #define CONTROL_PROCESS_ALIGN_TIME 200
 
 /**
- * Default maximum delay between commutations while in coarce spinup state.
+ * Default maximum delay between commutations while in coarse spinup state.
  */
-#define CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP 30
+#define CONTROL_PROCESS_COARSE_MAX_SPINUP_STEP 30
 
 /**
- * Default decrement divider for coarce spinup.
+ * Default decrement divider for coarse spinup.
  */
-#define CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV 50
+#define CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV 50
 
 /**
  * Default decrement divider for fine spinup.

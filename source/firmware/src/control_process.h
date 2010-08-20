@@ -38,7 +38,7 @@ enum control_process_state {
 	cps_aligning,
 	cps_spinup,
 	cps_spinning,
-	cbs_num_states,
+	cps_num_states,
 };
 
 enum control_process_cb_state {
@@ -46,7 +46,7 @@ enum control_process_cb_state {
 	cps_cb_continue,
 	cps_cb_break,
 	cps_cb_finished,
-	cbs_cb_num_states
+	cps_cb_num_states
 };
 
 /**

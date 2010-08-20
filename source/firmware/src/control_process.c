@@ -75,7 +75,7 @@ typedef enum control_process_cb_state (*cps_callback)(struct control_process * c
  *    control_process_register_cb(<state>, <callback fun>);
  *
  */
-static cps_callback control_process_cb_register[cbs_num_states];
+static cps_callback control_process_cb_register[cps_num_states];
 
 /* function implementations */
 
@@ -162,7 +162,7 @@ void run_control_process(void)
 	enum control_process_cb_state cb_ret;
 	cb_ret = control_process_cb_register[control_process.state](&control_process);
 
-	if(cb_ret < 0 || cb_ret >= cbs_num_states) {
+	if(cb_ret < 0 || cb_ret >= cps_num_states) {
 		control_process_cb_register[cps_error](&control_process);
 	}
 }

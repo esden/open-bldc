@@ -176,7 +176,7 @@ void control_process_kill(void)
  */
 void run_control_process(void)
 {
-	enum control_process_cb_state cb_ret;
+	enum control_process_cb_state cb_ret = cps_error;
 
 	if(*control_process_cb_hook_register[control_process.state].trigger){
 		*control_process_cb_hook_register[control_process.state].trigger = false;

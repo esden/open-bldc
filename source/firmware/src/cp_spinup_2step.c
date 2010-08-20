@@ -141,7 +141,7 @@ control_process_fine_spinup_cb(struct control_process * cps) {
 		comm_process_closed_loop_on();
 		cps->state = cps_spinning;
 		LED_RED_ON();
-		return cps_cb_break;
+		return cps_cb_continue;
 	}
 
 	comm_tim_data.freq =

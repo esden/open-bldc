@@ -87,7 +87,7 @@ static cps_callback control_process_cb_register[cbs_num_states];
  *
  */
 void control_process_register_cb(enum control_process_state cp_state,
-																 enum control_process_cb_state (*callback_fun)(struct control_process * cps))
+				 enum control_process_cb_state (*callback_fun)(struct control_process * cps))
 {
 	control_process_cb_register[cp_state] = callback_fun;
 }

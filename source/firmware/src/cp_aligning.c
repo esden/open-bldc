@@ -37,7 +37,7 @@
 struct aligning_process { 
 	int align_time;			   /**< Allignement timer */
 };
-struct aligning_process aligning_process; 
+static struct aligning_process aligning_process; 
 
 enum control_process_cb_state
 control_process_aligning_cb(struct control_process * cps) { 

@@ -68,7 +68,7 @@ struct spinup_process {
 	int coarse_spinup_time;		   /**< Coarce spinup timer */
 	int coarse_spinup_step;		   /**< Current coarce spinup step */
 };
-struct spinup_process spinup_process;
+static struct spinup_process spinup_process;
 
 enum spinup_state spinup_state; 
 

@@ -56,6 +56,25 @@ struct control_process control_process; /**< Internal state struct instance */
 
 typedef enum control_process_cb_state (*cps_callback)(struct control_process * cps);
 
+/**	Register of callback function for control process
+ *  states. These are:
+ *  (see control_process.h -> control_process_state)
+ *
+ *  - cps_error 
+ *  - cps_idle
+ *  - cpd_aligning
+ *  - cps_spinup
+ *  - cps_spinning
+ *
+ *  The number of existing process states (currently 5) is 
+ *  stored in cps_num_states. 
+ *
+ *  In order to register a callback for a specific process 
+ *  state, use 
+ *
+ *    control_process_register_cb(<state>, <callback fun>);
+ *
+ */
 static cps_callback control_process_cb_register[cbs_num_states];
 
 /* function implementations */
@@ -88,7 +107,9 @@ void control_process_init(void)
 }
 
 /**
- * Reset the internal state of the control process
+ * Reset the internal state of the control process. 
+ * Also calls callback reset functions for every 
+ * process state. 
  */
 void control_process_reset(void)
 {
@@ -141,7 +162,7 @@ void run_control_process(void)
 	enum control_process_cb_state cb_ret; 
 	cb_ret = control_process_cb_register[control_process.state](&control_process); 
 	
-	if(cb_ret < 0 && cb_ret >= cbs_num_states) { 
+	if(cb_ret < 0 || cb_ret >= cbs_num_states) { 
 		control_process_cb_register[cps_error](&control_process);
 	}
 }

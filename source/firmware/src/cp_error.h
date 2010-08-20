@@ -21,7 +21,7 @@
 
 #include "control_process.h"
 
-void cp_error_reset(void); 
+void cp_error_reset(void);
 enum control_process_cb_state control_process_error_cb(struct control_process * cps);
 
 #endif /* __CP_ERROR_H */

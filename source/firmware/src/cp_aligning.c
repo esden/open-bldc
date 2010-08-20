@@ -23,7 +23,7 @@
  *
  * @brief  Control process aligning strategy
  *
- * Default control process implementation for aligning state. 
+ * Default control process implementation for aligning state.
  */
 
 #include "cp_aligning.h"
@@ -34,13 +34,13 @@
 #include "pwm/pwm.h"
 #include "comm_process.h"
 
-struct aligning_process { 
+struct aligning_process {
 	int align_time;			   /**< Allignement timer */
 };
-static struct aligning_process aligning_process; 
+static struct aligning_process aligning_process;
 
 enum control_process_cb_state
-control_process_aligning_cb(struct control_process * cps) { 
+control_process_aligning_cb(struct control_process * cps) {
 	if (aligning_process.align_time == 0) {
 		cps->state = cps_spinup;
 	} else {
@@ -49,8 +49,6 @@ control_process_aligning_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
-void cp_aligning_reset(void) { 
+void cp_aligning_reset(void) {
 	aligning_process.align_time = CONTROL_PROCESS_ALIGN_TIME;
 }
-
-

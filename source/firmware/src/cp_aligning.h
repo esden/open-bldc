@@ -21,7 +21,7 @@
 
 #include "control_process.h"
 
-void cp_aligning_reset(void); 
+void cp_aligning_reset(void);
 enum control_process_cb_state control_process_aligning_cb(struct control_process * cps);
 
 #endif /* __CP_ALIGNING_H */

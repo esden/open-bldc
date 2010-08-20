@@ -23,7 +23,7 @@
  *
  * @brief  Controller process spinning strategy
  *
- * Default control process implementation for spinning state. 
+ * Default control process implementation for spinning state.
  */
 
 #include "cp_spinning.h"
@@ -36,7 +36,7 @@
 #include "driver/led.h"
 
 enum control_process_cb_state
-control_process_spinning_cb(struct control_process * cps) { 
+control_process_spinning_cb(struct control_process * cps) {
 	if (comm_data.bemf_crossing_detected) {
 		comm_data.bemf_crossing_detected = false;
 		cps->bemf_crossing_counter++;
@@ -55,6 +55,5 @@ control_process_spinning_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
-void cp_spinning_reset(void) { 
+void cp_spinning_reset(void) {
 }
-

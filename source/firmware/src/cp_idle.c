@@ -23,7 +23,7 @@
  *
  * @brief  Controller process idle strategy
  *
- * Default control process implementation for idle state. 
+ * Default control process implementation for idle state.
  */
 
 #include "cp_idle.h"
@@ -35,7 +35,7 @@
 #include "comm_process.h"
 
 enum control_process_cb_state
-control_process_idle_cb(struct control_process * cps) { 
+control_process_idle_cb(struct control_process * cps) {
 	if (cps->ignite) {
 		comm_tim_trigger_comm_once = true;
 		cps->ignite = false;
@@ -44,6 +44,5 @@ control_process_idle_cb(struct control_process * cps) {
 	return cps_cb_continue;
 }
 
-void cp_idle_reset(void) { 
+void cp_idle_reset(void) {
 }
-

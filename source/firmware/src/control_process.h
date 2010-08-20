@@ -33,19 +33,19 @@
  * Control process state machine states
  */
 enum control_process_state {
-	cps_error=0, 
+	cps_error=0,
 	cps_idle,
 	cps_aligning,
 	cps_spinup,
-	cps_spinning, 
-	cbs_num_states, 
+	cps_spinning,
+	cbs_num_states,
 };
 
-enum control_process_cb_state { 
-	cps_cb_error=0, 
-	cps_cb_continue, 
-	cps_cb_break, 
-	cps_cb_finished, 
+enum control_process_cb_state {
+	cps_cb_error=0,
+	cps_cb_continue,
+	cps_cb_break,
+	cps_cb_finished,
 	cbs_cb_num_states
 };
 
@@ -65,7 +65,7 @@ void control_process_init(void);
 void control_process_ignite(void);
 void control_process_kill(void);
 void run_control_process(void);
-void control_process_register_cb(enum control_process_state cp_state, 
+void control_process_register_cb(enum control_process_state cp_state,
 																 enum control_process_cb_state (*callback_fun)(struct control_process * cps));
 
 #endif /* __CONTROL_PROCESS_H */

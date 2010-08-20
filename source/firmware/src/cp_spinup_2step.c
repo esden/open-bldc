@@ -23,10 +23,10 @@
  *
  * @brief  Two-step spin up strategy
  *
- * Two-Step spin up strategy providing a control process callback 
- * function for control state cps_spinup. 
- * Consists two (private) delegate states fine_spinup and 
- * coarse_spinup that are switched automatically. 
+ * Two-Step spin up strategy providing a control process callback
+ * function for control state cps_spinup.
+ * Consists two (private) delegate states fine_spinup and
+ * coarse_spinup that are switched automatically.
  */
 
 #include "cp_spinup.h"
@@ -59,32 +59,32 @@
  */
 #define CONTROL_PROCESS_SPINUP_DEC_DIV 60000
 
-enum spinup_state { 
-	spinup_state_coarse=0, 
+enum spinup_state {
+	spinup_state_coarse=0,
 	spinup_state_fine
 };
 
-struct spinup_process { 
+struct spinup_process {
 	int coarse_spinup_time;		   /**< Coarce spinup timer */
 	int coarse_spinup_step;		   /**< Current coarce spinup step */
 };
 static struct spinup_process spinup_process;
 
-enum spinup_state spinup_state; 
+enum spinup_state spinup_state;
 
 enum control_process_cb_state control_process_fine_spinup_cb(struct control_process * cps);
 enum control_process_cb_state control_process_coarse_spinup_cb(struct control_process * cps);
 
 void cp_spinup_reset(void)
 {
-	spinup_state = spinup_state_coarse; 
+	spinup_state = spinup_state_coarse;
 	spinup_process.coarse_spinup_time = 0;
 	spinup_process.coarse_spinup_step =
 	    CONTROL_PROCESS_COARSE_MAX_SPINUP_STEP;
 }
 
 enum control_process_cb_state
-control_process_coarse_spinup_cb(struct control_process * cps) { 
+control_process_coarse_spinup_cb(struct control_process * cps) {
 	if (spinup_process.coarse_spinup_step > 0) {
 		if (spinup_process.coarse_spinup_time == 0) {
 			comm_tim_trigger_comm_once = true;
@@ -94,7 +94,7 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 			if ((spinup_process.coarse_spinup_step /
 					 CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV) == 0) {
 				spinup_process.coarse_spinup_step--;
-			} 
+			}
 			else {
 				spinup_process.coarse_spinup_step =
 						 spinup_process.coarse_spinup_step -
@@ -102,11 +102,11 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 						 /
 						 CONTROL_PROCESS_COARSE_SPINUP_DEC_DIV);
 			}
-		} 
+		}
 		else {
 			spinup_process.coarse_spinup_time--;
 		}
-	} 
+	}
 	else {
 		comm_tim_trigger_comm = true;
 		cps->state = cps_spinup;
@@ -115,7 +115,7 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
 }
 
 enum control_process_cb_state
-control_process_fine_spinup_cb(struct control_process * cps) { 
+control_process_fine_spinup_cb(struct control_process * cps) {
 	if (comm_data.bemf_crossing_detected) {
 		comm_data.bemf_crossing_detected = false;
 		cps->bemf_crossing_counter++;
@@ -144,16 +144,15 @@ control_process_fine_spinup_cb(struct control_process * cps) {
 }
 
 enum control_process_cb_state
-control_process_spinup_cb(struct control_process * cps) { 
-	switch(spinup_state) { 
-		case spinup_state_fine: 
-			return control_process_fine_spinup_cb(cps); 
-			break; 
-		case spinup_state_coarse:
-			return control_process_coarse_spinup_cb(cps); 
+control_process_spinup_cb(struct control_process * cps) {
+	switch(spinup_state) {
+		case spinup_state_fine:
+			return control_process_fine_spinup_cb(cps);
 			break;
-		default: 
-			return cps_error; 
+		case spinup_state_coarse:
+			return control_process_coarse_spinup_cb(cps);
+			break;
+		default:
+			return cps_error;
 	}
 }
-

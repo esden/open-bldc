@@ -48,8 +48,8 @@
 /* local function forward declarations */
 void control_process_reset(void);
 
-/* Note: control_process_<state>_cb is defined in external 
-   <state> strategy that implements <state>.h. 
+/* Note: control_process_<state>_cb is defined in external
+   <state> strategy that implements <state>.h.
 */
 
 struct control_process control_process; /**< Internal state struct instance */
@@ -60,17 +60,17 @@ typedef enum control_process_cb_state (*cps_callback)(struct control_process * c
  *  states. These are:
  *  (see control_process.h -> control_process_state)
  *
- *  - cps_error 
+ *  - cps_error
  *  - cps_idle
  *  - cpd_aligning
  *  - cps_spinup
  *  - cps_spinning
  *
- *  The number of existing process states (currently 5) is 
- *  stored in cps_num_states. 
+ *  The number of existing process states (currently 5) is
+ *  stored in cps_num_states.
  *
- *  In order to register a callback for a specific process 
- *  state, use 
+ *  In order to register a callback for a specific process
+ *  state, use
  *
  *    control_process_register_cb(<state>, <callback fun>);
  *
@@ -79,17 +79,17 @@ static cps_callback control_process_cb_register[cbs_num_states];
 
 /* function implementations */
 
-/** Register a callback function for given control 
- *  process state. 
- *  Example from control_process_init(): 
+/** Register a callback function for given control
+ *  process state.
+ *  Example from control_process_init():
  *
  * 		control_process_register_cb(cps_idle, control_process_idle_cb);
  *
  */
-void control_process_register_cb(enum control_process_state cp_state, 
+void control_process_register_cb(enum control_process_state cp_state,
 																 enum control_process_cb_state (*callback_fun)(struct control_process * cps))
-{ 
-	control_process_cb_register[cp_state] = callback_fun; 
+{
+	control_process_cb_register[cp_state] = callback_fun;
 }
 
 /**
@@ -98,7 +98,7 @@ void control_process_register_cb(enum control_process_state cp_state,
 void control_process_init(void)
 {
 	control_process_reset();
-	
+
 	control_process_register_cb(cps_idle,     control_process_idle_cb);
 	control_process_register_cb(cps_aligning, control_process_aligning_cb);
 	control_process_register_cb(cps_spinup,   control_process_spinup_cb);
@@ -107,17 +107,17 @@ void control_process_init(void)
 }
 
 /**
- * Reset the internal state of the control process. 
- * Also calls callback reset functions for every 
- * process state. 
+ * Reset the internal state of the control process.
+ * Also calls callback reset functions for every
+ * process state.
  */
 void control_process_reset(void)
 {
-	cp_idle_reset(); 
-	cp_spinup_reset(); 
-	cp_aligning_reset(); 
-	cp_spinning_reset(); 
-	cp_error_reset(); 
+	cp_idle_reset();
+	cp_spinup_reset();
+	cp_aligning_reset();
+	cp_spinning_reset();
+	cp_error_reset();
 
 	control_process.state  = cps_idle;
 	control_process.ignite = false;
@@ -159,12 +159,10 @@ void control_process_kill(void)
  */
 void run_control_process(void)
 {
-	enum control_process_cb_state cb_ret; 
-	cb_ret = control_process_cb_register[control_process.state](&control_process); 
-	
-	if(cb_ret < 0 || cb_ret >= cbs_num_states) { 
+	enum control_process_cb_state cb_ret;
+	cb_ret = control_process_cb_register[control_process.state](&control_process);
+
+	if(cb_ret < 0 || cb_ret >= cbs_num_states) {
 		control_process_cb_register[cps_error](&control_process);
 	}
 }
-
-

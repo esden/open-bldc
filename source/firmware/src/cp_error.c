@@ -23,7 +23,7 @@
  *
  * @brief  Controller process error strategy
  *
- * Default control process implementation for error state. 
+ * Default control process implementation for error state.
  */
 
 #include "cp_error.h"
@@ -37,12 +37,13 @@
 
 
 enum control_process_cb_state
-control_process_error_cb(struct control_process * cps) { 
-	// TODO: Error handling for undefined 
-	// control process state here. 
+control_process_error_cb(struct control_process * cps) {
+	/**
+	 * @todo: Error handling for undefined
+	 * control process state here.
+	 */
 	return cps_cb_continue;
 }
 
-void cp_error_reset(void) { 
+void cp_error_reset(void) {
 }
-

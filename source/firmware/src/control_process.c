@@ -35,46 +35,54 @@
 #include "pwm/pwm.h"
 #include "comm_process.h"
 #include "driver/led.h"
+#include "spinup.h"
 
 #include "control_process.h"
-
-/**
- * Control process state machine states
- */
-enum control_process_states {
-	cps_idle,
-	cps_aligning,
-	cps_coarce_spinup,
-	cps_spinup,
-	cps_spinning
-};
-
-/**
- * Internal state structure
- */
-struct control_process {
-	enum control_process_states state; /**< State machine state */
-	int align_time;			   /**< Allignement timer */
-	int coarce_spinup_time;		   /**< Coarce spinup timer */
-	int coarce_spinup_step;		   /**< Current coarce spinup step */
-	bool ignite;			   /**< Ignite mode trigger */
-	bool kill;			   /**< Kill motor trigger */
-	u32 bemf_crossing_counter;	   /**< Valid BEMF crossing detection counter */
-	u32 bemf_lost_crossing_counter;    /**< Invalid BEMF crossing detection counter */
-};
-
-struct control_process control_process; /**< Internal state struct instance */
 
 /* local function forward declarations */
 void control_process_reset(void);
 
+/* Note: control_process_spinup_cb is defined in external 
+   spinup strategy that implements spinup.h. 
+*/
+enum control_process_cb_state control_process_idle_cb(struct control_process * cps);
+enum control_process_cb_state control_process_aligning_cb(struct control_process * cps);
+enum control_process_cb_state control_process_spinning_cb(struct control_process * cps);
+enum control_process_cb_state control_process_error_cb(struct control_process * cps);
+
+struct control_process control_process; /**< Internal state struct instance */
+
+typedef enum control_process_cb_state (*cps_callback)(struct control_process * cps);
+static cps_callback control_process_cb_register[cbs_num_states];
+
 /* function implementations */
+
+/** Register a callback function for given control 
+ *  process state. 
+ *  Example from control_process_init(): 
+ *
+ * 		control_process_register_cb(cps_idle, control_process_idle_cb);
+ *
+ */
+void control_process_register_cb(enum control_process_cb_state cp_state, 
+																 enum control_process_cb_state (*callback_fun)(struct control_process * cps))
+{ 
+	control_process_cb_register[cp_state] = callback_fun; 
+}
+
 /**
  * Initialize internal state of the control process
  */
 void control_process_init(void)
 {
 	control_process_reset();
+	spinup_reset(); 
+
+	control_process_register_cb(cps_idle,     control_process_idle_cb);
+	control_process_register_cb(cps_aligning, control_process_aligning_cb);
+	control_process_register_cb(cps_spinup,   control_process_spinup_cb);
+	control_process_register_cb(cps_spinning, control_process_spinning_cb);
+	control_process_register_cb(cps_error,    control_process_error_cb);
 }
 
 /**
@@ -88,8 +96,8 @@ void control_process_reset(void)
 	control_process.coarce_spinup_step =
 	    CONTROL_PROCESS_COARCE_MAX_SPINUP_STEP;
 	control_process.ignite = false;
-	control_process.kill = false;
-	control_process.bemf_crossing_counter = 0;
+	control_process.kill   = false;
+	control_process.bemf_crossing_counter      = 0;
 	control_process.bemf_lost_crossing_counter = 0;
 }
 
@@ -112,11 +120,59 @@ void control_process_ignite(void)
 void control_process_kill(void)
 {
 	pwm_off();
-	comm_tim_trigger_comm = false;
+	comm_tim_trigger_comm      = false;
 	comm_tim_trigger_comm_once = false;
-	control_process.kill = true;
-	control_process.state = cps_idle;
+	control_process.kill       = true;
+	control_process.state      = cps_idle;
 	comm_process_closed_loop_off();
+}
+
+enum control_process_cb_state
+control_process_idle_cb(struct control_process * cps) { 
+	if (cps->ignite) {
+		comm_tim_trigger_comm_once = true;
+		cps->ignite = false;
+		cps->state  = cps_aligning;
+	}
+	return cps_cb_continue;
+}
+
+enum control_process_cb_state
+control_process_aligning_cb(struct control_process * cps) { 
+	if (cps->align_time == 0) {
+		cps->state = cps_spinup;
+	} else {
+		cps->align_time--;
+	}
+	return cps_cb_continue;
+}
+
+
+enum control_process_cb_state
+control_process_spinning_cb(struct control_process * cps) { 
+	if (comm_data.bemf_crossing_detected) {
+		comm_data.bemf_crossing_detected = false;
+		cps->bemf_crossing_counter++;
+		cps->bemf_lost_crossing_counter = 0;
+		LED_RED_ON();
+	} else {
+		cps->bemf_crossing_counter = 0;
+		cps->bemf_lost_crossing_counter++;
+		LED_RED_OFF();
+	}
+
+	if (cps->bemf_lost_crossing_counter > 10) {
+		comm_process_closed_loop_off();
+		control_process_kill();
+	}
+	return cps_cb_continue;
+}
+
+enum control_process_cb_state
+control_process_error_cb(struct control_process * cps) { 
+	// TODO: Error handling for undefined 
+	// control process state here. 
+	return cps_cb_continue;
 }
 
 /**
@@ -126,91 +182,12 @@ void control_process_kill(void)
  */
 void run_control_process(void)
 {
-	switch (control_process.state) {
-	case cps_idle:
-		if (control_process.ignite) {
-			comm_tim_trigger_comm_once = true;
-			control_process.ignite = false;
-			control_process.state = cps_aligning;
-		}
-		break;
-	case cps_aligning:
-		if (control_process.align_time == 0) {
-			control_process.state = cps_coarce_spinup;
-		} else {
-			control_process.align_time--;
-		}
-		break;
-	case cps_coarce_spinup:
-		if (control_process.coarce_spinup_step > 0) {
-			if (control_process.coarce_spinup_time == 0) {
-				comm_tim_trigger_comm_once = true;
-
-				control_process.coarce_spinup_time =
-				    control_process.coarce_spinup_step;
-
-				if ((control_process.coarce_spinup_step /
-				     CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV) ==
-				    0) {
-					control_process.coarce_spinup_step--;
-				} else {
-					control_process.coarce_spinup_step =
-					    control_process.coarce_spinup_step -
-					    (control_process.coarce_spinup_step
-					     /
-					     CONTROL_PROCESS_COARCE_SPINUP_DEC_DIV);
-				}
-			} else {
-				control_process.coarce_spinup_time--;
-			}
-		} else {
-			comm_tim_trigger_comm = true;
-			control_process.state = cps_spinup;
-		}
-		break;
-	case cps_spinup:
-		if (comm_data.bemf_crossing_detected) {
-			comm_data.bemf_crossing_detected = false;
-			control_process.bemf_crossing_counter++;
-			control_process.bemf_lost_crossing_counter = 0;
-		} else {
-			control_process.bemf_crossing_counter = 0;
-			control_process.bemf_lost_crossing_counter++;
-		}
-
-		if ((control_process.bemf_crossing_counter > 2) &&
-		    (comm_tim_data.freq < 30000) &&
-		    (comm_data.in_range_counter > 2)) {
-			comm_process_closed_loop_on();
-			control_process.state = cps_spinning;
-			LED_RED_ON();
-			return;
-		}
-
-		comm_tim_data.freq =
-		    comm_tim_data.freq -
-		    (comm_tim_data.freq / CONTROL_PROCESS_SPINUP_DEC_DIV);
-		if (comm_tim_data.freq < 10000) {
-			control_process_kill();
-		}
-		break;
-	case cps_spinning:
-		if (comm_data.bemf_crossing_detected) {
-			comm_data.bemf_crossing_detected = false;
-			control_process.bemf_crossing_counter++;
-			control_process.bemf_lost_crossing_counter = 0;
-			LED_RED_ON();
-		} else {
-			control_process.bemf_crossing_counter = 0;
-			control_process.bemf_lost_crossing_counter++;
-			LED_RED_OFF();
-		}
-
-		if (control_process.bemf_lost_crossing_counter > 10) {
-			comm_process_closed_loop_off();
-			control_process_kill();
-		}
-
-		break;
+	enum control_process_cb_state cb_ret; 
+	cb_ret = control_process_cb_register[control_process.state](&control_process); 
+	
+	if(cb_ret < 0 && cb_ret >= cbs_num_states) { 
+		control_process_cb_register[cps_error](&control_process);
 	}
 }
+
+

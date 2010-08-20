@@ -42,7 +42,7 @@ flash:
 
 doc:
 	@mkdir -p doc
-	@doxygen doxygen.conf
+	@doxygen doxygen.conf > /dev/null
 	@cp ../../art/open-bldc-logo.png doc/doxy/html/
 
 %.all:

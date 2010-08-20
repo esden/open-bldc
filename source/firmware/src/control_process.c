@@ -209,8 +209,12 @@ void run_control_process(void)
 	}
 	// Could also be implemented in error handling strategy:
 	if (cb_ret == cps_cb_exit_control) {
-		comm_process_closed_loop_off();
+		// ??? this is also called in control_process_kill()
+		comm_process_closed_loop_off(); 
 		control_process_kill();
+	}
+	else if (cb_ret == cps_cb_resume_control) {
+		comm_process_closed_loop_on(); 
 	}
 }
 

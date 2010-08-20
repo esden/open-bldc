@@ -42,13 +42,26 @@ enum control_process_state {
 };
 
 /**
- * Control process callback return states
+ * Control process callback return states. 
+ * By evaluating these states in the calling 
+ * control process, callbacks are enabled to 
+ * influence the overall control process. 
+ * 
+ * Return states are: 
+ * - cps_cb_error: A general, fatal error. 
+ * - cps_cb_continue: No changes on process flow. 
+ * - cps_cb_exit_control: Control process is told 
+ *   to leave closed loop control and allow to
+ *   resume it later. 
+ * - cps_cb_resume_control: Control process is 
+ *   tols to enter closed loop control. 
+ *
  */
 enum control_process_cb_state {
 	cps_cb_error=0,
 	cps_cb_continue,
 	cps_cb_exit_control,
-	cps_cb_finished,
+	cps_cb_resume_control,
 	cps_cb_num_states
 };
 

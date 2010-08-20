@@ -166,17 +166,16 @@ control_process_fine_spinup_cb(struct control_process * cps) {
 	if ((cps->bemf_crossing_counter > 2) &&
 			(comm_tim_data.freq < 30000) &&
 			(comm_data.in_range_counter > 2)) {
-		comm_process_closed_loop_on();
 		cps->state = cps_spinning;
 		LED_RED_ON();
-		return cps_cb_continue;
+		return cps_cb_resume_control;
 	}
 
 	comm_tim_data.freq =
 			comm_tim_data.freq -
 			(comm_tim_data.freq / CONTROL_PROCESS_SPINUP_DEC_DIV);
 	if (comm_tim_data.freq < 10000) {
-		control_process_kill();
+		return cps_cb_exit_control;
 	}
 	return cps_cb_continue;
 }

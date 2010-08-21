@@ -39,6 +39,7 @@ mc.OBJECTS = \
 	mc_main.o \
 	driver/usart.o \
 	driver/adc.o \
+	driver/sys_tick.o \
 	pwm/pwm.o \
 	pwm/pwm_scheme_6step_h_pwm_l_on.o \
 	comm_tim.o \

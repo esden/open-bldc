@@ -82,4 +82,30 @@
  */
 #define CP_STS_FINE_DEC_DIV 60000
 
+/*----------------------------------------------------------------------------
+ * Spinup soft timer configuration
+ *----------------------------------------------------------------------------*/
+
+/**
+ * Default spinup power
+ */
+#define CP_SST_POWER 200
+
+/**
+ * Default maximum delay between commutations while spinning up
+ */
+#define CP_SST_MAX_STEP 100000
+
+/**
+ * Default minimum delay between commutations while spinning up
+ *
+ * When the minimum delay is reached the spinup process gives up.
+ */
+#define CP_SST_MIN_STEP 10000
+
+/**
+ * Default decrement divider for spinup
+ */
+#define CP_SST_DEC_DIV 1000
+
 #endif /* __CONFIG_H */

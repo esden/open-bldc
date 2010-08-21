@@ -35,6 +35,12 @@ DEFAULT_TARGET = mc
 
 TARGETS = mc test_blink test_governor test_32bit_tim test_sys_tick
 
+#CP_IDLE_STRATEGY ?=
+#CP_ALIGNING_STRATEGY ?=
+CP_SPINUP_STRATEGY ?= 2step
+#CP_SPINNING_STRATEGY ?=
+#CP_ERROR_STRATEGY ?=
+
 mc.OBJECTS = \
 	src/mc_main.o \
 	driver/usart.o \
@@ -48,7 +54,7 @@ mc.OBJECTS = \
 	src/comm_process.o \
 	src/cp_idle.o \
 	src/cp_aligning.o \
-	src/cp_spinup_2step.o \
+	src/cp_spinup_$(CP_SPINUP_STRATEGY).o \
 	src/cp_spinning.o \
 	src/cp_error.o \
 	src/control_process.o

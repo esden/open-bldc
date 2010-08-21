@@ -25,31 +25,147 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-NAME		= open-bldc
-OOCD_INTERFACE	= flossjtag
-OOCD_TARGET	= open-bldc
+################################################################################
+# Please edit the Makefile.targets file when adding targets not this one here
+# You will hurt yourself doing that. :)
+################################################################################
 
-.PHONY: doc
+NAME		?= open-bldc
+PREFIX		?= arm-none-eabi
+OOCD_INTERFACE	?= flossjtag
+OOCD_TARGET	?= open-bldc
 
-all:
-	make -w -C src all
+VERBOSE		?= 0
 
-clean:
-	make -w -C src clean
+# Use 'make VERBOSE=1' for more debug output.
+ifneq ($(VERBOSE),1)
+Q := @
+endif
 
-flash:
-	make -w -C src flash
+CC		= $(PREFIX)-gcc
+LD		= $(PREFIX)-ld
+AR		= $(PREFIX)-ar
+AS		= $(PREFIX)-as
+CP		= $(PREFIX)-objcopy
+OD		= $(PREFIX)-objdump
+SIZE		= $(PREFIX)-size
+OOCD		= openocd
 
-doc:
-	@mkdir -p doc
-	@doxygen doxygen.conf > /dev/null
-	@cp ../../art/open-bldc-logo.png doc/doxy/html/
+TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
-%.all:
-	make -w -C src $(*).all
 
-%.clean:
-	make -w -C src $(*).clean
+INCDIRS		= \
+	-I. \
+	-I../../libgovernor/include
+CFLAGS          = $(INCDIRS) -Wall -ansi -std=c99 -c \
+		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
+		  -ffunction-sections -fdata-sections
+ASFLAGS         = -ahls -mapcs-32
+LDFLAGS         = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
+		                    -L../../libgovernor/src/.libs --gc-sections
+LDLIBS          = -lcmsis -lstm32 -lgovernor
+CPFLAGS         = -j .isr_vector -j .text -j .data
+ODFLAGS         = -S
+SIZEFLAGS       = -A -x
 
-%.flash:
-	make -w -C src $(*).flash
+###############################################################################
+# Edit after this point only when you really know what you are doing!!!
+###############################################################################
+
+-include Makefile.targets
+
+.SUFFIXES: .elf .bin .hex .srec .lst
+.SECONDEXPANSION:
+.SECONDARY:
+
+all: $(patsubst %,%.all,$(TARGETS))
+
+clean: $(patsubst %,%.clean,$(TARGETS))
+
+flash: $(DEFAULT_TARGET).flash
+
+%.all: $$(*).target_exists $$(*).sources_exist $$(*).images $$(*).size
+	@echo "*** Finished building $* target ***"
+
+%.images: %.bin %.hex %.srec %.lst
+	@echo "*** $* images generated ***"
+
+%.clean: $$(*).target_exists
+	@for i in $(COMMON_OBJECTS) $($(*).OBJECTS) $($(*).OBJECTS:.o=.d) $*.elf $*.hex $*.bin $*.lst $*.srec; do \
+		echo "  CLEAN $$i"; \
+		rm -f $$i; \
+	done
+
+%.flash: $$(*).target_exists $$(*).hex
+	@echo "  OOCD  $(*).hex"
+	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+		    -f board/$(OOCD_TARGET).cfg \
+		    -c init \
+		    -c "reset halt" \
+		    -c "flash write_image erase $*.hex" \
+		    -c reset \
+		    -c shutdown
+
+halt:
+	@echo " OOCD halt"
+	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+		    -f board/$(OOCD_TARGET).cfg \
+		    -c init \
+		    -c "reset halt" \
+		    -c shutdown
+
+%.size: $$(*).elf
+	@echo
+	$(Q)$(SIZE) $(SIZEFLAGS) $<
+
+%.elf: $(COMMON_OBJECTS) $$($$(*).OBJECTS)
+	@echo "  LD    $@"
+	$(Q)$(LD) $(LDFLAGS) -o $@ $(COMMON_OBJECTS) $($(*).OBJECTS) $(LDLIBS)
+
+%.target_exists:
+	@if [ "_$($(*).OBJECTS)" == "_" ] ; then \
+		echo "*** Target $* does not exist ***"; \
+		exit 1; \
+	fi
+
+%.sources_exist:
+	@for i in $($(*).OBJECTS:.o=.c); do \
+		if [ ! -f $$i ] ; then \
+			echo "*** $$i does not exist, aborting ***"; \
+			exit 1; \
+		fi \
+	done
+
+# Suffix rules
+
+%.bin: %.elf
+	@echo "  CP    $@"
+	$(Q)$(CP) $(CPFLAGS) -Obinary $< $@
+
+%.hex: %.elf
+	@echo "  CP    $@"
+	$(Q)$(CP) $(CPFLAGS) -Oihex $< $@
+
+%.srec: %.elf
+	@echo "  CP    $@"
+	$(Q)$(CP) $(CPFLAGS) -Osrec $< $@
+
+%.lst: %.elf
+	@echo "  OD    $@"
+	$(Q)$(OD) $(ODFLAGS) $< > $@
+
+%.o: %.c
+	@echo "  CC    $@"
+	$(Q)$(CC) $(CFLAGS) -c $*.c -o $*.o
+
+%.d: %.c
+	@echo "  DEP   $@"
+	$(Q)$(CC) -MM $(CFLAGS) $*.c -MF $*.d
+	@cp -f $*.d $*.d.tmp
+	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
+	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
+	 sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
+	@rm -f $*.d.tmp
+
+# include header dependency information
+-include $(OBJECTS:.o=.d))

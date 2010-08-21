@@ -56,17 +56,23 @@ TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
 INCDIRS		= \
 	-I. \
-	-I../../libgovernor/include
+	-Isrc \
+	-Itest \
+	-I../libgovernor/include
 CFLAGS          = $(INCDIRS) -Wall -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections
 ASFLAGS         = -ahls -mapcs-32
-LDFLAGS         = -Tstm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
-		                    -L../../libgovernor/src/.libs --gc-sections
+LDFLAGS         = -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
+		                    -L../libgovernor/src/.libs --gc-sections
 LDLIBS          = -lcmsis -lstm32 -lgovernor
 CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x
+BUILDDIR	= build/$(TARGET)
+BINDIR		= $(BUILDDIR)/bin
+OBJDIR		= $(BUILDDIR)/obj
+DEPDIR		= build/dep
 
 ###############################################################################
 # Edit after this point only when you really know what you are doing!!!
@@ -80,22 +86,29 @@ SIZEFLAGS       = -A -x
 
 all: $(patsubst %,%.all,$(TARGETS))
 
-clean: $(patsubst %,%.clean,$(TARGETS))
+clean:
+	@echo "Cleaning up everything"
+	$(Q)rm -rf build
 
 flash: $(DEFAULT_TARGET).flash
 
-%.all: $$(*).target_exists $$(*).sources_exist $$(*).images $$(*).size
+ifdef TARGET
+%.all: $$(*).target_exists $(BINDIR)/$$(*).images $(BINDIR)/$$(*).size
 	@echo "*** Finished building $* target ***"
+else
+%.all:
+	make TARGET=$(*) $(*).all
+endif
 
-%.images: %.bin %.hex %.srec %.lst
+$(BINDIR)/%.images: $(BINDIR)/%.bin $(BINDIR)/%.hex $(BINDIR)/%.srec $(BINDIR)/%.lst
 	@echo "*** $* images generated ***"
 
-%.clean: $$(*).target_exists
-	@for i in $(COMMON_OBJECTS) $($(*).OBJECTS) $($(*).OBJECTS:.o=.d) $*.elf $*.hex $*.bin $*.lst $*.srec; do \
-		echo "  CLEAN $$i"; \
-		rm -f $$i; \
-	done
 
+%.clean: $$(*).target_exists
+	@echo "Cleaning target $(*)"
+	$(Q)rm -rf build/$(*)
+
+ifdef TARGET
 %.flash: $$(*).target_exists $$(*).hex
 	@echo "  OOCD  $(*).hex"
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
@@ -105,6 +118,10 @@ flash: $(DEFAULT_TARGET).flash
 		    -c "flash write_image erase $*.hex" \
 		    -c reset \
 		    -c shutdown
+else
+%.flash:
+	make TARGET=$(*) $(*).flash
+endif
 
 halt:
 	@echo " OOCD halt"
@@ -114,27 +131,27 @@ halt:
 		    -c "reset halt" \
 		    -c shutdown
 
-%.size: $$(*).elf
+.PHONY: doc
+doc:
+	@mkdir -p doc
+	@doxygen doxygen.conf > /dev/null
+	@cp ../../art/open-bldc-logo.png doc/doxy/html/
+
+%.size: %.elf
 	@echo
 	$(Q)$(SIZE) $(SIZEFLAGS) $<
 
-%.elf: $(COMMON_OBJECTS) $$($$(*).OBJECTS)
+%.elf: $(patsubst %.o,$(OBJDIR)/%.o,$(COMMON_OBJECTS)) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS))
 	@echo "  LD    $@"
-	$(Q)$(LD) $(LDFLAGS) -o $@ $(COMMON_OBJECTS) $($(*).OBJECTS) $(LDLIBS)
+	$(Q)mkdir -p $(@D)
+	$(Q)$(LD) $(LDFLAGS) -o $@ $(COMMON_OBJECTS) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(LDLIBS)
+
 
 %.target_exists:
 	@if [ "_$($(*).OBJECTS)" == "_" ] ; then \
 		echo "*** Target $* does not exist ***"; \
 		exit 1; \
 	fi
-
-%.sources_exist:
-	@for i in $($(*).OBJECTS:.o=.c); do \
-		if [ ! -f $$i ] ; then \
-			echo "*** $$i does not exist, aborting ***"; \
-			exit 1; \
-		fi \
-	done
 
 # Suffix rules
 
@@ -154,18 +171,20 @@ halt:
 	@echo "  OD    $@"
 	$(Q)$(OD) $(ODFLAGS) $< > $@
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
 	@echo "  CC    $@"
-	$(Q)$(CC) $(CFLAGS) -c $*.c -o $*.o
+	$(Q)mkdir -p $(@D)
+	$(Q)$(CC) $(CFLAGS) -c $*.c -o $@
 
-%.d: %.c
+$(DEPDIR)/%.d: %.c
 	@echo "  DEP   $@"
-	$(Q)$(CC) -MM $(CFLAGS) $*.c -MF $*.d
-	@cp -f $*.d $*.d.tmp
-	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
-	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
-	 sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
-	@rm -f $*.d.tmp
+	$(Q)mkdir -p $(@D)
+	$(Q)$(CC) -MM $(CFLAGS) $< -MF $@
+	$(Q)cp -f $@ $@.tmp
+	$(Q)sed -e 's|.*:|build/$$(TARGET)/obj/$*.o:|' < $@.tmp > $@
+	$(Q)sed -e 's/.*://' -e 's/\\$$//' < $@.tmp | fmt -1 | \
+	 sed -e 's/^ *//' -e 's/$$/:/' >> $@
+	$(Q)rm -f $@.tmp
 
 # include header dependency information
--include $(OBJECTS:.o=.d))
+-include $(patsubst %.o,$(DEPDIR)/%.d,$(OBJECTS))

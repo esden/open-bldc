@@ -53,12 +53,18 @@ OOCD		= openocd
 
 TOOLCHAIN_LIB_DIR = `dirname \`which $(CC)\``/../$(PREFIX)/lib
 
+BUILDDIR	= build/$(TARGET)
+BINDIR		= $(BUILDDIR)/bin
+OBJDIR		= $(BUILDDIR)/obj
+INCDIR		= $(BUILDDIR)/include
+DEPDIR		= build/dep
 
 INCDIRS		= \
 	-I. \
 	-Isrc \
 	-Itest \
-	-I../libgovernor/include
+	-I../libgovernor/include \
+	-I$(INCDIR)
 CFLAGS          = $(INCDIRS) -Wall -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections
@@ -69,10 +75,6 @@ LDLIBS          = -lcmsis -lstm32 -lgovernor
 CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x
-BUILDDIR	= build/$(TARGET)
-BINDIR		= $(BUILDDIR)/bin
-OBJDIR		= $(BUILDDIR)/obj
-DEPDIR		= build/dep
 
 ###############################################################################
 # Edit after this point only when you really know what you are doing!!!
@@ -98,7 +100,7 @@ ifdef TARGET
 else
 %.all: $$(*).target_exists
 	make TARGET=$(*) check_params
-	make TARGET=$(*) $(*).all
+	make TARGET=$(*) IN_ALL=true $(*).all
 endif
 
 $(BINDIR)/%.images: $(BINDIR)/%.bin $(BINDIR)/%.hex $(BINDIR)/%.srec $(BINDIR)/%.lst
@@ -142,7 +144,7 @@ doc:
 	@echo
 	$(Q)$(SIZE) $(SIZEFLAGS) $<
 
-%.elf: $(patsubst %.o,$(OBJDIR)/%.o,$(COMMON_OBJECTS)) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(BINDIR)/params
+%.elf: $(patsubst %.o,$(OBJDIR)/%.o,$(COMMON_OBJECTS)) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(INCDIR)/params.h
 	@echo "  LD    $@"
 	$(Q)mkdir -p $(@D)
 	$(Q)$(LD) $(LDFLAGS) -o $@ $(COMMON_OBJECTS) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(LDLIBS)
@@ -158,23 +160,27 @@ doc:
 check_params: check_params_exist $(patsubst %,%.check_param, $($(TARGET).PARAMS))
 
 check_params_exist:
-	@echo "checking if $(BINDIR)/params exists"
-	@mkdir -p $(BINDIR)
+	@echo "checking if $(INCDIR)/params.h exists... \c"
+	@mkdir -p $(INCDIR)
 	@\
-	if [ ! -f $(BINDIR)/params ] ; then \
-		echo "params for target $(TARGET) missing, I create it for you."; \
-		touch $(BINDIR)/params; \
+	if [ ! -f $(INCDIR)/params.h ] ; then \
+		echo "no, I create it for you."; \
+		touch $(INCDIR)/params.h; \
+	else \
+		echo "yes."; \
 	fi; \
 
 %.check_param:
-	@echo "checking param $(*) for target $(TARGET)"
+	@echo "checking param \"$(*)\" for target \"$(TARGET)\"... \c"
 	@\
-	if ! grep "^$(*)=$($(*))$$" $(BINDIR)/params > /dev/null ; then \
-		echo "parameter $(*) changed or missing, adding/updating it for you."; \
-		mv $(BINDIR)/params $(BINDIR)/params.tmp; \
-		grep -v "^(*)=" $(BINDIR)/params.tmp > $(BINDIR)/params; \
-		echo "$(*)=$($(*))" >> $(BINDIR)/params; \
-		rm $(BINDIR)/params.tmp; \
+	if ! grep "^#define $(*) PARAM_$($(*))$$" $(INCDIR)/params.h > /dev/null ; then \
+		echo "changed/missing, updating/adding it for you."; \
+		mv $(INCDIR)/params.h $(INCDIR)/params.h.tmp; \
+		grep -v "^#define $(*) " $(INCDIR)/params.h.tmp > $(INCDIR)/params.h; \
+		echo "#define $(*) PARAM_$($(*))" >> $(INCDIR)/params.h; \
+		rm $(INCDIR)/params.h.tmp; \
+	else \
+		echo "exists and not missing."; \
 	fi
 
 # Suffix rules
@@ -211,4 +217,6 @@ $(DEPDIR)/%.d: %.c
 	$(Q)rm -f $@.tmp
 
 # include header dependency information
+ifdef IN_ALL
 -include $(patsubst %.o,$(DEPDIR)/%.d,$(OBJECTS))
+endif

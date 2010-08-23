@@ -32,6 +32,7 @@
  */
 
 #include "config.h"
+#include "params_guarded.h"
 
 #include "cp_spinup.h"
 #include "control_process.h"

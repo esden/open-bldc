@@ -148,7 +148,7 @@ doc:
 %.elf: $(patsubst %.o,$(OBJDIR)/%.o,$(COMMON_OBJECTS)) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(INCDIR)/params.h
 	@echo "  LD    $@"
 	$(Q)mkdir -p $(@D)
-	$(Q)$(LD) $(LDFLAGS) -o $@ $(COMMON_OBJECTS) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(LDLIBS)
+	$(Q)$(LD) $(LDFLAGS) -o $@ $(patsubst %.o,$(OBJDIR)/%.o, $(COMMON_OBJECTS)) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(LDLIBS)
 
 
 %.target_exists:

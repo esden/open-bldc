@@ -41,6 +41,8 @@ CP_SPINUP_STRATEGY ?= 2step
 #CP_SPINNING_STRATEGY ?=
 #CP_ERROR_STRATEGY ?=
 
+mc.PARAMS = CP_SPINUP_STRATEGY
+
 mc.OBJECTS = \
 	src/mc_main.o \
 	driver/usart.o \

@@ -96,7 +96,8 @@ ifdef TARGET
 %.all: $$(*).target_exists $(BINDIR)/$$(*).images $(BINDIR)/$$(*).size
 	@echo "*** Finished building $* target ***"
 else
-%.all:
+%.all: $$(*).target_exists
+	make TARGET=$(*) check_params
 	make TARGET=$(*) $(*).all
 endif
 
@@ -141,7 +142,7 @@ doc:
 	@echo
 	$(Q)$(SIZE) $(SIZEFLAGS) $<
 
-%.elf: $(patsubst %.o,$(OBJDIR)/%.o,$(COMMON_OBJECTS)) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS))
+%.elf: $(patsubst %.o,$(OBJDIR)/%.o,$(COMMON_OBJECTS)) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(BINDIR)/params
 	@echo "  LD    $@"
 	$(Q)mkdir -p $(@D)
 	$(Q)$(LD) $(LDFLAGS) -o $@ $(COMMON_OBJECTS) $(patsubst %.o,$(OBJDIR)/%.o,$($(TARGET).OBJECTS)) $(LDLIBS)
@@ -151,6 +152,29 @@ doc:
 	@if [ "_$($(*).OBJECTS)" == "_" ] ; then \
 		echo "*** Target $* does not exist ***"; \
 		exit 1; \
+	fi
+
+
+check_params: check_params_exist $(patsubst %,%.check_param, $($(TARGET).PARAMS))
+
+check_params_exist:
+	@echo "checking if $(BINDIR)/params exists"
+	@mkdir -p $(BINDIR)
+	@\
+	if [ ! -f $(BINDIR)/params ] ; then \
+		echo "params for target $(TARGET) missing, I create it for you."; \
+		touch $(BINDIR)/params; \
+	fi; \
+
+%.check_param:
+	@echo "checking param $(*) for target $(TARGET)"
+	@\
+	if ! grep "^$(*)=$($(*))$$" $(BINDIR)/params > /dev/null ; then \
+		echo "parameter $(*) changed or missing, adding/updating it for you."; \
+		mv $(BINDIR)/params $(BINDIR)/params.tmp; \
+		grep -v "^(*)=" $(BINDIR)/params.tmp > $(BINDIR)/params; \
+		echo "$(*)=$($(*))" >> $(BINDIR)/params; \
+		rm $(BINDIR)/params.tmp; \
 	fi
 
 # Suffix rules

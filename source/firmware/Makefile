@@ -100,7 +100,7 @@ ifdef TARGET
 else
 %.all: $$(*).target_exists
 	make TARGET=$(*) check_params
-	make TARGET=$(*) IN_ALL=true $(*).all
+	make TARGET=$(*) CHECKED_PARAMS=true $(*).all
 endif
 
 $(BINDIR)/%.images: $(BINDIR)/%.bin $(BINDIR)/%.hex $(BINDIR)/%.srec $(BINDIR)/%.lst
@@ -122,8 +122,9 @@ ifdef TARGET
 		    -c reset \
 		    -c shutdown
 else
-%.flash:
-	make TARGET=$(*) $(*).flash
+%.flash: $$(*).target_exists
+	make TARGET=$(*) check_params
+	make TARGET=$(*) CHECKED_PARAMS=true $(*).flash
 endif
 
 halt:
@@ -217,6 +218,6 @@ $(DEPDIR)/%.d: %.c
 	$(Q)rm -f $@.tmp
 
 # include header dependency information
-ifdef IN_ALL
+ifdef CHECKED_PARAMS
 -include $(patsubst %.o,$(DEPDIR)/%.d,$(OBJECTS))
 endif

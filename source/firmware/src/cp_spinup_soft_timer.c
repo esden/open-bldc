@@ -47,6 +47,8 @@
  */
 bool cps_trigger;
 
+#define CP_SST_FIXED_POINT 16
+
 /**
  * Trigger source for spinup state.
  */
@@ -58,6 +60,7 @@ bool *control_process_spinup_trigger = &cps_trigger;
 struct spinup_process {
 	int timer;  /**< Soft timer id used for time reference */
 	u32 step;   /**< Current coarce spinup step */
+	u32 hold;   /**< How long to hold the maximum comm time (for testing) */
 };
 static struct spinup_process spinup_process;
 
@@ -91,7 +94,8 @@ void cp_spinup_init(void)
  */
 void cp_spinup_reset(void)
 {
-	spinup_process.step = CP_SST_MAX_STEP;
+	spinup_process.step = CP_SST_MAX_STEP << CP_SST_FIXED_POINT;
+	spinup_process.hold = 50000;
 }
 
 /**
@@ -119,8 +123,14 @@ control_process_spinup_cb(struct control_process *cps)
 	/* Give up if the commutation speed exeeds limit and the spinning
 	 * process is still not happy
 	 */
-	if (spinup_process.step <= CP_SST_MIN_STEP) {
-		return cps_cb_exit_control;
+	if ((spinup_process.step >> CP_SST_FIXED_POINT) <= CP_SST_MIN_STEP) {
+		spinup_process.step = CP_SST_MIN_STEP << CP_SST_FIXED_POINT;
+		if(spinup_process.hold > 0) {
+			spinup_process.hold--;
+			return cps_cb_continue;
+		}else{
+			return cps_cb_exit_control;
+		}
 	}
 
 	return cps_cb_continue;
@@ -133,11 +143,12 @@ control_process_spinup_cb(struct control_process *cps)
 enum control_process_cb_state
 control_process_spinup_state_in_cb(struct control_process *cps)
 {
+	LED_GREEN_OFF();
 	cp_spinup_reset();
 
 	spinup_process.timer =
 	    sys_tick_timer_register(control_process_soft_timer_callback,
-				    spinup_process.timer);
+				    spinup_process.step >> CP_SST_FIXED_POINT);
 
 	return cps_cb_continue;
 }
@@ -150,6 +161,7 @@ control_process_spinup_state_in_cb(struct control_process *cps)
 enum control_process_cb_state
 control_process_spinup_state_out_cb(struct control_process *cps)
 {
+	LED_GREEN_ON();
 
 	sys_tick_timer_unregister(spinup_process.timer);
 
@@ -173,5 +185,5 @@ void control_process_soft_timer_callback(int id)
 	LED_RED_TOGGLE();
 
 	/* set new time for us */
-	sys_tick_timer_update(id, spinup_process.step);
+	sys_tick_timer_update(id, spinup_process.step >> CP_SST_FIXED_POINT);
 }

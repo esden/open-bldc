@@ -33,6 +33,7 @@
 #include "comm_tim.h"
 #include "pwm/pwm.h"
 #include "comm_process.h"
+#include "driver/led.h"
 
 /**
  * Trigger source for the idle state.
@@ -50,7 +51,7 @@ enum control_process_cb_state
 control_process_idle_cb(struct control_process *cps)
 {
 	if (cps->ignite) {
-		comm_tim_trigger_comm_once = true;
+		LED_RED_TOGGLE();
 		cps->ignite = false;
 		cps->state = cps_aligning;
 	}

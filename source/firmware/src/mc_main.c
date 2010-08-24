@@ -37,6 +37,7 @@
 #include "gprot.h"
 #include "driver/usart.h"
 #include "driver/adc.h"
+#include "driver/sys_tick.h"
 #include "pwm/pwm.h"
 #include "comm_tim.h"
 #include "comm_process.h"
@@ -69,6 +70,7 @@ int main(void)
 	led_init();
 	gprot_init();
 	usart_init();
+	sys_tick_init();
 	comm_process_init();
 	sensor_process_init();
 	adc_init();
@@ -81,7 +83,6 @@ int main(void)
 	demo = false;
 
 	while (1) {
-		LED_GREEN_OFF();
 		if (adc_new_data_trigger) {
 			adc_new_data_trigger = false;
 			run_sensor_process();
@@ -90,7 +91,6 @@ int main(void)
 
 		run_control_process();
 		if (comm_tim_trigger) {
-			LED_GREEN_ON();
 			comm_tim_trigger = false;
 			run_control_process();
 		}

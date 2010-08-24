@@ -35,6 +35,7 @@
 #include "comm_tim.h"
 #include "pwm/pwm.h"
 #include "comm_process.h"
+#include "driver/led.h"
 
 /**
  * Trigger source for aligning state.
@@ -63,6 +64,7 @@ control_process_aligning_cb(struct control_process *cps)
 #if CP_ALIGN_ENABLE == 1
 	if (aligning_process.align_time == 0) {
 		cps->state = cps_spinup;
+		LED_RED_TOGGLE();
 	} else {
 		aligning_process.align_time--;
 	}
@@ -93,4 +95,17 @@ void cp_aligning_init(void)
 void cp_aligning_reset(void)
 {
 	aligning_process.align_time = CP_ALIGN_TIME;
+}
+
+/**
+ * Callback function called before entering control process state
+ * cps_aligning
+ */
+enum control_process_cb_state
+control_process_aligning_state_in_cb(struct control_process * cps) {
+#if CP_ALIGN_ENABLE == 1
+	pwm_comm();
+#endif
+
+	return cps_cb_continue;
 }

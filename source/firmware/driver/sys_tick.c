@@ -68,7 +68,7 @@ void sys_tick_init(void)
 	int i;
 
 	/* Setup SysTick Timer for 1uSec Interrupts */
-	SysTick_Config(72000000 / 10000);
+	SysTick_Config(72000000 / 100000);
 
 	for (i = 0; i < SYS_TICK_TIMER_NUM; i++) {
 		sys_tick_timers[i].callback = 0;

@@ -43,19 +43,16 @@ HEADERS += mainwindow.h \
 FORMS += mainwindow.ui \
     connectdialog.ui \
     simulator.ui
-INCLUDEPATH += ../libgovernor/include
 macx { 
     LIBS += -L/opt/local/lib \
-        -L../libgovernor \
         -L/opt/mine/lib
     INCLUDEPATH += /opt/local/include \
         /opt/mine/include
     ICON = icons/qgovernor.icns
-    FILETYPES.files = ../libgovernor/libgovernor.dylib
+    FILETYPES.files = /opt/mine/lib//libgovernor.dylib
     FILETYPES.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FILETYPES
 }
-else:LIBS += -L../libgovernor/src/.libs
 LIBS += -lgovernor \
     -lftdi \
     -lusb

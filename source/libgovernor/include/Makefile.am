@@ -14,8 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-include_HEADERS = lg/types.h \
-		  lg/ring.h \
-		  lg/gpdef.h \
-		  lg/gprotm.h \
-		  lg/gprotc.h
+libgovernor_libincludedir = $(includedir)/lg
+
+libgovernor_libinclude_HEADERS = lg/types.h \
+				 lg/ring.h \
+				 lg/gpdef.h \
+				 lg/gprotm.h \
+				 lg/gprotc.h

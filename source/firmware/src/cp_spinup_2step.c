@@ -52,7 +52,7 @@ bool *control_process_spinup_trigger = &comm_tim_trigger;
  * Internal process states for spinup callback.
  */
 enum spinup_state {
-	spinup_state_coarse=0,
+	spinup_state_coarse = 0,
 	spinup_state_fine
 };
 
@@ -70,8 +70,12 @@ static struct spinup_process spinup_process;
  */
 enum spinup_state spinup_state;
 
-enum control_process_cb_state control_process_fine_spinup_cb(struct control_process * cps);
-enum control_process_cb_state control_process_coarse_spinup_cb(struct control_process * cps);
+enum control_process_cb_state control_process_fine_spinup_cb(struct
+							     control_process
+							     *cps);
+enum control_process_cb_state control_process_coarse_spinup_cb(struct
+							       control_process
+							       *cps);
 
 /**
  * Initialization of the spin up callback process.
@@ -97,8 +101,7 @@ void cp_spinup_reset(void)
 {
 	spinup_state = spinup_state_coarse;
 	spinup_process.coarse_spinup_time = 0;
-	spinup_process.coarse_spinup_step =
-		CP_STS_COARSE_MAX_STEP;
+	spinup_process.coarse_spinup_step = CP_STS_COARSE_MAX_STEP;
 }
 
 /**
@@ -106,32 +109,30 @@ void cp_spinup_reset(void)
  * phase.
  */
 enum control_process_cb_state
-control_process_coarse_spinup_cb(struct control_process * cps) {
+control_process_coarse_spinup_cb(struct control_process *cps)
+{
 	if (spinup_process.coarse_spinup_step > 0) {
 		if (spinup_process.coarse_spinup_time == 0) {
 			comm_tim_trigger_comm_once = true;
 
-			spinup_process.coarse_spinup_time = spinup_process.coarse_spinup_step;
+			spinup_process.coarse_spinup_time =
+			    spinup_process.coarse_spinup_step;
 
 			if ((spinup_process.coarse_spinup_step /
-					 CP_STS_COARSE_DEC_DIV) == 0) {
+			     CP_STS_COARSE_DEC_DIV) == 0) {
 				spinup_process.coarse_spinup_step--;
-			}
-			else {
+			} else {
 				spinup_process.coarse_spinup_step =
-						 spinup_process.coarse_spinup_step -
-						(spinup_process.coarse_spinup_step
-						 /
-						 CP_STS_COARSE_DEC_DIV);
+				    spinup_process.coarse_spinup_step -
+				    (spinup_process.coarse_spinup_step
+				     / CP_STS_COARSE_DEC_DIV);
 			}
-		}
-		else {
+		} else {
 			spinup_process.coarse_spinup_time--;
 		}
-	}
-	else {
+	} else {
 		comm_tim_trigger_comm = true;
-		spinup_state  = spinup_state_fine;
+		spinup_state = spinup_state_fine;
 	}
 	return cps_cb_continue;
 }
@@ -141,29 +142,26 @@ control_process_coarse_spinup_cb(struct control_process * cps) {
  * phase.
  */
 enum control_process_cb_state
-control_process_fine_spinup_cb(struct control_process * cps)
+control_process_fine_spinup_cb(struct control_process *cps)
 {
 	if (comm_data.bemf_crossing_detected) {
 		comm_data.bemf_crossing_detected = false;
 		cps->bemf_crossing_counter++;
 		cps->bemf_lost_crossing_counter = 0;
-	}
-	else {
+	} else {
 		cps->bemf_crossing_counter = 0;
 		cps->bemf_lost_crossing_counter++;
 	}
 
 	if ((cps->bemf_crossing_counter > 2) &&
-			(comm_tim_data.freq < 30000) &&
-			(comm_data.in_range_counter > 2)) {
+	    (comm_tim_data.freq < 30000) && (comm_data.in_range_counter > 2)) {
 		cps->state = cps_spinning;
 		LED_RED_ON();
 		return cps_cb_resume_control;
 	}
 
 	comm_tim_data.freq =
-			comm_tim_data.freq -
-			(comm_tim_data.freq / CP_STS_FINE_DEC_DIV);
+	    comm_tim_data.freq - (comm_tim_data.freq / CP_STS_FINE_DEC_DIV);
 	if (comm_tim_data.freq < 10000) {
 		return cps_cb_exit_control;
 	}
@@ -181,16 +179,17 @@ control_process_fine_spinup_cb(struct control_process * cps)
  * to spinup_state_fine.
  */
 enum control_process_cb_state
-control_process_spinup_cb(struct control_process * cps) {
-	switch(spinup_state) {
-		case spinup_state_fine:
-			return control_process_fine_spinup_cb(cps);
-			break;
-		case spinup_state_coarse:
-			return control_process_coarse_spinup_cb(cps);
-			break;
-		default:
-			return cps_error;
+control_process_spinup_cb(struct control_process *cps)
+{
+	switch (spinup_state) {
+	case spinup_state_fine:
+		return control_process_fine_spinup_cb(cps);
+		break;
+	case spinup_state_coarse:
+		return control_process_coarse_spinup_cb(cps);
+		break;
+	default:
+		return cps_error;
 	}
 }
 
@@ -199,7 +198,8 @@ control_process_spinup_cb(struct control_process * cps) {
  * process state cps_spinup.
  */
 enum control_process_cb_state
-control_process_spinup_state_in_cb(struct control_process * cps) {
+control_process_spinup_state_in_cb(struct control_process *cps)
+{
 	return cps_cb_continue;
 }
 
@@ -209,7 +209,7 @@ control_process_spinup_state_in_cb(struct control_process * cps) {
  * next control process state.
  */
 enum control_process_cb_state
-control_process_spinup_state_out_cb(struct control_process * cps) {
+control_process_spinup_state_out_cb(struct control_process *cps)
+{
 	return cps_cb_continue;
 }
-

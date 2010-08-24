@@ -23,9 +23,9 @@
  * Sensor values
  */
 struct sensors {
-	u16 phase_voltage;        /**< Voltage of the currently selected phase */
+	u16 phase_voltage;	  /**< Voltage of the currently selected phase */
 	u32 half_battery_voltage; /**< Half of the supply rail voltage */
-	u16 global_current;       /**< Global controller current */
+	u16 global_current;	  /**< Global controller current */
 };
 
 /**
@@ -51,8 +51,8 @@ struct sensor_params {
 	 */
 	struct gc {
 		s32 zero_current_offset; /**< Zero current offset value */
-		s32 zero_current;        /**< The value of zero */
-		u32 iir;                 /**< IIR filter value */
+		s32 zero_current;	 /**< The value of zero */
+		u32 iir;		 /**< IIR filter value */
 	} gc;
 };
 

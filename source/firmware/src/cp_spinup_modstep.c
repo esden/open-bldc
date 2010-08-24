@@ -56,11 +56,10 @@ bool *control_process_spinup_trigger = &comm_tim_trigger;
  * Internal process variables for spinup callback.
  */
 struct spinup_process {
-	int counter;     /**< Main countdown variable for speedup */
+	int counter;	 /**< Main countdown variable for speedup */
 	int mod_counter; /**< Mod countdown variable for speedup */
 };
 static struct spinup_process spinup_process;
-
 
 /**
  * Initialization of the spinup callback process, currently
@@ -82,7 +81,7 @@ void cp_spinup_init(void)
  */
 void cp_spinup_reset(void)
 {
-	spinup_process.counter     = SPINUP_MODSTEP_COUNTER_MAX;
+	spinup_process.counter = SPINUP_MODSTEP_COUNTER_MAX;
 	spinup_process.mod_counter = SPINUP_MODSTEP_COUNTER_MOD_MAX;
 }
 
@@ -95,7 +94,7 @@ void cp_spinup_reset(void)
  * motor.
  */
 enum control_process_cb_state
-control_process_spinup_cb(struct control_process * cps)
+control_process_spinup_cb(struct control_process *cps)
 {
 	return cps_cb_continue;
 }
@@ -105,7 +104,8 @@ control_process_spinup_cb(struct control_process * cps)
  * process state cps_spinup.
  */
 enum control_process_cb_state
-control_process_spinup_state_in_cb(struct control_process * cps) {
+control_process_spinup_state_in_cb(struct control_process *cps)
+{
 	return cps_cb_continue;
 }
 
@@ -115,7 +115,7 @@ control_process_spinup_state_in_cb(struct control_process * cps) {
  * next control process state.
  */
 enum control_process_cb_state
-control_process_spinup_state_out_cb(struct control_process * cps) {
+control_process_spinup_state_out_cb(struct control_process *cps)
+{
 	return cps_cb_continue;
 }
-

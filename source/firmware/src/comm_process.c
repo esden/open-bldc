@@ -42,7 +42,7 @@ struct comm_process_state {
 	volatile bool rising;	/**< Waiting for rising or falling edge of BEMF */
 	int pwm_count;		/**< PWM cycle counter in the current commutation */
 	bool closed_loop;	/**< Running in closed loop control flag */
-	u32 prev_phase_voltage; /**< Previous PWM cycle phase voltage memory */
+	u32 prev_phase_voltage;	/**< Previous PWM cycle phase voltage memory */
 };
 
 struct comm_process_state comm_process_state;	/**< Internal state instance */

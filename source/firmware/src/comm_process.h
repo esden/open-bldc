@@ -41,7 +41,7 @@ struct comm_params {
 struct comm_data {
 	bool bemf_crossing_detected; /**< valid BEMF crossing detected flag */
 	u16 calculated_freq;	     /**< calculated commutation frequency */
-	u32 in_range_counter;        /**< how long are we in a valid direct control window */
+	u32 in_range_counter;	     /**< how long are we in a valid direct control window */
 };
 
 extern struct comm_params comm_params;

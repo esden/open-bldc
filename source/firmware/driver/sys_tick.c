@@ -51,8 +51,8 @@ u32 sys_tick_global_counter = 0;
  */
 struct sys_tick_timer {
 	sys_tick_timer_callback_t callback; /**< Callback function pointer */
-	u32 start_time; /**< Start timestamp of the timer */
-	u32 delta_time; /**< Duration of the timer */
+	u32 start_time;	/**< Start timestamp of the timer */
+	u32 delta_time;	/**< Duration of the timer */
 };
 
 /**
@@ -70,7 +70,7 @@ void sys_tick_init(void)
 	/* Setup SysTick Timer for 1uSec Interrupts */
 	SysTick_Config(72000000 / 10000);
 
-	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
+	for (i = 0; i < SYS_TICK_TIMER_NUM; i++) {
 		sys_tick_timers[i].callback = 0;
 		sys_tick_timers[i].start_time = 0;
 		sys_tick_timers[i].delta_time = 0;
@@ -100,9 +100,9 @@ u32 sys_tick_get_timer(void)
  */
 int sys_tick_check_timer(u32 timer, u32 time)
 {
-	if((sys_tick_global_counter - timer) > time) {
+	if ((sys_tick_global_counter - timer) > time) {
 		return 1;
-	}else{
+	} else {
 		return 0;
 	}
 }
@@ -120,8 +120,8 @@ int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time)
 	int i;
 	u32 start_time = sys_tick_global_counter;
 
-	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
-		if(!sys_tick_timers[i].callback){
+	for (i = 0; i < SYS_TICK_TIMER_NUM; i++) {
+		if (!sys_tick_timers[i].callback) {
 			sys_tick_timers[i].callback = callback;
 			sys_tick_timers[i].start_time = start_time;
 			sys_tick_timers[i].delta_time = time;
@@ -160,11 +160,10 @@ void sys_tick_handler(void)
 
 	sys_tick_global_counter++;
 
-	for(i = 0; i < SYS_TICK_TIMER_NUM; i++){
-		if(sys_tick_timers[i].callback &&
-			sys_tick_check_timer(
-				sys_tick_timers[i].start_time,
-				sys_tick_timers[i].delta_time)) {
+	for (i = 0; i < SYS_TICK_TIMER_NUM; i++) {
+		if (sys_tick_timers[i].callback &&
+		    sys_tick_check_timer(sys_tick_timers[i].start_time,
+					 sys_tick_timers[i].delta_time)) {
 			sys_tick_timers[i].start_time = sys_tick_global_counter;
 			sys_tick_timers[i].callback(i);
 		}

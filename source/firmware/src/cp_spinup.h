@@ -27,12 +27,12 @@ void cp_spinup_init(void);
 void cp_spinup_reset(void);
 
 enum control_process_cb_state
-control_process_spinup_state_in_cb(struct control_process * cps);
+control_process_spinup_state_in_cb(struct control_process *cps);
 
 enum control_process_cb_state
-control_process_spinup_cb(struct control_process * cps);
+control_process_spinup_cb(struct control_process *cps);
 
 enum control_process_cb_state
-control_process_spinup_state_out_cb(struct control_process * cps);
+control_process_spinup_state_out_cb(struct control_process *cps);
 
 #endif /* __CP_SPINUP_H */

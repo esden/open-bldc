@@ -48,7 +48,8 @@ bool *control_process_spinning_trigger = &comm_tim_trigger;
  * control process to exit the closed loop.
  */
 enum control_process_cb_state
-control_process_spinning_cb(struct control_process * cps) {
+control_process_spinning_cb(struct control_process *cps)
+{
 	if (comm_data.bemf_crossing_detected) {
 		comm_data.bemf_crossing_detected = false;
 		cps->bemf_crossing_counter++;
@@ -71,17 +72,18 @@ control_process_spinning_cb(struct control_process * cps) {
  * Calls cp_spinning_reset and registers control_process_spinning_cb
  * as handler for control process state cps_spinning.
  */
-void cp_spinning_init(void) {
+void cp_spinning_init(void)
+{
 	cp_spinning_reset();
 	control_process_register_cb(cps_spinning,
 				    control_process_spinning_trigger,
-				    control_process_spinning_cb,
-				    0, 0);
+				    control_process_spinning_cb, 0, 0);
 }
 
 /**
  * Reset function for the aligning callback process.
  * Currently empty.
  */
-void cp_spinning_reset(void) {
+void cp_spinning_reset(void)
+{
 }

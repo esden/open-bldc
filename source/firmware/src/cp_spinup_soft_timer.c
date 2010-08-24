@@ -101,7 +101,8 @@ void cp_spinup_reset(void)
  * Implements a simplicistic spin up using a soft timer as a time base.
  */
 enum control_process_cb_state
-control_process_spinup_cb(struct control_process * cps) {
+control_process_spinup_cb(struct control_process *cps)
+{
 
 #if 0
 	/* Check if the spinning process is able to run */
@@ -113,7 +114,7 @@ control_process_spinup_cb(struct control_process * cps) {
 
 	/* Calculate the duration of the next commutation cycle */
 	spinup_process.step = spinup_process.step -
-		(spinup_process.step / CP_SST_DEC_DIV);
+	    (spinup_process.step / CP_SST_DEC_DIV);
 
 	/* Give up if the commutation speed exeeds limit and the spinning
 	 * process is still not happy
@@ -130,13 +131,13 @@ control_process_spinup_cb(struct control_process * cps) {
  * process state cps_spinup.
  */
 enum control_process_cb_state
-control_process_spinup_state_in_cb(struct control_process * cps) {
+control_process_spinup_state_in_cb(struct control_process *cps)
+{
 	cp_spinup_reset();
 
 	spinup_process.timer =
-		sys_tick_timer_register(
-			control_process_soft_timer_callback,
-			spinup_process.timer);
+	    sys_tick_timer_register(control_process_soft_timer_callback,
+				    spinup_process.timer);
 
 	return cps_cb_continue;
 }
@@ -147,7 +148,8 @@ control_process_spinup_state_in_cb(struct control_process * cps) {
  * next control process state.
  */
 enum control_process_cb_state
-control_process_spinup_state_out_cb(struct control_process * cps) {
+control_process_spinup_state_out_cb(struct control_process *cps)
+{
 
 	sys_tick_timer_unregister(spinup_process.timer);
 

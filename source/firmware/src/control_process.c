@@ -28,7 +28,6 @@
  * whole controller is implemented here.
  */
 
-
 #include "types.h"
 #include "config.h"
 
@@ -53,20 +52,21 @@ void control_process_handle_cb_state(enum control_process_cb_state cb_ret);
  * <state> strategy that implements <state>.h.
  */
 
-struct control_process control_process; /**< Internal state struct instance */
+struct control_process control_process;	/**< Internal state struct instance */
 
 /**
  * Control process state callback function pointer definition.
  */
-typedef enum control_process_cb_state (*cps_callback)(struct control_process * cps);
+typedef enum control_process_cb_state (*cps_callback) (struct control_process *
+						       cps);
 
 /**
  * Control process event hook slot definition.
  */
 struct cps_event_hook {
-	bool *trigger;                    /**< Trigger the callback should be called upon */
-	cps_callback callback;            /**< Pointer to the callback function */
-	cps_callback state_in_callback;   /**< Pointer to the callback function */
+	bool *trigger;			  /**< Trigger the callback should be called upon */
+	cps_callback callback;		  /**< Pointer to the callback function */
+	cps_callback state_in_callback;	  /**< Pointer to the callback function */
 	cps_callback state_out_callback;  /**< Pointer to the callback function */
 };
 
@@ -102,15 +102,17 @@ static struct cps_event_hook control_process_cb_hook_register[cps_num_states];
  * @endcode
  */
 void control_process_register_cb(enum control_process_state cp_state,
-				 bool *trigger,
+				 bool * trigger,
 				 cps_callback callback_fun,
 				 cps_callback state_in_callback_fun,
 				 cps_callback state_out_callback_fun)
 {
-	control_process_cb_hook_register[cp_state].trigger            = trigger;
-	control_process_cb_hook_register[cp_state].callback           = callback_fun;
-	control_process_cb_hook_register[cp_state].state_in_callback  = state_in_callback_fun;
-	control_process_cb_hook_register[cp_state].state_out_callback = state_out_callback_fun;
+	control_process_cb_hook_register[cp_state].trigger = trigger;
+	control_process_cb_hook_register[cp_state].callback = callback_fun;
+	control_process_cb_hook_register[cp_state].state_in_callback =
+	    state_in_callback_fun;
+	control_process_cb_hook_register[cp_state].state_out_callback =
+	    state_out_callback_fun;
 }
 
 /**
@@ -142,10 +144,10 @@ void control_process_reset(void)
 	cp_spinning_reset();
 	cp_error_reset();
 
-	control_process.state  = cps_idle;
+	control_process.state = cps_idle;
 	control_process.ignite = false;
-	control_process.kill   = false;
-	control_process.bemf_crossing_counter      = 0;
+	control_process.kill = false;
+	control_process.bemf_crossing_counter = 0;
 	control_process.bemf_lost_crossing_counter = 0;
 }
 
@@ -169,10 +171,10 @@ void control_process_kill(void)
 {
 	comm_process_closed_loop_off();
 	pwm_off();
-	comm_tim_trigger_comm      = false;
+	comm_tim_trigger_comm = false;
 	comm_tim_trigger_comm_once = false;
-	control_process.kill       = true;
-	control_process.state      = cps_idle;
+	control_process.kill = true;
+	control_process.state = cps_idle;
 }
 
 /**
@@ -204,12 +206,15 @@ void control_process_kill(void)
  */
 void run_control_process(void)
 {
-	enum control_process_cb_state cb_ret  = cps_error;
+	enum control_process_cb_state cb_ret = cps_error;
 	enum control_process_state last_state = control_process.state;
-	
+
 	if (*control_process_cb_hook_register[control_process.state].trigger) {
-		*control_process_cb_hook_register[control_process.state].trigger = false;
-		cb_ret = control_process_cb_hook_register[control_process.state].callback(&control_process);
+		*control_process_cb_hook_register[control_process.state].
+		    trigger = false;
+		cb_ret =
+		    control_process_cb_hook_register[control_process.state].
+		    callback(&control_process);
 	}
 
 	control_process_handle_cb_state(cb_ret);
@@ -217,13 +222,20 @@ void run_control_process(void)
 	if (last_state != control_process.state) {
 		// Callback changed state of control process, so
 		// if set, we call the last state's state_out_callback ...
-		if (control_process_cb_hook_register[last_state].state_out_callback) {
-			cb_ret = control_process_cb_hook_register[last_state].state_out_callback(&control_process);
+		if (control_process_cb_hook_register[last_state].
+		    state_out_callback) {
+			cb_ret =
+			    control_process_cb_hook_register[last_state].
+			    state_out_callback(&control_process);
 			control_process_handle_cb_state(cb_ret);
 		}
 		// ... and the next state's state_in_callback
-		if (control_process_cb_hook_register[control_process.state].state_in_callback) {
-			cb_ret = control_process_cb_hook_register[control_process.state].state_in_callback(&control_process);
+		if (control_process_cb_hook_register[control_process.state].
+		    state_in_callback) {
+			cb_ret =
+			    control_process_cb_hook_register[control_process.
+							     state].
+			    state_in_callback(&control_process);
 			control_process_handle_cb_state(cb_ret);
 		}
 	}
@@ -242,14 +254,14 @@ void control_process_handle_cb_state(enum control_process_cb_state cb_ret)
 	}
 	if (cb_ret < 0 || cb_ret >= cps_num_states) {
 		// Callback state is undefined
-		control_process_cb_hook_register[cps_error].callback(&control_process);
+		control_process_cb_hook_register[cps_error].
+		    callback(&control_process);
 	}
 	// Could also be implemented in error handling strategy:
 	if (cb_ret == cps_cb_exit_control) {
 		// Callback wants process to exit closed loop
 		control_process_kill();
-	}
-	else if (cb_ret == cps_cb_resume_control) {
+	} else if (cb_ret == cps_cb_resume_control) {
 		// Callback wants us to enter closed loop
 		comm_process_closed_loop_on();
 	}

@@ -27,7 +27,6 @@
  * while loop?
  */
 
-
 #include "exceptions.h"
 
 /**

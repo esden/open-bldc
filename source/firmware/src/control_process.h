@@ -26,14 +26,13 @@
  */
 #define CONTROL_PROCESS_ALIGN_TIME 200
 
-
 #include <cmsis/stm32.h>
 
 /**
  * Control process state machine states
  */
 enum control_process_state {
-	cps_error=0,
+	cps_error = 0,
 	cps_idle,
 	cps_aligning,
 	cps_spinup,
@@ -58,7 +57,7 @@ enum control_process_state {
  *
  */
 enum control_process_cb_state {
-	cps_cb_error=0,
+	cps_cb_error = 0,
 	cps_cb_continue,
 	cps_cb_exit_control,
 	cps_cb_resume_control,
@@ -70,21 +69,30 @@ enum control_process_cb_state {
  */
 struct control_process {
 	enum control_process_state state;    /**< State machine state */
-	unsigned char ignite;	               /**< Ignite mode trigger */
-	unsigned char kill;                  /**< Kill motor trigger */
+	unsigned char ignite;		       /**< Ignite mode trigger */
+	unsigned char kill;		     /**< Kill motor trigger */
 	uint32_t bemf_crossing_counter;	     /**< Valid BEMF crossing detection counter */
 	uint32_t bemf_lost_crossing_counter; /**< Invalid BEMF crossing detection counter */
 };
-
 
 void control_process_init(void);
 void control_process_ignite(void);
 void control_process_kill(void);
 void run_control_process(void);
 void control_process_register_cb(enum control_process_state cp_state,
-				 bool *trigger,
-				 enum control_process_cb_state (*callback_fun)(struct control_process * cps),
-				 enum control_process_cb_state (*state_in_callback_fun)(struct control_process * cps),
-				 enum control_process_cb_state (*state_out_callback_fun)(struct control_process * cps));
+				 bool * trigger,
+				 enum
+				 control_process_cb_state (*callback_fun)
+				 (struct control_process * cps),
+				 enum
+				 control_process_cb_state
+				 (*state_in_callback_fun) (struct
+							   control_process *
+							   cps),
+				 enum
+				 control_process_cb_state
+				 (*state_out_callback_fun) (struct
+							    control_process *
+							    cps));
 
 #endif /* __CONTROL_PROCESS_H */

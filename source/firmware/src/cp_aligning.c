@@ -58,7 +58,8 @@ static struct aligning_process aligning_process;
  * setting control_process.state to cps_spinup.
  */
 enum control_process_cb_state
-control_process_aligning_cb(struct control_process * cps) {
+control_process_aligning_cb(struct control_process *cps)
+{
 #if CP_ALIGN_ENABLE == 1
 	if (aligning_process.align_time == 0) {
 		cps->state = cps_spinup;
@@ -76,12 +77,12 @@ control_process_aligning_cb(struct control_process * cps) {
  * Calls cp_aligning_reset and registers control_process_aligning_cb
  * as handler for control process state cps_aligning.
  */
-void cp_aligning_init(void) {
+void cp_aligning_init(void)
+{
 	cp_aligning_reset();
 	control_process_register_cb(cps_aligning,
 				    control_process_aligning_trigger,
-				    control_process_aligning_cb,
-				    0, 0);
+				    control_process_aligning_cb, 0, 0);
 }
 
 /**
@@ -89,8 +90,7 @@ void cp_aligning_init(void) {
  * Sets countdown to state transition back to
  * @ref CP_ALIGN_TIME.
  */
-void cp_aligning_reset(void) {
+void cp_aligning_reset(void)
+{
 	aligning_process.align_time = CP_ALIGN_TIME;
 }
-
-

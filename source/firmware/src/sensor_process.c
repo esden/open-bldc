@@ -120,8 +120,8 @@ void run_sensor_process(void)
 	} else {
 		sensors.phase_voltage = SENSOR_OFFSET_IIR(sensors.phase_voltage,
 							  phase_voltage,
-							  sensor_params.
-							  pv.offset,
+							  sensor_params.pv.
+							  offset,
 							  sensor_params.pv.iir);
 
 	}

@@ -24,7 +24,7 @@
 #define false 0
 #define true 1
 
-typedef unsigned char bool; 
+typedef unsigned char bool;
 
 typedef uint8_t u8;
 typedef uint16_t u16;

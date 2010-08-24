@@ -24,7 +24,7 @@
  *
  * @param id timer slot the callback got called from.
  */
-typedef void (* sys_tick_timer_callback_t)(int id);
+typedef void (*sys_tick_timer_callback_t) (int id);
 
 void sys_tick_init(void);
 u32 sys_tick_get_timer(void);

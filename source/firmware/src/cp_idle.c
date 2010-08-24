@@ -47,11 +47,12 @@ bool *control_process_idle_trigger = &comm_tim_trigger;
  * to control process state cps_aligning if set.
  */
 enum control_process_cb_state
-control_process_idle_cb(struct control_process * cps) {
+control_process_idle_cb(struct control_process *cps)
+{
 	if (cps->ignite) {
 		comm_tim_trigger_comm_once = true;
 		cps->ignite = false;
-		cps->state  = cps_aligning;
+		cps->state = cps_aligning;
 	}
 	return cps_cb_continue;
 }
@@ -61,17 +62,17 @@ control_process_idle_cb(struct control_process * cps) {
  * Registers control_process_spinning_cb as handler for
  * control process state cps_idle.
  */
-void cp_idle_init(void) {
+void cp_idle_init(void)
+{
 	control_process_register_cb(cps_idle,
 				    control_process_idle_trigger,
-				    control_process_idle_cb,
-				    0, 0);
+				    control_process_idle_cb, 0, 0);
 }
 
 /**
  * Reset function of the idle state callback process,
  * currently empty.
  */
-void cp_idle_reset(void) {
+void cp_idle_reset(void)
+{
 }
-

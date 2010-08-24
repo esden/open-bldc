@@ -62,10 +62,10 @@ void sys_tick_timer_callback(int id)
 void sys_tick_timer_callback_one_shot(int id)
 {
 	static int state = 0;
-	if(state == 0){
+	if (state == 0) {
 		sys_tick_timer_update(id, 1000);
 		state++;
-	}else{
+	} else {
 		sys_tick_timer_unregister(id);
 		state--;
 	}
@@ -87,7 +87,7 @@ int main(void)
 
 	while (1) {
 		timer = sys_tick_get_timer();
-		while(!sys_tick_check_timer(timer, 500)){
+		while (!sys_tick_check_timer(timer, 500)) {
 			__asm("nop");
 		}
 		LED_ORANGE_TOGGLE();

@@ -19,7 +19,7 @@
 /**
  * @file   mc_main.c
  * @author Piotr Esden-Tempski <piotr@esden.net>
- * @date   Tue Aug 17 01:58:50 2010
+ * @date   Tue Aug 24 16:20:01 2010
  *
  * @brief  Motor controller main file.
  *
@@ -38,6 +38,7 @@
 #include "driver/usart.h"
 #include "driver/adc.h"
 #include "driver/sys_tick.h"
+#include "cpu_load_process.h"
 #include "pwm/pwm.h"
 #include "comm_tim.h"
 #include "comm_process.h"
@@ -71,6 +72,7 @@ int main(void)
 	gprot_init();
 	usart_init();
 	sys_tick_init();
+	cpu_load_process_init();
 	comm_process_init();
 	sensor_process_init();
 	adc_init();
@@ -83,6 +85,8 @@ int main(void)
 	demo = false;
 
 	while (1) {
+		run_cpu_load_process();
+
 		if (adc_new_data_trigger) {
 			adc_new_data_trigger = false;
 			run_sensor_process();

@@ -88,6 +88,9 @@ void gprot_update_flags(void);
 /* Function implementations */
 /**
  * Initialize all necessary registers and callback hooks.
+ *
+ * @todo All setup regs should be called from the respective module init
+ * functions.
  */
 void gprot_init()
 {
@@ -111,7 +114,7 @@ void gprot_init()
 		      (u16 *) & (sensors.global_current));
 	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR,
 		      (u16 *) & (sensors.phase_voltage));
-	gpc_setup_reg(10, (u16 *) & new_cycle_time);
+	gpc_setup_reg(GPROT_NEW_CYCLE_TIME, (u16 *) & new_cycle_time);
 }
 
 /**

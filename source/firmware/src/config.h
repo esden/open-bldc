@@ -43,6 +43,29 @@
 #define PWM_SCHEME pwm_scheme_6step_h_pwm_l_on
 
 /*============================================================================
+ * CPU load process (idle process) configuration
+ *============================================================================*/
+/**
+ * Time base of the CPU load calculation timeframe
+ *
+ * The time after which the counter should be taken and used for calculating
+ * the cpu load in 10us
+ */
+#define CLP_TIME_BASE 10000
+
+/**
+ * IIR filter divider value applied to the cpu load calculation
+ *
+ * counter = ((counter * iir_val) + new_counter) / (iir_val + 1)
+ */
+#define CLP_IIR_VALUE 100
+
+/**
+ * Every how many time base times send the CPU load values to the PC
+ */
+#define CLP_REPORT_DIVIDER 10
+
+/*============================================================================
  * Control process configuration
  *============================================================================*/
 

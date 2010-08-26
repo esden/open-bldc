@@ -100,20 +100,6 @@ void gprot_init()
 	gprot_flag_reg_old = 0;
 	gpc_setup_reg(GPROT_FLAG_REG_ADDR, &gprot_flag_reg);
 
-	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
-	gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
-	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &(comm_tim_data.freq));
-	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR,
-		      (u16 *) & (sensors.half_battery_voltage));
-	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR,
-		      (u16 *) & (comm_params.spark_advance));
-	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR,
-		      &(comm_params.direct_cutoff));
-	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &(comm_params.iir));
-	gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR,
-		      (u16 *) & (sensors.global_current));
-	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR,
-		      (u16 *) & (sensors.phase_voltage));
 	gpc_setup_reg(GPROT_NEW_CYCLE_TIME, (u16 *) & new_cycle_time);
 }
 

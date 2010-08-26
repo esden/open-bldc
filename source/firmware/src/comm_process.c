@@ -29,6 +29,10 @@
 
 #include "types.h"
 
+#include <lg/gpdef.h>
+#include <lg/gprotc.h>
+
+#include "gprot.h"
 #include "driver/led.h"
 #include "comm_tim.h"
 #include "comm_process.h"
@@ -57,6 +61,13 @@ s32 new_cycle_time;				/**< New commutation time
  */
 void comm_process_init(void)
 {
+
+	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR,
+		      (u16 *) & (comm_params.spark_advance));
+	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR,
+		      &(comm_params.direct_cutoff));
+	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &(comm_params.iir));
+
 	comm_process_state.rising = true;
 	comm_process_state.pwm_count = 0;
 	comm_process_state.closed_loop = false;

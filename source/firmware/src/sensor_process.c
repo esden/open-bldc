@@ -32,6 +32,7 @@
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
+#include "gprot.h"
 #include "driver/led.h"
 #include "driver/adc.h"
 #include "gprot.h"
@@ -71,6 +72,14 @@ int sensor_process_low_prio_update_cnt = 0;
  */
 void sensor_process_init(void)
 {
+
+	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR,
+		      (u16 *) & (sensors.half_battery_voltage));
+	gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR,
+		      (u16 *) & (sensors.global_current));
+	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR,
+		      (u16 *) & (sensors.phase_voltage));
+
 	sensors.phase_voltage = 0;
 	sensors.half_battery_voltage = 0;
 	sensors.global_current = 0;

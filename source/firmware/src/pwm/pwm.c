@@ -26,12 +26,18 @@
  * This is the umbrella above all the PWM schemes.
  */
 
+#include "config.h"
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/tim.h>
 #include <stm32/gpio.h>
 
-#include "config.h"
+#include <lg/types.h>
+#include <lg/gpdef.h>
+#include <lg/gprotc.h>
+
+#include "gprot.h"
 #include "pwm_schemes.h"
 #include "pwm_utils.h"
 
@@ -65,6 +71,9 @@ void pwm_init(void)
 	TIM_TimeBaseInitTypeDef tim_base;
 	TIM_OCInitTypeDef tim_oc;
 	TIM_BDTRInitTypeDef tim_bdtr;
+
+	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
+	gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
 
 	/* Enable clock for TIM1 subsystem */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |

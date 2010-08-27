@@ -95,7 +95,8 @@ void cp_spinup_init(void)
 void cp_spinup_reset(void)
 {
 	spinup_process.step = CP_SST_MAX_STEP << CP_SST_FIXED_POINT;
-	spinup_process.hold = 50000;
+	spinup_process.hold = CP_SST_HOLD;
+	pwm_val = CP_SST_POWER;
 }
 
 /**

@@ -117,18 +117,23 @@
 /**
  * Default maximum delay between commutations while spinning up
  */
-#define CP_SST_MAX_STEP 3000
+#define CP_SST_MAX_STEP 1000
 
 /**
  * Default minimum delay between commutations while spinning up
  *
  * When the minimum delay is reached the spinup process gives up.
  */
-#define CP_SST_MIN_STEP 500
+#define CP_SST_MIN_STEP 300
 
 /**
  * Default decrement divider for spinup
  */
-#define CP_SST_DEC_DIV 100
+#define CP_SST_DEC_DIV 150
+
+/**
+ * How long to hold the maximum step if staying in open loop
+ */
+#define CP_SST_HOLD 1000
 
 #endif /* __CONFIG_H */

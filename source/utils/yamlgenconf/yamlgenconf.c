@@ -17,7 +17,7 @@
  */
 
 #include <yaml.h>
-#include "logging.h")
+#include "logging.h"
 #include "error_handling.h"
 
 void usage(void);

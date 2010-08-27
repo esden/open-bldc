@@ -19,6 +19,7 @@
 #include <yaml.h>
 #include "logging.h"
 #include "error_handling.h"
+#include "interpreter.h"
 
 void usage(void);
 void on_error(void);
@@ -66,41 +67,7 @@ int main(int argc, char * argv[]) {
 					return 0; 
 			}
 	
-			switch(event.type) { 
-				case YAML_NO_EVENT: 
-					break; 
-				case YAML_ALIAS_EVENT:
-					LOG_DEBUG(YAML_ALIAS_EVENT);
-					break; 
-				case YAML_DOCUMENT_START_EVENT:
-					LOG_DEBUG(YAML_DOCUMENT_START_EVENT);
-					break; 
-				case YAML_DOCUMENT_END_EVENT:
-					LOG_DEBUG(YAML_DOCUMENT_END_EVENT);
-					break; 
-				case YAML_SEQUENCE_START_EVENT: 
-					LOG_DEBUG(YAML_SEQUENCE_START_EVENT);
-					break; 
-				case YAML_SEQUENCE_END_EVENT:
-					LOG_DEBUG(YAML_SEQUENCE_END_EVENT);
-					break; 
-				case YAML_SCALAR_EVENT: 
-					LOG_DEBUG(YAML_SCALAR_EVENT);
-					break; 
-				case YAML_MAPPING_START_EVENT: 
-					LOG_DEBUG(YAML_MAPPING_START_EVENT);
-					break; 
-				case YAML_MAPPING_END_EVENT: 
-					LOG_DEBUG(YAML_MAPPING_END_EVENT);
-					break; 
-				case YAML_STREAM_START_EVENT: 
-					LOG_DEBUG(YAML_STREAM_START_EVENT);
-					break; 
-				case YAML_STREAM_END_EVENT: 
-					LOG_DEBUG(YAML_STREAM_END_EVENT);
-					done = 1; 
-					break; 
-			}
+			done = (interpret_next_event(&event) == DONE);
 
 			/* The application is responsible for destroying the event object. */
 			yaml_event_delete(&event);

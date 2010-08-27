@@ -44,6 +44,7 @@
 #include "comm_process.h"
 #include "sensor_process.h"
 #include "control_process.h"
+#include "bemf_hardware_detect.h"
 
 /**
  * Running in demo mode flag
@@ -75,10 +76,11 @@ int main(void)
 	cpu_load_process_init();
 	comm_process_init();
 	sensor_process_init();
-	adc_init();
+	//adc_init();
 	pwm_init();
 	comm_tim_init();
 	control_process_init();
+	bemf_hd_init();
 
 	demo_counter = 500;
 	demo_dir = 1;

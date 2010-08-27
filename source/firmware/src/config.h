@@ -124,7 +124,7 @@
  *
  * When the minimum delay is reached the spinup process gives up.
  */
-#define CP_SST_MIN_STEP 300
+#define CP_SST_MIN_STEP 100
 
 /**
  * Default decrement divider for spinup

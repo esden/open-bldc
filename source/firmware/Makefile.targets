@@ -60,7 +60,8 @@ mc.OBJECTS = \
 	src/cp_spinup_$(CP_SPINUP_STRATEGY).o \
 	src/cp_spinning.o \
 	src/cp_error.o \
-	src/control_process.o
+	src/control_process.o \
+	src/bemf_hardware_detect.o
 
 OBJECTS += $(mc.OBJECTS)
 

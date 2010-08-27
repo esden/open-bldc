@@ -50,6 +50,9 @@ struct aligning_process {
 };
 static struct aligning_process aligning_process;
 
+enum control_process_cb_state
+control_process_aligning_state_in_cb(struct control_process * cps);
+
 /**
  * Callback function to be hooked as handler for state
  * cps_aligning in control_process.c.
@@ -84,7 +87,8 @@ void cp_aligning_init(void)
 	cp_aligning_reset();
 	control_process_register_cb(cps_aligning,
 				    control_process_aligning_trigger,
-				    control_process_aligning_cb, 0, 0);
+				    control_process_aligning_cb,
+				    control_process_aligning_state_in_cb, 0);
 }
 
 /**
@@ -95,6 +99,7 @@ void cp_aligning_init(void)
 void cp_aligning_reset(void)
 {
 	aligning_process.align_time = CP_ALIGN_TIME;
+	pwm_val = CP_ALIGN_POWER;
 }
 
 /**
@@ -104,6 +109,7 @@ void cp_aligning_reset(void)
 enum control_process_cb_state
 control_process_aligning_state_in_cb(struct control_process * cps) {
 #if CP_ALIGN_ENABLE == 1
+	cp_aligning_reset();
 	pwm_comm();
 #endif
 

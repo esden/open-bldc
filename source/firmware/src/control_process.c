@@ -207,7 +207,7 @@ void control_process_kill(void)
 void run_control_process(void)
 {
 	enum control_process_cb_state cb_ret = cps_error;
-	enum control_process_state last_state = control_process.state;
+	static enum control_process_state last_state = cps_idle;
 
 	if (*control_process_cb_hook_register[control_process.state].trigger) {
 		*control_process_cb_hook_register[control_process.state].
@@ -240,6 +240,7 @@ void run_control_process(void)
 		}
 	}
 
+	last_state = control_process.state;
 }
 
 /**

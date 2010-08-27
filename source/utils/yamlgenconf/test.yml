@@ -1,0 +1,61 @@
+---
+
+flag:
+    pwm_comm: 
+        bit: 0
+        widget: Checkbox
+    comm_tim: 
+        bit: 1
+        widget: Checkbox
+    adc_comm: 
+        bit: 2
+        widget: Checkbox
+    all_lo: 
+        bit: 3
+        widget: Button
+    all_hi: 
+        bit: 4
+        widget: Button
+
+flags_reg_addr: 
+    register: 0
+    ro: yes
+
+pwm_offset_reg_addr: 
+    register: 1
+    label: Offset register address
+    widget: 
+        class: SpinBox
+        ctype: u16
+        dtype: plain
+        min: 0
+        max: 666
+pwm_val_reg_addr: 
+    register: 2
+    label: PWM value register address
+    widget: SpinScrollBox
+
+comm_tim_freq_reg_addr: 
+    register: 3
+    label: 
+
+adc_zero_value_reg_addr: 
+    register: 4
+
+comm_tim_spark_advance_reg_addr: 
+    register: 5
+
+comm_tim_direct_cutoff_reg_addr: 
+    register: 6
+
+comm_tim_iir_pole_reg_addr: 
+    register: 7
+
+adc_global_current_reg_addr: 
+    register: 8
+    ro: yes
+
+adc_phase_voltage_reg_addr: 
+    register: 9
+    ro: yes
+

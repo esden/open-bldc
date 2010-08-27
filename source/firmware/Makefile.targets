@@ -37,7 +37,7 @@ TARGETS = mc test_blink test_governor test_32bit_tim test_sys_tick
 
 #CP_IDLE_STRATEGY ?=
 #CP_ALIGNING_STRATEGY ?=
-CP_SPINUP_STRATEGY ?= 2step
+CP_SPINUP_STRATEGY ?= soft_timer
 #CP_SPINNING_STRATEGY ?=
 #CP_ERROR_STRATEGY ?=
 

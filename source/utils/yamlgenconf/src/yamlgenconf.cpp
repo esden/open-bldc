@@ -17,9 +17,9 @@
  */
 
 #include <yaml.h>
-#include "logging.h"
-#include "error_handling.h"
-#include "interpreter.h"
+#include "logging.hpp"
+#include "error_handling.hpp"
+#include "interpreter.hpp"
 
 void usage(void);
 void on_error(void);
@@ -42,6 +42,8 @@ int main(int argc, char * argv[]) {
 	memset(&event,    0, sizeof(event));
 	memset(&emitter,  0, sizeof(emitter));
 	memset(&document, 0, sizeof(document));
+
+	Interpreter interpreter; 
 
 	/* Create the Parser object */
 	if(!yaml_parser_initialize(&parser)) { on_parser_error(&parser); }
@@ -67,7 +69,7 @@ int main(int argc, char * argv[]) {
 					return 0; 
 			}
 	
-			done = (interpret_next_event(&event) == DONE);
+			done = (interpreter.next_event(&event) == Interpreter::DONE);
 
 			/* The application is responsible for destroying the event object. */
 			yaml_event_delete(&event);

@@ -1,11 +1,10 @@
 
-CC=gcc
-CFLAGS=-Wall -I./include
+CC=g++
+CFLAGS=-Wall -I./include -DLOG=$(LOG)
 LIBS=-lyaml
 
-#OBJ=yamlgenconf.o error_handling.o
-HDEPS=error_handling.h logging.h
-OBJFILES = yamlgenconf.o error_handling.o 
+HDEPS=error_handling.hpp logging.hpp interpreter.hpp
+OBJFILES = yamlgenconf.o error_handling.o interpreter.o
 
 BINDIR=./bin
 IDIR=./include
@@ -16,7 +15,7 @@ DEPS = $(patsubst %,$(IDIR)/%,$(HDEPS))
 OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
 
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.c $(DEPS)
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
 yamlgenconf: $(OBJ)
@@ -25,5 +24,5 @@ yamlgenconf: $(OBJ)
 .PHONY: clean
 
 clean: 
-	rm -Rf ./$(BUILDDIR)/* ./$(BINDIR)/yamlgenconf ./$(IDIR)/*~ ./*~ 
+	rm -Rf ./$(BUILDDIR)/* ./$(BINDIR)/yamlgenconf ./$(IDIR)/*~ ./$(SRCDIR)/*~ ./*~ 
 

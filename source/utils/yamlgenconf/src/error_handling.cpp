@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "error_handling.h"
 #include <yaml.h>
+#include "error_handling.hpp"
 
 void on_parser_error(yaml_parser_t * parser) {
 

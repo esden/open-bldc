@@ -67,7 +67,7 @@ void bemf_hd_init(void)
 	 * Pin 2 -> BEMF/I_Sense of PHASE C
 	 */
 	gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
-	gpio.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	gpio.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_Init(GPIOA, &gpio);
 
 	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);

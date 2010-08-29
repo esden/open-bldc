@@ -8,7 +8,7 @@
 #include "logging.hpp"
 
 void
-YAMLConfig::read(const char * filename) throw (ParserException, InterpreterException) 
+YAMLConfig::read(char const * filename) throw (ParserException, InterpreterException) 
 {
 	yaml_parser_t parser;
 	yaml_event_t event;
@@ -33,16 +33,11 @@ YAMLConfig::read(const char * filename) throw (ParserException, InterpreterExcep
 			if (!yaml_parser_parse(&parser, &event)) {
 					on_parser_error(&parser);
 					yaml_event_delete(&event);
-					return 0; 
+					return; 
 			}
-	
-			try { 
-				done = (interpreter.next_event(&event) == Interpreter::DONE);
-			} catch (InterpreterException ie) { 
-				on_parse_error(&parser);
-				fprintf(stderr, "ERROR: %s", ie.what());
-			}
-
+			
+			done = (m_interpreter.next_event(&event) == Interpreter::DONE);
+			
 			/* The application is responsible for destroying the event object. */
 			yaml_event_delete(&event);
 	}
@@ -54,51 +49,6 @@ YAMLConfig::read(const char * filename) throw (ParserException, InterpreterExcep
 void
 YAMLConfig::on_parse_error(yaml_parser_t * parser) 
 { 
-	switch(parser->error) {
-		case YAML_MEMORY_ERROR: 
-			throw ParserException("Memory error");
-			break;
-		case YAML_READER_ERROR:
-			throw ParserException("Reader error");
-
-			if (parser->problem_value != -1) {
-				throw ParserException("Reader error", parser->problem, 
-															parser->problem_value, parser->problem_offset);
-			}
-			else {
-				throw ParserException("Reader error", parser->problem, 
-															parser->problem_offset);
-			}
-			break; 
-		case YAML_SCANNER_ERROR:
-			if(parser->context) { 
-				throw ParserException("Scanner error",
-															parser->context, 
-															parser->context_mark.line+1, parser->context_mark.column+1,
-															parser->problem, 
-															parser->problem_mark.line+1, parser->problem_mark.column+1);
-			}
-			else {
-				throw ParserException("Scanner error",
-															parser->problem, 
-															parser->problem_mark.line+1, parser->problem_mark.column+1);
-			}
-			break; 
-		case YAML_PARSER_ERROR: 
-			if(parser->context) { 
-				throw ParserException("Parser error",
-															parser->context, 
-															parser->context_mark.line+1, parser->context_mark.column+1,
-															parser->problem, 
-															parser->problem_mark.line+1, parser->problem_mark.column+1);
-			}
-			else {
-				throw ParserException("Parser error",
-															parser->problem, 
-															parser->problem_mark.line+1, parser->problem_mark.column+1);
-			}
-			break; 
-		default: 
-			throw ParserException("Internal error");
-	}
+	throw ParserException(parser); 
 }
+

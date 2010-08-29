@@ -56,7 +56,6 @@ void Interpreter::register_group_setting_mode(yaml_event_t * event) {
 		m_mode = REGISTER_GROUP_SETTING_VALUE;
 	}
 	else if(event->type == YAML_MAPPING_END_EVENT) { 
-		m_cur_register_group.log(); 
 		m_register_groups.push_back(m_cur_register_group); 
 		m_mode = REGISTER_GROUP_LIST;
 	}
@@ -180,7 +179,7 @@ Interpreter::widget_setting_value_mode(yaml_event_t * event) {
 void 
 Interpreter::completing_mode(yaml_event_t * event) { 
 	if(event->type != YAML_DOCUMENT_END_EVENT) {
-		throw InterpreterException(event, "At end of document");
+		throw InterpreterException(event, "Expected end of document");
 	}
 }
 

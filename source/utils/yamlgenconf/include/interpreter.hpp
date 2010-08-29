@@ -90,6 +90,16 @@ public:
 
 public: 
 
+	inline void log(void) const { 
+		::std::vector< RegisterGroupConfig>::const_iterator it; 
+		::std::vector< RegisterGroupConfig>::const_iterator end = m_register_groups.end(); 
+		for(it = m_register_groups.begin(); it != end; ++it) { 
+			(*it).log(); 
+		}
+	}
+
+public: 
+
 	interpreter_mode_t next_event(yaml_event_t * event) throw(InterpreterException);
 
 private: 

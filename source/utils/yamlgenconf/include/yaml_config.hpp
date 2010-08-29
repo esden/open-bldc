@@ -26,8 +26,12 @@ private:
 
 public: 
 
-	void read(const char * filename) throw (ParserException, InterpreterException);
+	void read(char const * filename) throw (ParserException, InterpreterException);
 
-}
+	inline void log(void) const { 
+		m_interpreter.log(); 
+	}
+
+};
 
 #endif

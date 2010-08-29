@@ -24,36 +24,36 @@ public:
 
 public:
 	
-	virtual const char * what() const throw() { 
+	virtual const char * what() const throw () { 
 		::std::string s; 
 		::std::stringstream ss; 
 
 		ss << ::std::string(m_what); 
-		ss << ": unexpected "; 
+		ss << " (unexpected "; 
 		switch(m_yaml_event->type) { 
 			case YAML_NO_EVENT: 
-				ss << " no event ";
+				ss << "no event";
 				break; 
 			case YAML_ALIAS_EVENT: 
-				ss << " alias event ";
+				ss << "alias event ";
 				break; 
 			case YAML_STREAM_START_EVENT: 
-				ss << " stream start ";
+				ss << "stream start";
 				break; 
 			case YAML_STREAM_END_EVENT: 
-				ss << " stream end ";
+				ss << "stream end";
 				break; 
 			case YAML_DOCUMENT_START_EVENT: 
-				ss << " document start ";
+				ss << "document start";
 				break; 
 			case YAML_DOCUMENT_END_EVENT: 
-				ss << " document end ";
+				ss << "document end";
 				break; 
 			case YAML_SEQUENCE_START_EVENT: 
-				ss << " sequence start ";
+				ss << "sequence start";
 				break; 
 			case YAML_SEQUENCE_END_EVENT: 
-				ss << " sequence end ";
+				ss << "sequence end";
 				break; 
 			case YAML_SCALAR_EVENT: 
 				ss << "scalar value";
@@ -65,6 +65,7 @@ public:
 				ss << "end of mapping";
 				break; 
 		}
+		ss << ")"; 
 		ss << ::std::endl;
 		s = ss.str(); 
 

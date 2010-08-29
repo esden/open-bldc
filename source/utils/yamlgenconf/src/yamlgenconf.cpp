@@ -17,74 +17,30 @@
  */
 
 #include <yaml.h>
-#include "logging.hpp"
-#include "error_handling.hpp"
-#include "interpreter.hpp"
+#include "yaml_config.hpp"
 #include "interpreter_exception.hpp"
+#include "parser_exception.hpp"
 
 void usage(void);
-void on_error(void);
-
-static yaml_parser_t parser;
-static yaml_event_t event;
-static yaml_document_t document;
 
 int main(int argc, char * argv[]) {
-
-	int done = 0;
 
 	if(argc < 2) { 
 		usage(); 
 		return 1; 
 	}
 
-	memset(&parser,   0, sizeof(parser));
-	memset(&event,    0, sizeof(event));
-	memset(&document, 0, sizeof(document));
-
-	Interpreter interpreter; 
-
-	/* Create the Parser object */
-	if(!yaml_parser_initialize(&parser)) { on_parser_error(&parser); }
-
-	/* Set a file input */
-	FILE * input = fopen(argv[1], "rb");
-	if(!input) { 
-		fprintf(stderr, "Could not open file");
+	YAMLConfig config;
+	try { 
+		config.read(argv[1]);
+	} catch(ParserException pe) { 
+		fprintf(stderr, "%s\n", pe.what());
+	} catch(InterpreterException ie) { 
+		fprintf(stderr, "%s\n", ie.what());
 	}
 
-	yaml_parser_set_input_file(&parser, input);
+	config.log(); 
 
-	/* Read the event sequence */
-	while (!done) {
-
-			/* Get the next event */
-			if (!yaml_parser_parse(&parser, &event)) {
-					on_parser_error(&parser);
-					on_error(); 
-					yaml_event_delete(&event);
-					return 0; 
-			}
-	
-			try { 
-				done = (interpreter.next_event(&event) == Interpreter::DONE);
-			} catch (InterpreterException ie) { 
-				fprintf(stderr, "ERROR: %s", ie.what());
-				return 1; 
-			}
-
-			/* The application is responsible for destroying the event object. */
-			yaml_event_delete(&event);
-	}
-
-	/* Destroy the Parser object. */
-	yaml_parser_delete(&parser);
-
-	return 1;
-}
-
-void on_error(void) { 
-	yaml_parser_delete(&parser);
 }
 
 void usage(void) { 

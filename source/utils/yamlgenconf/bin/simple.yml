@@ -18,12 +18,16 @@ PWM:
         min: 2
         max: 200
 ADC: 
-  description: ADC settings
   registers: 
     adc_reg_addr: 
-      register: 2
-      label: ADC register address
       widget: 
-        class: ADC_REG_WIDGET
+        class: ADC_WIDGET
+        foo: bar
+        barm: gnarl
         min: 3
         max: 300
+      label: ADC register address
+      register: 2
+      is_awwsum: yes
+  description: ADC settings
+

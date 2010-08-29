@@ -9,6 +9,9 @@
 #include "widget_config.hpp"
 #include "interpreter_exception.hpp"
 
+#define register_handler(mode, fun) \
+	m_mode_handlers[mode] = &Interpreter::fun
+
 class Interpreter
 {
 
@@ -35,6 +38,9 @@ public:
 		DONE
 	} interpreter_mode_t;
 
+	typedef void (Interpreter::*mode_handler_fun)(yaml_event_t * event); 
+	mode_handler_fun m_mode_handlers[DONE+1];
+
 private:
 	
 	interpreter_mode_t m_mode; 
@@ -54,7 +60,21 @@ public:
 
 	Interpreter()
 	: m_mode(INIT)
-	{ }
+	{ 
+		register_handler(INIT, 												 init_mode); 
+		register_handler(REGISTER_LIST,                register_list_mode); 
+		register_handler(REGISTER_CONFIG,              register_config_mode); 
+		register_handler(REGISTER_SETTING,             register_setting_mode); 
+		register_handler(REGISTER_SETTING_VALUE,       register_setting_value_mode); 
+		register_handler(REGISTER_GROUP_LIST,          register_group_list_mode); 
+		register_handler(REGISTER_GROUP_CONFIG,        register_group_config_mode); 
+		register_handler(REGISTER_GROUP_SETTING,       register_group_setting_mode); 
+		register_handler(REGISTER_GROUP_SETTING_VALUE, register_group_setting_value_mode); 
+		register_handler(WIDGET_CONFIG,                widget_config_mode); 
+		register_handler(WIDGET_SETTING,               widget_setting_mode); 
+		register_handler(WIDGET_SETTING_VALUE,         widget_setting_value_mode); 
+		register_handler(COMPLETING,                   completing_mode); 
+	}
 
 	~Interpreter() { 
 	}

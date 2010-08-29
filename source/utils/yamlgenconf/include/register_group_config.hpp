@@ -44,6 +44,14 @@ public:
 		m_description = ::std::string((const char * )(description)); 
 	}
 
+	inline void log(void) const { 
+		LOG_INFO_PRINT("Register group %s, description: %s", m_name.c_str(), m_description.c_str());
+		::std::vector<RegisterConfig>::const_iterator it; 
+		::std::vector<RegisterConfig>::const_iterator end = m_register_configs.end(); 
+		for(it = m_register_configs.begin(); it != end; ++it) { 
+					(*it).log(); 
+		}
+	}
 
 };
 

@@ -36,11 +36,12 @@ public:
 		::std::map< ::std::string, ::std::string>::const_iterator it; 
 		::std::map< ::std::string, ::std::string>::const_iterator end = m_properties.end(); 
 
-		LOG_INFO_PRINT("     | Register %s", m_name.c_str());
+		LOG_INFO_PRINT("     Register %s", m_name.c_str());
 		for(it = m_properties.begin(); it != end; ++it) { 
 			LOG_INFO_PRINT("     |- %s = %s", 
 					(*it).first.c_str(), (*it).second.c_str());
 		}
+		m_widget_config.log(); 
 	}
 
 	inline void set_properties(const ::std::map< ::std::string, ::std::string> & props) { 

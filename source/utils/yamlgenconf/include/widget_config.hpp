@@ -1,29 +1,40 @@
 #ifndef WIDGET_CONFIG_HPP
 #define WIDGET_CONFIG_HPP
 
+#include <string>
+#include <map>
+
+#include "config.hpp"
+#include "logging.hpp"
+
 class WidgetConfig : Config
 {
 
 private: 
 
-	::std::string m_classname; 
-	::std::string m_ctype; 
-	::std::string m_dtype; 
-	float m_min; 
-	float m_max; 
-	float m_default; 
+	::std::map< ::std::string, ::std::string > m_properties; 
 
 public:
 
-	void set_classname(::std::string const & classname) { m_classname = classname; }
-	::std::string const & classname(void) const { return m_classname; }
+	WidgetConfig() { 
+	} 
 
-	void set_ctype(::std::string const & ctype) { m_ctype = ctype; }
-	::std::string const & ctype(void) const { return m_ctype; }
+	inline void log(void) const { 
+		::std::map< ::std::string, ::std::string>::const_iterator it; 
+		::std::map< ::std::string, ::std::string>::const_iterator end = m_properties.end(); 
 
-	void set_dtype(::std::string const & dtype) { m_dtype = dtype; }
-	::std::string const & dtype(void) const { return m_dtype; }
+		LOG_INFO_PRINT("       | Widget");
+		for(it = m_properties.begin(); it != end; ++it) { 
+			LOG_INFO_PRINT("       |- %s = %s", 
+					(*it).first.c_str(), (*it).second.c_str());
+		}
+	}
 
+	inline void set_property(const ::std::string & name, 
+													 const ::std::string & value) 
+	{
+		m_properties.insert(::std::pair< ::std::string, ::std::string >(name, value));	
+	}
 };
 
 #endif

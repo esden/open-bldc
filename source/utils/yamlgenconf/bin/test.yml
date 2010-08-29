@@ -1,21 +1,21 @@
 ---
-
-flag:
-  pwm_comm: 
-    bit: 0
-    widget: Checkbox
-  comm_tim: 
-    bit: 1
-    widget: Checkbox
-  adc_comm: 
-    bit: 2
-    widget: Checkbox
-  all_lo: 
-    bit: 3
-    widget: Button
-  all_hi: 
-    bit: 4
-    widget: Button
+#
+# flag:
+#   pwm_comm: 
+#     bit: 0
+#     widget: Checkbox
+#   comm_tim: 
+#     bit: 1
+#     widget: Checkbox
+#   adc_comm: 
+#     bit: 2
+#     widget: Checkbox
+#   all_lo: 
+#     bit: 3
+#     widget: Button
+#   all_hi: 
+#     bit: 4
+#     widget: Button
 
 Flags: 
   description: Flag register
@@ -40,7 +40,8 @@ PWM:
     pwm_val_reg_addr: 
       register: 2
       label: PWM value register address
-      widget: SpinScrollBox
+      widget: 
+        class: SpinScrollBox
 
 ADC: 
   description: Register settings for the A/D converter

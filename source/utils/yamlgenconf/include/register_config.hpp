@@ -2,17 +2,19 @@
 #define REGISTER_CONFIG_HPP__
 
 #include <string>
+#include <map>
+
 #include "config.hpp"
+#include "logging.hpp"
 
 class RegisterConfig : public Config 
 {
 	
 private: 
-	unsigned char 	m_register; 
-	::std::string 	m_name; 
-	::std::string 	m_label; 
-	bool 						m_readonly;
-	WidgetConfig		m_widget_config;
+
+	::std::string m_name; 
+	::std::map< ::std::string, ::std::string > m_properties; 
+	WidgetConfig m_widget_config;
 
 public: 
 
@@ -24,30 +26,37 @@ public:
 	}
 
 	RegisterConfig() 
-	: m_register(-1), m_name(""), m_label(""), m_readonly(false) { } 
+	: m_name("") { } 
 
 	~RegisterConfig() { } 
 
 public:
 
-	inline void set_property(const ::std::string & name, 
-													 const ::std::string & value) { 
-		
+	inline void log(void) const { 
+		::std::map< ::std::string, ::std::string>::const_iterator it; 
+		::std::map< ::std::string, ::std::string>::const_iterator end = m_properties.end(); 
+
+		LOG_INFO_PRINT("     | Register %s", m_name.c_str());
+		for(it = m_properties.begin(); it != end; ++it) { 
+			LOG_INFO_PRINT("     |- %s = %s", 
+					(*it).first.c_str(), (*it).second.c_str());
+		}
 	}
 
-	inline void set_name(::std::string const & name) { m_name = name; }
-	inline ::std::string const & name(void) const { return m_name; }
-	
-	inline void set_label(::std::string const & label) { m_label = label; }
-	inline ::std::string const & label(void) const { return m_label; }
+	inline void set_properties(const ::std::map< ::std::string, ::std::string> & props) { 
+		m_properties = props;
+	}
 
-	inline void set_readonly(const bool readonly) { m_readonly = readonly; }
-	inline bool readonly(void) const { return m_readonly; } 
+	inline void set_property(const ::std::string & name, 
+													 const ::std::string & value) 
+	{
+		m_properties.insert(::std::pair< ::std::string, ::std::string >(name, value));
+	}
 
-	inline void set_widget_config(WidgetConfig const & widget_config) {
+	inline void set_widget(WidgetConfig const & widget_config) {
 		m_widget_config = widget_config; 
 	}
-	inline WidgetConfig const &  widget_config(void) const { 
+	inline WidgetConfig const &  widget(void) const { 
 		return m_widget_config; 
 	}
 	

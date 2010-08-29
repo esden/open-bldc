@@ -1,17 +1,26 @@
+/**
+  Simplicistic implementation of an interpreter based on libyaml
+	as a state machine mapping libyaml parser events to an config 
+	instances tree like: 
+	- Config
+	   [ RegisterGroupConfig 
+		 		[ RegisterConfig 
+					[ WidgetConfig ]
+				]+
+		 ]+
+*/
 
 #include "interpreter.hpp"
+#include "interpreter_exception.hpp"
 #include "logging.hpp"
 #include <yaml.h>
-#include <stdarg.h>
 
-// REGISTER_LIST -> REGISTER_CONFIG -> REGISTER_SETTING -> REGISTER_SETTING_VALUE
 
-/* 
-  INIT -> REGISTER_LIST on event YAML_MAPPING_START_EVENT
-*/
 void 
 Interpreter::init_mode(yaml_event_t * event) { 
-	if(event->type != YAML_MAPPING_START_EVENT) return;
+	if(event->type != YAML_MAPPING_START_EVENT) {
+		throw InterpreterException(event, "Init");
+	}
 
 	LOG_DEBUG_PRINT("%i  BEGIN register group list", m_mode);
 	m_mode = REGISTER_GROUP_LIST; 
@@ -19,7 +28,9 @@ Interpreter::init_mode(yaml_event_t * event) {
 
 void 
 Interpreter::register_group_list_mode(yaml_event_t * event) { 
-	if(event->type != YAML_SCALAR_EVENT) return;
+	if(event->type != YAML_SCALAR_EVENT) {
+		throw InterpreterException(event, "Register group list");
+	}
 
 	LOG_INFO_PRINT("Register group '%s'", event->data.scalar.value);
 	m_cur_register_group = RegisterGroupConfig(event->data.scalar.value);
@@ -28,7 +39,9 @@ Interpreter::register_group_list_mode(yaml_event_t * event) {
 
 void 
 Interpreter::register_group_config_mode(yaml_event_t * event) { 
-	if(event->type != YAML_MAPPING_START_EVENT) return;
+	if(event->type != YAML_MAPPING_START_EVENT) {
+		throw InterpreterException(event, "Register group config");
+	}
 
 	LOG_DEBUG_PRINT("%i  BEGIN register group config", m_mode);
 	m_mode = REGISTER_GROUP_SETTING;
@@ -36,19 +49,32 @@ Interpreter::register_group_config_mode(yaml_event_t * event) {
 
 void 
 Interpreter::register_group_setting_mode(yaml_event_t * event) { 
-	if(event->type != YAML_SCALAR_EVENT) return;
+	if(event->type != YAML_SCALAR_EVENT && 
+	   event->type != YAML_MAPPING_END_EVENT) {
+		throw InterpreterException(event, "Register group setting");
+	}
 
-	m_cur_register_group_setting_name = ::std::string((const char *)(event->data.scalar.value));
+	if(event->type == YAML_SCALAR_EVENT) { 
+		m_cur_register_group_setting_name = ::std::string((const char *)(event->data.scalar.value));
 
-	LOG_DEBUG_PRINT("%i  Register group setting name '%s'", m_mode, 
-						event->data.scalar.value);
-	m_mode = REGISTER_GROUP_SETTING_VALUE;
+		LOG_DEBUG_PRINT("%i  Register group setting name '%s'", m_mode, 
+							event->data.scalar.value);
+		m_mode = REGISTER_GROUP_SETTING_VALUE;
+	}
+	else if(event->type == YAML_MAPPING_END_EVENT) { 
+		LOG_INFO_PRINT("%i  END register group config", m_mode);
+		m_register_groups.push_back(m_cur_register_group); 
+		m_mode = REGISTER_GROUP_LIST;
+	}
 }
 
 void 
 Interpreter::register_group_setting_value_mode(yaml_event_t * event) { 
 	if(event->type != YAML_SCALAR_EVENT &&
-		 event->type != YAML_MAPPING_START_EVENT) return;
+		 event->type != YAML_MAPPING_START_EVENT) {
+		throw InterpreterException(event, "Register group setting");
+	}
+
 	if(event->type == YAML_SCALAR_EVENT) { 
 		LOG_DEBUG_PRINT("%i    Register group setting value '%s' -> '%s'", m_mode, 
 							m_cur_register_group_setting_name.c_str(), 
@@ -58,66 +84,122 @@ Interpreter::register_group_setting_value_mode(yaml_event_t * event) {
 			LOG_INFO_PRINT("     Register group description is '%s'" , event->data.scalar.value);
 			m_mode = REGISTER_GROUP_SETTING; // Register group description saved, 
 																			 // look for further settings
-			return; 
-		}
-		if(strcmp(m_cur_register_group_setting_name.c_str(), "registers") == 0) { 
-			LOG_INFO_PRINT("     Reading register '%s'", event->data.scalar.value);
-			m_cur_register = RegisterConfig(event->data.scalar.value); 
-			m_mode = REGISTER_SETTING; // We expect a mapping of register settings now
-			return; 
 		}
 	}
-	if(event->type == YAML_MAPPING_START_EVENT) { 
-		LOG_DEBUG_PRINT("%i    Register group setting mapping value", m_mode);
+	else if(event->type == YAML_MAPPING_START_EVENT) { 
+		if(strcmp(m_cur_register_group_setting_name.c_str(), "registers") == 0) { 
+			m_mode = REGISTER_LIST; // We expect a mapping of register settings now
+		}
+		else { 
+			LOG_DEBUG_PRINT("%i    ERROR: Register group setting mapping, but not registers", m_mode);
+		}
 	}
 }
 
 void Interpreter::register_list_mode(yaml_event_t * event) { 
-	if(event->type != YAML_SCALAR_EVENT) return; 
+	if(event->type != YAML_SCALAR_EVENT && 
+		 event->type != YAML_MAPPING_END_EVENT) {
+		throw InterpreterException(event, "Register list");
+	}
 
 	if(event->type == YAML_SCALAR_EVENT) { 
 		LOG_DEBUG_PRINT("%i  Register name '%s'", m_mode, 
 							event->data.scalar.value);
+		m_cur_register = RegisterConfig(event->data.scalar.value); 
+		m_mode = REGISTER_CONFIG;
+	}
+	else if(event->type == YAML_MAPPING_END_EVENT) { 
+		LOG_DEBUG_PRINT("%i  Leaving register list mode", m_mode);
+		m_mode = REGISTER_GROUP_LIST; 
 	}
 }
 
 void Interpreter::register_config_mode(yaml_event_t * event) { 
 	if(event->type != YAML_SCALAR_EVENT &&
-		 event->type != YAML_MAPPING_START_EVENT) return;
+		 event->type != YAML_MAPPING_START_EVENT) {
+		throw InterpreterException(event, "Register config");
+	}
+	m_mode = REGISTER_SETTING; 
 }
 
 void Interpreter::register_setting_mode(yaml_event_t * event) { 
 	if(event->type != YAML_SCALAR_EVENT &&
-		 event->type != YAML_MAPPING_START_EVENT) return;
+		 event->type != YAML_MAPPING_START_EVENT &&
+		 event->type != YAML_MAPPING_END_EVENT) {
+		throw InterpreterException(event, "Register setting");
+	}
 
 	if(event->type == YAML_SCALAR_EVENT) { 
-		m_cur_register_setting_name = ::std::string((const char *)(event->data.scalar.value)); 
-		m_mode = REGISTER_SETTING_VALUE;
+		if(strcmp((const char *)(event->data.scalar.value), "widget") == 0) { 
+			LOG_DEBUG_PRINT("%i   Switch to widget setting mode", m_mode);
+			m_cur_widget = WidgetConfig(); 
+			m_mode = WIDGET_SETTING; 
+		} 
+		else { 
+			m_cur_register_setting_name = ::std::string((const char *)(event->data.scalar.value)); 
+			m_mode = REGISTER_SETTING_VALUE;
+		}
+	}
+	else if(event->type == YAML_MAPPING_END_EVENT) { 
+		LOG_DEBUG_PRINT("%i    Leaving register setting mode", m_mode); 
+		m_mode = REGISTER_LIST;
+		m_cur_register.log(); 
+		m_cur_widget.log(); 
+
+		m_cur_register.set_widget(m_cur_widget);
+		m_cur_register_group.add_register(m_cur_register); 
 	}
 }
 
 void Interpreter::register_setting_value_mode(yaml_event_t * event) { 
 	if(event->type != YAML_SCALAR_EVENT &&
-		 event->type != YAML_MAPPING_START_EVENT) return;
+		 event->type != YAML_MAPPING_START_EVENT) { 
+		throw InterpreterException(event, "Register setting value");
+	}
 
 	if(event->type == YAML_SCALAR_EVENT) { 
-		LOG_INFO_PRINT("		Register setting value '%s' -> '%s'", 
+		LOG_DEBUG_PRINT("		Register setting value '%s' -> '%s'", 
 							m_cur_register_setting_name.c_str(), 
 							event->data.scalar.value);
-		m_cur_register.set_property(::std::string(m_cur_register_setting_name.c_str()), 
+		m_cur_register.set_property(m_cur_register_setting_name, 
 																::std::string((const char *)(event->data.scalar.value)));
 		m_mode = REGISTER_SETTING; 
 	}
 }
 
 void
-Interpreter::widget_config_mode(yaml_event_t * event) { 
-	
+Interpreter::widget_setting_mode(yaml_event_t * event) { 
+	if(event->type != YAML_SCALAR_EVENT &&
+	   event->type != YAML_MAPPING_END_EVENT) { 
+		throw InterpreterException(event, "Widget setting");
+	}
+
+	if(event->type == YAML_SCALAR_EVENT) { 
+		m_cur_widget_setting_name = ::std::string((const char *)(event->data.scalar.value)); 
+		m_mode = WIDGET_SETTING_VALUE;
+	}
+	else if(event->type == YAML_MAPPING_END_EVENT) { 
+		LOG_DEBUG_PRINT("%i    Leaving widget mode", m_mode); 
+		m_mode = REGISTER_SETTING;
+	}
+}	
+
+void
+Interpreter::widget_setting_value_mode(yaml_event_t * event) { 
+	if(event->type != YAML_SCALAR_EVENT) {
+		throw InterpreterException(event, "Widget setting value");
+	}
+
+	m_cur_widget.set_property(m_cur_widget_setting_name, 
+														::std::string((const char *)(event->data.scalar.value)));
+	m_mode = WIDGET_SETTING; 
 }	
 
 Interpreter::interpreter_mode_t 
-Interpreter::next_event(yaml_event_t * event) {
+Interpreter::next_event(yaml_event_t * event) throw (InterpreterException)
+{
 
+#ifdef LOG
 	switch(event->type) { 
 		case YAML_NO_EVENT: 
 			break; 
@@ -138,6 +220,7 @@ Interpreter::next_event(yaml_event_t * event) {
 			break; 
 		case YAML_SCALAR_EVENT: 
 			LOG_DEBUG_EVT(YAML_SCALAR_EVENT);
+			LOG_DEBUG_PRINT("     Scalar: '%s' mode: %i", event->data.scalar.value, m_mode);
 			break; 
 		case YAML_MAPPING_START_EVENT: 
 			LOG_DEBUG_EVT(YAML_MAPPING_START_EVENT);
@@ -157,6 +240,7 @@ Interpreter::next_event(yaml_event_t * event) {
 			return ERROR; 
 			break; 
 	}
+#endif
 
 	switch(m_mode) { 
 		case INIT: 
@@ -195,7 +279,11 @@ Interpreter::next_event(yaml_event_t * event) {
 			break; 
 		case FLAG_CONFIG: 
 			break; 
-		case WIDGET_CONFIG: 
+		case WIDGET_SETTING: 
+			widget_setting_mode(event); 
+			break; 
+		case WIDGET_SETTING_VALUE: 
+			widget_setting_value_mode(event); 
 			break; 
 		case ERROR: 
 			break; 

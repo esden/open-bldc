@@ -6,6 +6,8 @@
 
 #include "flag_config.hpp"
 #include "register_group_config.hpp"
+#include "widget_config.hpp"
+#include "interpreter_exception.hpp"
 
 class Interpreter
 {
@@ -24,7 +26,8 @@ public:
 		REGISTER_GROUP_SETTING_VALUE, 
 		FLAG_LIST, 
 		FLAG_CONFIG, 
-		WIDGET_CONFIG, 
+		WIDGET_SETTING, 
+		WIDGET_SETTING_VALUE, 
 		ERROR, 
 		CONTINUE, 
 		DONE
@@ -38,10 +41,12 @@ private:
 
 	RegisterGroupConfig m_cur_register_group; 
 	RegisterConfig m_cur_register; 
+	WidgetConfig m_cur_widget; 
 	
 	::std::string m_cur_register_group_setting_name; 
 	::std::string m_cur_register_name; 
 	::std::string m_cur_register_setting_name; 
+	::std::string m_cur_widget_setting_name; 
 
 public: 
 
@@ -63,7 +68,7 @@ public:
 
 public: 
 
-	interpreter_mode_t next_event(yaml_event_t * event);
+	interpreter_mode_t next_event(yaml_event_t * event) throw(InterpreterException);
 
 private: 
 
@@ -79,7 +84,8 @@ private:
 	void register_setting_mode(yaml_event_t * event); 
 	void register_setting_value_mode(yaml_event_t * event); 
 	
-	void widget_config_mode(yaml_event_t * event); 
+	void widget_setting_mode(yaml_event_t * event); 
+	void widget_setting_value_mode(yaml_event_t * event); 
 
 };
 

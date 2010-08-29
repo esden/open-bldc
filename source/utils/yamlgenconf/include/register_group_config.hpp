@@ -30,10 +30,10 @@ public:
 
 	~RegisterGroupConfig() { }
 
-	inline void add_register_config(const RegisterConfig & register_config) { 
+	inline void add_register(const RegisterConfig & register_config) { 
 		m_register_configs.push_back(register_config); 
 	}
-	inline ::std::vector<RegisterConfig> & register_configs(void) { 
+	inline ::std::vector<RegisterConfig> & registers(void) { 
 		return m_register_configs;
 	}
 

@@ -20,13 +20,13 @@
 #include "logging.hpp"
 #include "error_handling.hpp"
 #include "interpreter.hpp"
+#include "interpreter_exception.hpp"
 
 void usage(void);
 void on_error(void);
 
 static yaml_parser_t parser;
 static yaml_event_t event;
-static yaml_emitter_t emitter;
 static yaml_document_t document;
 
 int main(int argc, char * argv[]) {
@@ -40,14 +40,12 @@ int main(int argc, char * argv[]) {
 
 	memset(&parser,   0, sizeof(parser));
 	memset(&event,    0, sizeof(event));
-	memset(&emitter,  0, sizeof(emitter));
 	memset(&document, 0, sizeof(document));
 
 	Interpreter interpreter; 
 
 	/* Create the Parser object */
 	if(!yaml_parser_initialize(&parser)) { on_parser_error(&parser); }
-	if(!yaml_emitter_initialize(&emitter)) { on_emitter_error(&emitter); }
 
 	/* Set a file input */
 	FILE * input = fopen(argv[1], "rb");
@@ -56,7 +54,6 @@ int main(int argc, char * argv[]) {
 	}
 
 	yaml_parser_set_input_file(&parser, input);
-	yaml_emitter_set_output_file(&emitter, stdout); 
 
 	/* Read the event sequence */
 	while (!done) {
@@ -69,7 +66,11 @@ int main(int argc, char * argv[]) {
 					return 0; 
 			}
 	
-			done = (interpreter.next_event(&event) == Interpreter::DONE);
+			try { 
+				done = (interpreter.next_event(&event) == Interpreter::DONE);
+			} catch (InterpreterException ie) { 
+				fprintf(stderr, "ERROR: %s", ie.what());
+			}
 
 			/* The application is responsible for destroying the event object. */
 			yaml_event_delete(&event);
@@ -77,14 +78,12 @@ int main(int argc, char * argv[]) {
 
 	/* Destroy the Parser object. */
 	yaml_parser_delete(&parser);
-	yaml_emitter_delete(&emitter);
 
 	return 1;
 }
 
 void on_error(void) { 
 	yaml_parser_delete(&parser);
-	yaml_emitter_delete(&emitter);
 }
 
 void usage(void) { 

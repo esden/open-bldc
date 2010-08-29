@@ -74,19 +74,3 @@ void on_parser_error(yaml_parser_t * parser) {
 	}
 }
 
-void on_emitter_error(yaml_emitter_t * emitter) { 
-	switch(emitter->error) { 
-		case YAML_MEMORY_ERROR: 
-			fprintf(stderr, "Emitter memory error: %s", emitter->problem);
-			break;
-		case YAML_WRITER_ERROR: 
-			fprintf(stderr, "Emitter write error: %s", emitter->problem);
-			break; 
-		case YAML_EMITTER_ERROR: 
-			fprintf(stderr, "Emitter error: %s", emitter->problem);
-			break; 
-		default: 
-			fprintf(stderr, "Emitter internal error");
-			break; 
-	}
-}

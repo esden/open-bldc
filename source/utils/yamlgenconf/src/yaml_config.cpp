@@ -39,6 +39,7 @@ YAMLConfig::read(const char * filename) throw (ParserException, InterpreterExcep
 			try { 
 				done = (interpreter.next_event(&event) == Interpreter::DONE);
 			} catch (InterpreterException ie) { 
+				on_parse_error(&parser);
 				fprintf(stderr, "ERROR: %s", ie.what());
 			}
 

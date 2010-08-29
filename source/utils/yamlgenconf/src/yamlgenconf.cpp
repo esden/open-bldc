@@ -70,6 +70,7 @@ int main(int argc, char * argv[]) {
 				done = (interpreter.next_event(&event) == Interpreter::DONE);
 			} catch (InterpreterException ie) { 
 				fprintf(stderr, "ERROR: %s", ie.what());
+				return 1; 
 			}
 
 			/* The application is responsible for destroying the event object. */

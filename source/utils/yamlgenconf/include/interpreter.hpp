@@ -26,8 +26,10 @@ public:
 		REGISTER_GROUP_SETTING_VALUE, 
 		FLAG_LIST, 
 		FLAG_CONFIG, 
+		WIDGET_CONFIG, 
 		WIDGET_SETTING, 
 		WIDGET_SETTING_VALUE, 
+		COMPLETING, 
 		ERROR, 
 		CONTINUE, 
 		DONE
@@ -84,8 +86,11 @@ private:
 	void register_setting_mode(yaml_event_t * event); 
 	void register_setting_value_mode(yaml_event_t * event); 
 	
+	void widget_config_mode(yaml_event_t * event); 
 	void widget_setting_mode(yaml_event_t * event); 
 	void widget_setting_value_mode(yaml_event_t * event); 
+
+	void completing_mode(yaml_event_t * event); 
 
 };
 

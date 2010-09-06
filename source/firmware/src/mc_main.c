@@ -92,14 +92,13 @@ int main(void)
 		if (adc_new_data_trigger) {
 			adc_new_data_trigger = false;
 			run_sensor_process();
+		}
+
+		if (*comm_process_trigger) {
 			run_comm_process();
 		}
 
 		run_control_process();
-		if (comm_tim_trigger) {
-			comm_tim_trigger = false;
-			run_control_process();
-		}
 
 		if (demo) {
 			if (demo_counter == 0) {

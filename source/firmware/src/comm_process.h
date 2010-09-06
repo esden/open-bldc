@@ -22,6 +22,8 @@
 #define COMM_PROCESS_FALLING FALSE
 #define COMM_PROCESS_RISING TRUE
 
+extern volatile bool *comm_process_trigger;
+
 /**
  * Comm process parameters
  *

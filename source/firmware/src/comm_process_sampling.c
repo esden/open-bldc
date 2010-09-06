@@ -34,10 +34,13 @@
 
 #include "gprot.h"
 #include "driver/led.h"
+#include "driver/adc.h"
 #include "comm_tim.h"
 #include "comm_process.h"
 
 #include "sensor_process.h"
+
+volatile bool *comm_process_trigger;
 
 /**
  * Internal state of the comm process struct.
@@ -61,6 +64,7 @@ s32 new_cycle_time;				/**< New commutation time
  */
 void comm_process_init(void)
 {
+	comm_process_trigger = &adc_new_data_trigger;
 
 	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR,
 		      (u16 *) & (comm_params.spark_advance));

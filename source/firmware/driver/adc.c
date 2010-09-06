@@ -71,7 +71,9 @@ void adc_init(void)
 	ADC_InitTypeDef adc;
 
 	/* enable ADC1 clock */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
+			       RCC_APB2Periph_GPIOB |
+			       RCC_APB2Periph_ADC1, ENABLE);
 
 	/* Configure and enable ADC interrupt */
 	nvic.NVIC_IRQChannel = ADC1_2_IRQn;

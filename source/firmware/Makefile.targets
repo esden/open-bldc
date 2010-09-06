@@ -40,8 +40,9 @@ TARGETS = mc test_blink test_governor test_32bit_tim test_sys_tick
 CP_SPINUP_STRATEGY ?= soft_timer
 #CP_SPINNING_STRATEGY ?=
 #CP_ERROR_STRATEGY ?=
+COMMP_STRATEGY = sampling
 
-mc.PARAMS = CP_SPINUP_STRATEGY
+mc.PARAMS = CP_SPINUP_STRATEGY COMMP_STRATEGY
 
 mc.OBJECTS = \
 	src/mc_main.o \
@@ -54,7 +55,7 @@ mc.OBJECTS = \
 	src/comm_tim.o \
 	src/gprot.o \
 	src/sensor_process.o \
-	src/comm_process.o \
+	src/comm_process_$(COMMP_STRATEGY).o \
 	src/cp_idle.o \
 	src/cp_aligning.o \
 	src/cp_spinup_$(CP_SPINUP_STRATEGY).o \

@@ -77,6 +77,17 @@ enum control_process_cb_state control_process_coarse_spinup_cb(struct
 							       control_process
 							       *cps);
 
+enum control_process_cb_state
+control_process_coarse_spinup_cb(struct control_process *cps);
+enum control_process_cb_state
+control_process_fine_spinup_cb(struct control_process *cps);
+enum control_process_cb_state
+control_process_spinup_cb(struct control_process *cps);
+enum control_process_cb_state
+control_process_spinup_state_in_cb(struct control_process *cps);
+enum control_process_cb_state
+control_process_spinup_state_out_cb(struct control_process *cps);
+
 /**
  * Initialization of the spin up callback process.
  * Calls cp_spinup_reset and registers control_process_spinup_cb
@@ -111,6 +122,9 @@ void cp_spinup_reset(void)
 enum control_process_cb_state
 control_process_coarse_spinup_cb(struct control_process *cps)
 {
+
+	cps = cps;
+
 	if (spinup_process.coarse_spinup_step > 0) {
 		if (spinup_process.coarse_spinup_time == 0) {
 			comm_tim_trigger_comm_once = true;
@@ -200,6 +214,9 @@ control_process_spinup_cb(struct control_process *cps)
 enum control_process_cb_state
 control_process_spinup_state_in_cb(struct control_process *cps)
 {
+
+	cps = cps;
+
 	return cps_cb_continue;
 }
 
@@ -211,5 +228,8 @@ control_process_spinup_state_in_cb(struct control_process *cps)
 enum control_process_cb_state
 control_process_spinup_state_out_cb(struct control_process *cps)
 {
+
+	cps = cps;
+
 	return cps_cb_continue;
 }

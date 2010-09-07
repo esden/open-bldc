@@ -81,8 +81,11 @@ CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x
 
-LINTFLAGS	= $(INCDIRS) \
-		  -systemdirs $(TOOLCHAIN_INC_DIR)
+LINTFLAGS	= +quiet \
+		  $(INCDIRS) \
+		  -I$(TOOLCHAIN_INC_DIR) \
+		  -systemdirs $(TOOLCHAIN_INC_DIR) \
+		  -D__GNUC__
 
 ###############################################################################
 # Edit after this point only when you really know what you are doing!!!
@@ -221,9 +224,8 @@ check_params_exist:
 	@echo "  OD    $@"
 	$(Q)$(OD) $(ODFLAGS) $< > $@
 
-.PHONY: $(LINTDIR)/%.lnt
 %.lnt: %.c
-	@echo "  LINT  $@"
+	@echo "  LINT  $<"
 	$(Q)$(LINT) $(LINTFLAGS) $<
 
 $(OBJDIR)/%.o: %.c

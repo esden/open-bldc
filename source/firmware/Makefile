@@ -70,7 +70,7 @@ INCDIRS		= \
 	-Itest \
 	-I$(GOVERNOR_INC_DIR) \
 	-I$(INCDIR)
-CFLAGS          = $(INCDIRS) -Wall -ansi -std=c99 -c \
+CFLAGS          = $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections
 ASFLAGS         = -ahls -mapcs-32

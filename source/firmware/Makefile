@@ -50,9 +50,11 @@ CP		= $(PREFIX)-objcopy
 OD		= $(PREFIX)-objdump
 SIZE		= $(PREFIX)-size
 OOCD		= openocd
+LINT		= splint
 
 TOOLCHAIN_DIR = `dirname \`which $(CC)\``/..
 TOOLCHAIN_LIB_DIR = $(TOOLCHAIN_DIR)/$(PREFIX)/lib
+TOOLCHAIN_INC_DIR = $(TOOLCHAIN_DIR)/$(PREFIX)/include
 GOVERNOR_LIB_DIR = $(TOOLCHAIN_DIR)/lib
 GOVERNOR_INC_DIR = $(TOOLCHAIN_DIR)/include
 
@@ -79,6 +81,9 @@ CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x
 
+LINTFLAGS	= $(INCDIRS) \
+		  -systemdirs $(TOOLCHAIN_INC_DIR)
+
 ###############################################################################
 # Edit after this point only when you really know what you are doing!!!
 ###############################################################################
@@ -90,6 +95,8 @@ SIZEFLAGS       = -A -x
 .SECONDARY:
 
 all: $(patsubst %,%.all,$(TARGETS))
+
+lint: $(patsubst %,%.lint,$(TARGETS))
 
 clean:
 	@echo "Cleaning up everything"
@@ -128,6 +135,15 @@ else
 %.flash: $$(*).target_exists
 	make TARGET=$(*) check_params
 	make TARGET=$(*) CHECKED_PARAMS=true $(*).flash
+endif
+
+ifdef TARGET
+%.lint: $$(*).target_exists $(patsubst %.o,%.lnt,$(COMMON_OBJECTS)) $(patsubst %.o,%.lnt,$($(TARGET).OBJECTS))
+	@echo "*** Finished linting $* target ***"
+else
+%.lint: $$(*).target_exists
+	make TARGET=$(*) check_params
+	make TARGET=$(*) CHECKED_PARAMS=true $(*).lint
 endif
 
 halt:
@@ -204,6 +220,11 @@ check_params_exist:
 %.lst: %.elf
 	@echo "  OD    $@"
 	$(Q)$(OD) $(ODFLAGS) $< > $@
+
+.PHONY: $(LINTDIR)/%.lnt
+%.lnt: %.c
+	@echo "  LINT  $@"
+	$(Q)$(LINT) $(LINTFLAGS) $<
 
 $(OBJDIR)/%.o: %.c
 	@echo "  CC    $@"

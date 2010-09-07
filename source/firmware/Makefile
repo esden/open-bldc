@@ -141,8 +141,9 @@ else
 endif
 
 ifdef TARGET
-%.lint: $$(*).target_exists $(patsubst %.o,%.lnt,$(COMMON_OBJECTS)) $(patsubst %.o,%.lnt,$($(TARGET).OBJECTS))
-	@echo "*** Finished linting $* target ***"
+%.lint: $$(*).target_exists $(patsubst %.o,%.c,$(COMMON_OBJECTS)) $(patsubst %.o,%.c,$($(TARGET).OBJECTS))
+	@echo " LINT  $(*)"
+	$(Q)$(LINT) $(LINTFLAGS) $(patsubst %.o,%.c,$(COMMON_OBJECTS)) $(patsubst %.o,%.c,$($(TARGET).OBJECTS))
 else
 %.lint: $$(*).target_exists
 	make TARGET=$(*) check_params
@@ -223,10 +224,6 @@ check_params_exist:
 %.lst: %.elf
 	@echo "  OD    $@"
 	$(Q)$(OD) $(ODFLAGS) $< > $@
-
-%.lnt: %.c
-	@echo "  LINT  $<"
-	$(Q)$(LINT) $(LINTFLAGS) $<
 
 $(OBJDIR)/%.o: %.c
 	@echo "  CC    $@"

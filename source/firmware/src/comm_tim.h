@@ -30,9 +30,9 @@ struct comm_tim_data {
 };
 
 extern struct comm_tim_data comm_tim_data;
-extern bool comm_tim_trigger_comm;
-extern bool comm_tim_trigger_comm_once;
-extern bool comm_tim_trigger;
+/*@unused@*/ extern bool comm_tim_trigger_comm;
+/*@unused@*/ extern bool comm_tim_trigger_comm_once;
+/*@unused@*/ extern bool comm_tim_trigger;
 
 void comm_tim_init(void);
 void comm_tim_reset(void);

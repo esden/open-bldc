@@ -20,9 +20,6 @@
 #define __PWM_H
 
 extern volatile uint16_t pwm_val;
-extern volatile uint16_t pwm_offset;
-extern volatile int pwm_free_wheeling;
-extern volatile int pwm_trig_led;
 
 void pwm_init(void);
 void pwm_off(void);

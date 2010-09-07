@@ -44,7 +44,7 @@
 /**
  * Private global sys tick counter.
  */
-u32 sys_tick_global_counter = 0;
+static u32 sys_tick_global_counter = 0;
 
 /**
  * Represents one Sys Tick based soft timer.
@@ -58,7 +58,7 @@ struct sys_tick_timer {
 /**
  * Instances of available Sys Tick timer slots.
  */
-struct sys_tick_timer sys_tick_timers[SYS_TICK_TIMER_NUM];
+static struct sys_tick_timer sys_tick_timers[SYS_TICK_TIMER_NUM];
 
 /**
  * Initialize Sys Tick peripheral and the soft timer slots.

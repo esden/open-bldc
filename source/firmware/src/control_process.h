@@ -76,6 +76,7 @@ struct control_process {
 };
 
 void control_process_init(void);
+/*@unused@*/ void control_process_reset(void);
 void control_process_ignite(void);
 void control_process_kill(void);
 void run_control_process(void);

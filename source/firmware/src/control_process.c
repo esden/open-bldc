@@ -45,14 +45,13 @@
 #include "control_process.h"
 
 /* local function forward declarations */
-void control_process_reset(void);
-void control_process_handle_cb_state(enum control_process_cb_state cb_ret);
+static void control_process_handle_cb_state(enum control_process_cb_state cb_ret);
 
 /* Note: control_process_<state>_cb is defined in external
  * <state> strategy that implements <state>.h.
  */
 
-struct control_process control_process;	/**< Internal state struct instance */
+static struct control_process control_process;	/**< Internal state struct instance */
 
 /**
  * Control process state callback function pointer definition.
@@ -64,10 +63,10 @@ typedef enum control_process_cb_state (*cps_callback) (struct control_process *
  * Control process event hook slot definition.
  */
 struct cps_event_hook {
-	bool *trigger;			  /**< Trigger the callback should be called upon */
-	cps_callback callback;		  /**< Pointer to the callback function */
-	cps_callback state_in_callback;	  /**< Pointer to the callback function */
-	cps_callback state_out_callback;  /**< Pointer to the callback function */
+	bool *trigger;		                          /**< Trigger the callback should be called upon */
+	cps_callback callback;		                  /**< Pointer to the callback function */
+	/*@null@*/ cps_callback state_in_callback;	  /**< Pointer to the callback function */
+	/*@null@*/ cps_callback state_out_callback;       /**< Pointer to the callback function */
 };
 
 static struct cps_event_hook control_process_cb_hook_register[cps_num_states];
@@ -206,7 +205,7 @@ void control_process_kill(void)
  */
 void run_control_process(void)
 {
-	enum control_process_cb_state cb_ret = cps_error;
+	enum control_process_cb_state cb_ret = cps_cb_error;
 	static enum control_process_state last_state = cps_idle;
 
 	if (*control_process_cb_hook_register[control_process.state].trigger) {
@@ -253,10 +252,10 @@ void control_process_handle_cb_state(enum control_process_cb_state cb_ret)
 		// Everything is fine
 		return;
 	}
-	if (cb_ret < 0 || cb_ret >= cps_num_states) {
+	if (cb_ret < 0 || cb_ret >= cps_cb_num_states) {
 		// Callback state is undefined
-		control_process_cb_hook_register[cps_error].
-		    callback(&control_process);
+		(void)control_process_cb_hook_register[cps_error].
+			callback(&control_process);
 	}
 	// Could also be implemented in error handling strategy:
 	if (cb_ret == cps_cb_exit_control) {

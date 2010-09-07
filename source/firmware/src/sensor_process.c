@@ -40,6 +40,34 @@
 #include "sensor_process.h"
 
 /**
+ * Parameters for sensor data post processing
+ */
+struct sensor_params {
+	/**
+	 * Phase voltage post processing parameters
+	 */
+	struct pv {
+		s32 offset; /**< how much to offset the value */
+		u32 iir;    /**< IIR filter value */
+	} pv;
+	/**
+	 * Half supply rail voltage post processing parameters
+	 */
+	struct hbv {
+		s32 offset; /**< how much to offset the value */
+		u32 iir;    /**< IIR filter value */
+	} hbv;
+	/**
+	 * Global controller current
+	 */
+	struct gc {
+		s32 zero_current_offset; /**< Zero current offset value */
+		s32 zero_current;	 /**< The value of zero */
+		u32 iir;		 /**< IIR filter value */
+	} gc;
+};
+
+/**
  * Sensor value struct instance
  */
 struct sensors sensors;
@@ -47,12 +75,12 @@ struct sensors sensors;
 /**
  * Sensor post processing parameters instance
  */
-struct sensor_params sensor_params;
+static struct sensor_params sensor_params;
 
 /**
  * Generate debug output flag
  */
-int sensor_trigger_debug_output;
+static int sensor_trigger_debug_output;
 
 /**
  * Infinite Impulse Response filter calculation
@@ -63,7 +91,7 @@ int sensor_trigger_debug_output;
 /**
  * Delay counter for low priority sensor updates
  */
-int sensor_process_low_prio_update_cnt = 0;
+static int sensor_process_low_prio_update_cnt = 0;
 
 /**
  * Sensor process initializer.

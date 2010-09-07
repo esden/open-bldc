@@ -52,7 +52,7 @@ struct comm_process_state {
 	u32 prev_phase_voltage;	/**< Previous PWM cycle phase voltage memory */
 };
 
-struct comm_process_state comm_process_state;	/**< Internal state instance */
+static struct comm_process_state comm_process_state;	/**< Internal state instance */
 struct comm_data comm_data;			/**< Public data instance */
 struct comm_params comm_params;			/**< Parameters */
 s32 new_cycle_time;				/**< New commutation time
@@ -146,7 +146,7 @@ void comm_process_closed_loop_off(void)
 /**
  * Calculate the next commutation time
  */
-void comm_process_calc_next_comm(void)
+static void comm_process_calc_next_comm(void)
 {
 	s32 old_cycle_time = (s32)comm_tim_data.freq;
 	s32 pwm_time = (s32)(comm_tim_data.curr_time - comm_tim_data.prev_time);

@@ -28,36 +28,7 @@ struct sensors {
 	u16 global_current;	  /**< Global controller current */
 };
 
-/**
- * Parameters for sensor data post processing
- */
-struct sensor_params {
-	/**
-	 * Phase voltage post processing parameters
-	 */
-	struct pv {
-		s32 offset; /**< how much to offset the value */
-		u32 iir;    /**< IIR filter value */
-	} pv;
-	/**
-	 * Half supply rail voltage post processing parameters
-	 */
-	struct hbv {
-		s32 offset; /**< how much to offset the value */
-		u32 iir;    /**< IIR filter value */
-	} hbv;
-	/**
-	 * Global controller current
-	 */
-	struct gc {
-		s32 zero_current_offset; /**< Zero current offset value */
-		s32 zero_current;	 /**< The value of zero */
-		u32 iir;		 /**< IIR filter value */
-	} gc;
-};
-
 extern struct sensors sensors;
-extern struct sensor_params sensor_params;
 
 void sensor_process_init(void);
 void sensor_process_reset(void);

@@ -85,7 +85,8 @@ LINTFLAGS	= +quiet \
 		  $(INCDIRS) \
 		  -I$(TOOLCHAIN_INC_DIR) \
 		  -systemdirs $(TOOLCHAIN_INC_DIR) \
-		  -D__GNUC__
+		  -D__GNUC__ \
+		  -temptrans
 
 ###############################################################################
 # Edit after this point only when you really know what you are doing!!!

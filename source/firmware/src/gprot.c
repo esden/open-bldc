@@ -72,19 +72,21 @@
  * Dummy value...
  */
 u16 gprot_dummy_val;
+
 /**
  * Flags register
  */
-u16 gprot_flag_reg;
+static u16 gprot_flag_reg;
+
 /**
  * Previous value of the flag register for detection of flag transitions.
  */
-u16 gprot_flag_reg_old;
+static u16 gprot_flag_reg_old;
 
 /* Private function declarations */
-void gprot_trigger_output(void *data);
-void gprot_register_changed(void *data, u8 addr);
-void gprot_update_flags(void);
+static void gprot_trigger_output(void *data);
+static void gprot_register_changed(void *data, u8 addr);
+static void gprot_update_flags(void);
 
 /* Function implementations */
 /**

@@ -40,7 +40,7 @@
 /**
  * Trigger source for aligning state.
  */
-bool *control_process_aligning_trigger = &comm_tim_trigger;
+static bool *control_process_aligning_trigger = &comm_tim_trigger;
 
 /**
  * Internal process variables for aligning callback.
@@ -50,7 +50,7 @@ struct aligning_process {
 };
 static struct aligning_process aligning_process;
 
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_aligning_state_in_cb(struct control_process * cps);
 
 /**
@@ -61,7 +61,7 @@ control_process_aligning_state_in_cb(struct control_process * cps);
  * Finally sets transition to control process state spinup by
  * setting control_process.state to cps_spinup.
  */
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_aligning_cb(struct control_process *cps)
 {
 #if CP_ALIGN_ENABLE == 1

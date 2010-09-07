@@ -60,9 +60,9 @@ struct cpu_load_process_state {
 	u32 report_counter;
 };
 
-struct cpu_load_process_state cpu_load_process_state; /**< Internal state instance */
+static struct cpu_load_process_state cpu_load_process_state; /**< Internal state instance */
 
-void cpu_load_process_soft_timer_callback(int id);
+static void cpu_load_process_soft_timer_callback(int id);
 
 /**
  * Initialize internal state of the cpu load process.

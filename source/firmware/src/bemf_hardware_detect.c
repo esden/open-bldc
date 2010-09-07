@@ -68,6 +68,7 @@ void bemf_hd_init(void)
 	 */
 	gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
 	gpio.GPIO_Mode = GPIO_Mode_IPU;
+	gpio.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &gpio);
 
 	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);

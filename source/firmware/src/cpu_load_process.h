@@ -20,7 +20,7 @@
 #define __CPU_LOAD_PROCESS_H
 
 void cpu_load_process_init(void);
-void cpu_load_process_reset(void);
+/*@unused@*/ void cpu_load_process_reset(void);
 void run_cpu_load_process(void);
 
 #endif /* __CPU_LOAD_PROCESS_H */

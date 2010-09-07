@@ -27,10 +27,10 @@
 typedef void (*sys_tick_timer_callback_t) (int id);
 
 void sys_tick_init(void);
-u32 sys_tick_get_timer(void);
-bool sys_tick_check_timer(u32 timer, u32 time);
-int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time);
-void sys_tick_timer_unregister(int id);
-void sys_tick_timer_update(int id, u32 time);
+/*@unused@*/ u32 sys_tick_get_timer(void);
+/*@unused@*/ bool sys_tick_check_timer(u32 timer, u32 time);
+/*@unused@*/ int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time);
+/*@unused@*/ void sys_tick_timer_unregister(int id);
+/*@unused@*/ void sys_tick_timer_update(int id, u32 time);
 
 #endif /* SYS_TICK_H */

@@ -58,9 +58,7 @@
 /** Current PWM duty cycle */
 volatile uint16_t pwm_val = PWM_VALUE;
 /** Current PWM offset for ADC triggering */
-volatile uint16_t pwm_offset = PWM_OFFSET;
-/** Phase reference signal generation trigger */
-volatile int pwm_trig_led = 0;
+static volatile uint16_t pwm_offset = PWM_OFFSET;
 
 /**
  * Initialize the three phase (6outputs) PWM peripheral and internal state.

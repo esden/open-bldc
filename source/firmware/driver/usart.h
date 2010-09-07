@@ -20,8 +20,8 @@
 #define __USART_H
 
 void usart_init(void);
-void usart_enable_send(void);
-void usart_disable_send(void);
+/*@unused@*/ void usart_enable_send(void);
+/*@unused@*/ void usart_disable_send(void);
 
 void usart3_irq_handler(void);
 

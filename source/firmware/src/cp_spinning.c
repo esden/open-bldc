@@ -38,7 +38,7 @@
 /**
  * Trigger source for spinning state.
  */
-bool *control_process_spinning_trigger = &comm_tim_trigger;
+static bool *control_process_spinning_trigger = &comm_tim_trigger;
 
 /** Callback function to be hooked as handler for state
  * cps_spinning in control_process.c.
@@ -47,7 +47,7 @@ bool *control_process_spinning_trigger = &comm_tim_trigger;
  * returns cps_cb_exit_control, thus telling the calling
  * control process to exit the closed loop.
  */
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_spinning_cb(struct control_process *cps)
 {
 	if (comm_data.bemf_crossing_detected) {

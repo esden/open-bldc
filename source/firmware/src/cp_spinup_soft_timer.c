@@ -45,14 +45,14 @@
 /**
  * Control process spinup trigger variable
  */
-bool cps_trigger;
+static bool cps_trigger;
 
 #define CP_SST_FIXED_POINT 16
 
 /**
  * Trigger source for spinup state.
  */
-bool *control_process_spinup_trigger = &cps_trigger;
+static bool *control_process_spinup_trigger = &cps_trigger;
 
 /**
  * Internal process variables for spinup callback.
@@ -67,7 +67,16 @@ static struct spinup_process spinup_process;
 /*============================================================================
  * Private functions forward declarations
  *============================================================================*/
-void control_process_soft_timer_callback(int id);
+static enum control_process_cb_state
+control_process_spinup_cb(/*@unused@*/ struct control_process *cps);
+
+static enum control_process_cb_state
+control_process_spinup_state_in_cb(/*@unused@*/ struct control_process *cps);
+
+static enum control_process_cb_state
+control_process_spinup_state_out_cb(/*@unused@*/ struct control_process *cps);
+
+static void control_process_soft_timer_callback(int id);
 
 /*============================================================================
  * Function implementations

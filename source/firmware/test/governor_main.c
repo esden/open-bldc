@@ -41,7 +41,7 @@
 /**
  * Initialize STM32
  */
-void system_init(void)
+static void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
@@ -54,10 +54,10 @@ void system_init(void)
  *
  * @param delay "time" delay
  */
-void my_delay(unsigned long delay)
+static void my_delay(unsigned long delay)
 {
 
-	while (delay) {
+	while (delay != 0) {
 		delay--;
 	}
 }
@@ -75,11 +75,11 @@ int main(void)
 	usart_init();
 
 	test_counter = 0;
-	gpc_setup_reg(5, &test_counter);
+	(void)gpc_setup_reg(5, &test_counter);
 
-	while (1) {
+	while (true) {
 		my_delay(500000);
 		test_counter++;
-		gpc_register_touched(5);
+		(void)gpc_register_touched(5);
 	}
 }

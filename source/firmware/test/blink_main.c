@@ -37,7 +37,7 @@
 /**
  * Initialize the STM32
  */
-void system_init(void)
+static void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
@@ -50,10 +50,10 @@ void system_init(void)
  *
  * @param delay "time" to wait
  */
-void my_delay(unsigned long delay)
+static void my_delay(unsigned long delay)
 {
 
-	while (delay) {
+	while (delay != 0) {
 		delay--;
 		__asm("nop");
 	}
@@ -64,7 +64,7 @@ void my_delay(unsigned long delay)
  *
  * @param id LED id
  */
-void led_on(int id)
+static void led_on(int id)
 {
 	switch (id) {
 	case 0:
@@ -87,7 +87,7 @@ void led_on(int id)
  *
  * @param id LED id
  */
-void led_off(int id)
+static void led_off(int id)
 {
 	switch (id) {
 	case 0:
@@ -119,21 +119,21 @@ int main(void)
 
 	led_id = 0;
 
-	while (1) {
+	while (true) {
 		for (j = 0; j < 20; j++) {
 			for (i = 0; i < 125; i++) {
 				led_on(led_id);
-				my_delay(50 * j);
+				my_delay((unsigned long)(50 * j));
 				led_off(led_id);
-				my_delay(1200 - 50 * j);
+				my_delay((unsigned long)(1200 - 50 * j));
 			}
 		}
 		for (j = 0; j < 20; j++) {
 			for (i = 0; i < 125; i++) {
 				led_off(led_id);
-				my_delay(200 + 50 * j);
+				my_delay((unsigned long)(200 + 50 * j));
 				led_on(led_id);
-				my_delay(1000 - 50 * j);
+				my_delay((unsigned long)(1000 - 50 * j));
 			}
 		}
 		led_off(led_id);

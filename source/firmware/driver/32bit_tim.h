@@ -19,7 +19,7 @@
 #ifndef __COMM_TIM_H
 #define __COMM_TIM_H
 
-extern volatile u32 tim_freq;
+/*@unused@*/ extern volatile u32 tim_freq;
 
 void tim_init(void);
 void tim_update(void);

@@ -42,19 +42,19 @@
 #include "led.h"
 
 /**
- * Current 32bit timer frequency 
+ * Current 32bit timer frequency
  */
 volatile u32 tim_freq = 1030;
 
 /**
  * Timer got updated flag
  */
-u32 tim_was_updated = 0;
+static bool tim_was_updated = false;
 
 /**
  * Last update time of the 32bit timer
  */
-u32 tim_last_upd = 0;
+static u32 tim_last_upd = 0;
 
 /**
  * Initialize the 32bit timer peripherals
@@ -92,6 +92,7 @@ void tim_init(void)
 	tim_base.TIM_Prescaler = 0;
 	tim_base.TIM_ClockDivision = 0;
 	tim_base.TIM_CounterMode = TIM_CounterMode_Up;
+	tim_base.TIM_RepetitionCounter = 0;
 
 	TIM_TimeBaseInit(TIM2, &tim_base);
 
@@ -100,6 +101,14 @@ void tim_init(void)
 	tim_oc.TIM_OutputState = TIM_OutputState_Enable;
 	tim_oc.TIM_Pulse = tim_freq & 0xFFFF;
 	tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
+
+	/* Not necessary for TIM2 because it is not an advanced timer
+	 * but we are trying to make lint happy here.
+	 */
+	tim_oc.TIM_OutputNState = TIM_OutputNState_Disable;
+	tim_oc.TIM_OCNPolarity = TIM_OCNPolarity_High;
+	tim_oc.TIM_OCIdleState = TIM_OCIdleState_Set;
+	tim_oc.TIM_OCNIdleState = TIM_OCNIdleState_Set;
 
 	TIM_OC1Init(TIM2, &tim_oc);
 
@@ -167,15 +176,15 @@ void tim_update(void)
 	u16 curr_time_msb = TIM_GetCounter(TIM3);
 	u16 next_capture_msb;
 	u16 next_capture_lsb;
+	u32 next_capture;
 
 	u32 curr_time = curr_time_msb;
 	curr_time <<= 16;
 	curr_time |= curr_time_lsb;
-	u32 next_capture;
 
 	if (!tim_was_updated) {
 		tim_last_upd = curr_time;
-		tim_was_updated = 1;
+		tim_was_updated = true;
 		return;
 	}
 

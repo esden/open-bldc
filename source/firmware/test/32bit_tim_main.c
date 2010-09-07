@@ -37,7 +37,7 @@
 /**
  * Initialize the STM32
  */
-void system_init(void)
+static void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
@@ -48,10 +48,10 @@ void system_init(void)
  *
  * @param delay How long to wait.
  */
-void my_delay(unsigned long delay)
+static void my_delay(unsigned long delay)
 {
 
-	while (delay) {
+	while (delay != 0) {
 		delay--;
 	}
 }
@@ -70,7 +70,7 @@ int main(void)
 	test_tim_init();
 	tim_init();
 
-	while (1) {
+	while (true) {
 
 		if (dir > 0) {
 			test_tim_update(test_tim_freq + 1);

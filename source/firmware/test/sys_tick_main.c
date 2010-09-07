@@ -35,13 +35,13 @@
 #include "driver/led.h"
 #include "driver/sys_tick.h"
 
-void sys_tick_timer_callback(int id);
-void sys_tick_timer_callback_one_shot(int id);
+static void sys_tick_timer_callback(int id);
+static void sys_tick_timer_callback_one_shot(int id);
 
 /**
  * Initialize the STM32
  */
-void system_init(void)
+static void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
@@ -56,7 +56,7 @@ void sys_tick_timer_callback(int id)
 	id = id;
 
 	LED_RED_TOGGLE();
-	sys_tick_timer_register(sys_tick_timer_callback_one_shot, 1000);
+	(void)sys_tick_timer_register(sys_tick_timer_callback_one_shot, 1000);
 }
 
 /**
@@ -86,9 +86,9 @@ int main(void)
 	led_init();
 	sys_tick_init();
 
-	sys_tick_timer_register(sys_tick_timer_callback, 5000);
+	(void)sys_tick_timer_register(sys_tick_timer_callback, 5000);
 
-	while (1) {
+	while (true) {
 		timer = sys_tick_get_timer();
 		while (!sys_tick_check_timer(timer, 500)) {
 			__asm("nop");

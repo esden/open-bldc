@@ -38,13 +38,13 @@
 #include "driver/led.h"
 #include "driver/usart.h"
 
-void gprot_trigger_output(void *data);
-void gprot_register_changed(void *data, u8 addr);
+static void gprot_trigger_output(void *data);
+static void gprot_register_changed(void *data, u8 addr);
 
 /**
  * Test governor registers.
  */
-u16 test_regs[32];
+static u16 test_regs[32];
 
 /* Function implementations */
 /**
@@ -54,11 +54,11 @@ void gprot_init()
 {
 	int i;
 
-	gpc_init(gprot_trigger_output, 0, gprot_register_changed, 0);
+	(void)gpc_init(gprot_trigger_output, 0, gprot_register_changed, 0);
 
 	for (i = 0; i < 32; i++) {
-		test_regs[i] = i * 3;
-		if (gpc_setup_reg(i, &test_regs[i])) {
+		test_regs[i] = (u16)(i * 3);
+		if (gpc_setup_reg((u8)i, &test_regs[i]) != 0) {
 			LED_RED_ON();
 		}
 	}

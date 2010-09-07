@@ -74,6 +74,7 @@ void test_tim_init(void)
 	tim_base.TIM_Prescaler = 344;
 	tim_base.TIM_ClockDivision = 0;
 	tim_base.TIM_CounterMode = TIM_CounterMode_Up;
+	tim_base.TIM_RepetitionCounter = 0;
 
 	TIM_TimeBaseInit(TIM4, &tim_base);
 
@@ -82,6 +83,14 @@ void test_tim_init(void)
 	tim_oc.TIM_OutputState = TIM_OutputState_Enable;
 	tim_oc.TIM_Pulse = test_tim_freq;
 	tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
+
+	/* Not necessary for TIM4 because it is not an advanced timer
+	 * but we are trying to make lint happy here.
+	 */
+	tim_oc.TIM_OutputNState = TIM_OutputNState_Disable;
+	tim_oc.TIM_OCNPolarity = TIM_OCNPolarity_High;
+	tim_oc.TIM_OCIdleState = TIM_OCIdleState_Set;
+	tim_oc.TIM_OCNIdleState = TIM_OCNIdleState_Set;
 
 	TIM_OC1Init(TIM4, &tim_oc);
 

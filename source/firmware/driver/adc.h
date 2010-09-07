@@ -48,6 +48,5 @@ extern volatile bool adc_new_data_trigger;
 
 void adc_init(void);
 void adc_set(u8 channel);
-void adc1_2_irq_handler(void);
 
 #endif /* __ADC_H */

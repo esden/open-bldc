@@ -28,7 +28,7 @@ typedef void (*sys_tick_timer_callback_t) (int id);
 
 void sys_tick_init(void);
 u32 sys_tick_get_timer(void);
-int sys_tick_check_timer(u32 timer, u32 time);
+bool sys_tick_check_timer(u32 timer, u32 time);
 int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time);
 void sys_tick_timer_unregister(int id);
 void sys_tick_timer_update(int id, u32 time);

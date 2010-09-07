@@ -29,7 +29,8 @@
 
 #include <stm32/gpio.h>
 
-#include <lg/types.h>
+#include "types.h"
+
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 

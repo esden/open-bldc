@@ -35,7 +35,8 @@
 #include <stm32/gpio.h>
 #include <stm32/tim.h>
 
-#include <lg/types.h>
+#include "types.h"
+
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
@@ -91,6 +92,7 @@ void adc_init(void)
 	 */
 	gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
 	gpio.GPIO_Mode = GPIO_Mode_AIN;
+	gpio.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &gpio);
 
 	gpio.GPIO_Pin = GPIO_Pin_1;
@@ -134,13 +136,13 @@ void adc_init(void)
 	ADC_ResetCalibration(ADC1);
 
 	/* Check the end of ADC1 reset calibration */
-	while (ADC_GetResetCalibrationStatus(ADC1)) ;
+	while (ADC_GetResetCalibrationStatus(ADC1) == SET) ;
 
 	/* Start ADC1 calibaration */
 	ADC_StartCalibration(ADC1);
 
 	/* Check the end of ADC1 calibration */
-	while (ADC_GetCalibrationStatus(ADC1)) ;
+	while (ADC_GetCalibrationStatus(ADC1) == SET) ;
 
 	/* Enable ADC1 External Trigger */
 	ADC_ExternalTrigConvCmd(ADC1, ENABLE);

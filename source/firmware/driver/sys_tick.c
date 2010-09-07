@@ -50,7 +50,7 @@ u32 sys_tick_global_counter = 0;
  * Represents one Sys Tick based soft timer.
  */
 struct sys_tick_timer {
-	sys_tick_timer_callback_t callback; /**< Callback function pointer */
+	 /*@null@*/ sys_tick_timer_callback_t callback; /**< Callback function pointer */
 	u32 start_time;	/**< Start timestamp of the timer */
 	u32 delta_time;	/**< Duration of the timer */
 };
@@ -68,10 +68,10 @@ void sys_tick_init(void)
 	int i;
 
 	/* Setup SysTick Timer for 1uSec Interrupts */
-	SysTick_Config(72000000 / 100000);
+	(void)SysTick_Config(72000000 / 100000);
 
 	for (i = 0; i < SYS_TICK_TIMER_NUM; i++) {
-		sys_tick_timers[i].callback = 0;
+		sys_tick_timers[i].callback = NULL;
 		sys_tick_timers[i].start_time = 0;
 		sys_tick_timers[i].delta_time = 0;
 	}
@@ -98,12 +98,12 @@ u32 sys_tick_get_timer(void)
  *
  * @return 0 if the time did not elapse yet, 1 if the time elapsed.
  */
-int sys_tick_check_timer(u32 timer, u32 time)
+bool sys_tick_check_timer(u32 timer, u32 time)
 {
 	if ((sys_tick_global_counter - timer) > time) {
-		return 1;
+		return true;
 	} else {
-		return 0;
+		return false;
 	}
 }
 
@@ -137,7 +137,7 @@ int sys_tick_timer_register(sys_tick_timer_callback_t callback, u32 time)
  */
 void sys_tick_timer_unregister(int id)
 {
-	sys_tick_timers[id].callback = 0;
+	sys_tick_timers[id].callback = NULL;
 	sys_tick_timers[id].start_time = 0;
 	sys_tick_timers[id].delta_time = 0;
 }
@@ -161,7 +161,7 @@ void sys_tick_handler(void)
 	sys_tick_global_counter++;
 
 	for (i = 0; i < SYS_TICK_TIMER_NUM; i++) {
-		if (sys_tick_timers[i].callback &&
+		if ((sys_tick_timers[i].callback != NULL) &&
 		    sys_tick_check_timer(sys_tick_timers[i].start_time,
 					 sys_tick_timers[i].delta_time)) {
 			sys_tick_timers[i].start_time = sys_tick_global_counter;

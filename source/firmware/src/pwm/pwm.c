@@ -33,7 +33,8 @@
 #include <stm32/tim.h>
 #include <stm32/gpio.h>
 
-#include <lg/types.h>
+#include "types.h"
+
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
@@ -72,8 +73,8 @@ void pwm_init(void)
 	TIM_OCInitTypeDef tim_oc;
 	TIM_BDTRInitTypeDef tim_bdtr;
 
-	gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
-	gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
+	(void)gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
+	(void)gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
 
 	/* Enable clock for TIM1 subsystem */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |

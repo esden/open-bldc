@@ -34,7 +34,8 @@
 #include <stm32/misc.h>
 #include <stm32/tim.h>
 
-#include <lg/types.h>
+#include "types.h"
+
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 

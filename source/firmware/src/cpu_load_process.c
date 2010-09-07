@@ -32,7 +32,8 @@
 
 #include "cpu_load_process.h"
 
-#include <lg/types.h>
+#include "types.h"
+
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
@@ -68,10 +69,10 @@ void cpu_load_process_soft_timer_callback(int id);
  */
 void cpu_load_process_init()
 {
-	gpc_setup_reg(GPROT_CPU_LOAD, (u16 *)&cpu_load_process_state.mean_cycles);
-	gpc_setup_reg(GPROT_CPU_LOAD_MAX, (u16 *)&cpu_load_process_state.max_cycles);
-	gpc_setup_reg(GPROT_CPU_LOAD_MIN, (u16 *)&cpu_load_process_state.min_cycles);
-	sys_tick_timer_register(cpu_load_process_soft_timer_callback,
+	(void)gpc_setup_reg(GPROT_CPU_LOAD, (u16 *)&cpu_load_process_state.mean_cycles);
+	(void)gpc_setup_reg(GPROT_CPU_LOAD_MAX, (u16 *)&cpu_load_process_state.max_cycles);
+	(void)gpc_setup_reg(GPROT_CPU_LOAD_MIN, (u16 *)&cpu_load_process_state.min_cycles);
+	(void)sys_tick_timer_register(cpu_load_process_soft_timer_callback,
 				CLP_TIME_BASE);
 	cpu_load_process_reset();
 }
@@ -99,7 +100,7 @@ void run_cpu_load_process()
 /**
  * Time reference software timer callback function.
  */
-void cpu_load_process_soft_timer_callback(int id)
+void cpu_load_process_soft_timer_callback(/*@unused@*/ int id)
 {
 	if(cpu_load_process_state.cycles > cpu_load_process_state.max_cycles)
 		cpu_load_process_state.max_cycles = cpu_load_process_state.cycles;
@@ -117,9 +118,9 @@ void cpu_load_process_soft_timer_callback(int id)
 
 	if(cpu_load_process_state.report_counter == 0){
 		cpu_load_process_state.report_counter = CLP_REPORT_DIVIDER;
-		gpc_register_touched(GPROT_CPU_LOAD);
-		gpc_register_touched(GPROT_CPU_LOAD_MAX);
-		gpc_register_touched(GPROT_CPU_LOAD_MIN);
+		(void)gpc_register_touched(GPROT_CPU_LOAD);
+		(void)gpc_register_touched(GPROT_CPU_LOAD_MAX);
+		(void)gpc_register_touched(GPROT_CPU_LOAD_MIN);
 	} else {
 		cpu_load_process_state.report_counter--;
 	}

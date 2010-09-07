@@ -46,7 +46,7 @@
 /**
  * Trigger source for spinup state.
  */
-bool *control_process_spinup_trigger = &comm_tim_trigger;
+static bool *control_process_spinup_trigger = &comm_tim_trigger;
 
 /**
  * Internal process states for spinup callback.
@@ -68,24 +68,17 @@ static struct spinup_process spinup_process;
 /**
  *	Current internal state of the spin up process.
  */
-enum spinup_state spinup_state;
+static enum spinup_state spinup_state;
 
-enum control_process_cb_state control_process_fine_spinup_cb(struct
-							     control_process
-							     *cps);
-enum control_process_cb_state control_process_coarse_spinup_cb(struct
-							       control_process
-							       *cps);
-
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_coarse_spinup_cb(struct control_process *cps);
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_fine_spinup_cb(struct control_process *cps);
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_spinup_cb(struct control_process *cps);
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_spinup_state_in_cb(struct control_process *cps);
-enum control_process_cb_state
+static enum control_process_cb_state
 control_process_spinup_state_out_cb(struct control_process *cps);
 
 /**
@@ -198,12 +191,10 @@ control_process_spinup_cb(struct control_process *cps)
 	switch (spinup_state) {
 	case spinup_state_fine:
 		return control_process_fine_spinup_cb(cps);
-		break;
 	case spinup_state_coarse:
 		return control_process_coarse_spinup_cb(cps);
-		break;
 	default:
-		return cps_error;
+		return cps_cb_error;
 	}
 }
 

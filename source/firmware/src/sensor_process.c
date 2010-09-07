@@ -172,10 +172,10 @@ void run_sensor_process(void)
 			sensors.half_battery_voltage = half_battery_voltage;
 		}
 		/* Adjust slowly the half battery voltage according to measurement */
-		if ((half_battery_voltage + sensor_params.hbv.offset) >
+		if ((u16)((s32)half_battery_voltage + (s32)sensor_params.hbv.offset) >
 		    sensors.half_battery_voltage) {
 			sensors.half_battery_voltage++;
-		} else if ((half_battery_voltage + sensor_params.hbv.offset) <
+		} else if ((u16)((s32)half_battery_voltage + (s32)sensor_params.hbv.offset) <
 			   sensors.half_battery_voltage) {
 			sensors.half_battery_voltage--;
 		}

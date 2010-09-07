@@ -41,8 +41,11 @@
 static bool *control_process_error_trigger = &comm_tim_trigger;
 
 static enum control_process_cb_state
-control_process_error_cb(/*@unused@*/ struct control_process *cps)
+control_process_error_cb(struct control_process *cps)
 {
+
+	cps = cps;
+
 	/**
 	 * @todo: Error handling for undefined
 	 * control process state here.

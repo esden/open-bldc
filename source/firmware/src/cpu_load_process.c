@@ -100,8 +100,11 @@ void run_cpu_load_process()
 /**
  * Time reference software timer callback function.
  */
-void cpu_load_process_soft_timer_callback(/*@unused@*/ int id)
+void cpu_load_process_soft_timer_callback(int id)
 {
+
+	id = id;
+
 	if(cpu_load_process_state.cycles > cpu_load_process_state.max_cycles)
 		cpu_load_process_state.max_cycles = cpu_load_process_state.cycles;
 	else if(cpu_load_process_state.cycles < cpu_load_process_state.min_cycles)

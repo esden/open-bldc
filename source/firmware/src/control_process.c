@@ -252,11 +252,7 @@ void control_process_handle_cb_state(enum control_process_cb_state cb_ret)
 		// Everything is fine
 		return;
 	}
-	if (cb_ret < 0 || cb_ret >= cps_cb_num_states) {
-		// Callback state is undefined
-		(void)control_process_cb_hook_register[cps_error].
-			callback(&control_process);
-	}
+
 	// Could also be implemented in error handling strategy:
 	if (cb_ret == cps_cb_exit_control) {
 		// Callback wants process to exit closed loop

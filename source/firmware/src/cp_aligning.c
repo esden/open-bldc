@@ -107,7 +107,10 @@ void cp_aligning_reset(void)
  * cps_aligning
  */
 enum control_process_cb_state
-control_process_aligning_state_in_cb(/*@unused@*/ struct control_process * cps) {
+control_process_aligning_state_in_cb(struct control_process * cps) {
+
+	cps = cps;
+
 #if CP_ALIGN_ENABLE == 1
 	cp_aligning_reset();
 	pwm_comm();

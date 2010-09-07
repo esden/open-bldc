@@ -52,6 +52,9 @@ void system_init(void)
  */
 void sys_tick_timer_callback(int id)
 {
+
+	id = id;
+
 	LED_RED_TOGGLE();
 	sys_tick_timer_register(sys_tick_timer_callback_one_shot, 1000);
 }

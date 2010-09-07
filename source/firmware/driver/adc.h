@@ -19,7 +19,7 @@
 #ifndef __ADC_H
 #define __ADC_H
 
-/*@{*/
+/** @{ */
 /**
  * ADC Channel to sensor name mappings
  */
@@ -32,7 +32,7 @@
 #define ADC_PHASE_VOLTAGE ADC_InjectedChannel_1
 #define ADC_HALF_BATTERY_VOLTAGE ADC_InjectedChannel_2
 #define ADC_GLOBAL_CURRENT ADC_InjectedChannel_3
-/*@}*/
+/** @} */
 
 /**
  * ADC output data

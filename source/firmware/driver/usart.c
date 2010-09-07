@@ -42,7 +42,7 @@
 /**
  * Data buffer used for incoming and outgoing data.
  */
-volatile s16 data_buf;
+static volatile s16 data_buf;
 
 /**
  * USART driver initialization.
@@ -124,9 +124,9 @@ void usart1_irq_handler(void)
 	//LED_GREEN_TOGGLE();
 	/* input (RX) handler */
 	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
-		data_buf = USART_ReceiveData(USART1);
+		data_buf = (s16)USART_ReceiveData(USART1);
 
-		if (!gpc_handle_byte(data_buf)) {
+		if (gpc_handle_byte((u8)data_buf) != 0) {
 			//LED_GREEN_TOGGLE();
 		} else {
 			//LED_RED_ON();
@@ -136,7 +136,7 @@ void usart1_irq_handler(void)
 	/* output (TX) handler */
 	if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
 		if ((data_buf = gpc_pickup_byte()) >= 0) {
-			USART_SendData(USART1, data_buf);
+			USART_SendData(USART1, (uint16_t)data_buf);
 			//LED_GREEN_TOGGLE();
 		} else {
 			usart_disable_send();

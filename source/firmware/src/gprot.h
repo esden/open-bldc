@@ -19,7 +19,7 @@
 #ifndef __GPROT_H
 #define __GPROT_H
 
-/*@{*/
+/** @{ */
 /**
  * Governor register address definition.
  */
@@ -37,7 +37,7 @@
 #define GPROT_CPU_LOAD 11
 #define GPROT_CPU_LOAD_MAX 12
 #define GPROT_CPU_LOAD_MIN 13
-/*@}*/
+/** @} */
 
 void gprot_init();
 

@@ -54,7 +54,7 @@ bool demo;
 /**
  * Initialize STM32 system specific subsystems.
  */
-void system_init(void)
+static void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
 	SystemInit();
@@ -86,7 +86,7 @@ int main(void)
 	demo_dir = 1;
 	demo = false;
 
-	while (1) {
+	while (true) {
 		run_cpu_load_process();
 
 		if (adc_new_data_trigger) {

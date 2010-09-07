@@ -67,7 +67,7 @@ void cp_idle_init(void)
 {
 	control_process_register_cb(cps_idle,
 				    control_process_idle_trigger,
-				    control_process_idle_cb, 0, 0);
+				    control_process_idle_cb, NULL, NULL);
 }
 
 /**

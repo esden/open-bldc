@@ -33,28 +33,28 @@
 
 #define LED_ORANGE_OFF() LED_ORANGE_PORT->BSRR |= LED_ORANGE_BIT
 #define LED_ORANGE_ON() LED_ORANGE_PORT->BRR |= LED_ORANGE_BIT
-#define LED_ORANGE_TOGGLE() {				      \
-		if(LED_ORANGE_PORT->IDR & LED_ORANGE_BIT){    \
-			LED_ORANGE_ON();		      \
-		}else{					      \
-			LED_ORANGE_OFF();		      \
-		}					      \
+#define LED_ORANGE_TOGGLE() {						\
+		if((LED_ORANGE_PORT->IDR & LED_ORANGE_BIT) != 0){	\
+			LED_ORANGE_ON();				\
+		}else{							\
+			LED_ORANGE_OFF();				\
+		}							\
 	}
 
 #define LED_RED_OFF() LED_RED_PORT->BSRR |= LED_RED_BIT
 #define LED_RED_ON() LED_RED_PORT->BRR |= LED_RED_BIT
-#define LED_RED_TOGGLE() {				\
-		if(LED_RED_PORT->IDR & LED_RED_BIT){	\
-			LED_RED_ON();			\
-		}else{                                  \
-			LED_RED_OFF();			\
-		}                                       \
+#define LED_RED_TOGGLE() {					\
+		if((LED_RED_PORT->IDR & LED_RED_BIT) != 0){	\
+			LED_RED_ON();				\
+		}else{						\
+			LED_RED_OFF();				\
+		}						\
 	}
 
 #define LED_GREEN_OFF() LED_GREEN_PORT->BSRR |= LED_GREEN_BIT
 #define LED_GREEN_ON() LED_GREEN_PORT->BRR |= LED_GREEN_BIT
 #define LED_GREEN_TOGGLE() {					\
-		if(LED_GREEN_PORT->IDR & LED_GREEN_BIT){	\
+		if((LED_GREEN_PORT->IDR & LED_GREEN_BIT) != 0){	\
 			LED_GREEN_ON();				\
 		}else{						\
 			LED_GREEN_OFF();			\
@@ -63,12 +63,12 @@
 
 #define LED_BLUE_OFF() LED_BLUE_PORT->BSRR |= LED_BLUE_BIT
 #define LED_BLUE_ON() LED_BLUE_PORT->BRR |= LED_BLUE_BIT
-#define LED_BLUE_TOGGLE() {				\
-		if(LED_BLUE_PORT->IDR & LED_BLUE_BIT){	\
-			LED_BLUE_ON();			\
-		}else{                                  \
-			LED_BLUE_OFF();			\
-		}                                       \
+#define LED_BLUE_TOGGLE() {					\
+		if((LED_BLUE_PORT->IDR & LED_BLUE_BIT) != 0){	\
+			LED_BLUE_ON();				\
+		}else{						\
+			LED_BLUE_OFF();				\
+		}						\
 	}
 
 void led_init(void);

@@ -73,12 +73,12 @@ int sensor_process_low_prio_update_cnt = 0;
 void sensor_process_init(void)
 {
 
-	gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR,
-		      (u16 *) & (sensors.half_battery_voltage));
-	gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR,
-		      (u16 *) & (sensors.global_current));
-	gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR,
-		      (u16 *) & (sensors.phase_voltage));
+	(void)gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR,
+			    (u16 *) & (sensors.half_battery_voltage));
+	(void)gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR,
+			    (u16 *) & (sensors.global_current));
+	(void)gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR,
+			    (u16 *) & (sensors.phase_voltage));
 
 	sensors.phase_voltage = 0;
 	sensors.half_battery_voltage = 0;
@@ -164,9 +164,9 @@ void run_sensor_process(void)
 
 	if (sensor_trigger_debug_output == 100) {
 		sensor_trigger_debug_output = 0;
-		gpc_register_touched(GPROT_ADC_ZERO_VALUE_REG_ADDR);
-		gpc_register_touched(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR);
-		gpc_register_touched(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR);
+		(void)gpc_register_touched(GPROT_ADC_ZERO_VALUE_REG_ADDR);
+		(void)gpc_register_touched(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR);
+		(void)gpc_register_touched(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR);
 	} else {
 		sensor_trigger_debug_output++;
 	}

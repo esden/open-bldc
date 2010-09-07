@@ -47,7 +47,7 @@ volatile bool *comm_process_trigger;
  */
 struct comm_process_state {
 	volatile bool rising;	/**< Waiting for rising or falling edge of BEMF */
-	int pwm_count;		/**< PWM cycle counter in the current commutation */
+	s32 pwm_count;		/**< PWM cycle counter in the current commutation */
 	bool closed_loop;	/**< Running in closed loop control flag */
 	u32 prev_phase_voltage;	/**< Previous PWM cycle phase voltage memory */
 };
@@ -66,11 +66,12 @@ void comm_process_init(void)
 {
 	comm_process_trigger = &adc_new_data_trigger;
 
-	gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR,
-		      (u16 *) & (comm_params.spark_advance));
-	gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR,
-		      &(comm_params.direct_cutoff));
-	gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR, &(comm_params.iir));
+	(void)gpc_setup_reg(GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR,
+			    (u16 *) & (comm_params.spark_advance));
+	(void)gpc_setup_reg(GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR,
+			    &(comm_params.direct_cutoff));
+	(void)gpc_setup_reg(GPROT_COMM_TIM_IIR_POLE_REG_ADDR,
+			    &(comm_params.iir));
 
 	comm_process_state.rising = true;
 	comm_process_state.pwm_count = 0;
@@ -147,17 +148,17 @@ void comm_process_closed_loop_off(void)
  */
 void comm_process_calc_next_comm(void)
 {
-	s32 old_cycle_time = comm_tim_data.freq;
-	s32 pwm_time = comm_tim_data.curr_time - comm_tim_data.prev_time;
-	s32 bemf_rise = sensors.phase_voltage -
-	    comm_process_state.prev_phase_voltage;
-	s32 zero_value = sensors.half_battery_voltage -
-	    comm_process_state.prev_phase_voltage;
+	s32 old_cycle_time = (s32)comm_tim_data.freq;
+	s32 pwm_time = (s32)(comm_tim_data.curr_time - comm_tim_data.prev_time);
+	s32 bemf_rise = (s32)(sensors.phase_voltage -
+			comm_process_state.prev_phase_voltage);
+	s32 zero_value = (s32)(sensors.half_battery_voltage -
+			comm_process_state.prev_phase_voltage);
 	s32 half_cycle_time_adjust = (zero_value * pwm_time) / bemf_rise;
-	u32 half_cycle_time = (comm_tim_data.prev_time -
+	u32 half_cycle_time = (u32)((comm_tim_data.prev_time -
 			       comm_tim_data.last_capture_time) +
-	    half_cycle_time_adjust;
-	new_cycle_time = half_cycle_time * 2;
+				half_cycle_time_adjust);
+	new_cycle_time = (s32)(half_cycle_time * 2);
 
 	if (new_cycle_time > (old_cycle_time + comm_params.direct_cutoff)) {
 		new_cycle_time = old_cycle_time +
@@ -177,7 +178,7 @@ void comm_process_calc_next_comm(void)
 				  (new_cycle_time +
 				   comm_params.spark_advance)) /
 		    (comm_params.iir + 1);
-		comm_tim_data.freq = new_cycle_time;
+		comm_tim_data.freq = (u32)new_cycle_time;
 		comm_tim_update_freq();
 	}
 }
@@ -187,7 +188,7 @@ void comm_process_calc_next_comm(void)
  */
 void run_comm_process(void)
 {
-	if (comm_process_state.pwm_count < comm_params.hold_off) {
+	if (comm_process_state.pwm_count < (s32)comm_params.hold_off) {
 		comm_process_state.pwm_count++;
 		comm_process_state.prev_phase_voltage = sensors.phase_voltage;
 		LED_ORANGE_OFF();

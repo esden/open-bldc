@@ -95,13 +95,13 @@ void gprot_update_flags(void);
  */
 void gprot_init()
 {
-	gpc_init(gprot_trigger_output, 0, gprot_register_changed, 0);
+	(void)gpc_init(gprot_trigger_output, NULL, gprot_register_changed, NULL);
 
 	gprot_flag_reg = 0;
 	gprot_flag_reg_old = 0;
-	gpc_setup_reg(GPROT_FLAG_REG_ADDR, &gprot_flag_reg);
+	(void)gpc_setup_reg(GPROT_FLAG_REG_ADDR, &gprot_flag_reg);
 
-	gpc_setup_reg(GPROT_NEW_CYCLE_TIME, (u16 *) & new_cycle_time);
+	(void)gpc_setup_reg(GPROT_NEW_CYCLE_TIME, (u16 *) & new_cycle_time);
 }
 
 /**
@@ -136,41 +136,41 @@ void gprot_register_changed(void *data, u8 addr)
  */
 void gprot_update_flags(void)
 {
-	if (gprot_flag_reg & GPROT_FLAG_PWM_COMM) {
+	if ((gprot_flag_reg & GPROT_FLAG_PWM_COMM) != 0) {
 		pwm_comm();
 		return;
 	}
 
-	if (gprot_flag_reg & GPROT_FLAG_COMM_TIM) {
-		if (!(gprot_flag_reg_old & GPROT_FLAG_COMM_TIM)) {
+        if ((gprot_flag_reg & GPROT_FLAG_COMM_TIM) != 0) {
+		if ((gprot_flag_reg_old & GPROT_FLAG_COMM_TIM) == 0) {
 			control_process_ignite();
 		}
 	} else {
-		if (gprot_flag_reg_old & GPROT_FLAG_COMM_TIM) {
+		if ((gprot_flag_reg_old & GPROT_FLAG_COMM_TIM) != 0) {
 			control_process_kill();
 		}
 	}
 
-	if (gprot_flag_reg & GPROT_FLAG_ADC_COMM) {
+	if ((gprot_flag_reg & GPROT_FLAG_ADC_COMM) != 0) {
 		demo = true;
 	} else {
-		if (gprot_flag_reg_old & GPROT_FLAG_ADC_COMM) {
+		if ((gprot_flag_reg_old & GPROT_FLAG_ADC_COMM) != 0) {
 			demo = false;
 		}
 	}
 
-	if (gprot_flag_reg & GPROT_FLAG_ALL_LO) {
+	if ((gprot_flag_reg & GPROT_FLAG_ALL_LO) != 0) {
 		pwm_all_lo();
 	} else {
-		if (gprot_flag_reg_old & GPROT_FLAG_ALL_LO) {
+		if ((gprot_flag_reg_old & GPROT_FLAG_ALL_LO) != 0) {
 			pwm_off();
 		}
 	}
 
-	if (gprot_flag_reg & GPROT_FLAG_ALL_HI) {
+	if ((gprot_flag_reg & GPROT_FLAG_ALL_HI) != 0) {
 		pwm_all_hi();
 	} else {
-		if (gprot_flag_reg_old & GPROT_FLAG_ALL_HI) {
+		if ((gprot_flag_reg_old & GPROT_FLAG_ALL_HI) != 0) {
 			pwm_off();
 		}
 	}

@@ -62,7 +62,7 @@ void comm_tim_init(void)
 
 	comm_tim_data.freq = 65535;
 
-	gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &(comm_tim_data.freq));
+	(void)gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &(comm_tim_data.freq));
 
 	/* TIM2 clock enable */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
@@ -80,6 +80,7 @@ void comm_tim_init(void)
 	tim_base.TIM_Prescaler = 0;
 	tim_base.TIM_ClockDivision = 0;
 	tim_base.TIM_CounterMode = TIM_CounterMode_Up;
+	tim_base.TIM_RepetitionCounter = 0;
 
 	TIM_TimeBaseInit(TIM2, &tim_base);
 
@@ -91,6 +92,14 @@ void comm_tim_init(void)
 	tim_oc.TIM_OutputState = TIM_OutputState_Enable;
 	tim_oc.TIM_Pulse = comm_tim_data.freq;
 	tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
+
+	/* Not necessary for TIM2 because it is not an advanced timer
+	 * but we are trying to make lint happy here.
+	 */
+	tim_oc.TIM_OutputNState = TIM_OutputNState_Disable;
+	tim_oc.TIM_OCNPolarity = TIM_OCNPolarity_High;
+	tim_oc.TIM_OCIdleState = TIM_OCIdleState_Set;
+	tim_oc.TIM_OCNIdleState = TIM_OCNIdleState_Set;
 
 	TIM_OC1Init(TIM2, &tim_oc);
 

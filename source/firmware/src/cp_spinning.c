@@ -77,7 +77,7 @@ void cp_spinning_init(void)
 	cp_spinning_reset();
 	control_process_register_cb(cps_spinning,
 				    control_process_spinning_trigger,
-				    control_process_spinning_cb, 0, 0);
+				    control_process_spinning_cb, NULL, NULL);
 }
 
 /**

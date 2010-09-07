@@ -41,7 +41,7 @@
 bool *control_process_error_trigger = &comm_tim_trigger;
 
 enum control_process_cb_state
-control_process_error_cb(struct control_process *cps)
+control_process_error_cb(/*@unused@*/ struct control_process *cps)
 {
 	/**
 	 * @todo: Error handling for undefined
@@ -59,12 +59,12 @@ void cp_error_init(void)
 {
 	control_process_register_cb(cps_error,
 				    control_process_error_trigger,
-				    control_process_error_cb, 0, 0);
+				    control_process_error_cb, NULL, NULL);
 }
 
 /**
- * Reset function of the error state callback process, 
- * currently empty. 
+ * Reset function of the error state callback process,
+ * currently empty.
  */
 void cp_error_reset(void)
 {

@@ -94,8 +94,8 @@ void cp_spinup_init(void)
  */
 void cp_spinup_reset(void)
 {
-	spinup_process.step = CP_SST_MAX_STEP << CP_SST_FIXED_POINT;
-	spinup_process.hold = CP_SST_HOLD;
+	spinup_process.step = (u32)(CP_SST_MAX_STEP << CP_SST_FIXED_POINT);
+	spinup_process.hold = (u32)(CP_SST_HOLD);
 	pwm_val = CP_SST_POWER;
 }
 
@@ -106,7 +106,7 @@ void cp_spinup_reset(void)
  * Implements a simplicistic spin up using a soft timer as a time base.
  */
 enum control_process_cb_state
-control_process_spinup_cb(struct control_process *cps)
+control_process_spinup_cb(/*@unused@*/ struct control_process *cps)
 {
 
 #if 0
@@ -125,7 +125,7 @@ control_process_spinup_cb(struct control_process *cps)
 	 * process is still not happy
 	 */
 	if ((spinup_process.step >> CP_SST_FIXED_POINT) <= CP_SST_MIN_STEP) {
-		spinup_process.step = CP_SST_MIN_STEP << CP_SST_FIXED_POINT;
+		spinup_process.step = (u32)(CP_SST_MIN_STEP << CP_SST_FIXED_POINT);
 		if(spinup_process.hold > 0) {
 			spinup_process.hold--;
 			return cps_cb_continue;
@@ -142,7 +142,7 @@ control_process_spinup_cb(struct control_process *cps)
  * process state cps_spinup.
  */
 enum control_process_cb_state
-control_process_spinup_state_in_cb(struct control_process *cps)
+control_process_spinup_state_in_cb(/*@unused@*/ struct control_process *cps)
 {
 	LED_GREEN_OFF();
 	cp_spinup_reset();
@@ -160,7 +160,7 @@ control_process_spinup_state_in_cb(struct control_process *cps)
  * next control process state.
  */
 enum control_process_cb_state
-control_process_spinup_state_out_cb(struct control_process *cps)
+control_process_spinup_state_out_cb(/*@unused@*/ struct control_process *cps)
 {
 	LED_GREEN_ON();
 

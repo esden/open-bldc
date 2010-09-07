@@ -19,8 +19,8 @@
 #ifndef __COMM_PROCESS_H
 #define __COMM_PROCESS_H
 
-#define COMM_PROCESS_FALLING FALSE
-#define COMM_PROCESS_RISING TRUE
+#define COMM_PROCESS_FALLING false
+#define COMM_PROCESS_RISING true
 
 extern volatile bool *comm_process_trigger;
 

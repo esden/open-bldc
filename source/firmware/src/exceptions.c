@@ -27,6 +27,8 @@
  * while loop?
  */
 
+#include "types.h"
+
 #include "exceptions.h"
 
 /**
@@ -43,7 +45,7 @@ void nmi_exception(void)
  */
 void hard_fault_exception(void)
 {
-	while (1) ;
+	while (true) ;
 }
 
 /**
@@ -55,7 +57,7 @@ void hard_fault_exception(void)
  */
 void mem_manage_exception(void)
 {
-	while (1) ;
+	while (true) ;
 }
 
 /**
@@ -65,7 +67,7 @@ void mem_manage_exception(void)
  */
 void bus_fault_exception(void)
 {
-	while (1) ;
+	while (true) ;
 }
 
 /**
@@ -75,5 +77,5 @@ void bus_fault_exception(void)
  */
 void usage_fault_exception(void)
 {
-	while (1) ;
+	while (true) ;
 }

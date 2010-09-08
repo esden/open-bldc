@@ -113,10 +113,8 @@ void exti0_irq_handler(void)
 
 	if ((GPIOA->IDR & (1 << 0)) != 0) {
 		bemf_hd_data.source = bemf_hd_phase_u_rising;
-		LED_ORANGE_ON();
 	}else{
 		bemf_hd_data.source = bemf_hd_phase_u_falling;
-		LED_ORANGE_OFF();
 	}
 
 	bemf_hd_data.trigger = true;
@@ -132,10 +130,8 @@ void exti1_irq_handler(void)
 
 	if ((GPIOA->IDR & (1 << 1)) != 0) {
 		bemf_hd_data.source = bemf_hd_phase_v_rising;
-		LED_RED_ON();
 	}else{
 		bemf_hd_data.source = bemf_hd_phase_v_falling;
-		LED_RED_OFF();
 	}
 
 	bemf_hd_data.trigger = true;
@@ -151,10 +147,8 @@ void exti2_irq_handler(void)
 
 	if ((GPIOA->IDR & (1 << 2)) != 0) {
 		bemf_hd_data.source = bemf_hd_phase_w_rising;
-		LED_GREEN_ON();
 	}else{
 		bemf_hd_data.source = bemf_hd_phase_w_falling;
-		LED_GREEN_OFF();
 	}
 
 	bemf_hd_data.trigger = true;

@@ -2,13 +2,13 @@
 #include <yaml.h>
 
 #include "yaml_config.hpp"
-#include "interpreter_exception.hpp"
+#include "yaml_interpreter_exception.hpp"
 #include "parser_exception.hpp"
 #include "yaml_config.hpp"
 #include "logging.hpp"
 
 void
-YAMLConfig::read(char const * filename) throw (ParserException, InterpreterException) 
+YAMLConfig::read(char const * filename) throw (ParserException, YAMLInterpreterException) 
 {
 	yaml_parser_t parser;
 	yaml_event_t event;
@@ -29,21 +29,27 @@ YAMLConfig::read(char const * filename) throw (ParserException, InterpreterExcep
 	/* Read the event sequence */
 	while (!done) {
 
-			/* Get the next event */
-			if (!yaml_parser_parse(&parser, &event)) {
-					on_parser_error(&parser);
-					yaml_event_delete(&event);
-					return; 
-			}
-			
-			done = (m_interpreter.next_event(&event) == Interpreter::DONE);
-			
-			/* The application is responsible for destroying the event object. */
+		/* Get the next event */
+		if (!yaml_parser_parse(&parser, &event)) {
+			on_parser_error(&parser);
 			yaml_event_delete(&event);
+			return; 
+		}
+		
+		done = (m_yaml_interpreter.next_event(&event) == YAMLInterpreter::DONE);
+		
+		/* The application is responsible for destroying the event object. */
+		yaml_event_delete(&event);
 	}
 
 	/* Destroy the Parser object. */
 	yaml_parser_delete(&parser);
+
+/*
+	HeaderGeneratorStrategy generator_strategy; // < AbstractGenerationStrategy
+	m_config_generator = ConfigGenerator(generator_strategy);
+	m_config_generator.parse(m_yaml_interpreter); 
+*/
 }
 
 void

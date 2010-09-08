@@ -1,21 +1,26 @@
 ---
-#
+
 # flag:
 #   pwm_comm: 
 #     bit: 0
-#     widget: Checkbox
+#     widget: 
+#       class: Button
 #   comm_tim: 
 #     bit: 1
-#     widget: Checkbox
+#     widget: 
+#       class: Button
 #   adc_comm: 
 #     bit: 2
-#     widget: Checkbox
+#     widget: 
+#       class: Button
 #   all_lo: 
 #     bit: 3
-#     widget: Button
+#     widget: 
+#       class: Button
 #   all_hi: 
 #     bit: 4
-#     widget: Button
+#     widget: 
+#       class: Button
 
 Flags: 
   description: Flag register

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <yaml.h>
 
-class InterpreterException : public ::std::exception 
+class YAMLInterpreterException : public ::std::exception 
 {
 
 private: 
@@ -15,12 +15,12 @@ private:
 	const char * m_what; 
 
 public: 
-	InterpreterException(yaml_event_t * event, const char * what) throw()
+	YAMLInterpreterException(yaml_event_t * event, const char * what) throw()
 	: m_yaml_event(event), m_what(what)
 	{ } 
 
 public: 
-	virtual ~InterpreterException() throw () { } 
+	virtual ~YAMLInterpreterException() throw () { } 
 
 public:
 	

@@ -3,37 +3,60 @@
 
 #include <vector>
 #include <string>
+#include <map>
+#include "logging.hpp"
 
 class ConfigNode 
 {
 
 public: 
 
-	typedef ::std::vector<ConfigNode>::iterator iterator; 
-	typedef ::std::vector<ConfigNode>::const_iterator const_iterator; 
+	typedef ::std::map< ::std::string, ConfigNode>::iterator iterator; 
+	typedef ::std::map< ::std::string, ConfigNode>::const_iterator const_iterator; 
 
 private: 
 
-	::std::string m_value; 
-	::std::vector<ConfigNode> m_nodes; 
+	::std::map< ::std::string, ::std::string> m_values; 
+	::std::map< ::std::string, ConfigNode> m_nodes; 
 
 public: 
 
 	ConfigNode() { }
-	
-	ConfigNode(const char * value) 
-	: m_value(value) { } 
 
 	ConfigNode(ConfigNode const & other) 
-	: m_value(other.m_value), m_nodes(other.m_nodes) { }
+	: m_values(other.m_values), m_nodes(other.m_nodes) { }
 
 public: 
 
-	::std::string const & value(void) const             { return m_value; }
-	::std::vector<ConfigNode> const & nodes(void) const { return m_nodes; } 
+	::std::map< ::std::string, ConfigNode> const & nodes(void) const { return m_nodes; } 
 
-	void push_back(ConfigNode const & node)     { m_nodes.push_back(node); } 
-	void set_value(::std::string const & value) { m_value = value; } 
+	void set_node(::std::string const & key, 
+								ConfigNode const & node) { 
+		m_nodes.insert(::std::pair< ::std::string, ConfigNode>(key, node));
+	} 
+
+	void set_value(::std::string const & key, 
+								 ::std::string const & value) { 
+		m_values.insert(::std::pair< ::std::string, ::std::string>(key,value)); 
+	} 
+	void set_value(const char * key, const char * value) { 
+		::std::string skey(key); 
+		::std::string svalue(value); 
+		m_values.insert(::std::pair< ::std::string, ::std::string>(skey, svalue)); 
+	}
+	void set_value(::std::string & key, const char * value) { 
+		::std::string svalue(value); 
+		m_values.insert(::std::pair< ::std::string, ::std::string>(key, svalue)); 
+	}
+	void set_value(const char * key, ::std::string & value) { 
+		::std::string skey(key); 
+		m_values.insert(::std::pair< ::std::string, ::std::string>(skey, value)); 
+	}
+
+	void log(unsigned char indent) const; 
+	void log(void) const {
+		log(0);
+	}
 
 public: 
 

@@ -4,8 +4,8 @@
 #include <yaml.h>
 #include "logging.hpp"
 #include "error_handling.hpp"
-#include "interpreter.hpp"
-#include "interpreter_exception.hpp"
+#include "yaml_interpreter.hpp"
+#include "yaml_interpreter_exception.hpp"
 #include "parser_exception.hpp"
 
 
@@ -13,7 +13,7 @@ class YAMLConfig
 {
 private: 
 
-	Interpreter m_interpreter; 
+	YAMLInterpreter m_yaml_interpreter; 
 
 public: 
 
@@ -26,10 +26,10 @@ private:
 
 public: 
 
-	void read(char const * filename) throw (ParserException, InterpreterException);
+	void read(char const * filename) throw (ParserException, YAMLInterpreterException);
 
 	inline void log(void) const { 
-		m_interpreter.log(); 
+		m_yaml_interpreter.log(); 
 	}
 
 };

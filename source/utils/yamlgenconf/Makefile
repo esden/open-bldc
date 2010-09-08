@@ -3,8 +3,8 @@ CC=g++
 CFLAGS=-Wall -I./include -DLOG=$(LOG)
 LIBS=-lyaml
 
-HDEPS=yaml_config.hpp logging.hpp interpreter.hpp interpreter_exception.hpp parser_exception.hpp
-OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o
+HDEPS=yaml_config.hpp logging.hpp yaml_interpreter.hpp yaml_interpreter_exception.hpp parser_exception.hpp config_node.hpp
+OBJFILES = yamlgenconf.o yaml_config.o error_handling.o yaml_interpreter.o config_node.o
 
 BINDIR=./bin
 IDIR=./include

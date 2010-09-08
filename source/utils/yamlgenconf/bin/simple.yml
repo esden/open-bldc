@@ -4,30 +4,11 @@ PWM:
   description: PWM settings
   registers: 
     pwm_offset_reg_addr: 
-      register: 1
       label: Offset register address
       widget: 
-        class: PWM_OFFSET_WIDGET
-        min: 1
-        max: 100
-    pwm_val_reg_addr: 
-      register: 2
-      label: PWM value register address
-      widget: 
-        class: PWM_VAL_WIDGET
-        min: 2
-        max: 200
-ADC: 
-  registers: 
-    adc_reg_addr: 
-      widget: 
-        class: ADC_WIDGET
-        foo: bar
-        barm: gnarl
-        min: 3
-        max: 300
-      label: ADC register address
-      register: 2
-      is_awwsum: yes
-  description: ADC settings
-
+        class: SpinBox
+        ctype: u16
+        dtype: plain
+        min: 0
+        max: 666
+      register: 1

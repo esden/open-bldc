@@ -36,6 +36,7 @@
 
 #include "cp_spinup.h"
 #include "control_process.h"
+#include "cp_spinning.h"
 
 #include "types.h"
 #include "pwm/pwm.h"
@@ -118,15 +119,11 @@ enum control_process_cb_state
 control_process_spinup_cb(struct control_process *cps)
 {
 
-#if 0
 	/* Check if the spinning process is able to run */
-	if (control_process_spinning_ready()) {
+	if (cp_spinning_ready()) {
 		cps->state = cps_spinning;
 		return cps_cb_resume_control;
 	}
-#else
-	cps = cps;
-#endif
 
 	/* Calculate the duration of the next commutation cycle */
 	spinup_process.step = spinup_process.step -

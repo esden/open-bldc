@@ -23,5 +23,6 @@
 
 void cp_spinning_init(void);
 void cp_spinning_reset(void);
+bool cp_spinning_ready(void);
 
 #endif /* __CP_SPINNING_H */

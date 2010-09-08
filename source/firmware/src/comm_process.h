@@ -43,5 +43,6 @@ void comm_process_config_and_reset(bool rising);
 void comm_process_closed_loop_on(void);
 void comm_process_closed_loop_off(void);
 void run_comm_process(void);
+bool comm_process_ready(void);
 
 #endif /* __COMM_PROCESS_H */

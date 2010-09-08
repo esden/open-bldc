@@ -19,6 +19,24 @@
 #ifndef __BEMF_HARDWARE_DETECT_H
 #define __BEMF_HARDWARE_DETECT_H
 
+enum bemf_hd_source {
+	bemf_hd_phase_none,
+	bemf_hd_phase_u_rising,
+	bemf_hd_phase_u_falling,
+	bemf_hd_phase_v_rising,
+	bemf_hd_phase_v_falling,
+	bemf_hd_phase_w_rising,
+	bemf_hd_phase_w_falling
+};
+
+struct bemf_hd_data {
+	enum bemf_hd_source source;
+	bool trigger;
+};
+
+extern struct bemf_hd_data bemf_hd_data;
+
 void bemf_hd_init(void);
+void bemf_hd_reset(void);
 
 #endif /* __BEMF_HARDWARE_DETECT_H */

@@ -49,6 +49,7 @@ mc.OBJECTS = \
 	driver/usart.o \
 	driver/adc.o \
 	driver/sys_tick.o \
+	driver/bemf_hardware_detect.o \
 	src/cpu_load_process.o \
 	src/pwm/pwm.o \
 	src/pwm/pwm_scheme_6step_h_pwm_l_on.o \
@@ -61,8 +62,7 @@ mc.OBJECTS = \
 	src/cp_spinup_$(CP_SPINUP_STRATEGY).o \
 	src/cp_spinning.o \
 	src/cp_error.o \
-	src/control_process.o \
-	src/bemf_hardware_detect.o
+	src/control_process.o
 
 OBJECTS += $(mc.OBJECTS)
 

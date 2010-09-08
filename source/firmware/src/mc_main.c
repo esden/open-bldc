@@ -38,13 +38,13 @@
 #include "driver/usart.h"
 #include "driver/adc.h"
 #include "driver/sys_tick.h"
+#include "driver/bemf_hardware_detect.h"
 #include "cpu_load_process.h"
 #include "pwm/pwm.h"
 #include "comm_tim.h"
 #include "comm_process.h"
 #include "sensor_process.h"
 #include "control_process.h"
-#include "bemf_hardware_detect.h"
 
 /**
  * Running in demo mode flag

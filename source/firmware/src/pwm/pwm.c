@@ -162,6 +162,9 @@ void pwm_init(void)
 
 	/* Main output enable */
 	TIM_CtrlPWMOutputs(TIM1, ENABLE);
+
+	/* Setting default state of pwm to pwm_off */
+	pwm_off();
 }
 
 /**

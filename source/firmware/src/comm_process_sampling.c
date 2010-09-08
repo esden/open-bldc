@@ -241,3 +241,13 @@ void run_comm_process(void)
 
 	comm_process_state.prev_phase_voltage = sensors.phase_voltage;
 }
+
+/**
+ * Are we ready to runn closed loop?
+ *
+ * @todo impl
+ */
+bool comm_process_ready(void)
+{
+	return false;
+}

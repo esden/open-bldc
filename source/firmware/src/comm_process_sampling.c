@@ -191,7 +191,7 @@ static void comm_process_calc_next_comm(void)
 				  (new_cycle_time +
 				   comm_params.spark_advance)) /
 		    (comm_params.iir + 1);
-		comm_tim_data.freq = (u32)new_cycle_time;
+		comm_tim_data.freq = (u16)new_cycle_time;
 		comm_tim_update_freq();
 	}
 }

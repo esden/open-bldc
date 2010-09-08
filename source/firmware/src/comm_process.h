@@ -25,19 +25,6 @@
 extern volatile bool *comm_process_trigger;
 
 /**
- * Comm process parameters
- *
- * @todo clean up documentation
- */
-struct comm_params {
-	s16 spark_advance;	 /**< advance commutation relative to calculated time */
-	u16 direct_cutoff;	 /**< distance from the last calc time that makes the new invalid */
-	u16 direct_cutoff_slope; /**< what is the control slope when outside the direct control window */
-	u16 iir;		 /**< IIR value for the commutation time */
-	u16 hold_off;		 /**< how many bemf samples after a commutation should be dropped */
-};
-
-/**
  * Commutation control process output data
  */
 struct comm_data {
@@ -46,7 +33,6 @@ struct comm_data {
 	u32 in_range_counter;	     /**< how long are we in a valid direct control window */
 };
 
-extern struct comm_params comm_params;
 extern struct comm_data comm_data;
 extern s32 new_cycle_time;
 

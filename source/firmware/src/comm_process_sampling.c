@@ -52,12 +52,25 @@ struct comm_process_state {
 	u32 prev_phase_voltage;	/**< Previous PWM cycle phase voltage memory */
 };
 
+/**
+ * Comm process parameters
+ *
+ * @todo clean up documentation
+ */
+struct comm_params {
+	s16 spark_advance;	 /**< advance commutation relative to calculated time */
+	u16 direct_cutoff;	 /**< distance from the last calc time that makes the new invalid */
+	u16 direct_cutoff_slope; /**< what is the control slope when outside the direct control window */
+	u16 iir;		 /**< IIR value for the commutation time */
+	u16 hold_off;		 /**< how many bemf samples after a commutation should be dropped */
+};
+
 static struct comm_process_state comm_process_state;	/**< Internal state instance */
-struct comm_data comm_data;			/**< Public data instance */
-struct comm_params comm_params;			/**< Parameters */
-s32 new_cycle_time;				/**< New commutation time
-						  temporary variable, @todo
-						  remove */
+static struct comm_params comm_params;			/**< Parameters */
+struct comm_data comm_data;			        /**< Public data instance */
+s32 new_cycle_time;				        /**< New commutation time
+						             temporary variable, @todo
+						             remove */
 
 /**
  * Initialize commutation process

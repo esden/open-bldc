@@ -95,6 +95,7 @@ int main(void)
 		}
 
 		if (*comm_process_trigger) {
+			*comm_process_trigger = false;
 			run_comm_process();
 		}
 

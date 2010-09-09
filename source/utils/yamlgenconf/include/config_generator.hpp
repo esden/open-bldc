@@ -2,6 +2,7 @@
 #define CONFIG_GENERATOR_HPP__
 
 #include "abstract_generator_strategy.hpp"
+#include "abstract_runner_strategy.hpp"
 #include "interpreter_exception.hpp"
 #include "interpreter.hpp"
 
@@ -22,7 +23,7 @@ public:
 	void parse(Interpreter const & interpreter) throw (InterpreterException) { 
 		m_gen_strategy->parse(interpreter); 
 	}
-	void run(AbstractRunnerStrategy const & runner) throw (RunnerException) { 
+	void run(AbstractRunnerStrategy & runner) throw (RunnerException) { 
 		m_gen_strategy->run(runner);
 	}
 

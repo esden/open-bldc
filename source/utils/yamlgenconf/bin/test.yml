@@ -1,26 +1,28 @@
 ---
 
-flag:
-  pwm_comm: 
-    bit: 0
-    widget: 
-      class: Button
-  comm_tim: 
-    bit: 1
-    widget: 
-      class: Button
-  adc_comm: 
-    bit: 2
-    widget: 
-      class: Button
-  all_lo: 
-    bit: 3
-    widget: 
-      class: Button
-  all_hi: 
-    bit: 4
-    widget: 
-      class: Button
+namespace: GPROT
+
+# flag:
+#   pwm_comm: 
+#     bit: 0
+#     widget: 
+#       class: Button
+#   comm_tim: 
+#     bit: 1
+#     widget: 
+#       class: Button
+#   adc_comm: 
+#     bit: 2
+#     widget: 
+#       class: Button
+#   all_lo: 
+#     bit: 3
+#     widget: 
+#       class: Button
+#   all_hi: 
+#     bit: 4
+#     widget: 
+#       class: Button
 
 Flags: 
   description: Flag register
@@ -78,4 +80,28 @@ Commutation_Timer:
     comm_tim_freq_reg_addr: 
       register: 3
       label: Frequency
+
+Other: 
+  descriptions: Custom other register settings
+  registers: 
+    new_cycle_time: 
+      register: 10
+      ro: no
+      label: New cycle time
+
+CPU Load: 
+  description: For resolving thresholds of CPU load
+  registers: 
+    cpu_load: 
+      register: 11
+      ro: yes
+      label: CPU load
+    cpu_load_max: 
+      register: 12
+      ro: yes
+      label: CPU max load
+    cpu_load_min: 
+      register: 13
+      ro: yes
+      label: CPU min load
 

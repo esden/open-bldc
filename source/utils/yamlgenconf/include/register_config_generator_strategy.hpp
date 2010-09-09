@@ -24,7 +24,7 @@ public:
 public: 
 
 	virtual void parse(Interpreter const & interpreter) throw (GeneratorException); 
-	virtual void run(AbstractRunnerStrategy const & runner) throw (RunnerException); 
+	virtual void run(AbstractRunnerStrategy & runner) throw (RunnerException); 
 
 };
 

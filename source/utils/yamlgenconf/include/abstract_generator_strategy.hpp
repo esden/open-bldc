@@ -13,7 +13,7 @@ class AbstractGeneratorStrategy
 public: 
 
 	virtual void parse(Interpreter const & interpreter) throw (GeneratorException) = 0; 
-	virtual void run(AbstractRunnerStrategy const & runner) throw (RunnerException) = 0; 
+	virtual void run(AbstractRunnerStrategy & runner) throw (RunnerException) = 0; 
 
 };
 

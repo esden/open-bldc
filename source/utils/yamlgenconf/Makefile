@@ -6,7 +6,7 @@ LIBS=-lyaml
 HDEPS=yaml_config.hpp logging.hpp interpreter.hpp interpreter_exception.hpp \
 			parser_exception.hpp config_node.hpp abstract_generator_strategy.hpp \
 			register_config_generator_strategy.hpp generator_exception.hpp \
-			register_config_header_runner_strategy.hpp
+			register_config_header_runner_strategy.hpp config_exception.hpp
 OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o config_node.o \
 					 register_config_generator_strategy.o register_config_header_runner_strategy.o
 

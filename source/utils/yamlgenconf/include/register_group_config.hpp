@@ -27,10 +27,14 @@ public:
 
 	~RegisterGroupConfig() { }
 
+	inline ::std::string const & name(void) const { 
+		return m_name; 
+	}
+
 	inline void add_register(const RegisterConfig & register_config) { 
 		m_register_configs.push_back(register_config); 
 	}
-	inline ::std::vector<RegisterConfig> & registers(void) { 
+	inline ::std::vector<RegisterConfig> const & registers(void) const { 
 		return m_register_configs;
 	}
 

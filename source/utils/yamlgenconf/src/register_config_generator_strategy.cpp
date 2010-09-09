@@ -45,8 +45,8 @@ throw (GeneratorException)
 }
 
 void
-RegisterConfigGeneratorStrategy::run(AbstractRunnerStrategy const & runner)
+RegisterConfigGeneratorStrategy::run(AbstractRunnerStrategy & runner)
 throw (RunnerException)
 {
-	return; 
+	runner.run(m_register_groups);
 }

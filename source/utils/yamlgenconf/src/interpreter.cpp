@@ -4,18 +4,18 @@
 	tree. 
 */
 
-#include "yaml_interpreter.hpp"
-#include "yaml_interpreter_exception.hpp"
+#include "interpreter.hpp"
+#include "interpreter_exception.hpp"
 #include "logging.hpp"
 #include <yaml.h>
 
 
-void YAMLInterpreter::init_mode(yaml_event_t * event) {
+void Interpreter::init_mode(yaml_event_t * event) {
 	LOG_DEBUG_PRINT(" -> Handling INIT");
   if(event->type != YAML_MAPPING_START_EVENT &&
      event->type != YAML_STREAM_START_EVENT &&
      event->type != YAML_DOCUMENT_START_EVENT) {
-    throw YAMLInterpreterException(event, "INIT");
+    throw InterpreterException(event, "INIT");
   }
 
   // Wait for first mapping (global scope):
@@ -29,10 +29,10 @@ void YAMLInterpreter::init_mode(yaml_event_t * event) {
 }
 
 void 
-YAMLInterpreter::mapping_start_mode(yaml_event_t * event) { 
+Interpreter::mapping_start_mode(yaml_event_t * event) { 
 	LOG_DEBUG_PRINT(" -> Handling MAPPING_START");
   if(event->type != YAML_SCALAR_EVENT) { 
-    throw YAMLInterpreterException(event, "MAPPING_START");
+    throw InterpreterException(event, "MAPPING_START");
   }
 	
 	LOG_DEBUG_PRINT("    key: %s", (const char *)(event->data.scalar.value));
@@ -47,12 +47,12 @@ YAMLInterpreter::mapping_start_mode(yaml_event_t * event) {
 }
 
 void 
-YAMLInterpreter::key_mode(yaml_event_t * event) { 
+Interpreter::key_mode(yaml_event_t * event) { 
 	LOG_DEBUG_PRINT(" -> Handling KEY");
   if(event->type != YAML_SCALAR_EVENT &&
   	 event->type != YAML_DOCUMENT_END_EVENT && 
   	 event->type != YAML_MAPPING_END_EVENT) { 
-    throw YAMLInterpreterException(event, "KEY");
+    throw InterpreterException(event, "KEY");
   }
 
 	if(event->type == YAML_SCALAR_EVENT) { 
@@ -82,11 +82,11 @@ YAMLInterpreter::key_mode(yaml_event_t * event) {
 }
 
 void 
-YAMLInterpreter::value_mode(yaml_event_t * event) { 
+Interpreter::value_mode(yaml_event_t * event) { 
 	LOG_DEBUG_PRINT(" -> Handling VALUE");
   if(event->type != YAML_SCALAR_EVENT && 
      event->type != YAML_MAPPING_START_EVENT) { 
-    throw YAMLInterpreterException(event, "VALUE");
+    throw InterpreterException(event, "VALUE");
   }
 
 	if(event->type == YAML_SCALAR_EVENT) { 
@@ -105,11 +105,11 @@ YAMLInterpreter::value_mode(yaml_event_t * event) {
 }
 
 void
-YAMLInterpreter::completing_mode(yaml_event_t * event) {
+Interpreter::completing_mode(yaml_event_t * event) {
 }
 
-YAMLInterpreter::interpreter_mode_t
-YAMLInterpreter::next_event(yaml_event_t * event) throw (YAMLInterpreterException)
+Interpreter::interpreter_mode_t
+Interpreter::next_event(yaml_event_t * event) throw (InterpreterException)
 {
   if (event->type == YAML_STREAM_END_EVENT) {
     return DONE;

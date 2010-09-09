@@ -2,16 +2,17 @@
 #include <yaml.h>
 
 #include "yaml_config.hpp"
-#include "yaml_interpreter_exception.hpp"
+#include "interpreter_exception.hpp"
 #include "parser_exception.hpp"
 #include "yaml_config.hpp"
 #include "logging.hpp"
-#include "abstract_yaml_generator_strategy.hpp"
-#include "yaml_generator_register_config_strategy.hpp"
+#include "abstract_generator_strategy.hpp"
+#include "register_config_generator_strategy.hpp"
 #include "config_generator.hpp"
+#include "register_config_header_runner_strategy.hpp"
 
 void
-YAMLConfig::read(char const * filename) throw (ParserException, YAMLInterpreterException) 
+YAMLConfig::read(char const * filename) throw (ParserException, InterpreterException) 
 {
 	yaml_parser_t parser;
 	yaml_event_t event;
@@ -39,7 +40,7 @@ YAMLConfig::read(char const * filename) throw (ParserException, YAMLInterpreterE
 			return; 
 		}
 		
-		done = (m_yaml_interpreter.next_event(&event) == YAMLInterpreter::DONE);
+		done = (m_yaml_interpreter.next_event(&event) == Interpreter::DONE);
 		
 		/* The application is responsible for destroying the event object. */
 		yaml_event_delete(&event);
@@ -48,9 +49,25 @@ YAMLConfig::read(char const * filename) throw (ParserException, YAMLInterpreterE
 	/* Destroy the Parser object. */
 	yaml_parser_delete(&parser);
 
-	YAMLGeneratorRegisterConfigStrategy generator_strategy; 
+	RegisterConfigGeneratorStrategy generator_strategy; 
+	RegisterConfigHeaderRunnerStrategy runner_strategy; 
+
 	ConfigGenerator config_generator = ConfigGenerator(&generator_strategy);
 	config_generator.parse(m_yaml_interpreter); 
+	config_generator.run(runner_strategy); 
+
+/* 
+	Note that a ConfigGenerator can parse several 
+	interpreters, and you can run several runners 
+	on the same configurator: 
+
+		config_generator.parse(first_interpreter); 
+		config_generator.parse(second_interpreter); 
+
+		config_generator.run(first_strategy); 
+		config_generator.run(second_strategy); 
+		config_generator.run(third_strategy); 
+*/
 
 }
 

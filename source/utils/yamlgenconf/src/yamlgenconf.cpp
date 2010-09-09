@@ -18,7 +18,7 @@
 
 #include <yaml.h>
 #include "yaml_config.hpp"
-#include "yaml_interpreter_exception.hpp"
+#include "interpreter_exception.hpp"
 #include "parser_exception.hpp"
 
 void usage(void);
@@ -35,7 +35,7 @@ int main(int argc, char * argv[]) {
 		config.read(argv[1]);
 	} catch(ParserException pe) { 
 		fprintf(stderr, "%s\n", pe.what());
-	} catch(YAMLInterpreterException ie) { 
+	} catch(InterpreterException ie) { 
 		fprintf(stderr, "%s\n", ie.what());
 	}
 

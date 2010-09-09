@@ -1,5 +1,5 @@
-#ifndef YAML_INTERPRETER_EXCEPTION_HPP__
-#define YAML_INTERPRETER_EXCEPTION_HPP__
+#ifndef INTERPRETER_EXCEPTION_HPP__
+#define INTERPRETER_EXCEPTION_HPP__
 
 #include <exception>
 #include <string>
@@ -7,7 +7,7 @@
 #include <iostream>
 #include <yaml.h>
 
-class YAMLInterpreterException : public ::std::exception 
+class InterpreterException : public ::std::exception 
 {
 
 private: 
@@ -15,12 +15,12 @@ private:
 	const char * m_what; 
 
 public: 
-	YAMLInterpreterException(yaml_event_t * event, const char * what) throw()
+	InterpreterException(yaml_event_t * event, const char * what) throw()
 	: m_yaml_event(event), m_what(what)
 	{ } 
 
 public: 
-	virtual ~YAMLInterpreterException() throw () { } 
+	virtual ~InterpreterException() throw () { } 
 
 public:
 	
@@ -74,4 +74,4 @@ public:
 
 };
 
-#endif /* YAML_INTERPRETER_H__ */
+#endif /* INTERPRETER_EXCEPTION_HPP__ */

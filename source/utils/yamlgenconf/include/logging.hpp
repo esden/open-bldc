@@ -10,19 +10,21 @@
 #define LOG_DEBUG_EVT(x) fprintf(stderr, "\nD- Parser event: %s\n", x)
 #define LOG_DEBUG_PRINT(s, args...) fprintf(stderr, "D- " s "\n", ##args)
 #else
-#define LOG_DEBUG_EVT(x) while(0)
-#define LOG_DEBUG_PRINT(s, args...) while(0)
+#define LOG_DEBUG_EVT(x) ((void)0)
+#define LOG_DEBUG_PRINT(s, args...) ((void)0)
 #endif
 
 #if LOG == DEBUG || LOG == INFO
 #define LOG_INFO_PRINT(s, args...) fprintf(stderr, "I- " s "\n", ##args)
+#else 
+#define LOG_INFO_PRINT(s, args...) ((void)0)
 #endif
 
 #else // ifdef LOG
 
-#define LOG_DEBUG_EVT(c) while(0)
-#define LOG_DEBUG_PRINT(s, args...) while(0)
-#define LOG_INFO_PRINT(s, args...) while(0)
+#define LOG_DEBUG_EVT(c) ((void)0)
+#define LOG_DEBUG_PRINT(s, args...) ((void)0)
+#define LOG_INFO_PRINT(s, args...) ((void)0)
 
 #endif // ifdef LOG
 

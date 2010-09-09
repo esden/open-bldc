@@ -1,16 +1,16 @@
-#ifndef YAML_INTERPRETER_H__
-#define YAML_INTERPRETER_H__
+#ifndef INTERPRETER_H__
+#define INTERPRETER_H__
 
 #include <yaml.h>
 #include <vector>
 
-#include "yaml_interpreter_exception.hpp"
+#include "interpreter_exception.hpp"
 #include "config_node.hpp"
 
 #define register_handler(mode, fun) \
-	m_mode_handlers[mode] = &YAMLInterpreter::fun
+	m_mode_handlers[mode] = &Interpreter::fun
 
-class YAMLInterpreter
+class Interpreter
 {
 
 private: 
@@ -56,7 +56,7 @@ public:
     DONE
   } interpreter_mode_t;
 
-  typedef void (YAMLInterpreter::*mode_handler_fun)(yaml_event_t * event);
+  typedef void (Interpreter::*mode_handler_fun)(yaml_event_t * event);
   mode_handler_fun m_mode_handlers[DONE+1];
 
 private:
@@ -65,7 +65,7 @@ private:
 
 public:
 
-  YAMLInterpreter()
+  Interpreter()
     : m_mode(INIT)
   {
     register_handler(INIT,          init_mode);
@@ -75,7 +75,7 @@ public:
 		register_handler(COMPLETING,  	completing_mode); 
   }
 
-  ~YAMLInterpreter() {
+  ~Interpreter() {
   }
 
 public:
@@ -93,7 +93,7 @@ public:
 
 public:
 
-  interpreter_mode_t next_event(yaml_event_t * event) throw(YAMLInterpreterException); 
+  interpreter_mode_t next_event(yaml_event_t * event) throw(InterpreterException); 
 
 	ConfigNode const & config() const { return m_cur_node;	}
 
@@ -107,4 +107,4 @@ private:
 
 };
 
-#endif /* YAML_INTERPRETER_H__ */
+#endif /* INTERPRETER_H__ */

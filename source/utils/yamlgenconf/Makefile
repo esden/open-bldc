@@ -3,11 +3,12 @@ CC=g++
 CFLAGS=-Wall -I./include -DLOG=$(LOG)
 LIBS=-lyaml
 
-HDEPS=yaml_config.hpp logging.hpp yaml_interpreter.hpp yaml_interpreter_exception.hpp \
-			parser_exception.hpp config_node.hpp abstract_yaml_generator_strategy.hpp \
-			yaml_generator_register_config_strategy.hpp yaml_generator_exception.hpp
-OBJFILES = yamlgenconf.o yaml_config.o error_handling.o yaml_interpreter.o config_node.o \
-					 yaml_generator_register_config_strategy.o
+HDEPS=yaml_config.hpp logging.hpp interpreter.hpp interpreter_exception.hpp \
+			parser_exception.hpp config_node.hpp abstract_generator_strategy.hpp \
+			register_config_generator_strategy.hpp generator_exception.hpp \
+			register_config_header_runner_strategy.hpp
+OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o config_node.o \
+					 register_config_generator_strategy.o register_config_header_runner_strategy.o
 
 BINDIR=./bin
 IDIR=./include

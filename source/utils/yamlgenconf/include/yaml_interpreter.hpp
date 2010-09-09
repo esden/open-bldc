@@ -1,5 +1,5 @@
-#ifndef INTERPRETER_H__
-#define INTERPRETER_H__
+#ifndef YAML_INTERPRETER_H__
+#define YAML_INTERPRETER_H__
 
 #include <yaml.h>
 #include <vector>
@@ -35,6 +35,8 @@ private:
 	  Config node that is currently operated on. 
 		Is pushed to m_node_stack if another config 
 		node (mapping start) is initialized. 
+		After parsing, m_cur_node contains the 
+		interpreter's result (root node). 
 	*/
   ConfigNode m_cur_node; 
 	
@@ -45,7 +47,6 @@ public:
     INIT=0,
 	
 		MAPPING_START, 
-		MAPPING_END, 
 		KEY, 
 		VALUE, 
 		COMPLETING, 
@@ -69,7 +70,6 @@ public:
   {
     register_handler(INIT,          init_mode);
 		register_handler(MAPPING_START, mapping_start_mode); 
-		register_handler(MAPPING_END,   mapping_end_mode); 
 		register_handler(KEY,				    key_mode); 
 		register_handler(VALUE,			    value_mode); 
 		register_handler(COMPLETING,  	completing_mode); 
@@ -85,7 +85,7 @@ public:
     ::std::vector< ConfigNode>::const_iterator end = m_node_stack.end();
 
 		m_cur_node.log(); 
-		::std::cout << "------" << ::std::endl;
+		::std::cerr << "--- Stack content (empty after successful run):" << ::std::endl;
     for(it = m_node_stack.begin(); it != end; ++it) {
       (*it).log();
     }
@@ -93,17 +93,18 @@ public:
 
 public:
 
-  interpreter_mode_t next_event(yaml_event_t * event) throw(YAMLInterpreterException);
+  interpreter_mode_t next_event(yaml_event_t * event) throw(YAMLInterpreterException); 
+
+	ConfigNode const & config() const { return m_cur_node;	}
 
 private:
 
   void init_mode(yaml_event_t * event);
   void mapping_start_mode(yaml_event_t * event);
-  void mapping_end_mode(yaml_event_t * event);
   void key_mode(yaml_event_t * event);
   void value_mode(yaml_event_t * event);
   void completing_mode(yaml_event_t * event);
 
 };
 
-#endif
+#endif /* YAML_INTERPRETER_H__ */

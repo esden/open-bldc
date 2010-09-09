@@ -1,14 +1,18 @@
 ---
 
+Flags: 
+  registers: 
+    flags_reg_addr: 
+      register: 0
+      label: Flag register
+  description: Flag register
+
 PWM: 
   description: PWM settings
   registers: 
     pwm_offset_reg_addr: 
-      label: Offset register address
-      widget: 
-        class: SpinBox
-        ctype: u16
-        dtype: plain
-        min: 0
-        max: 666
       register: 1
+      label: Offset register address
+
+
+

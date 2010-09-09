@@ -9,4 +9,4 @@ public:
 
 };
 
-#endif
+#endif /* CONFIG_HPP__ */

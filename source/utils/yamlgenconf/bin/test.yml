@@ -1,26 +1,26 @@
 ---
 
-# flag:
-#   pwm_comm: 
-#     bit: 0
-#     widget: 
-#       class: Button
-#   comm_tim: 
-#     bit: 1
-#     widget: 
-#       class: Button
-#   adc_comm: 
-#     bit: 2
-#     widget: 
-#       class: Button
-#   all_lo: 
-#     bit: 3
-#     widget: 
-#       class: Button
-#   all_hi: 
-#     bit: 4
-#     widget: 
-#       class: Button
+flag:
+  pwm_comm: 
+    bit: 0
+    widget: 
+      class: Button
+  comm_tim: 
+    bit: 1
+    widget: 
+      class: Button
+  adc_comm: 
+    bit: 2
+    widget: 
+      class: Button
+  all_lo: 
+    bit: 3
+    widget: 
+      class: Button
+  all_hi: 
+    bit: 4
+    widget: 
+      class: Button
 
 Flags: 
   description: Flag register

@@ -6,6 +6,9 @@
 #include "parser_exception.hpp"
 #include "yaml_config.hpp"
 #include "logging.hpp"
+#include "abstract_yaml_generator_strategy.hpp"
+#include "yaml_generator_register_config_strategy.hpp"
+#include "config_generator.hpp"
 
 void
 YAMLConfig::read(char const * filename) throw (ParserException, YAMLInterpreterException) 
@@ -45,11 +48,10 @@ YAMLConfig::read(char const * filename) throw (ParserException, YAMLInterpreterE
 	/* Destroy the Parser object. */
 	yaml_parser_delete(&parser);
 
-/*
-	HeaderGeneratorStrategy generator_strategy; // < AbstractGenerationStrategy
-	m_config_generator = ConfigGenerator(generator_strategy);
-	m_config_generator.parse(m_yaml_interpreter); 
-*/
+	YAMLGeneratorRegisterConfigStrategy generator_strategy; 
+	ConfigGenerator config_generator = ConfigGenerator(&generator_strategy);
+	config_generator.parse(m_yaml_interpreter); 
+
 }
 
 void

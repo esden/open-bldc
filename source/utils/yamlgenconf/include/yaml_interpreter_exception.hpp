@@ -1,5 +1,5 @@
-#ifndef INTERPRETER_EXCEPTION_HPP__
-#define INTERPRETER_EXCEPTION_HPP__
+#ifndef YAML_INTERPRETER_EXCEPTION_HPP__
+#define YAML_INTERPRETER_EXCEPTION_HPP__
 
 #include <exception>
 #include <string>
@@ -74,4 +74,4 @@ public:
 
 };
 
-#endif
+#endif /* YAML_INTERPRETER_H__ */

@@ -6,6 +6,7 @@
 
 #include "config.hpp"
 #include "logging.hpp"
+#include "widget_config.hpp"
 
 class RegisterConfig : public Config 
 {
@@ -18,12 +19,8 @@ private:
 
 public: 
 
-	RegisterConfig(::std::string & name)
+	RegisterConfig(::std::string const & name)
 	: m_name(name) { }
-
-	RegisterConfig(yaml_char_t * name)	{ 
-		m_name = ::std::string((const char *)(name));
-	}
 
 	RegisterConfig() 
 	: m_name("") { } 
@@ -57,7 +54,7 @@ public:
 	inline void set_widget(WidgetConfig const & widget_config) {
 		m_widget_config = widget_config; 
 	}
-	inline WidgetConfig const &  widget(void) const { 
+	inline WidgetConfig const & widget(void) const { 
 		return m_widget_config; 
 	}
 	

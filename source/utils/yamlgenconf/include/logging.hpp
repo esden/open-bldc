@@ -7,7 +7,7 @@
 #define INFO 2
 
 #if LOG == DEBUG
-#define LOG_DEBUG_EVT(x) fprintf(stderr, "D- Parser event: %s\n", x)
+#define LOG_DEBUG_EVT(x) fprintf(stderr, "\nD- Parser event: %s\n", x)
 #define LOG_DEBUG_PRINT(s, args...) fprintf(stderr, "D- " s "\n", ##args)
 #else
 #define LOG_DEBUG_EVT(x) while(0)

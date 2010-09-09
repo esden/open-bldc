@@ -53,8 +53,16 @@ public:
 		m_values.insert(::std::pair< ::std::string, ::std::string>(skey, value)); 
 	}
 
+public: 
+
+	::std::map< ::std::string, ::std::string> const & values(void) { 
+		return m_values; 
+	}
+
+public: 
+
 	void log(unsigned char indent) const; 
-	void log(void) const {
+	inline void log(void) const {
 		log(0);
 	}
 
@@ -62,6 +70,10 @@ public:
 
 	iterator begin() { return m_nodes.begin(); }
 	iterator end()   { return m_nodes.end(); }
+
+	const_iterator find(const char * key) const { 
+		return m_nodes.find(::std::string(key));
+	}
 	
 };
 

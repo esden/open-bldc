@@ -1,13 +1,7 @@
 /**
   Simplicistic implementation of an interpreter based on libyaml
-	as a state machine mapping libyaml parser events to an config
-	instances tree like:
-	- Config
-	   [ RegisterGroupConfig
-		 		[ RegisterConfig
-					[ WidgetConfig ]
-				]+
-		 ]+
+	as a state machine mapping libyaml parser events to a ConfigNode
+	tree. 
 */
 
 #include "yaml_interpreter.hpp"
@@ -44,56 +38,12 @@ YAMLInterpreter::mapping_start_mode(yaml_event_t * event) {
 	LOG_DEBUG_PRINT("    key: %s", (const char *)(event->data.scalar.value));
 	m_key_stack.push_back(::std::string((const char *)(event->data.scalar.value)));
 
+	LOG_DEBUG_PRINT("    PUSH node");
 	m_node_stack.push_back(m_cur_node); 
 	m_cur_node = ConfigNode(); 
 	
 	LOG_DEBUG_PRINT(" -> Transition to VALUE");
 	m_mode = VALUE; 
-}
-
-void 
-YAMLInterpreter::mapping_end_mode(yaml_event_t * event) { 
-	LOG_DEBUG_PRINT(" -> Handling MAPPING_END");
-  if(event->type != YAML_MAPPING_END_EVENT &&
-  	 event->type != YAML_DOCUMENT_END_EVENT && 
-  	 event->type != YAML_SCALAR_EVENT) { 
-    throw YAMLInterpreterException(event, "MAPPING_END");
-  }
-	if(event->type == YAML_DOCUMENT_END_EVENT) { 
-		LOG_DEBUG_PRINT(" -> Transition to COMPLETING");
-		m_mode = COMPLETING; 
-	}
-	else if(event->type == YAML_MAPPING_END_EVENT) { 
-		// Current config node finished, assign to parent node
-		ConfigNode parent_node = m_node_stack.back(); 
-		::std::string cur_key  = m_key_stack.back(); 
-		parent_node.set_node(cur_key, m_cur_node);
-		m_cur_node = parent_node; 
-		
-		m_node_stack.pop_back(); 
-		m_key_stack.pop_back(); 
-		
-		LOG_DEBUG_PRINT(" -> Transition to KEY");
-		m_mode = KEY; 
-	}
-	else if(event->type == YAML_SCALAR_EVENT) { 
-		LOG_DEBUG_PRINT("    key: %s", (const char *)(event->data.scalar.value));
-
-		// Current config node finished, assign to parent node
-		ConfigNode parent_node = m_node_stack.back(); 
-		::std::string cur_key  = m_key_stack.back(); 
-		parent_node.set_node(cur_key, m_cur_node);
-		m_cur_node = parent_node; 
-		
-		m_node_stack.pop_back(); 
-		m_key_stack.pop_back(); 
-		
-		// Assign this key to parent node
-		m_key_stack.push_back(::std::string((const char *)(event->data.scalar.value)));
-		
-		LOG_DEBUG_PRINT(" -> Map Transition to VALUE");
-		m_mode = VALUE; 
-	}
 }
 
 void 
@@ -114,7 +64,16 @@ YAMLInterpreter::key_mode(yaml_event_t * event) {
 	} 
 	else if(event->type == YAML_MAPPING_END_EVENT) { 
 		LOG_DEBUG_PRINT(" -> Transition to MAPPING_END");
-		m_mode = MAPPING_END;
+		ConfigNode parent_node = m_node_stack.back(); 
+		::std::string cur_key  = m_key_stack.back(); 
+		parent_node.set_node(cur_key, m_cur_node);
+		m_cur_node = parent_node; 
+		
+		LOG_DEBUG_PRINT("    POP node");
+		m_node_stack.pop_back(); 
+		m_key_stack.pop_back(); 
+		
+		m_mode = KEY;
 	}
 	else if(event->type == YAML_DOCUMENT_END_EVENT) { 
 		LOG_DEBUG_PRINT(" -> Transition to COMPLETING");
@@ -135,7 +94,6 @@ YAMLInterpreter::value_mode(yaml_event_t * event) {
 		m_key_stack.pop_back(); 
 
 		LOG_DEBUG_PRINT("    value: %s", (const char *)(event->data.scalar.value));
-
 		LOG_DEBUG_PRINT(" -> Transition to KEY");
 		m_mode = KEY; 
 	}
@@ -148,41 +106,11 @@ YAMLInterpreter::value_mode(yaml_event_t * event) {
 
 void
 YAMLInterpreter::completing_mode(yaml_event_t * event) {
-	log(); 
 }
 
 YAMLInterpreter::interpreter_mode_t
 YAMLInterpreter::next_event(yaml_event_t * event) throw (YAMLInterpreterException)
 {
-	switch(event->type) { 
-		case YAML_STREAM_START_EVENT: 
-			LOG_DEBUG_EVT("STREAM_START_EVENT");
-			break; 
-		case YAML_DOCUMENT_START_EVENT: 
-			LOG_DEBUG_EVT("DOCUMENT_START_EVENT");
-			break; 
-		case YAML_MAPPING_START_EVENT: 
-			LOG_DEBUG_EVT("MAPPING_START_EVENT");
-			break; 
-		case YAML_MAPPING_END_EVENT: 
-			LOG_DEBUG_EVT("MAPPING_END_EVENT");
-			break; 
-		case YAML_SCALAR_EVENT: 
-			LOG_DEBUG_EVT("SCALAR_EVENT");
-			break; 
-
-		case YAML_DOCUMENT_END_EVENT: 
-			LOG_DEBUG_EVT("DOCUMENT_END_EVENT");
-			break; 
-		case YAML_STREAM_END_EVENT: 
-			LOG_DEBUG_EVT("STREAM_END_EVENT");
-			break; 
-
-		case YAML_NO_EVENT: 
-			LOG_DEBUG_EVT("NO_EVENT");
-			return CONTINUE; 
-	}
-
   if (event->type == YAML_STREAM_END_EVENT) {
     return DONE;
   }

@@ -12,6 +12,7 @@ throw (RunnerException)
 { 
 	RegisterConfigBuilder * builder; 
 	builder = static_cast<RegisterConfigBuilder*>(abstract_builder); 
+	
 	::std::vector<RegisterGroupConfig> const register_groups = builder->register_groups(); 
 	::std::string const module_name = builder->module(); 
 

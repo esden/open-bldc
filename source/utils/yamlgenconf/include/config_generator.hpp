@@ -35,6 +35,9 @@ private:
 	typedef typename TGeneratorStrategy::Builder builder_t; 
 	typedef typename TGeneratorStrategy::Runner runner_t; 
 
+//	typedef typename ConcreteBuilderMetaType<TGeneratorStrategy> c_builder_t; 
+//	typedef typename ConcreteRunnerMetaType<TGeneratorStrategy> c_runner_t; 
+
 	builder_t m_builder;
 	Interpreter m_interpreter; 
 

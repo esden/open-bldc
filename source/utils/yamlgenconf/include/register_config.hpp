@@ -31,7 +31,6 @@ public:
 		::std::transform(m_name.begin(), m_name.end(), m_name.begin(), 
 										 (int(*)(int))::std::toupper);
 	}
-	
 
 	RegisterConfig() 
 	: m_name("") { } 

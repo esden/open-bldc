@@ -1,11 +1,13 @@
 
-#include "register_config_generator_strategy.hpp"
-#include "generator_exception.hpp"
+#include "register_config_builder.hpp"
 #include "config_node.hpp"
-#include "abstract_runner_strategy.hpp"
+#include "register_config.hpp"
+#include "register_group_config.hpp"
+#include "abstract_config_runner.hpp"
+#include "exception/generator_exception.hpp"
 
 void
-RegisterConfigGeneratorStrategy::parse(Interpreter const & interpreter)
+RegisterConfigBuilder::parse(Interpreter const & interpreter)
 throw (GeneratorException)
 {
 	ConfigNode root;
@@ -44,9 +46,3 @@ throw (GeneratorException)
 	}
 }
 
-void
-RegisterConfigGeneratorStrategy::run(AbstractRunnerStrategy & runner)
-throw (RunnerException)
-{
-	runner.run(m_register_groups);
-}

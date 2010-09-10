@@ -5,8 +5,8 @@
 */
 
 #include "interpreter.hpp"
-#include "interpreter_exception.hpp"
 #include "logging.hpp"
+#include "exception/interpreter_exception.hpp"
 #include <yaml.h>
 
 

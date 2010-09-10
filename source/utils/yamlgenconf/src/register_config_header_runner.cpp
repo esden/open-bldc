@@ -1,13 +1,20 @@
 
-#include "register_config_header_runner_strategy.hpp"
+#include "register_config_header_runner.hpp"
+#include "abstract_config_builder.hpp"
 #include "register_group_config.hpp"
 #include "register_config.hpp"
 #include <iostream>
+#include <vector>
 
 void
-RegisterConfigHeaderRunnerStrategy::run(::std::vector<RegisterGroupConfig> const & register_groups) 
+RegisterConfigHeaderRunner::run(AbstractConfigBuilder * abstract_builder) 
 throw (RunnerException) 
 { 
+	RegisterConfigBuilder builder; 
+	builder = static_cast<RegisterConfigBuilder>(*abstract_builder); 
+	::std::vector<RegisterGroupConfig> const register_groups = builder.register_groups(); 
+	::std::string const module_name = builder.module(); 
+
 	::std::vector<RegisterGroupConfig>::const_iterator groups_it; 
 	::std::vector<RegisterGroupConfig>::const_iterator groups_end = register_groups.end(); 
 
@@ -24,10 +31,11 @@ throw (RunnerException)
 		::std::vector<RegisterConfig>::const_iterator register_it; 
 		::std::vector<RegisterConfig>::const_iterator register_end = registers.end();
 		for(register_it = registers.begin(); register_it != register_end; ++register_it) { 
-			::std::cout << "#define GPROT_" << (*register_it).name();
+			::std::cout << "#define " << module_name << "_" << (*register_it).name();
 			::std::cout << " " << (*register_it).register_nr() << ::std::endl;
 		}
 	}
 	::std::cout << ::std::endl; 
 	::std::cout << "#endif /* REGISTER_CONFIG_HPP__ */" << ::std::endl;
 }
+

@@ -5,8 +5,8 @@
 #include "logging.hpp"
 #include "error_handling.hpp"
 #include "interpreter.hpp"
-#include "interpreter_exception.hpp"
-#include "parser_exception.hpp"
+#include "exception/interpreter_exception.hpp"
+#include "exception/parser_exception.hpp"
 
 
 class YAMLConfig

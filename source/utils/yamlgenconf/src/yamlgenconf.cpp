@@ -18,8 +18,9 @@
 
 #include <yaml.h>
 #include "yaml_config.hpp"
-#include "interpreter_exception.hpp"
-#include "parser_exception.hpp"
+#include "exception/interpreter_exception.hpp"
+#include "exception/parser_exception.hpp"
+#include "exception/config_exception.hpp"
 
 void usage(void);
 

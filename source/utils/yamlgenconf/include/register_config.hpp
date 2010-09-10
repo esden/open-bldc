@@ -4,7 +4,7 @@
 #include "config.hpp"
 #include "logging.hpp"
 #include "widget_config.hpp"
-#include "config_exception.hpp"
+#include "exception/config_exception.hpp"
 
 #include <string>
 #include <map>

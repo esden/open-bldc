@@ -2,14 +2,16 @@
 #include <yaml.h>
 
 #include "yaml_config.hpp"
-#include "interpreter_exception.hpp"
-#include "parser_exception.hpp"
 #include "yaml_config.hpp"
 #include "logging.hpp"
-#include "abstract_generator_strategy.hpp"
-#include "register_config_generator_strategy.hpp"
+
 #include "config_generator.hpp"
-#include "register_config_header_runner_strategy.hpp"
+#include "register_config_strategy.hpp"
+#include "register_config_header_runner.hpp"
+
+#include "exception/interpreter_exception.hpp"
+#include "exception/parser_exception.hpp"
+#include "exception/config_exception.hpp"
 
 void
 YAMLConfig::read(char const * filename) throw (ParserException, InterpreterException) 
@@ -49,12 +51,10 @@ YAMLConfig::read(char const * filename) throw (ParserException, InterpreterExcep
 	/* Destroy the Parser object. */
 	yaml_parser_delete(&parser);
 
-	RegisterConfigGeneratorStrategy generator_strategy; 
-	RegisterConfigHeaderRunnerStrategy runner_strategy; 
+	ConfigGenerator<RegisterConfigStrategy> generator(m_yaml_interpreter); 
 
-	ConfigGenerator config_generator = ConfigGenerator(&generator_strategy);
-	config_generator.parse(m_yaml_interpreter); 
-	config_generator.run(runner_strategy); 
+	RegisterConfigHeaderRunner runner_strategy; 
+	generator.run(runner_strategy); 
 
 /* 
 	Note that a ConfigGenerator can parse several 

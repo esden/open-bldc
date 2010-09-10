@@ -1,5 +1,38 @@
 ---
 
+GLOBAL: # module GLOBAL
+
+  define: 
+    #define GLOBAL_VERSION "0.3.1"
+    version: "0.3.1"  
+
+include: modules_inc.yml
+
+GPROT: # module GPROT
+
+  include: submodule_inc.yml
+
+  # -> DefinesConfigGeneratorStrategy 
+  define: 
+    num_adc: 10   #define GPROT_NUM_ADC 10
+    max_foo: 100
+
+  # -> FlagsConfigGeneratorStrategy
+  flags: 
+    pwm_comm: 
+      bit: 0
+      ro: yes
+    comm_tim: 
+      bit: 1
+    adc_comm: 
+      bit: 2
+    all_lo: 
+      bit: 3
+    all_hi: 
+      bit: 4
+
+  # -> RegisterConfigGeneratorStrategy
+  register_groups: 
     Flags: 
       description: Flag register
       registers: 

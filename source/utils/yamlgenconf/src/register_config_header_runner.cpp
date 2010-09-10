@@ -10,10 +10,10 @@ void
 RegisterConfigHeaderRunner::run(AbstractConfigBuilder * abstract_builder) 
 throw (RunnerException) 
 { 
-	RegisterConfigBuilder builder; 
-	builder = static_cast<RegisterConfigBuilder>(*abstract_builder); 
-	::std::vector<RegisterGroupConfig> const register_groups = builder.register_groups(); 
-	::std::string const module_name = builder.module(); 
+	RegisterConfigBuilder * builder; 
+	builder = static_cast<RegisterConfigBuilder*>(abstract_builder); 
+	::std::vector<RegisterGroupConfig> const register_groups = builder->register_groups(); 
+	::std::string const module_name = builder->module(); 
 
 	::std::vector<RegisterGroupConfig>::const_iterator groups_it; 
 	::std::vector<RegisterGroupConfig>::const_iterator groups_end = register_groups.end(); 

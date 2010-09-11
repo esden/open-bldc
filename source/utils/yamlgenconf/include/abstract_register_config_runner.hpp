@@ -12,6 +12,10 @@
 class AbstractRegisterConfigRunner : public AbstractConfigRunner<RegisterConfigStrategy>
 {
 
+public: 
+// Could become necessary again: 
+//	typedef RegisterConfigStrategy Strategy; 
+
 protected: 
 	::std::string m_module; 
 
@@ -22,11 +26,10 @@ public:
 	AbstractRegisterConfigRunner()
 		: m_module("GLOBAL") { } 
 
-	typedef RegisterConfigStrategy Strategy; 
 
 	virtual ~AbstractRegisterConfigRunner() { } 
 
-	virtual void run(Strategy::Builder * const builder) throw (RunnerException) = 0; 
+	virtual void run(RegisterConfigBuilder * const builder) throw (RunnerException) = 0; 
 };
 
 #endif /* ABSTRACT_REGISTER_CONFIG_RUNNER_HPP__ */

@@ -13,8 +13,8 @@ class RegisterConfigBuilder : public AbstractConfigBuilder<RegisterConfigStrateg
 {
 
 public: 
-
-	typedef RegisterConfigStrategy Strategy; 
+// Could become necessary again: 
+//	typedef RegisterConfigStrategy Strategy; 
 
 private: 
 

@@ -7,14 +7,10 @@
 #include <vector>
 
 void
-RegisterConfigHeaderRunner::run(AbstractConfigBuilder * abstract_builder) 
+RegisterConfigHeaderRunner::run(RegisterConfigBuilder * builder) 
 throw (RunnerException) 
 { 
-	RegisterConfigBuilder * builder; 
-	builder = static_cast<RegisterConfigBuilder*>(abstract_builder); 
-	
 	::std::vector<RegisterGroupConfig> const register_groups = builder->register_groups(); 
-	::std::string const module_name = builder->module(); 
 
 	::std::vector<RegisterGroupConfig>::const_iterator groups_it; 
 	::std::vector<RegisterGroupConfig>::const_iterator groups_end = register_groups.end(); 
@@ -32,7 +28,7 @@ throw (RunnerException)
 		::std::vector<RegisterConfig>::const_iterator register_it; 
 		::std::vector<RegisterConfig>::const_iterator register_end = registers.end();
 		for(register_it = registers.begin(); register_it != register_end; ++register_it) { 
-			::std::cout << "#define " << module_name << "_" << (*register_it).name();
+			::std::cout << "#define " << m_module << "_" << (*register_it).name();
 			::std::cout << " " << (*register_it).register_nr() << ::std::endl;
 		}
 	}

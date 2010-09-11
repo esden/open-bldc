@@ -3,14 +3,15 @@
 
 #include "exception/runner_exception.hpp"
 
-class AbstractConfigBuilder; // fwd-declare
-
+template <class TStrategy>
 class AbstractConfigRunner
 {
+	typedef typename TStrategy::Builder Builder; 
+
 public: 
 	virtual ~AbstractConfigRunner() { } 
 
-	virtual void run(AbstractConfigBuilder * builder) throw (RunnerException) = 0; 
+	virtual void run(Builder * const builder) throw (RunnerException) = 0; 
 };
 
 #endif /* ABSTRACT_CONFIG_RUNNER_HPP__ */

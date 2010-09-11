@@ -5,11 +5,16 @@
 #include "register_group_config.hpp"
 #include "flag_config.hpp"
 #include "exception/generator_exception.hpp"
+#include "register_config_strategy.hpp"
 #include <vector>
 
 
-class RegisterConfigBuilder : public AbstractConfigBuilder
+class RegisterConfigBuilder : public AbstractConfigBuilder<RegisterConfigStrategy>
 {
+
+public: 
+
+	typedef RegisterConfigStrategy Strategy; 
 
 private: 
 
@@ -22,7 +27,7 @@ public:
 	RegisterConfigBuilder() { 
 		m_module = "CPROTMOD";
 	} 
-	RegisterConfigBuilder(AbstractConfigBuilder & abs) { } 
+
 	virtual ~RegisterConfigBuilder() { } 
 
 	::std::vector<RegisterGroupConfig> const & register_groups() const { 
@@ -35,6 +40,7 @@ public:
 public: 
 
 	virtual void parse(Interpreter const & interpreter) throw (GeneratorException); 
+	virtual void run(AbstractRegisterConfigRunner & runner) throw (RunnerException);
 
 };
 

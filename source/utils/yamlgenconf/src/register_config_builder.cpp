@@ -4,6 +4,7 @@
 #include "register_config.hpp"
 #include "register_group_config.hpp"
 #include "abstract_config_runner.hpp"
+#include "abstract_register_config_runner.hpp"
 #include "exception/generator_exception.hpp"
 
 void
@@ -46,3 +47,7 @@ throw (GeneratorException)
 	}
 }
 
+void 
+RegisterConfigBuilder::run(AbstractRegisterConfigRunner & runner) throw (RunnerException) {
+	runner.run(this); 
+}

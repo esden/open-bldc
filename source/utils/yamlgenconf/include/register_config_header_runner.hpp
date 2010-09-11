@@ -14,7 +14,7 @@ public:
 	RegisterConfigHeaderRunner() { } 
 	virtual ~RegisterConfigHeaderRunner() { } 
 	
-	virtual void run(AbstractConfigBuilder * builder) throw (RunnerException);
+	virtual void run(RegisterConfigBuilder * const builder) throw (RunnerException);
 
 };
 

@@ -12,10 +12,6 @@
 class FlagConfigBuilder : public AbstractConfigBuilder<FlagConfigStrategy>
 {
 
-public: 
-// Could become necessary again: 
-//	typedef FlagConfigStrategy Strategy; 
-
 private: 
 
 	::std::string m_module; 
@@ -34,6 +30,8 @@ public:
 public: 
 
 	virtual void parse(Interpreter const & interpreter) throw (GeneratorException); 
+	virtual void parse(ConfigNode const & config_node) 
+		throw (GeneratorException); 
 	virtual void run(AbstractFlagConfigRunner & runner) throw (RunnerException);
 
 };

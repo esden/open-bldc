@@ -12,35 +12,33 @@
 class RegisterConfigBuilder : public AbstractConfigBuilder<RegisterConfigStrategy>
 {
 
-public: 
-// Could become necessary again: 
-//	typedef RegisterConfigStrategy Strategy; 
-
 private: 
 
 	::std::string m_module; 
-	FlagConfig m_flags; 
 	::std::vector<RegisterGroupConfig> m_register_groups; 
 
 public: 
 
-	RegisterConfigBuilder() { 
-		m_module = "CPROTMOD";
-	} 
+	RegisterConfigBuilder() { } 
 
 	virtual ~RegisterConfigBuilder() { } 
 
 	::std::vector<RegisterGroupConfig> const & register_groups() const { 
 		return m_register_groups; 
 	}
-	::std::string const & module() const {
-		return m_module;
-	}
 
 public: 
 
-	virtual void parse(Interpreter const & interpreter) throw (GeneratorException); 
-	virtual void run(AbstractRegisterConfigRunner & runner) throw (RunnerException);
+	virtual void parse(Interpreter const & interpreter) 
+		throw (GeneratorException); 
+
+	/** Expects ConfigNode containing register groups
+	 */
+	virtual void parse(ConfigNode const & config_node) 
+		throw (GeneratorException); 
+
+	virtual void run(AbstractRegisterConfigRunner & runner) 
+		throw (RunnerException);
 
 };
 

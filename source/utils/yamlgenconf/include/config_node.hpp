@@ -68,8 +68,8 @@ public:
 
 public: 
 
-	iterator begin() { return m_nodes.begin(); }
-	iterator end()   { return m_nodes.end(); }
+	const_iterator begin() const { return m_nodes.begin(); }
+	const_iterator end() const   { return m_nodes.end(); } 
 
 	const_iterator find(const char * key) const { 
 		return m_nodes.find(::std::string(key));

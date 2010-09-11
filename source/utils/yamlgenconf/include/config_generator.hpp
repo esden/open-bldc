@@ -1,6 +1,7 @@
 #ifndef CONFIG_GENERATOR_HPP__
 #define CONFIG_GENERATOR_HPP__
 
+#include "abstract_config_generator.hpp"
 #include "abstract_config_builder.hpp"
 #include "abstract_config_runner.hpp"
 #include "interpreter.hpp"
@@ -25,8 +26,8 @@
 
 */
 
-template <class TGeneratorStrategy=RegisterConfigStrategy>
-class ConfigGenerator
+template <class TGeneratorStrategy>
+class ConfigGenerator : public AbstractConfigGenerator
 {
 
 private: 
@@ -35,19 +36,20 @@ private:
 	typedef typename TGeneratorStrategy::Builder builder_t; 
 	typedef typename TGeneratorStrategy::Runner runner_t; 
 
-//	typedef typename ConcreteBuilderMetaType<TGeneratorStrategy> c_builder_t; 
-//	typedef typename ConcreteRunnerMetaType<TGeneratorStrategy> c_runner_t; 
-
 	builder_t m_builder;
-	Interpreter m_interpreter; 
+//	Interpreter m_interpreter; 
 
 public: 
 
 	ConfigGenerator(Interpreter const & interpreter) 
-	: m_interpreter(interpreter)
 	{ 
 		m_builder.parse(interpreter); 
 	} 
+	ConfigGenerator(ConfigNode const & config_node) 
+	{ 
+		m_builder.parse(config_node);
+	} 
+	virtual ~ConfigGenerator(void) throw() { } 
 
 public: 
 	

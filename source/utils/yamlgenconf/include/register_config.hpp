@@ -51,6 +51,15 @@ public:
 		m_widget_config.log(); 
 	}
 
+	inline void set_widget(WidgetConfig const & widget_config) {
+		m_widget_config = widget_config; 
+	}
+	inline WidgetConfig const & widget(void) const { 
+		return m_widget_config; 
+	}
+
+public: 
+
 	inline void set_properties(const property_map_t & props) { 
 		m_properties = props;
 	}
@@ -59,13 +68,6 @@ public:
 													 const ::std::string & value) 
 	{
 		m_properties.insert(property_entry_t(name, value));
-	}
-
-	inline void set_widget(WidgetConfig const & widget_config) {
-		m_widget_config = widget_config; 
-	}
-	inline WidgetConfig const & widget(void) const { 
-		return m_widget_config; 
 	}
 
 	inline property_map_t const & properties(void) const { 
@@ -82,11 +84,10 @@ public:
 		property_map_t::const_iterator prop_it  = m_properties.find(::std::string("register")); 
 		property_map_t::const_iterator prop_end = m_properties.end(); 
 		if (prop_it == prop_end) { 
-			throw ConfigException("Could not find property 'register'");
+			throw ConfigException("Could not find property 'register' in register settings");
 		}
 		::std::string register_nr = (*prop_it).second; 
 		return register_nr.c_str(); 
-//		return (unsigned char)(atoi(register_nr.c_str())); 
 	}
 	
 };

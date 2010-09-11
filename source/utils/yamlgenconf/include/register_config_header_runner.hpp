@@ -6,12 +6,17 @@
 #include "exception/runner_exception.hpp"
 #include <vector>
 
+
 class RegisterConfigHeaderRunner: public AbstractRegisterConfigRunner
 { 
 
 public: 
 
 	RegisterConfigHeaderRunner() { } 
+	
+	RegisterConfigHeaderRunner(::std::string const & module_name) 
+	: AbstractRegisterConfigRunner(module_name) { } 
+
 	virtual ~RegisterConfigHeaderRunner() { } 
 	
 	virtual void run(RegisterConfigBuilder * const builder) throw (RunnerException);

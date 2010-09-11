@@ -8,7 +8,7 @@ GLOBAL: # module GLOBAL
 
 include: modules_inc.yml
 
-GPROT: # module GPROT
+NEUES_MODUL: # module GPROT
 
   include: submodule_inc.yml
 
@@ -115,3 +115,9 @@ GPROT: # module GPROT
           ro: yes
           label: CPU min load
   
+Make: 
+
+  include: submod1.makefile
+  include: submod2.makefile
+  include: submod3.makefile
+

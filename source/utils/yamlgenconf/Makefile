@@ -2,7 +2,12 @@
 
 
 CC=g++
-CFLAGS=-Wall -I./include -DLOG=$(LOG)
+CFLAGS=-Wall -I./include 
+
+ifdef LOG
+CFLAGS += -DLOG=$(LOG)
+endif
+
 LIBS=-lyaml
 
 HDEPS=config.hpp logging.hpp interpreter.hpp register_config.hpp config_generator.hpp \
@@ -14,7 +19,8 @@ HDEPS=config.hpp logging.hpp interpreter.hpp register_config.hpp config_generato
 			abstract_config_builder.hpp register_config_header_runner.hpp yaml_config.hpp \
 			register_group_config.hpp
 OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o config_node.o \
-					 register_config_builder.o register_config_header_runner.o 
+					 register_config_builder.o register_config_header_runner.o module_config_builder.o \
+					 module_config_header_runner.o flag_config_header_runner.o flag_config_builder.o
 
 BINDIR=./bin
 IDIR=./include

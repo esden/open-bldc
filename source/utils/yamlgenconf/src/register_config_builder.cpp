@@ -20,13 +20,20 @@ throw (GeneratorException)
 	else { 
 		throw GeneratorException("Could not find config_root");
 	}
-	
-	ConfigNode::const_iterator it_groups  = root.begin(); 
-	ConfigNode::const_iterator end_groups = root.end(); 
-	for(; it_groups != end_groups; ++it_groups) { 
+	parse(root);
+}
+
+void
+RegisterConfigBuilder::parse(ConfigNode const & config_node)
+throw (GeneratorException)
+{
+	ConfigNode::const_iterator it_groups  = config_node.begin(); 
+	ConfigNode::const_iterator end_groups = config_node.end(); 
+	for(; it_groups != end_groups; ++it_groups) 
+	{ 
 		RegisterGroupConfig group = RegisterGroupConfig((*it_groups).first);
 		
-		ConfigNode group_config = (*it_groups).second; 
+		ConfigNode group_config = (*it_groups).second;
 		group.set_properties(group_config.values());
 		
 		ConfigNode registers = (*it_groups).second; 
@@ -43,11 +50,15 @@ throw (GeneratorException)
 			group.add_register(reg); 
 		}
 		m_register_groups.push_back(group);
+#if defined(LOG) && LOG == DEBUG
 		group.log(); 
+#endif
 	}
 }
 
 void 
-RegisterConfigBuilder::run(AbstractRegisterConfigRunner & runner) throw (RunnerException) {
+RegisterConfigBuilder::run(AbstractRegisterConfigRunner & runner) 
+throw (RunnerException) 
+{
 	runner.run(this); 
 }

@@ -6,8 +6,8 @@
 #include "logging.hpp"
 
 #include "config_generator.hpp"
-#include "register_config_strategy.hpp"
-#include "register_config_header_runner.hpp"
+#include "module_config_strategy.hpp"
+#include "module_config_header_runner.hpp"
 
 #include "exception/interpreter_exception.hpp"
 #include "exception/parser_exception.hpp"
@@ -51,9 +51,9 @@ YAMLConfig::read(char const * filename) throw (ParserException, InterpreterExcep
 	/* Destroy the Parser object. */
 	yaml_parser_delete(&parser);
 
-	ConfigGenerator<RegisterConfigStrategy> generator(m_yaml_interpreter); 
+	ConfigGenerator<ModuleConfigStrategy> generator(m_yaml_interpreter); 
 
-	RegisterConfigHeaderRunner runner_strategy; 
+	ModuleConfigHeaderRunner runner_strategy; 
 	generator.run(runner_strategy); 
 
 /* 

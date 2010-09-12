@@ -5,6 +5,7 @@
 #include "abstract_config_builder.hpp"
 #include "abstract_config_runner.hpp"
 #include "interpreter.hpp"
+#include "postprocessor.hpp"
 #include "register_config_strategy.hpp"
 #include "exception/interpreter_exception.hpp"
 #include "exception/config_exception.hpp"
@@ -37,17 +38,18 @@ private:
 	typedef typename TGeneratorStrategy::Runner runner_t; 
 
 	builder_t m_builder;
-//	Interpreter m_interpreter; 
 
 public: 
 
 	ConfigGenerator(Interpreter const & interpreter) 
 	{ 
-		m_builder.parse(interpreter); 
+		Postprocessor postprocessor(interpreter.config());
+		postprocessor.run(); 
+		m_builder.parse(postprocessor.config()); 
 	} 
 	ConfigGenerator(ConfigNode const & config_node) 
 	{ 
-		m_builder.parse(config_node);
+		m_builder.parse_partial(config_node);
 	} 
 	virtual ~ConfigGenerator(void) throw() { } 
 

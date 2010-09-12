@@ -13,23 +13,19 @@ class YAMLConfig
 {
 private: 
 
-	Interpreter m_yaml_interpreter; 
+	Interpreter m_interpreter; 
 
 public: 
 
 	YAMLConfig() { 
 	}
 
-private: 
-
-	void on_parse_error(yaml_parser_t * parser); 
-
 public: 
 
 	void read(char const * filename) throw (ParserException, InterpreterException);
 
 	inline void log(void) const { 
-		m_yaml_interpreter.log(); 
+		m_interpreter.log(); 
 	}
 
 };

@@ -16,12 +16,12 @@ public:
 	virtual ~AbstractConfigBuilder() { } 
 
 public: 
-	virtual void parse(Interpreter const & interpreter) 
+	virtual void parse(ConfigNode const & config) 
 		throw (GeneratorException) = 0; 
 	
 	/** Expects ConfigNode as section from interpreter
 	 */
-	virtual void parse(ConfigNode const & config_node) 
+	virtual void parse_partial(ConfigNode const & config_node) 
 		throw (GeneratorException) = 0;  
 
 	virtual void run(Runner & runner) 

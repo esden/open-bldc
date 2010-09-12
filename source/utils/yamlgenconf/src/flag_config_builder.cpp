@@ -7,11 +7,10 @@
 #include "exception/generator_exception.hpp"
 
 void
-FlagConfigBuilder::parse(Interpreter const & interpreter)
+FlagConfigBuilder::parse(ConfigNode const & config)
 throw (GeneratorException)
 {
 	ConfigNode root;
-	ConfigNode config = interpreter.config(); 
 	ConfigNode::const_iterator root_it = config.find("config_root");
 	if(root_it != config.end()) { 
 		root = (*root_it).second;
@@ -19,11 +18,11 @@ throw (GeneratorException)
 	else { 
 		throw GeneratorException("Could not find config_root");
 	}
-	parse(root);
+	parse_partial(root);
 }
 
 void 
-FlagConfigBuilder::parse(ConfigNode const & config_node)
+FlagConfigBuilder::parse_partial(ConfigNode const & config_node)
 throw (GeneratorException)
 {
 	ConfigNode::const_iterator it_flags;

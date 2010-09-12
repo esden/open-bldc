@@ -29,12 +29,12 @@ public:
 
 public: 
 
-	virtual void parse(Interpreter const & interpreter) 
+	virtual void parse(ConfigNode const & config) 
 		throw (GeneratorException); 
 
 	/** Expects ConfigNode containing register groups
 	 */
-	virtual void parse(ConfigNode const & config_node) 
+	virtual void parse_partial(ConfigNode const & config_node) 
 		throw (GeneratorException); 
 
 	virtual void run(AbstractRegisterConfigRunner & runner) 

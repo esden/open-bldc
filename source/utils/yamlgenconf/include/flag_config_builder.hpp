@@ -29,8 +29,8 @@ public:
 
 public: 
 
-	virtual void parse(Interpreter const & interpreter) throw (GeneratorException); 
-	virtual void parse(ConfigNode const & config_node) 
+	virtual void parse(ConfigNode const & config) throw (GeneratorException); 
+	virtual void parse_partial(ConfigNode const & config_node) 
 		throw (GeneratorException); 
 	virtual void run(AbstractFlagConfigRunner & runner) throw (RunnerException);
 

@@ -1,5 +1,7 @@
 
-
+ifneq ($(VERBOSE),1)
+Q := @
+endif
 
 CC=g++
 CFLAGS=-Wall -I./include 
@@ -20,7 +22,8 @@ HDEPS=config.hpp logging.hpp interpreter.hpp register_config.hpp config_generato
 			register_group_config.hpp
 OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o config_node.o \
 					 register_config_builder.o register_config_header_runner.o module_config_builder.o \
-					 module_config_header_runner.o flag_config_header_runner.o flag_config_builder.o
+					 module_config_header_runner.o flag_config_header_runner.o flag_config_builder.o \
+					 postprocessor.o
 
 BINDIR=./bin
 IDIR=./include
@@ -32,13 +35,16 @@ OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
 
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
+	@echo "  CC    $(@)"
+	$(Q)$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
 yamlgenconf: $(OBJ)
-	$(CC) -o $(BINDIR)/$@ $^ $(CFLAGS) $(LIBS)
+	@echo "  LL    $(@)"
+	$(Q)$(CC) -o $(BINDIR)/$@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 
 clean: 
-	rm -Rf ./$(BUILDDIR)/* ./$(BINDIR)/yamlgenconf ./$(IDIR)/*~ ./$(SRCDIR)/*~ ./*~ 
+	$(Q)rm -Rf ./$(BUILDDIR)/* ./$(BINDIR)/yamlgenconf ./$(IDIR)/*~ ./$(SRCDIR)/*~ ./*~ 
+	@echo "  CLEAN "
 

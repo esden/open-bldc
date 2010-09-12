@@ -11,12 +11,16 @@ class InterpreterException : public ::std::exception
 {
 
 private: 
-	yaml_event_t * m_yaml_event; 
+	int m_yaml_event; 
 	const char * m_what; 
 
 public: 
 	InterpreterException(yaml_event_t * event, const char * what) throw()
-	: m_yaml_event(event), m_what(what)
+	: m_yaml_event(event->type), m_what(what)
+	{ } 
+
+	InterpreterException(const char * what) throw()
+	: m_yaml_event(0), m_what(what)
 	{ } 
 
 public: 
@@ -29,8 +33,8 @@ public:
 		::std::stringstream ss; 
 
 		ss << ::std::string(m_what); 
-		ss << " (unexpected "; 
-		switch(m_yaml_event->type) { 
+		ss << ": (unexpected "; 
+		switch(m_yaml_event) { 
 			case YAML_NO_EVENT: 
 				ss << "no event";
 				break; 
@@ -63,6 +67,9 @@ public:
 				break; 
 			case YAML_MAPPING_END_EVENT: 
 				ss << "end of mapping";
+				break; 
+			default: 
+				ss << "unknown event"; 
 				break; 
 		}
 		ss << ")"; 

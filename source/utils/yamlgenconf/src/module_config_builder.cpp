@@ -7,23 +7,22 @@
 #include "logging.hpp"
 
 void
-ModuleConfigBuilder::parse(Interpreter const & interpreter) 
+ModuleConfigBuilder::parse(ConfigNode const & config) 
 throw (GeneratorException)
 {
 	ConfigNode root;
-	ConfigNode config = interpreter.config(); 
 	ConfigNode::const_iterator root_it = config.find("config_root");
 	if(root_it != config.end()) { 
 		root = (*root_it).second;
 	}
 	else { 
-		throw GeneratorException("Could not find config_root");
+		throw GeneratorException("Could not find config_root in ModuleConfigBuilder");
 	}
-	parse(root);
+	parse_partial(root);
 }
 
 void
-ModuleConfigBuilder::parse(ConfigNode const & config_node) 
+ModuleConfigBuilder::parse_partial(ConfigNode const & config_node) 
 throw (GeneratorException)
 {
 	ConfigNode::const_iterator it_modules;

@@ -70,7 +70,10 @@ void on_parser_error(yaml_parser_t * parser) {
 			}
 			break; 
 		default: 
-			fprintf(stderr, "Internal error");
+			fprintf(stderr, "Internal error: %s at line %d, column %d\n",
+							parser->problem, 
+							parser->problem_mark.line+1, parser->problem_mark.column+1);
+			break;
 	}
 }
 

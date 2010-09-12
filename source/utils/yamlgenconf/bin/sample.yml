@@ -6,9 +6,9 @@ GLOBAL: # module GLOBAL
     #define GLOBAL_VERSION "0.3.1"
     version: "0.3.1"  
 
-include: modules_inc.yml
+include_yaml: ./bin/modules_inc.yml
 
-NEUES_MODUL: # module GPROT
+GPROT: # module GPROT
 
   include: submodule_inc.yml
 
@@ -30,6 +30,8 @@ NEUES_MODUL: # module GPROT
       bit: 3
     all_hi: 
       bit: 4
+
+GPROT_REGISTERS: 
 
   # -> RegisterConfigGeneratorStrategy
   register_groups: 

@@ -6,6 +6,7 @@
 
 #include "config_node.hpp"
 #include "exception/interpreter_exception.hpp"
+#include "exception/parser_exception.hpp"
 
 #define register_handler(mode, fun) \
 	m_mode_handlers[mode] = &Interpreter::fun
@@ -49,6 +50,7 @@ public:
 		MAPPING_START, 
 		KEY, 
 		VALUE, 
+		INCLUDE, 
 		COMPLETING, 
 		
     ERROR,
@@ -93,17 +95,23 @@ public:
 
 public:
 
-  interpreter_mode_t next_event(yaml_event_t * event) throw(InterpreterException); 
+  interpreter_mode_t next_event(yaml_event_t * event) 
+		throw(InterpreterException, ParserException); 
 
 	ConfigNode const & config() const { return m_cur_node;	}
 
+public: 
+
+	void read(const char * filename) 
+		throw(InterpreterException, ParserException); 
+
 private:
 
-  void init_mode(yaml_event_t * event);
-  void mapping_start_mode(yaml_event_t * event);
-  void key_mode(yaml_event_t * event);
-  void value_mode(yaml_event_t * event);
-  void completing_mode(yaml_event_t * event);
+  void init_mode(yaml_event_t * event) throw(InterpreterException);
+  void mapping_start_mode(yaml_event_t * event) throw(InterpreterException);
+  void key_mode(yaml_event_t * event) throw(InterpreterException);
+  void value_mode(yaml_event_t * event) throw(InterpreterException);
+  void completing_mode(yaml_event_t * event) throw(InterpreterException);
 
 };
 

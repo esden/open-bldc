@@ -1,0 +1,13 @@
+---
+
+SIMPLE: 
+  register_groups: 
+    include_yaml: ./test/simple/pwm.yaml
+    include_yaml: ./test/simple/flags.yaml
+#   Flags: 
+#     registers: 
+#       flags_reg_addr: 
+#         register: 0
+#         label: Flag register
+#     description: Flag register
+

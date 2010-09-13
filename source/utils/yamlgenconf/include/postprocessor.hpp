@@ -21,6 +21,10 @@ public:
 
 	ConfigNode const & config() { return m_config; } 
 
+private: 
+
+	ConfigNode & process_node(ConfigNode & config_node); 
+
 };
 
 #endif

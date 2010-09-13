@@ -1,0 +1,9 @@
+
+TARGET: 
+
+  flags: 
+    foo: 
+      bit: 1
+    bar: 
+      bit: 2
+

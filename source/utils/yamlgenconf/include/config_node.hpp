@@ -28,8 +28,6 @@ public:
 
 public: 
 
-	::std::map< ::std::string, ConfigNode> const & nodes(void) const { return m_nodes; } 
-
 	void set_node(::std::string const & key, 
 								ConfigNode const & node) { 
 		m_nodes.insert(::std::pair< ::std::string, ConfigNode>(key, node));
@@ -55,9 +53,16 @@ public:
 
 public: 
 
-	::std::map< ::std::string, ::std::string> const & values(void) { 
+	::std::map< ::std::string, ::std::string> const & values(void) const { 
 		return m_values; 
 	}
+	::std::map< ::std::string, ConfigNode> const & nodes(void) const { 
+		return m_nodes; 
+	}
+
+public: 
+
+	void inject(ConfigNode const & other); 
 
 public: 
 
@@ -70,6 +75,9 @@ public:
 
 	const_iterator begin() const { return m_nodes.begin(); }
 	const_iterator end() const   { return m_nodes.end(); } 
+
+	iterator hbegin() { return m_nodes.begin(); }
+	iterator hend()   { return m_nodes.end(); } 
 
 	const_iterator find(const char * key) const { 
 		return m_nodes.find(::std::string(key));

@@ -7,7 +7,7 @@ CC=g++
 CFLAGS=-Wall -I./include 
 
 ifdef LOG
-CFLAGS += -DLOG=$(LOG)
+CFLAGS += -DLOG=$(LOG) -g
 endif
 
 LIBS=-lyaml
@@ -34,17 +34,21 @@ DEPS = $(patsubst %,$(IDIR)/%,$(HDEPS))
 OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
 
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS) base_dirs
 	@echo "  CC    $(@)"
 	$(Q)$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
-yamlgenconf: $(OBJ)
+yamlgenconf: $(OBJ) 
 	@echo "  LL    $(@)"
 	$(Q)$(CC) -o $(BINDIR)/$@ $^ $(CFLAGS) $(LIBS)
+
+base_dirs: 
+	@mkdir -p $(BUILDDIR) 
+	@mkdir -p $(BINDIR) 
 
 .PHONY: clean
 
 clean: 
-	$(Q)rm -Rf ./$(BUILDDIR)/* ./$(BINDIR)/yamlgenconf ./$(IDIR)/*~ ./$(SRCDIR)/*~ ./*~ 
+	$(Q)rm -Rf ./$(BUILDDIR) ./$(BINDIR) ./$(IDIR)/*~ ./$(SRCDIR)/*~ ./*~ 
 	@echo "  CLEAN "
 

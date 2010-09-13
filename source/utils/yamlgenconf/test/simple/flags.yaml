@@ -1,0 +1,8 @@
+
+Flags: 
+  registers: 
+    flags_reg_addr: 
+      register: 0
+      label: Flag register
+  description: Flag register
+

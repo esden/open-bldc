@@ -1,11 +1,3 @@
----
-
-Flags: 
-  registers: 
-    flags_reg_addr: 
-      register: 0
-      label: Flag register
-  description: Flag register
 
 PWM: 
   description: PWM settings
@@ -13,6 +5,3 @@ PWM:
     pwm_offset_reg_addr: 
       register: 1
       label: Offset register address
-
-
-

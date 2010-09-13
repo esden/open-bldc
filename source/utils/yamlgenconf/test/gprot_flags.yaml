@@ -1,0 +1,24 @@
+
+flags: 
+  pwm_comm: 
+    bit: 0
+    ro: yes
+  comm_tim: 
+    bit: 1
+  adc_comm: 
+    bit: 2
+  all_lo: 
+    bit: 3
+  all_hi: 
+    bit: 4
+
+
+register_groups: 
+  Flags: 
+    description: Flag register
+    registers: 
+      #define GPROT_REGISTERS_FLAGS_REG_ADDR: 0
+      flags_reg_addr: 
+        register: 0
+        ro: yes
+        label: Flag register

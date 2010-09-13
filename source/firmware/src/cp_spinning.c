@@ -54,11 +54,11 @@ control_process_spinning_cb(struct control_process *cps)
 		comm_data.bemf_crossing_detected = false;
 		cps->bemf_crossing_counter++;
 		cps->bemf_lost_crossing_counter = 0;
-		LED_RED_ON();
+		ON(LED_RED);
 	} else {
 		cps->bemf_crossing_counter = 0;
 		cps->bemf_lost_crossing_counter++;
-		LED_RED_OFF();
+		OFF(LED_RED);
 	}
 
 	if (cps->bemf_lost_crossing_counter > 10) {

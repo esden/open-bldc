@@ -163,7 +163,7 @@ control_process_fine_spinup_cb(struct control_process *cps)
 	if ((cps->bemf_crossing_counter > 2) &&
 	    (comm_tim_data.freq < 30000) && (comm_data.in_range_counter > 2)) {
 		cps->state = cps_spinning;
-		LED_RED_ON();
+		ON(LED_RED);
 		return cps_cb_resume_control;
 	}
 

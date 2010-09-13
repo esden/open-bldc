@@ -69,20 +69,20 @@ static void dp_on(int id)
 {
 	switch (id) {
 	case 0:
-		LED_RED_ON();
-		DP_EXT_SCL_ON();
+		ON(LED_RED);
+		ON(DP_EXT_SCL);
 		break;
 	case 1:
-		LED_GREEN_ON();
-		DP_EXT_SDA_ON();
+		ON(LED_GREEN);
+		ON(DP_EXT_SDA);
 		break;
 	case 2:
-		LED_BLUE_ON();
-		DP_ENC_A_ON();
+		ON(LED_BLUE);
+		ON(DP_ENC_A);
 		break;
 	case 3:
-		LED_ORANGE_ON();
-		DP_ENC_B_ON();
+		ON(LED_ORANGE);
+		ON(DP_ENC_B);
 		break;
 	}
 }
@@ -96,20 +96,20 @@ static void dp_off(int id)
 {
 	switch (id) {
 	case 0:
-		LED_RED_OFF();
-		DP_EXT_SCL_OFF();
+		OFF(LED_RED);
+		OFF(DP_EXT_SCL);
 		break;
 	case 1:
-		LED_GREEN_OFF();
-		DP_EXT_SDA_OFF();
+		OFF(LED_GREEN);
+		OFF(DP_EXT_SDA);
 		break;
 	case 2:
-		LED_BLUE_OFF();
-		DP_ENC_A_OFF();
+		OFF(LED_BLUE);
+		OFF(DP_ENC_A);
 		break;
 	case 3:
-		LED_ORANGE_OFF();
-		DP_ENC_B_OFF();
+		OFF(LED_ORANGE);
+		OFF(DP_ENC_B);
 		break;
 	}
 }

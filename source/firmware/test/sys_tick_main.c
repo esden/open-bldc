@@ -55,7 +55,7 @@ void sys_tick_timer_callback(int id)
 
 	id = id;
 
-	LED_RED_TOGGLE();
+	TOGGLE(LED_RED);
 	(void)sys_tick_timer_register(sys_tick_timer_callback_one_shot, 1000);
 }
 
@@ -72,7 +72,7 @@ void sys_tick_timer_callback_one_shot(int id)
 		sys_tick_timer_unregister(id);
 		state--;
 	}
-	LED_GREEN_TOGGLE();
+	TOGGLE(LED_GREEN);
 }
 
 /**
@@ -93,6 +93,6 @@ int main(void)
 		while (!sys_tick_check_timer(timer, 500)) {
 			__asm("nop");
 		}
-		LED_ORANGE_TOGGLE();
+		TOGGLE(LED_ORANGE);
 	}
 }

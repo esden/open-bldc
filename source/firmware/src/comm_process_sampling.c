@@ -204,7 +204,7 @@ void run_comm_process(void)
 	if (comm_process_state.pwm_count < (s32)comm_params.hold_off) {
 		comm_process_state.pwm_count++;
 		comm_process_state.prev_phase_voltage = sensors.phase_voltage;
-		LED_ORANGE_OFF();
+		OFF(LED_ORANGE);
 		return;
 	}
 
@@ -218,9 +218,9 @@ void run_comm_process(void)
 			    && (!comm_data.bemf_crossing_detected)) {
 				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
-				LED_ORANGE_ON();
+				ON(LED_ORANGE);
 			} else {
-				LED_ORANGE_OFF();
+				OFF(LED_ORANGE);
 			}
 		} else {
 			if ((comm_process_state.prev_phase_voltage >
@@ -230,13 +230,13 @@ void run_comm_process(void)
 			    && (!comm_data.bemf_crossing_detected)) {
 				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
-				LED_ORANGE_ON();
+				ON(LED_ORANGE);
 			} else {
-				LED_ORANGE_OFF();
+				OFF(LED_ORANGE);
 			}
 		}
 	} else {
-		LED_ORANGE_OFF();
+		OFF(LED_ORANGE);
 	}
 
 	comm_process_state.prev_phase_voltage = sensors.phase_voltage;

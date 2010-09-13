@@ -59,7 +59,7 @@ void gprot_init()
 	for (i = 0; i < 32; i++) {
 		test_regs[i] = (u16)(i * 3);
 		if (gpc_setup_reg((u8)i, &test_regs[i]) != 0) {
-			LED_RED_ON();
+			ON(LED_RED);
 		}
 	}
 
@@ -75,7 +75,7 @@ void gprot_init()
 void gprot_trigger_output(void *data)
 {
 	data = data;
-	LED_ORANGE_TOGGLE();
+	TOGGLE(LED_ORANGE);
 	usart_enable_send();
 }
 

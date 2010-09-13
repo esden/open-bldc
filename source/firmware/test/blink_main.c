@@ -68,16 +68,16 @@ static void led_on(int id)
 {
 	switch (id) {
 	case 0:
-		LED_RED_ON();
+		ON(LED_RED);
 		break;
 	case 1:
-		LED_GREEN_ON();
+		ON(LED_GREEN);
 		break;
 	case 2:
-		LED_BLUE_ON();
+		ON(LED_BLUE);
 		break;
 	case 3:
-		LED_ORANGE_ON();
+		ON(LED_ORANGE);
 		break;
 	}
 }
@@ -91,16 +91,16 @@ static void led_off(int id)
 {
 	switch (id) {
 	case 0:
-		LED_RED_OFF();
+		OFF(LED_RED);
 		break;
 	case 1:
-		LED_GREEN_OFF();
+		OFF(LED_GREEN);
 		break;
 	case 2:
-		LED_BLUE_OFF();
+		OFF(LED_BLUE);
 		break;
 	case 3:
-		LED_ORANGE_OFF();
+		OFF(LED_ORANGE);
 		break;
 	}
 }

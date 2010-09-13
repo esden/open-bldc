@@ -154,7 +154,7 @@ control_process_spinup_state_in_cb(struct control_process *cps)
 {
 	cps = cps;
 
-	LED_GREEN_OFF();
+	OFF(LED_GREEN);
 	cp_spinup_reset();
 
 	spinup_process.timer =
@@ -174,7 +174,7 @@ control_process_spinup_state_out_cb(struct control_process *cps)
 {
 	cps = cps;
 
-	LED_GREEN_ON();
+	ON(LED_GREEN);
 
 	sys_tick_timer_unregister(spinup_process.timer);
 
@@ -195,7 +195,7 @@ void control_process_soft_timer_callback(int id)
 	/* trigger the control process spinup process */
 	cps_trigger = true;
 
-	LED_RED_TOGGLE();
+	TOGGLE(LED_RED);
 
 	/* set new time for us */
 	sys_tick_timer_update(id, spinup_process.step >> CP_SST_FIXED_POINT);

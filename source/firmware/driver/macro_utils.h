@@ -16,33 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __DEBUG_PINS_H
-#define __DEBUG_PINS_H
+#ifndef __MACRO_UTILS_H
+#define __MACRO_UTILS_H
 
-#include "config.h"
+#define BIT(NR)					\
+	(0x00000001 << NR)
 
-#include "macro_utils.h"
+#define OFF(PORT_PIN)				\
+	PORT_PIN##_PORT->BSRR |= BIT(PORT_PIN##_PIN)
 
-#ifdef DP_USE_ENCODER
+#define ON(PORT_PIN)				\
+	PORT_PIN##_PORT->BRR |= BIT(PORT_PIN##_PIN)
 
-#define DP_ENC_A_PORT GPIOA
-#define DP_ENC_A_PIN 6
+#define TOGGLE(PORT_PIN) {						\
+		if ((PORT_PIN##_PORT->IDR & BIT(PORT_PIN##_PIN)) != 0) { \
+			ON(PORT_PIN);					\
+		}else{							\
+			OFF(PORT_PIN);					\
+		}							\
+	}
 
-#define DP_ENC_B_PORT GPIOA
-#define DP_ENC_B_PIN 7
-
-#endif
-
-#ifdef DP_USE_EXT_I2C
-
-#define DP_EXT_SCL_PORT GPIOB
-#define DP_EXT_SCL_PIN 8
-
-#define DP_EXT_SDA_PORT GPIOB
-#define DP_EXT_SDA_PIN 9
-
-#endif
-
-void debug_pins_init(void);
-
-#endif /* __DP_EXT_PINS_H */
+#endif /* __MACRO_UTILS_H */

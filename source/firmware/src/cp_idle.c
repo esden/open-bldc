@@ -51,7 +51,7 @@ static enum control_process_cb_state
 control_process_idle_cb(struct control_process *cps)
 {
 	if (cps->ignite) {
-		LED_RED_TOGGLE();
+		TOGGLE(LED_RED);
 		cps->ignite = false;
 		cps->state = cps_aligning;
 	}

@@ -11,15 +11,10 @@
     
 
 INCLUDES:
-  foo: 12
   register_groups: 
-    include_yaml: ./test/simple/flags.yaml
-#    - ./test/simple/flags.yaml
-#    - ./test/simple/pwm.yaml
-#   Flags: 
-#     registers: 
-#       flags_reg_addr: 
-#         register: 0
-#         label: Flag register
-#     description: Flag register
-
+    foo: bar
+    batz: wombat
+#    include_yaml: ./test/simple/flags.yaml
+    include_yaml: 
+      - ./test/simple/flags.yaml
+      - ./test/simple/pwm.yaml

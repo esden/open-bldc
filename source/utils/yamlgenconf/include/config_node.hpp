@@ -4,12 +4,25 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <iostream>
 #include "logging.hpp"
 
 class ConfigNode 
 {
 
 public: 
+
+	// TODO: How it should be done (tm)
+	//
+	// Typing should be replaced by: 
+	// - Deriving ValueConfigNode, SequenceMappingNode and MappingConfigNode
+	//   from ConfigNode
+	// - Replacing Builder / Postprocessor operations by visitors, thus: 
+	//   accept_visitor(InterpreterVisitor const & v) { v.visit(this); } 
+	// - InterpreterVisitor being an abstract with methods
+	//   - visit(ValueConfigNode * node)
+	//   - visit(SequenceConfigNode * node)
+	//   - visit(MappingConfigNode * node)
 
 	typedef enum { UNDEFINED=0, VALUE, SEQUENCE, MAPPING } node_type; 
 
@@ -24,8 +37,8 @@ private:
 	node_type m_type; 
 
 	::std::map< ::std::string, ::std::string> m_values; 
-	::std::map< ::std::string, ::std::vector< ::std::string> > m_seqs; 
 	::std::map< ::std::string, ConfigNode> m_nodes; 
+	::std::map< ::std::string, ::std::vector< ::std::string> > m_seqs; 
 
 public: 
 
@@ -33,7 +46,8 @@ public:
 	: m_type(UNDEFINED) { }
 
 	ConfigNode(ConfigNode const & other) 
-	: m_type(UNDEFINED), m_values(other.m_values), m_nodes(other.m_nodes) { }
+	: m_type(UNDEFINED), m_values(other.m_values), m_nodes(other.m_nodes), m_seqs(other.m_seqs) 
+	{ }
 
 public: 
 
@@ -46,13 +60,11 @@ public:
 	void set_node(::std::string const & key, 
 								ConfigNode const & node) { 
 		m_nodes.insert(::std::pair< ::std::string, ConfigNode>(key, node));
-		m_type = MAPPING; 
 	} 
 
 	void set_value(::std::string const & key, 
 								 ::std::string const & value) { 
 		m_values.insert(::std::pair< ::std::string, ::std::string>(key,value)); 
-		m_type = VALUE; 
 	} 
 	void set_value(const char * key, const char * value) { 
 		::std::string skey(key); 
@@ -85,7 +97,11 @@ public:
 		if(seq != m_seqs.end()) { 
 			(*seq).second.push_back(value); 
 		}
-		m_type = SEQUENCE; 
+		else { 
+			::std::vector< ::std::string> seq; 
+			seq.push_back(value);
+			m_seqs.insert(::std::pair< ::std::string, ::std::vector< ::std::string> >(key, seq));
+		}
 	}
 
 public: 

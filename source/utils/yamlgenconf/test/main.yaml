@@ -9,8 +9,9 @@ GLOBAL: # module GLOBAL
     version: "0.3.1"  
 
 GPROT: # module GPROT
-  include_yaml: ./test/gprot_flags.yaml
-  include_yaml: ./test/gprot_registers.yaml
+  include_yaml: 
+  - ./test/gprot_flags.yaml
+  - ./test/gprot_registers.yaml
 
   # -> DefinesConfigBuilder
   define: 

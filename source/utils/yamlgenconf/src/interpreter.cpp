@@ -96,7 +96,8 @@ throw (InterpreterException)
 { 
 	LOG_DEBUG_PRINT(" -> Handling VALUE");
   if(event->type != YAML_SCALAR_EVENT && 
-     event->type != YAML_MAPPING_START_EVENT) { 
+     event->type != YAML_MAPPING_START_EVENT && 
+		 event->type != YAML_SEQUENCE_START_EVENT) { 
     throw InterpreterException(event, "VALUE");
   }
 
@@ -112,7 +113,32 @@ throw (InterpreterException)
 		LOG_DEBUG_PRINT(" -> Transition to MAPPING_START");
 		m_mode = MAPPING_START; 
 	}
+	else if(event->type == YAML_SEQUENCE_START_EVENT) { 
+		LOG_DEBUG_PRINT(" -> Transition to SEQUENCE_START");
+		m_mode     = SEQUENCE_START; 
+	}
 	
+}
+
+void 
+Interpreter::sequence_start_mode(yaml_event_t * event) 
+throw (InterpreterException) 
+{
+	LOG_DEBUG_PRINT(" -> Handling SEQUENCE");
+  if(event->type != YAML_SCALAR_EVENT && 
+  	 event->type != YAML_SEQUENCE_END_EVENT) { 
+    throw InterpreterException(event, "SEQUENCE");
+	}
+	if(event->type == YAML_SCALAR_EVENT) { 
+		::std::string seq_value = ::std::string((const char *)(event->data.scalar.value));
+		m_cur_node.push_seq_value(m_key_stack.back(), seq_value); 
+		LOG_DEBUG_PRINT("    Sequence value: %s -> %s",
+										m_key_stack.back().c_str(), seq_value.c_str());
+	}
+	else if(event->type == YAML_SEQUENCE_END_EVENT) { 
+		m_mode = KEY; 
+		m_key_stack.pop_back(); 
+	}
 }
 
 void

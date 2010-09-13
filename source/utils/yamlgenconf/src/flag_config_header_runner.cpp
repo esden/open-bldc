@@ -14,9 +14,6 @@ throw (RunnerException)
 	::std::vector<FlagConfig>::const_iterator flags_it; 
 	::std::vector<FlagConfig>::const_iterator flags_end = flags.end(); 
 
-	::std::cout << "#ifndef FLAG_CONFIG_HPP__" << ::std::endl;
-	::std::cout << "#define FLAG_CONFIG_HPP__" << ::std::endl;
-
 	for(flags_it = flags.begin(); flags_it != flags_end; ++flags_it) {
 		FlagConfig flag = (*flags_it);
 
@@ -25,8 +22,6 @@ throw (RunnerException)
 		::std::cout << "#define " << m_module << "_FLAG_" << flag.name();
 		::std::cout << " " << flag.bit() << ::std::endl;
 	}
-	::std::cout << ::std::endl; 
-	::std::cout << "#endif /* FLAG_CONFIG_HPP__ */" << ::std::endl;
 	::std::cout << ::std::endl; 
 }
 

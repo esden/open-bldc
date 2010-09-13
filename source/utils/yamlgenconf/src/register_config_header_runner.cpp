@@ -15,9 +15,6 @@ throw (RunnerException)
 	::std::vector<RegisterGroupConfig>::const_iterator groups_it; 
 	::std::vector<RegisterGroupConfig>::const_iterator groups_end = register_groups.end(); 
 
-	::std::cout << "#ifndef REGISTER_CONFIG_HPP__" << ::std::endl;
-	::std::cout << "#define REGISTER_CONFIG_HPP__" << ::std::endl;
-
 	for(groups_it = register_groups.begin(); groups_it != groups_end; ++groups_it) {
 		RegisterGroupConfig group = (*groups_it);
 		::std::vector<RegisterConfig> const registers = group.registers();
@@ -33,6 +30,5 @@ throw (RunnerException)
 		}
 	}
 	::std::cout << ::std::endl; 
-	::std::cout << "#endif /* REGISTER_CONFIG_HPP__ */" << ::std::endl;
 }
 

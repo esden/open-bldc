@@ -6,4 +6,3 @@ Flags:
       label: Flag register
   description: Flag register
 
-include_yaml: ./test/simple/pwm.yaml

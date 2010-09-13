@@ -1,14 +1,6 @@
 
 # -> RegisterConfigGeneratorStrategy
 register_groups: 
-# Flags: 
-#   description: Flag register
-#   registers: 
-#     #define GPROT_REGISTERS_FLAGS_REG_ADDR: 0
-#     flags_reg_addr: 
-#       register: 0
-#       ro: yes
-#       label: Flag register
 
   PWM: 
     description: PWM settings

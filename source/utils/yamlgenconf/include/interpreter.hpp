@@ -48,6 +48,7 @@ public:
     INIT=0,
 	
 		MAPPING_START, 
+		SEQUENCE_START, 
 		KEY, 
 		VALUE, 
 		INCLUDE, 
@@ -70,11 +71,12 @@ public:
   Interpreter()
     : m_mode(INIT)
   {
-    register_handler(INIT,          init_mode);
-		register_handler(MAPPING_START, mapping_start_mode); 
-		register_handler(KEY,				    key_mode); 
-		register_handler(VALUE,			    value_mode); 
-		register_handler(COMPLETING,  	completing_mode); 
+    register_handler(INIT,           init_mode);
+		register_handler(MAPPING_START,  mapping_start_mode); 
+		register_handler(SEQUENCE_START, sequence_start_mode); 
+		register_handler(KEY,				     key_mode); 
+		register_handler(VALUE,			     value_mode); 
+		register_handler(COMPLETING,  	 completing_mode); 
   }
 
   ~Interpreter() {
@@ -109,6 +111,7 @@ private:
 
   void init_mode(yaml_event_t * event) throw(InterpreterException);
   void mapping_start_mode(yaml_event_t * event) throw(InterpreterException);
+  void sequence_start_mode(yaml_event_t * event) throw(InterpreterException);
   void key_mode(yaml_event_t * event) throw(InterpreterException);
   void value_mode(yaml_event_t * event) throw(InterpreterException);
   void completing_mode(yaml_event_t * event) throw(InterpreterException);

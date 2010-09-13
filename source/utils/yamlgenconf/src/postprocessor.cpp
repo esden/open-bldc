@@ -30,7 +30,9 @@ void
 Postprocessor::run()
 {
 	LOG_DEBUG_PRINT("POSTPROC: Processing node: ");
+#if defined(LOG) && LOG == DEBUG
 	m_config.log(); 
+#endif
 	LOG_DEBUG_PRINT("POSTPROC: Begin post-processing");
 	m_config = process_node(m_config); 
 }
@@ -50,8 +52,8 @@ Postprocessor::process_node(ConfigNode & node)
 	ConfigNode::const_seq_iterator seqs_end = node.seqs().end(); 
 	for(seqs_it = node.seqs().begin(); seqs_it != seqs_end; ++seqs_it) { 
 		::std::string key = (*seqs_it).first; 
+		LOG_DEBUG_PRINT("POSTPROC: Include list");
 		if(key == "include_yaml") { 
-			LOG_DEBUG_PRINT("POSTPROC: Include list");
 			::std::vector< ::std::string>::const_iterator inc_it  = (*seqs_it).second.begin(); 
 			::std::vector< ::std::string>::const_iterator inc_end = (*seqs_it).second.end(); 
 			for(; inc_it != inc_end; ++inc_it) { 

@@ -24,6 +24,10 @@ public:
 private: 
 
 	ConfigNode & process_node(ConfigNode & config_node); 
+	void merge(ConfigNode & node, const char * filename) const; 
+	void merge(ConfigNode & node, ::std::string const &  filename) const { 
+		merge(node, filename.c_str());
+	}
 
 };
 

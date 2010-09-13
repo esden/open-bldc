@@ -11,44 +11,61 @@ class ConfigNode
 
 public: 
 
+	typedef enum { UNDEFINED=0, VALUE, SEQUENCE, MAPPING } node_type; 
+
 	typedef ::std::map< ::std::string, ConfigNode>::iterator iterator; 
 	typedef ::std::map< ::std::string, ConfigNode>::const_iterator const_iterator; 
 
+	typedef ::std::map< ::std::string, ::std::vector< ::std::string > >::iterator seq_iterator; 
+	typedef ::std::map< ::std::string, ::std::vector< ::std::string > >::const_iterator const_seq_iterator; 
+
 private: 
 
+	node_type m_type; 
+
 	::std::map< ::std::string, ::std::string> m_values; 
+	::std::map< ::std::string, ::std::vector< ::std::string> > m_seqs; 
 	::std::map< ::std::string, ConfigNode> m_nodes; 
 
 public: 
 
-	ConfigNode() { }
+	ConfigNode()
+	: m_type(UNDEFINED) { }
 
 	ConfigNode(ConfigNode const & other) 
-	: m_values(other.m_values), m_nodes(other.m_nodes) { }
+	: m_type(UNDEFINED), m_values(other.m_values), m_nodes(other.m_nodes) { }
+
+public: 
+
+	node_type type(void) const { 
+		return m_type; 
+	}
 
 public: 
 
 	void set_node(::std::string const & key, 
 								ConfigNode const & node) { 
 		m_nodes.insert(::std::pair< ::std::string, ConfigNode>(key, node));
+		m_type = MAPPING; 
 	} 
 
 	void set_value(::std::string const & key, 
 								 ::std::string const & value) { 
 		m_values.insert(::std::pair< ::std::string, ::std::string>(key,value)); 
+		m_type = VALUE; 
 	} 
 	void set_value(const char * key, const char * value) { 
 		::std::string skey(key); 
 		::std::string svalue(value); 
-		m_values.insert(::std::pair< ::std::string, ::std::string>(skey, svalue)); 
+		set_value(skey, svalue); 
 	}
 	void set_value(::std::string & key, const char * value) { 
 		::std::string svalue(value); 
-		m_values.insert(::std::pair< ::std::string, ::std::string>(key, svalue)); 
+		set_value(key, svalue); 
 	}
 	void set_value(const char * key, ::std::string & value) { 
 		::std::string skey(key); 
-		m_values.insert(::std::pair< ::std::string, ::std::string>(skey, value)); 
+		set_value(skey, value); 
 	}
 
 public: 
@@ -63,11 +80,24 @@ public:
 
 public: 
 
+	void push_seq_value(::std::string const & key, ::std::string const & value) { 
+		seq_iterator seq = m_seqs.find(key); 
+		if(seq != m_seqs.end()) { 
+			(*seq).second.push_back(value); 
+		}
+		m_type = SEQUENCE; 
+	}
+
+public: 
+
 	::std::map< ::std::string, ::std::string> const & values(void) const { 
 		return m_values; 
 	}
 	::std::map< ::std::string, ConfigNode> const & nodes(void) const { 
 		return m_nodes; 
+	}
+	::std::map< ::std::string, ::std::vector< ::std::string> > const & seqs(void) const { 
+		return m_seqs; 
 	}
 
 public: 

@@ -7,4 +7,3 @@ Flags:
   description: Flag register
 
 include_yaml: ./test/simple/pwm.yaml
-

@@ -5,3 +5,4 @@ PWM:
     pwm_offset_reg_addr: 
       register: 1
       label: Offset register address
+

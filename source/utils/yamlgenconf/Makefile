@@ -11,14 +11,6 @@ ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g
 endif
 
-HDEPS=config.hpp logging.hpp interpreter.hpp register_config.hpp config_generator.hpp \
-			error_handling.hpp abstract_config_runner.hpp exception/generator_exception.hpp \
-			exception/runner_exception.hpp exception/interpreter_exception.hpp \
-			exception/config_exception.hpp exception/parser_exception.hpp \
-			register_config_strategy.hpp widget_config.hpp register_config_builder.hpp \
-			config_node.hpp flag_config.hpp abstract_register_config_runner.hpp \
-			abstract_config_builder.hpp register_config_header_runner.hpp yaml_config.hpp \
-			register_group_config.hpp
 OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o config_node.o \
 					 register_config_builder.o register_config_header_runner.o module_config_builder.o \
 					 module_config_header_runner.o flag_config_header_runner.o flag_config_builder.o \
@@ -28,13 +20,13 @@ BINDIR=./bin
 IDIR=./include
 BUILDDIR=./build
 SRCDIR=./src
+DEPDIR=./deps
 
-DEPS = $(patsubst %,$(IDIR)/%,$(HDEPS))
 OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
 
 all: base_dirs yamlgenconf
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo "  CC    $(@)"
 	$(Q)$(CC) -c -o $@ $< $(CFLAGS)
 
@@ -49,6 +41,17 @@ base_dirs:
 .PHONY: clean
 
 clean: 
-	$(Q)rm -Rf ./$(BUILDDIR) ./$(BINDIR) ./$(IDIR)/*~ ./$(SRCDIR)/*~ ./*~ 
+	$(Q)rm -Rf ./$(BUILDDIR) ./$(BINDIR) ./$(DEPDIR) ./$(IDIR)/*~ ./$(SRCDIR)/*~ ./*~
 	@echo "  CLEAN "
 
+$(DEPDIR)/%.d: $(SRCDIR)/%.cpp
+	@echo "  DEP   $@"
+	$(Q)mkdir -p $(@D)
+	$(Q)$(CC) -MM $(CFLAGS) $< -MF $@
+	$(Q)cp -f $@ $@.tmp
+	$(Q)sed -e 's|.*:|$$(BUILDDIR)/$*.o:|' < $@.tmp > $@
+	$(Q)sed -e 's/.*://' -e 's/\\$$//' < $@.tmp | fmt -1 | \
+		sed -e 's/^ *//' -e 's/$$/:/' >> $@
+	$(Q)rm -f $@.tmp
+
+-include $(patsubst %.o,$(DEPDIR)/%.d,$(OBJFILES))

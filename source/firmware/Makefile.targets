@@ -90,3 +90,9 @@ test_sys_tick.OBJECTS = \
 	driver/sys_tick.o
 
 OBJECTS += $(test_sys_tick.OBJECTS)
+
+test_debug_pins.OBJECTS = \
+	driver/debug_pins.o \
+	test/debug_pins_main.o
+
+OBJECTS += $(test_debug_pins.OBJECTS)

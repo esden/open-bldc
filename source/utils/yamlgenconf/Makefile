@@ -14,7 +14,7 @@ endif
 OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o config_node.o \
 					 register_config_builder.o register_config_header_runner.o module_config_builder.o \
 					 module_config_header_runner.o flag_config_header_runner.o flag_config_builder.o \
-					 postprocessor.o
+					 postprocessor.o define_config_builder.o define_config_header_runner.o
 
 BINDIR=./bin
 IDIR=./include

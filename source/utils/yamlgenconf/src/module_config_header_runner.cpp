@@ -10,6 +10,8 @@
 #include "register_config_header_runner.hpp"
 #include "flag_config_strategy.hpp"
 #include "flag_config_header_runner.hpp"
+#include "define_config_strategy.hpp"
+#include "define_config_header_runner.hpp"
 
 #include <iostream>
 #include <vector>
@@ -47,6 +49,11 @@ throw (RunnerException)
 			if(mode_name == "flags") { 
  				ConfigGenerator<FlagConfigStrategy> generator(mode_config);
 				FlagConfigHeaderRunner runner(module_name); 
+				generator.run(runner); 
+			}
+			if(mode_name == "defines") { 
+ 				ConfigGenerator<DefineConfigStrategy> generator(mode_config);
+				DefineConfigHeaderRunner runner(module_name); 
 				generator.run(runner); 
 			}
 

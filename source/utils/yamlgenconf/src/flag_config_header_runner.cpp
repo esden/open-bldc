@@ -19,7 +19,7 @@ throw (RunnerException)
 
 		::std::cout << ::std::endl; 
 		::std::cout << "/* Flag: " << flag.name() << " */" << ::std::endl;
-		::std::cout << "#define " << m_module << "_FLAG_" << flag.name();
+		::std::cout << "#define " << m_module << "__FLAG_" << flag.name();
 		::std::cout << " " << flag.bit() << ::std::endl;
 	}
 	::std::cout << ::std::endl; 

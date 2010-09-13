@@ -12,7 +12,7 @@ class ConfigNode
 
 public: 
 
-	// TODO: How it should be done (tm)
+	// How it usually should be done (tm): 
 	//
 	// Typing should be replaced by: 
 	// - Deriving ValueConfigNode, SequenceMappingNode and MappingConfigNode
@@ -23,8 +23,14 @@ public:
 	//   - visit(ValueConfigNode * node)
 	//   - visit(SequenceConfigNode * node)
 	//   - visit(MappingConfigNode * node)
-
-	typedef enum { UNDEFINED=0, VALUE, SEQUENCE, MAPPING } node_type; 
+	//
+	// In this case, the visitor pattern would complicate interpretation 
+	// of the node hierarchy in builders. 
+	// Using explicit getters, like values(), nodes() and seqs(), explicit 
+	// access and semantic interpretation is simplified a lot. 
+	//
+	// TODO: m_seqs should be a vector of ConfigNode instances, as a 
+	// sequence may contain mappings. 
 
 	typedef ::std::map< ::std::string, ConfigNode>::iterator iterator; 
 	typedef ::std::map< ::std::string, ConfigNode>::const_iterator const_iterator; 
@@ -34,26 +40,17 @@ public:
 
 private: 
 
-	node_type m_type; 
-
 	::std::map< ::std::string, ::std::string> m_values; 
 	::std::map< ::std::string, ConfigNode> m_nodes; 
 	::std::map< ::std::string, ::std::vector< ::std::string> > m_seqs; 
 
 public: 
 
-	ConfigNode()
-	: m_type(UNDEFINED) { }
+	ConfigNode() { }
 
 	ConfigNode(ConfigNode const & other) 
-	: m_type(UNDEFINED), m_values(other.m_values), m_nodes(other.m_nodes), m_seqs(other.m_seqs) 
+	: m_values(other.m_values), m_nodes(other.m_nodes), m_seqs(other.m_seqs) 
 	{ }
-
-public: 
-
-	node_type type(void) const { 
-		return m_type; 
-	}
 
 public: 
 

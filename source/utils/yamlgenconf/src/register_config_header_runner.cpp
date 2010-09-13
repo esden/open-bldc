@@ -25,7 +25,7 @@ throw (RunnerException)
 		::std::vector<RegisterConfig>::const_iterator register_it; 
 		::std::vector<RegisterConfig>::const_iterator register_end = registers.end();
 		for(register_it = registers.begin(); register_it != register_end; ++register_it) { 
-			::std::cout << "#define " << m_module << "_" << (*register_it).name();
+			::std::cout << "#define " << m_module << "__" << (*register_it).name();
 			::std::cout << " " << (*register_it).register_nr() << ::std::endl;
 		}
 	}

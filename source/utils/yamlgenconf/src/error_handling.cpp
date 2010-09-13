@@ -30,11 +30,11 @@ void on_parser_error(yaml_parser_t * parser) {
 
 			if (parser->problem_value != -1) {
 				fprintf(stderr, "Reader error: %s: #%X at %d\n", parser->problem,
-								parser->problem_value, parser->problem_offset);
+								parser->problem_value, (int)parser->problem_offset);
 			}
 			else {
 				fprintf(stderr, "Reader error: %s at %d\n", parser->problem,
-								parser->problem_offset);
+								(int)parser->problem_offset);
 			}
 			break; 
 		case YAML_SCANNER_ERROR:
@@ -43,14 +43,14 @@ void on_parser_error(yaml_parser_t * parser) {
 				fprintf(stderr, "Scanner error: %s at line %d, column %d\n"
 								"%s at line %d, column %d\n", 
 								parser->context, 
-								parser->context_mark.line+1, parser->context_mark.column+1,
+								(int)parser->context_mark.line+1, (int)parser->context_mark.column+1,
 								parser->problem, 
-								parser->problem_mark.line+1, parser->problem_mark.column+1);
+								(int)parser->problem_mark.line+1, (int)parser->problem_mark.column+1);
 			}
 			else {
 				fprintf(stderr, "Scanner error: %s at line %d, column %d\n",
 								parser->problem, 
-								parser->problem_mark.line+1, parser->problem_mark.column+1);
+								(int)parser->problem_mark.line+1, (int)parser->problem_mark.column+1);
 			}
 			break; 
 		case YAML_PARSER_ERROR: 
@@ -59,20 +59,20 @@ void on_parser_error(yaml_parser_t * parser) {
 				fprintf(stderr, "Parser error: %s at line %d, column %d\n"
 								"%s at line %d, column %d\n", 
 								parser->context, 
-								parser->context_mark.line+1, parser->context_mark.column+1,
+								(int)parser->context_mark.line+1, (int)parser->context_mark.column+1,
 								parser->problem, 
-								parser->problem_mark.line+1, parser->problem_mark.column+1);
+								(int)parser->problem_mark.line+1, (int)parser->problem_mark.column+1);
 			}
 			else {
 				fprintf(stderr, "Parser error: %s at line %d, column %d\n",
 								parser->problem, 
-								parser->problem_mark.line+1, parser->problem_mark.column+1);
+								(int)parser->problem_mark.line+1, (int)parser->problem_mark.column+1);
 			}
 			break; 
 		default: 
 			fprintf(stderr, "Internal error: %s at line %d, column %d\n",
 							parser->problem, 
-							parser->problem_mark.line+1, parser->problem_mark.column+1);
+							(int)parser->problem_mark.line+1, (int)parser->problem_mark.column+1);
 			break;
 	}
 }

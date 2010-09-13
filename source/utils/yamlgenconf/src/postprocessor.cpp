@@ -11,19 +11,21 @@
 void
 Postprocessor::run()
 {
+	LOG_DEBUG_PRINT("POSTPROC: Processing node: ");
+	m_config.log(); 
+	LOG_DEBUG_PRINT("POSTPROC: Begin post-processing");
 	m_config = process_node(m_config); 
 }
 
 ConfigNode &  
 Postprocessor::process_node(ConfigNode & node)
 {
-	LOG_DEBUG_PRINT("POSTPROC: Processing node");
-
 	ConfigNode::iterator nodes_it; 
 	ConfigNode::const_iterator nodes_end = node.end(); 
 	for(nodes_it = node.hbegin(); nodes_it != nodes_end; ++nodes_it) { 
-		ConfigNode child_node = process_node((*nodes_it).second);
-		node.set_node((*nodes_it).first, child_node);
+		::std::string key = (*nodes_it).first; 
+		LOG_DEBUG_PRINT("POSTPROC: Processing %s", key.c_str());
+		process_node((*nodes_it).second);
 	}
 	
 	::std::map< ::std::string, ::std::string>::const_iterator v_it; 
@@ -35,6 +37,8 @@ Postprocessor::process_node(ConfigNode & node)
 	for(v_it = node.values().begin(); v_it != v_end; ++v_it) { 
 		LOG_DEBUG_PRINT("POSTPROC: Key is %s", (*v_it).first.c_str());
 		if((*v_it).first == "include_yaml") { 
+			LOG_DEBUG_PRINT("POSTPROC: Processing include file %s", (*v_it).second.c_str());
+			
 			Interpreter injection; 
 			// Parse file given in filename value: 
 			injection.read((*v_it).second.c_str());
@@ -51,7 +55,6 @@ Postprocessor::process_node(ConfigNode & node)
 			node.inject((*root).second); 
 		}
 	}
-	LOG_DEBUG_PRINT("POSTPROC: Injection finished");
 
 	return node; 
 }

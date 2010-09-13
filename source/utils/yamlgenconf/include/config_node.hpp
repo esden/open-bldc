@@ -53,6 +53,16 @@ public:
 
 public: 
 
+	void update_nodes(::std::map< ::std::string, ConfigNode> const & new_nodes) { 
+		ConfigNode::const_iterator nodes_it; 
+		ConfigNode::const_iterator nodes_end = new_nodes.end(); 
+		for(nodes_it = new_nodes.begin(); nodes_it != nodes_end; ++nodes_it) { 
+			set_node((*nodes_it).first, (*nodes_it).second); 
+		}
+	}
+
+public: 
+
 	::std::map< ::std::string, ::std::string> const & values(void) const { 
 		return m_values; 
 	}
@@ -81,6 +91,12 @@ public:
 
 	const_iterator find(const char * key) const { 
 		return m_nodes.find(::std::string(key));
+	}
+	const_iterator find(::std::string const & key) const { 
+		return m_nodes.find(key);
+	}
+	iterator hfind(::std::string const & key) { 
+		return m_nodes.find(key);
 	}
 	
 };

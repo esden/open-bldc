@@ -33,12 +33,14 @@ ConfigNode::inject(ConfigNode const & other)
 	ConfigNode::const_iterator inject_nodes_it  = other.begin(); 
 	ConfigNode::const_iterator inject_nodes_end = other.end(); 
 	for(; inject_nodes_it != inject_nodes_end; ++inject_nodes_it) { 
-//		if(key_not_present) { 
-			set_node((*inject_nodes_it).first, (*inject_nodes_it).second);
-//		}
-//		else { 
-//			push_nodes_to_existing_node_vector(); 
-//		}
+		::std::string key = (*inject_nodes_it).first; 
+		ConfigNode::iterator existing = hfind(key); 
+		if(existing == end()) { // Key not present yet
+			set_node(key, (*inject_nodes_it).second);
+		}
+		else { // Key is present, merge nodes
+			(*existing).second.inject((*inject_nodes_it).second);
+		}
 	}
 	
 	::std::map< ::std::string, ::std::string>::const_iterator inject_values_it; 

@@ -4,13 +4,12 @@ Q := @
 endif
 
 CC=g++
-CFLAGS=-Wall -I./include 
+CFLAGS+=-Wall -I./include
+LDFLAGS+=-lyaml
 
 ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g
 endif
-
-LIBS=-lyaml
 
 HDEPS=config.hpp logging.hpp interpreter.hpp register_config.hpp config_generator.hpp \
 			error_handling.hpp abstract_config_runner.hpp exception/generator_exception.hpp \
@@ -33,14 +32,15 @@ SRCDIR=./src
 DEPS = $(patsubst %,$(IDIR)/%,$(HDEPS))
 OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
 
+all: base_dirs yamlgenconf
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS) base_dirs
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 	@echo "  CC    $(@)"
-	$(Q)$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
+	$(Q)$(CC) -c -o $@ $< $(CFLAGS)
 
 yamlgenconf: $(OBJ) 
 	@echo "  LL    $(@)"
-	$(Q)$(CC) -o $(BINDIR)/$@ $^ $(CFLAGS) $(LIBS)
+	$(Q)$(CC) -o $(BINDIR)/$@ $^ $(LDFLAGS)
 
 base_dirs: 
 	@mkdir -p $(BUILDDIR) 

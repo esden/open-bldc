@@ -29,7 +29,7 @@ LIBDIR=./lib
 OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
 LIB = $(patsubst %,$(LIBDIR)/%,$(LIBFILES))
 
-all: base_dirs yamlgen lib
+all: base_dirs yamlgen lib test
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo "  CC    $(@)"
@@ -56,6 +56,11 @@ clean:
 	$(Q)rm -Rf ./$(BUILDDIR) ./$(BINDIR) ./$(DEPDIR) ./$(LIBDIR) 
 	$(Q)find -name '*~' -exec rm {} \;
 	@echo "  CLEAN "
+
+.PHONY: test
+test: yamlgen
+	@echo "  TEST  "
+	$(Q)./bin/yamlgen ./test/main.yaml >/dev/null
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "  DEP   $@"

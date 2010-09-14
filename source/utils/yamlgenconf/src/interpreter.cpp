@@ -10,11 +10,12 @@
 #include "logging.hpp"
 #include "exception/interpreter_exception.hpp"
 #include "exception/parser_exception.hpp"
+#include "exception/builder_exception.hpp"
+#include "exception/config_exception.hpp"
 #include <yaml.h>
 
 
 void Interpreter::init_mode(yaml_event_t * event) 
-throw (InterpreterException) 
 { 
 	LOG_DEBUG_PRINT(" -> Handling INIT");
   if(event->type != YAML_MAPPING_START_EVENT &&
@@ -25,7 +26,7 @@ throw (InterpreterException)
 
   // Wait for first mapping (global scope):
   if(event->type == YAML_MAPPING_START_EVENT) {
-		m_cur_node = ConfigNode(); 
+		m_cur_node = ConfigNode(YAMLContext(event, m_cur_file)); 
 		m_key_stack.push_back( ::std::string("config_root"));
 
 		LOG_DEBUG_PRINT(" -> Transition to MAPPING_START");
@@ -35,7 +36,6 @@ throw (InterpreterException)
 
 void 
 Interpreter::mapping_start_mode(yaml_event_t * event) 
-throw (InterpreterException) 
 { 
 	LOG_DEBUG_PRINT(" -> Handling MAPPING_START");
   if(event->type != YAML_SCALAR_EVENT) { 
@@ -47,7 +47,7 @@ throw (InterpreterException)
 
 	LOG_DEBUG_PRINT("    PUSH node");
 	m_node_stack.push_back(m_cur_node); 
-	m_cur_node = ConfigNode(); 
+	m_cur_node = ConfigNode(YAMLContext(event, m_cur_file)); 
 	
 	LOG_DEBUG_PRINT(" -> Transition to VALUE");
 	m_mode = VALUE; 
@@ -55,7 +55,6 @@ throw (InterpreterException)
 
 void 
 Interpreter::key_mode(yaml_event_t * event) 
-throw (InterpreterException) 
 { 
 	LOG_DEBUG_PRINT(" -> Handling KEY");
   if(event->type != YAML_SCALAR_EVENT &&
@@ -92,7 +91,6 @@ throw (InterpreterException)
 
 void 
 Interpreter::value_mode(yaml_event_t * event) 
-throw (InterpreterException) 
 { 
 	LOG_DEBUG_PRINT(" -> Handling VALUE");
   if(event->type != YAML_SCALAR_EVENT && 
@@ -115,14 +113,13 @@ throw (InterpreterException)
 	}
 	else if(event->type == YAML_SEQUENCE_START_EVENT) { 
 		LOG_DEBUG_PRINT(" -> Transition to SEQUENCE_START");
-		m_mode     = SEQUENCE_START; 
+		m_mode = SEQUENCE_START; 
 	}
 	
 }
 
 void 
 Interpreter::sequence_start_mode(yaml_event_t * event) 
-throw (InterpreterException) 
 {
 	LOG_DEBUG_PRINT(" -> Handling SEQUENCE");
   if(event->type != YAML_SCALAR_EVENT && 
@@ -143,13 +140,11 @@ throw (InterpreterException)
 
 void
 Interpreter::completing_mode(yaml_event_t * event) 
-throw (InterpreterException) 
 { 
 }
 
 Interpreter::interpreter_mode_t
 Interpreter::next_event(yaml_event_t * event) 
-throw (InterpreterException, ParserException)
 {
   if (event->type == YAML_STREAM_END_EVENT) {
     return DONE;
@@ -160,7 +155,6 @@ throw (InterpreterException, ParserException)
 
 void
 Interpreter::read(const char * filename) 
-throw (InterpreterException, ParserException)
 { 
 	yaml_parser_t parser;
 	yaml_event_t event;
@@ -176,6 +170,9 @@ throw (InterpreterException, ParserException)
 	if(!input) { 
 		throw InterpreterException("Could not open file");
 	}
+
+	m_cur_file = ::std::string(filename);
+
 	yaml_parser_set_input_file(&parser, input);
 
 	/* Read the event sequence */

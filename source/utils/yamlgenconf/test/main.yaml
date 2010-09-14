@@ -1,23 +1,10 @@
 ---
 
-include_yaml: ./test/target_foo.yaml
-
-GLOBAL: # module GLOBAL
-
-  defines: 
-    #define GLOBAL__VERSION "0.3.1"
-    version: "0.3.1" 
-    debug: yes
-    enable_logging: no
+import_config: ./test/target_foo.yaml
 
 GPROT: # module GPROT
-  include_yaml: 
+  import_config: 
   - ./test/gprot_flags.yaml
   - ./test/gprot_registers.yaml
 
-  # -> DefinesConfigBuilder
-  defines: 
-    #define GPROT__NUM_ADC 10
-    num_adc: 10 
-    max_foo: 100
 

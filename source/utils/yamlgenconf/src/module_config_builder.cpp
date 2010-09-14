@@ -8,7 +8,6 @@
 
 void
 ModuleConfigBuilder::parse(ConfigNode const & config) 
-throw (GeneratorException)
 {
 	ConfigNode root;
 	ConfigNode::const_iterator root_it = config.find("config_root");
@@ -16,14 +15,13 @@ throw (GeneratorException)
 		root = (*root_it).second;
 	}
 	else { 
-		throw GeneratorException("Could not find config_root in ModuleConfigBuilder");
+		throw BuilderException("Could not find config_root in ModuleConfigBuilder");
 	}
 	parse_partial(root);
 }
 
 void
 ModuleConfigBuilder::parse_partial(ConfigNode const & config_node) 
-throw (GeneratorException)
 {
 	ConfigNode::const_iterator it_modules;
 	ConfigNode::const_iterator end_modules = config_node.end(); 
@@ -46,7 +44,6 @@ throw (GeneratorException)
 
 void 
 ModuleConfigBuilder::run(AbstractModuleConfigRunner & runner) 
-throw (RunnerException) 
 { 
 	runner.run(this); 
 }

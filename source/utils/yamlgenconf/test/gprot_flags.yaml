@@ -12,7 +12,6 @@ flags:
   all_hi: 
     bit: 4
 
-
 register_groups: 
   Flags: 
     description: Flag register

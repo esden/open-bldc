@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include "yaml_context.hpp"
 #include "logging.hpp"
 
 class ConfigNode 
@@ -14,7 +15,6 @@ public:
 
 	// How it usually should be done (tm): 
 	//
-	// Typing should be replaced by: 
 	// - Deriving ValueConfigNode, SequenceMappingNode and MappingConfigNode
 	//   from ConfigNode
 	// - Replacing Builder / Postprocessor operations by visitors, thus: 
@@ -44,13 +44,26 @@ private:
 	::std::map< ::std::string, ConfigNode> m_nodes; 
 	::std::map< ::std::string, ::std::vector< ::std::string> > m_seqs; 
 
+private: 
+
+	YAMLContext m_context; 
+
 public: 
 
-	ConfigNode() { }
+	ConfigNode() { } 
+
+	ConfigNode(YAMLContext const & context)
+	: m_context(context)
+	{ }
 
 	ConfigNode(ConfigNode const & other) 
-	: m_values(other.m_values), m_nodes(other.m_nodes), m_seqs(other.m_seqs) 
+	: m_values(other.m_values), m_nodes(other.m_nodes), m_seqs(other.m_seqs), 
+		m_context(other.m_context)
 	{ }
+
+public: 
+
+	YAMLContext const & context(void) const { return m_context; } 
 
 public: 
 

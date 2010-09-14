@@ -2,7 +2,7 @@
 #define MODULE_CONFIG_GENERATOR_STRATEGY_HPP__
 
 #include "abstract_config_builder.hpp"
-#include "exception/generator_exception.hpp"
+#include "exception/builder_exception.hpp"
 #include "module_config_strategy.hpp"
 #include "module_config.hpp"
 #include <vector>
@@ -22,9 +22,9 @@ public:
 
 public: 
 
-	virtual void parse(ConfigNode const & config) throw (GeneratorException); 
-	virtual void parse_partial(ConfigNode const & config_node) throw (GeneratorException); 
-	virtual void run(AbstractModuleConfigRunner & runner) throw (RunnerException);
+	virtual void parse(ConfigNode const & config);
+	virtual void parse_partial(ConfigNode const & config_node);
+	virtual void run(AbstractModuleConfigRunner & runner);
 
 public: 
 

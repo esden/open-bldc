@@ -1,9 +1,5 @@
 
 TARGET: 
 
-  flags: 
-    foo: 
-      bit: 1
-    bar: 
-      bit: 2
-
+  defines: 
+    import_config: ./test/target_defs.yaml

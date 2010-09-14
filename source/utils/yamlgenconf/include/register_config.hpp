@@ -74,6 +74,10 @@ public:
 		return m_properties;
 	}
 
+	inline bool has_property(::std::string const & key) const { 
+		return (m_properties.find(key) != m_properties.end());
+	}
+
 public: 
 
 	inline ::std::string const & name(void) const { 

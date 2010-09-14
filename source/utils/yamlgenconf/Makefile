@@ -11,7 +11,7 @@ ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g
 endif
 
-OBJFILES = yamlgenconf.o yaml_config.o error_handling.o interpreter.o config_node.o \
+OBJFILES = yamlgen.o yaml_config.o error_handling.o interpreter.o config_node.o \
 					 register_config_builder.o register_config_header_runner.o module_config_builder.o \
 					 module_config_header_runner.o flag_config_header_runner.o flag_config_builder.o \
 					 postprocessor.o define_config_builder.o define_config_header_runner.o
@@ -24,13 +24,13 @@ DEPDIR=./deps
 
 OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
 
-all: base_dirs yamlgenconf
+all: base_dirs yamlgen
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo "  CC    $(@)"
 	$(Q)$(CC) -c -o $@ $< $(CFLAGS)
 
-yamlgenconf: $(OBJ) 
+yamlgen: $(OBJ) 
 	@echo "  LL    $(@)"
 	$(Q)$(CC) -o $(BINDIR)/$@ $^ $(LDFLAGS)
 

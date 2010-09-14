@@ -8,10 +8,11 @@
 
 #include "exception/interpreter_exception.hpp"
 #include "exception/parser_exception.hpp"
+#include "exception/builder_exception.hpp"
 #include "exception/config_exception.hpp"
 
 void
-YAMLConfig::read(char const * filename) throw (ParserException, InterpreterException) 
+YAMLConfig::read(char const * filename) 
 {
 	m_interpreter.read(filename); 
 

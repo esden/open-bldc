@@ -18,7 +18,7 @@ throw (RunnerException)
 		::std::string value = (*defines_it).second; 
 
 		::std::cout << ::std::endl; 
-		::std::cout << "/* Define: " << name << " */" << ::std::endl;
+		::std::cout << "/* Module: " << m_module << " Define: " << name << " */" << ::std::endl;
 	
 		if(value == "no") { 
 			::std::cout << "// "; 

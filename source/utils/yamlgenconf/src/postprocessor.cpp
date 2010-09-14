@@ -51,7 +51,7 @@ Postprocessor::process_node(ConfigNode & node)
 	ConfigNode::const_seq_iterator seqs_end = node.seqs().end(); 
 	for(seqs_it = node.seqs().begin(); seqs_it != seqs_end; ++seqs_it) { 
 		::std::string key = (*seqs_it).first; 
-		if(key == "include_yaml") { 
+		if(key == "import_config") { 
 			::std::vector< ::std::string>::const_iterator inc_it  = (*seqs_it).second.begin(); 
 			::std::vector< ::std::string>::const_iterator inc_end = (*seqs_it).second.end(); 
 			for(; inc_it != inc_end; ++inc_it) { 
@@ -63,12 +63,12 @@ Postprocessor::process_node(ConfigNode & node)
 	::std::map< ::std::string, ::std::string>::const_iterator v_it; 
 	::std::map< ::std::string, ::std::string>::const_iterator v_end;
 	v_end = node.values().end(); 
-	// Iterate over this nodes values. On every key 'include_yaml', 
+	// Iterate over this nodes values. On every key 'import_config', 
 	// run an interpreter on its value (the filename), and inject 
 	// the interpreter's resulting config node. 
 	for(v_it = node.values().begin(); v_it != v_end; ++v_it) { 
 		::std::string key = (*v_it).first; 
-		if(key == "include_yaml") { 
+		if(key == "import_config") { 
 			merge(node, (*v_it).second.c_str());
 		}
 	}

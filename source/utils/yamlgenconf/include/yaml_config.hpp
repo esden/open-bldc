@@ -7,6 +7,8 @@
 #include "interpreter.hpp"
 #include "exception/interpreter_exception.hpp"
 #include "exception/parser_exception.hpp"
+#include "exception/builder_exception.hpp"
+#include "exception/config_exception.hpp"
 
 
 class YAMLConfig
@@ -22,7 +24,7 @@ public:
 
 public: 
 
-	void read(char const * filename) throw (ParserException, InterpreterException);
+	void read(char const * filename);
 
 	inline void log(void) const { 
 		m_interpreter.log(); 

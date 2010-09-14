@@ -55,8 +55,7 @@ public:
 
 public: 
 	
-	void run(runner_t & runner) 
-	throw (RunnerException, InterpreterException, ConfigException) {
+	void run(runner_t & runner) {
 		m_builder.run(runner);
 	}
 

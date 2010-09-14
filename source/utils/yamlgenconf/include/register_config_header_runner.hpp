@@ -19,7 +19,7 @@ public:
 
 	virtual ~RegisterConfigHeaderRunner() { } 
 	
-	virtual void run(RegisterConfigBuilder * const builder) throw (RunnerException);
+	virtual void run(RegisterConfigBuilder * const builder);
 
 };
 

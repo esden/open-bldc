@@ -17,7 +17,7 @@ public:
 	ModuleConfigHeaderRunner() { } 
 	virtual ~ModuleConfigHeaderRunner() { } 
 	
-	virtual void run(ModuleConfigBuilder * const builder) throw (RunnerException);
+	virtual void run(ModuleConfigBuilder * const builder);
 
 };
 

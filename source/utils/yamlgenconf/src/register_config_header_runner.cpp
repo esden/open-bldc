@@ -8,7 +8,6 @@
 
 void
 RegisterConfigHeaderRunner::run(RegisterConfigBuilder * builder) 
-throw (RunnerException) 
 { 
 	::std::vector<RegisterGroupConfig> const register_groups = builder->register_groups(); 
 
@@ -20,7 +19,7 @@ throw (RunnerException)
 		::std::vector<RegisterConfig> const registers = group.registers();
 
 		::std::cout << ::std::endl; 
-		::std::cout << "/* Register group: " << group.name() << " */" << ::std::endl;
+		::std::cout << "/* Module: " << m_module << " Register group: " << group.name() << " */" << ::std::endl;
 
 		::std::vector<RegisterConfig>::const_iterator register_it; 
 		::std::vector<RegisterConfig>::const_iterator register_end = registers.end();

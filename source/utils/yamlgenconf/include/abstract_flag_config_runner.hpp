@@ -22,7 +22,7 @@ public:
 	virtual ~AbstractFlagConfigRunner() { } 
 
 public: 
-	virtual void run(FlagConfigBuilder * const builder) throw (RunnerException) = 0; 
+	virtual void run(FlagConfigBuilder * const builder) = 0; 
 
 };
 

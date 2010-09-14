@@ -11,7 +11,7 @@ class AbstractConfigRunner
 public: 
 	virtual ~AbstractConfigRunner() { } 
 
-	virtual void run(Builder * const builder) throw (RunnerException) = 0; 
+	virtual void run(Builder * const builder) = 0; 
 };
 
 #endif /* ABSTRACT_CONFIG_RUNNER_HPP__ */

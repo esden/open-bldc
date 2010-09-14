@@ -19,7 +19,7 @@ public:
 
 	virtual ~FlagConfigHeaderRunner() { } 
 	
-	virtual void run(FlagConfigBuilder * const builder) throw (RunnerException);
+	virtual void run(FlagConfigBuilder * const builder);
 
 };
 

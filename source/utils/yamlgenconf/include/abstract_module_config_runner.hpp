@@ -22,7 +22,7 @@ public:
 	virtual ~AbstractModuleConfigRunner() { } 
 
 public: 
-	virtual void run(ModuleConfigBuilder * const builder) throw (RunnerException) = 0; 
+	virtual void run(ModuleConfigBuilder * const builder) = 0;
 
 };
 

@@ -18,7 +18,6 @@
 
 void
 ModuleConfigHeaderRunner::run(ModuleConfigBuilder * builder) 
-throw (RunnerException) 
 { 
 	::std::vector<ModuleConfig> const modules = builder->modules(); 
 

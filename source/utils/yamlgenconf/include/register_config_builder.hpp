@@ -4,7 +4,7 @@
 #include "abstract_config_builder.hpp"
 #include "register_group_config.hpp"
 #include "flag_config.hpp"
-#include "exception/generator_exception.hpp"
+#include "exception/builder_exception.hpp"
 #include "register_config_strategy.hpp"
 #include <vector>
 
@@ -29,16 +29,9 @@ public:
 
 public: 
 
-	virtual void parse(ConfigNode const & config) 
-		throw (GeneratorException); 
-
-	/** Expects ConfigNode containing register groups
-	 */
-	virtual void parse_partial(ConfigNode const & config_node) 
-		throw (GeneratorException); 
-
-	virtual void run(AbstractRegisterConfigRunner & runner) 
-		throw (RunnerException);
+	virtual void parse(ConfigNode const & config);
+	virtual void parse_partial(ConfigNode const & config_node);
+	virtual void run(AbstractRegisterConfigRunner & runner);
 
 };
 

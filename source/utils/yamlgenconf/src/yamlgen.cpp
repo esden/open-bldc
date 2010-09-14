@@ -16,11 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <yaml.h>
 #include "yaml_config.hpp"
 #include "exception/interpreter_exception.hpp"
 #include "exception/parser_exception.hpp"
 #include "exception/config_exception.hpp"
+#include "exception/builder_exception.hpp"
+
+#include <yaml.h>
+#include <exception>
+
 
 void usage(void);
 
@@ -31,22 +35,36 @@ int main(int argc, char * argv[]) {
 		return 1; 
 	}
 
-	YAMLConfig config;
 	try { 
+		YAMLConfig config;
 		config.read(argv[1]);
-	} catch(ParserException pe) { 
-		fprintf(stderr, "%s\n", pe.what());
-	} catch(InterpreterException ie) { 
-		fprintf(stderr, "%s\n", ie.what());
+		return 0; 
+	} 
+	catch(ParserException pe) { 
+		::std::cerr << "Syntax error: " << ::std::endl;
+		::std::cerr << "   " << pe.what() << ::std::endl;
+	} 
+	catch(InterpreterException ie) { 
+		::std::cerr << "Interpreter error: " << ::std::endl;
+		::std::cerr << "   " << ie.what() << ::std::endl;
 	}
+	catch(BuilderException be) { 
+		::std::cerr << "Builder error: " << ::std::endl;
+		::std::cerr << "   " << be.what() << ::std::endl;
+	}
+	catch(::std::exception se) {
+		::std::cerr << "Error: " << ::std::endl;
+		::std::cerr << "   " << se.what() << ::std::endl;
+	}
+	return 1; 
 
 }
 
 void usage(void) { 
-	printf("OpenBLDC - yamlgenconf\n"
-		   "YAML based register configuration generator\n\n"
+	printf("yamlgen\n"
+		   "YAML based generator\n\n"
 		   "Usage: \n\n"
-		   "  yamlgenconf <yaml config file>\n\n");
+		   "  yamlgen <yaml config file>\n\n");
 }
 
 

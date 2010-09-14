@@ -26,14 +26,20 @@ register_groups:
       adc_zero_value_reg_addr: 
         register: 4
         label: Zero value
+        widget: 
+          class: Input
       adc_global_current_reg_addr: 
         register: 8
         ro: yes
         label: Global current
+        widget: 
+          class: Input
       adc_phase_voltage_reg_addr: 
         register: 9
         ro: yes
         label: Phase voltage
+        widget: 
+          class: Input
 
   Commutation_Timer: 
     description: Register settings for the commutation timer
@@ -41,15 +47,23 @@ register_groups:
       comm_tim_spark_advance_reg_addr: 
         register: 5
         label: Spark advance
+        widget: 
+          class: Input
       comm_tim_direct_cutoff_reg_addr: 
         register: 6
         label: Cutoff
+        widget: 
+          class: Input
       comm_tim_iir_pole_reg_addr: 
         register: 7
         label: Pole
+        widget: 
+          class: Input
       comm_tim_freq_reg_addr: 
         register: 3
         label: Frequency
+        widget: 
+          class: Input
 
   Other: 
     descriptions: Custom other register settings

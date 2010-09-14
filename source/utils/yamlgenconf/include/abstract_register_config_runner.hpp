@@ -22,7 +22,7 @@ public:
 	virtual ~AbstractRegisterConfigRunner() { } 
 
 public: 
-	virtual void run(RegisterConfigBuilder * const builder) throw (RunnerException) = 0; 
+	virtual void run(RegisterConfigBuilder * const builder) = 0; 
 
 };
 

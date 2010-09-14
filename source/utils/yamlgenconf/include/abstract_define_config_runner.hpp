@@ -22,7 +22,7 @@ public:
 	virtual ~AbstractDefineConfigRunner() { } 
 
 public: 
-	virtual void run(DefineConfigBuilder * const builder) throw (RunnerException) = 0; 
+	virtual void run(DefineConfigBuilder * const builder) = 0; 
 
 };
 

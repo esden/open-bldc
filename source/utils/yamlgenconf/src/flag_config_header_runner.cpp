@@ -7,7 +7,6 @@
 
 void
 FlagConfigHeaderRunner::run(FlagConfigBuilder * builder) 
-throw (RunnerException) 
 { 
 	::std::vector<FlagConfig> const flags = builder->flags(); 
 
@@ -18,7 +17,7 @@ throw (RunnerException)
 		FlagConfig flag = (*flags_it);
 
 		::std::cout << ::std::endl; 
-		::std::cout << "/* Flag: " << flag.name() << " */" << ::std::endl;
+		::std::cout << "/* Module: " << m_module << " Flag: " << flag.name() << " */" << ::std::endl;
 		::std::cout << "#define " << m_module << "__FLAG_" << flag.name();
 		::std::cout << " " << flag.bit() << ::std::endl;
 	}

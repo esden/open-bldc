@@ -3,11 +3,10 @@
 #include "config_node.hpp"
 #include "abstract_config_runner.hpp"
 #include "abstract_define_config_runner.hpp"
-#include "exception/generator_exception.hpp"
+#include "exception/builder_exception.hpp"
 
 void
 DefineConfigBuilder::parse(ConfigNode const & config)
-throw (GeneratorException)
 {
 	ConfigNode root;
 	ConfigNode::const_iterator root_it = config.find("config_root");
@@ -15,14 +14,13 @@ throw (GeneratorException)
 		root = (*root_it).second;
 	}
 	else { 
-		throw GeneratorException("Could not find config_root");
+		throw BuilderException("Could not find config_root");
 	}
 	parse_partial(root);
 }
 
 void 
 DefineConfigBuilder::parse_partial(ConfigNode const & config_node)
-throw (GeneratorException)
 {
 	::std::map< ::std::string, ::std::string>::const_iterator it_defines;
 	::std::map< ::std::string, ::std::string>::const_iterator end_defines;
@@ -38,7 +36,6 @@ throw (GeneratorException)
 
 void 
 DefineConfigBuilder::run(AbstractDefineConfigRunner & runner) 
-throw (RunnerException) 
 {
 	runner.run(this); 
 }

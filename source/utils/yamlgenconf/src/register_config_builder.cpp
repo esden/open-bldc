@@ -5,11 +5,10 @@
 #include "register_group_config.hpp"
 #include "abstract_config_runner.hpp"
 #include "abstract_register_config_runner.hpp"
-#include "exception/generator_exception.hpp"
+#include "exception/builder_exception.hpp"
 
 void
 RegisterConfigBuilder::parse(ConfigNode const & config)
-throw (GeneratorException)
 {
 	ConfigNode root;
 	ConfigNode::const_iterator root_it = config.find("config_root");
@@ -17,14 +16,13 @@ throw (GeneratorException)
 		root = (*root_it).second;
 	}
 	else { 
-		throw GeneratorException("Could not find config_root");
+		throw BuilderException("Could not find config_root", config);
 	}
 	parse_partial(root);
 }
 
 void
 RegisterConfigBuilder::parse_partial(ConfigNode const & config_node)
-throw (GeneratorException)
 {
 	ConfigNode::const_iterator it_groups  = config_node.begin(); 
 	ConfigNode::const_iterator end_groups = config_node.end(); 
@@ -37,6 +35,9 @@ throw (GeneratorException)
 		
 		ConfigNode registers = (*it_groups).second; 
 		ConfigNode::const_iterator reglist = registers.find("registers"); 
+		if(reglist == registers.end()) { 
+			throw BuilderException("No entry 'registers:' found", registers);
+		}
 		ConfigNode register_list = (*reglist).second; 
 		
 		ConfigNode::const_iterator it_regs  = register_list.begin(); 
@@ -46,6 +47,14 @@ throw (GeneratorException)
 			RegisterConfig reg = RegisterConfig((*it_regs).first);
 			ConfigNode properties = (*it_regs).second; 
 			reg.set_properties(properties.values());
+			
+			if(!reg.has_property("register")) { 
+				throw BuilderException("No property 'register: <index>' found", (*it_regs).second);
+			}
+			if(!reg.has_property("label")) { 
+				throw BuilderException("No property 'label: <string>' found", (*it_regs).second);
+			}
+			
 			group.add_register(reg); 
 		}
 		m_register_groups.push_back(group);
@@ -57,7 +66,6 @@ throw (GeneratorException)
 
 void 
 RegisterConfigBuilder::run(AbstractRegisterConfigRunner & runner) 
-throw (RunnerException) 
 {
 	runner.run(this); 
 }

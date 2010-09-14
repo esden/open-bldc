@@ -4,6 +4,9 @@
 #include "config_node.hpp"
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class ModuleConfig
 {
 
@@ -25,5 +28,8 @@ public:
 	ConfigNode const & config(void) const  { return m_config_node; } 
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif

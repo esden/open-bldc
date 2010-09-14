@@ -8,6 +8,9 @@
 #include <vector>
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class ModuleConfigBuilder : public AbstractConfigBuilder<ModuleConfigStrategy>
 {
 
@@ -31,5 +34,8 @@ public:
 	::std::vector<ModuleConfig> const & modules(void) const { return m_modules; }
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* MODULE_CONFIG_GENERATOR_STRATEGY_HPP__ */

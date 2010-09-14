@@ -6,6 +6,10 @@
 #include <iostream>
 #include <vector>
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 RegisterConfigHeaderRunner::run(RegisterConfigBuilder * builder) 
 { 
@@ -31,3 +35,5 @@ RegisterConfigHeaderRunner::run(RegisterConfigBuilder * builder)
 	::std::cout << ::std::endl; 
 }
 
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

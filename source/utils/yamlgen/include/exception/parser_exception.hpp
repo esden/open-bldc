@@ -7,6 +7,9 @@
 #include <iostream>
 #include <yaml.h>
 
+
+namespace YAMLGen { 
+
 class ParserException : public ::std::exception 
 {
 
@@ -60,5 +63,7 @@ public:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif

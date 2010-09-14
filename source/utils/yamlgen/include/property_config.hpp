@@ -1,7 +1,12 @@
 #ifndef PROPERTY_CONFIG_HPP__
 #define PROPERTY_CONFIG_HPP__
 
-class PropertyConfig 
+#include "config.hpp"
+
+
+namespace YAMLGen {
+
+class PropertyConfig : public Config
 { 
 
 protected: 
@@ -27,22 +32,21 @@ public:
 
 public: 
 
+	inline bool has_property(::std::string const & key) const { 
+		return (m_properties.find(key) != m_properties.end());
+	}
+
 	inline void set_properties(const property_map & props) { 
 		m_properties = props;
+	}
+	inline property_map const & properties(void) const { 
+		return m_properties;
 	}
 
 	inline void set_property(const ::std::string & name, 
 													 const ::std::string & value) 
 	{
 		m_properties.insert(property_entry(name, value));
-	}
-
-	inline property_map const & properties(void) const { 
-		return m_properties;
-	}
-
-	inline bool has_property(::std::string const & key) const { 
-		return (m_properties.find(key) != m_properties.end());
 	}
 
 	inline ::std::string property(::std::string const & key) const { 
@@ -53,6 +57,10 @@ public:
 		}
 		::std::string value = (*prop_it).second; 
 		return value; 
+	}
+
+	::std::string operator[](::std::string const & key) const { 
+		return property(key);
 	}
 
 public: 
@@ -78,5 +86,7 @@ public:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif /* PROPERTY_CONFIG_HPP__ */

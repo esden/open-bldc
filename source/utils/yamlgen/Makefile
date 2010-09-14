@@ -11,39 +11,39 @@ ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g
 endif
 
-OBJFILES = yamlgen.o yaml_config.o error_handling.o interpreter.o \
-					 config_node.o register_config_builder.o \
-					 register_config_header_runner.o module_config_builder.o \
-					 module_config_header_runner.o flag_config_header_runner.o \
-					 flag_config_builder.o postprocessor.o define_config_builder.o \
-					 define_config_header_runner.o
-LIBFILES = libyamlgen.so
+# Objects needed for the test app: 
+BINOBJFILES = yamlgen.o yaml_config.o error_handling.o interpreter.o \
+							config_node.o register_config_builder.o \
+							register_config_header_runner.o module_config_builder.o \
+							module_config_header_runner.o flag_config_header_runner.o \
+							flag_config_builder.o postprocessor.o define_config_builder.o \
+							define_config_header_runner.o
 
-BINDIR=./bin
-IDIR=./include
-BUILDDIR=./build
-SRCDIR=./src
-DEPDIR=./deps
-LIBDIR=./lib
+LIBOBJFILES = error_handling.o interpreter.o config_node.o postprocessor.o
 
-OBJ = $(patsubst %,$(BUILDDIR)/%,$(OBJFILES))
-LIB = $(patsubst %,$(LIBDIR)/%,$(LIBFILES))
+BINDIR=bin
+IDIR=include
+BUILDDIR=build
+SRCDIR=src
+DEPDIR=deps
+LIBDIR=lib
 
-all: base_dirs yamlgen lib test
+BINOBJ = $(patsubst %,$(BUILDDIR)/%,$(BINOBJFILES))
+LIBOBJ = $(patsubst %,$(BUILDDIR)/%,$(LIBOBJFILES))
+
+all: base_dirs yamlgen libyamlgen.so test
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo "  CC    $(@)"
 	$(Q)$(CC) -c -fPIC -o $@ $< $(CFLAGS)
 
-yamlgen: $(OBJ) 
-	@echo "  LL    $(@)"
-	$(Q)$(CC) -o $(BINDIR)/$@ $^ $(LDFLAGS)
+yamlgen: $(BINOBJ) 
+	@echo "  LL    $(BINDIR)/$(@)"
+	$(Q)$(CC) -o $(BINDIR)/$(@) $^ $(LDFLAGS)
 
-$(LIBDIR)/%.so: $(OBJ)
-	@echo "  LL    $(@)"
-	$(Q)$(CC) -shared -Wl,-soname,libyamlgen.so.1 -o $@ $^ $(LDFLAGS)
-
-lib: $(LIB)
+libyamlgen.so: $(LIBOBJ)
+	@echo "  LL    $(LIBDIR)/$(@)"
+	$(Q)$(CC) -shared -Wl,-soname,libyamlgen -o $(LIBDIR)/$(@) $^ $(LDFLAGS)
 
 .PHONY: base_dirs
 base_dirs: 
@@ -74,4 +74,5 @@ $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 		sed -e 's/^ *//' -e 's/$$/:/' >> $@
 	$(Q)rm -f $@.tmp
 
--include $(patsubst %.o,$(DEPDIR)/%.d,$(OBJFILES))
+-include $(patsubst %.o,$(DEPDIR)/%.d,$(BINOBJFILES))
+-include $(patsubst %.o,$(DEPDIR)/%.d,$(LIBOBJFILES))

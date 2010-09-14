@@ -6,6 +6,9 @@
 #include "register_config_strategy.hpp"
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class AbstractRegisterConfigRunner : public AbstractConfigRunner<RegisterConfigStrategy>
 {
 
@@ -25,5 +28,8 @@ public:
 	virtual void run(RegisterConfigBuilder * const builder) = 0; 
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* ABSTRACT_REGISTER_CONFIG_RUNNER_HPP__ */

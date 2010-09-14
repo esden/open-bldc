@@ -6,6 +6,10 @@
 
 #include "logging.hpp"
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 ModuleConfigBuilder::parse(ConfigNode const & config) 
 {
@@ -47,3 +51,6 @@ ModuleConfigBuilder::run(AbstractModuleConfigRunner & runner)
 { 
 	runner.run(this); 
 }
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

@@ -7,6 +7,9 @@
 #include <vector>
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class ModuleConfigHeaderRunner: public AbstractModuleConfigRunner
 { 
 
@@ -20,5 +23,8 @@ public:
 	virtual void run(ModuleConfigBuilder * const builder);
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* MODULE_CONFIG_HEADER_RUNNER_HPP__ */

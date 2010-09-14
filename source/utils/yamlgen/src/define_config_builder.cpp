@@ -5,6 +5,10 @@
 #include "abstract_define_config_runner.hpp"
 #include "exception/builder_exception.hpp"
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 DefineConfigBuilder::parse(ConfigNode const & config)
 {
@@ -39,3 +43,6 @@ DefineConfigBuilder::run(AbstractDefineConfigRunner & runner)
 {
 	runner.run(this); 
 }
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

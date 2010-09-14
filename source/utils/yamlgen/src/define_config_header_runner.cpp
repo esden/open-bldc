@@ -4,6 +4,10 @@
 #include <iostream>
 #include <vector>
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 DefineConfigHeaderRunner::run(DefineConfigBuilder * builder) 
 throw (RunnerException) 
@@ -32,3 +36,5 @@ throw (RunnerException)
 	::std::cout << ::std::endl; 
 }
 
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

@@ -7,6 +7,9 @@
 #include <string>
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class FlagConfig : public PropertyConfig 
 { 
 
@@ -34,11 +37,20 @@ public:
 
 public: 
 
+	inline void log(void) const { 
+		LOG_INFO_PRINT("|- Flag");
+		PropertyConfig::log(); 
+		m_widget_config.log(); 
+	}
+
 	inline unsigned short bit(void) const throw (ConfigException) {
 		::std::string bit = property("bit");
 		return (unsigned short)(atoi(bit.c_str())); 
 	}
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif

@@ -12,6 +12,9 @@
 #include <cctype>
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class RegisterConfig : public PropertyConfig 
 {
 	
@@ -32,6 +35,7 @@ public:
 public:
 
 	inline void log(void) const { 
+		LOG_INFO_PRINT("|- Register");
 		PropertyConfig::log(); 
 		m_widget_config.log(); 
 	}
@@ -57,5 +61,8 @@ public:
 	}
 	
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif

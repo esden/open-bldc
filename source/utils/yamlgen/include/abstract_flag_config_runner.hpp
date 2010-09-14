@@ -6,6 +6,9 @@
 #include "flag_config_strategy.hpp"
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class AbstractFlagConfigRunner : public AbstractConfigRunner<FlagConfigStrategy>
 {
 
@@ -25,5 +28,8 @@ public:
 	virtual void run(FlagConfigBuilder * const builder) = 0; 
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* ABSTRACT_FLAG_CONFIG_RUNNER_HPP__ */

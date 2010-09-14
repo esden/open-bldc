@@ -7,6 +7,8 @@
 #include "exception/runner_exception.hpp"
 
 
+namespace YAMLGen { 
+
 template <class TStrategy>
 class AbstractConfigBuilder
 { 
@@ -16,13 +18,12 @@ public:
 	virtual ~AbstractConfigBuilder() { } 
 
 public: 
-	virtual void parse(ConfigNode const & config) = 0;
-	
-	/** Expects ConfigNode as section from interpreter
-	 */
-	virtual void parse_partial(ConfigNode const & config_node) = 0;
 
+	virtual void parse(ConfigNode const & config) = 0;
+	virtual void parse_partial(ConfigNode const & config_node) = 0;
 	virtual void run(Runner & runner) = 0;
 };
+
+} /* namespace YAMLGen */
 
 #endif /* ABSTRACT_CONFIG_BUILDER_HPP__ */

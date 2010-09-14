@@ -5,6 +5,10 @@
 #include <iostream>
 #include <vector>
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 FlagConfigHeaderRunner::run(FlagConfigBuilder * builder) 
 { 
@@ -24,3 +28,5 @@ FlagConfigHeaderRunner::run(FlagConfigBuilder * builder)
 	::std::cout << ::std::endl; 
 }
 
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

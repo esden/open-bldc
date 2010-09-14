@@ -15,6 +15,8 @@
 #include <yaml.h>
 
 
+namespace YAMLGen { 
+
 void Interpreter::init_mode(yaml_event_t * event) 
 { 
 	LOG_DEBUG_PRINT(" -> Handling INIT");
@@ -192,5 +194,5 @@ Interpreter::read(const char * filename)
 	yaml_parser_delete(&parser);
 }
 
-
+} /* namespace YAMLGen */
 

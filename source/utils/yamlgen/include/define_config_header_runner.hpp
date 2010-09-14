@@ -5,6 +5,8 @@
 #include "exception/runner_exception.hpp"
 #include <vector>
 
+namespace YAMLGen { 
+namespace OBLDC { 
 
 class DefineConfigHeaderRunner: public AbstractDefineConfigRunner
 { 
@@ -21,5 +23,8 @@ public:
 	virtual void run(DefineConfigBuilder * const builder) throw (RunnerException);
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* DEFINE_CONFIG_HEADER_RUNNER_HPP__ */

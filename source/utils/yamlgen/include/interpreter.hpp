@@ -13,6 +13,8 @@
 #define register_handler(mode, fun) \
 	m_mode_handlers[mode] = &Interpreter::fun
 
+namespace YAMLGen { 
+
 class Interpreter
 {
 
@@ -121,5 +123,7 @@ private:
   void completing_mode(yaml_event_t * event);
 
 };
+
+} /* namespace YAMLGen */
 
 #endif /* INTERPRETER_H__ */

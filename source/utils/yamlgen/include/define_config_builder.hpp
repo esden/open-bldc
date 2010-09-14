@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <cctype>
 
+namespace YAMLGen { 
+namespace OBLDC { 
 
 class DefineConfigBuilder : public AbstractConfigBuilder<DefineConfigStrategy>
 {
@@ -43,5 +45,8 @@ public:
 	virtual void run(AbstractDefineConfigRunner & runner);
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* DEFINE_CONFIG_GENERATOR_STRATEGY_HPP__ */

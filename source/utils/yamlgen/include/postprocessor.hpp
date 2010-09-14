@@ -3,6 +3,9 @@
 
 #include "config_node.hpp"
 
+
+namespace YAMLGen { 
+
 class Postprocessor { 
 
 private: 
@@ -30,5 +33,7 @@ private:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif

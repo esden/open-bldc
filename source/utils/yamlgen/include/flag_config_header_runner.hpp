@@ -7,6 +7,9 @@
 #include <vector>
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class FlagConfigHeaderRunner: public AbstractFlagConfigRunner
 { 
 
@@ -22,5 +25,8 @@ public:
 	virtual void run(FlagConfigBuilder * const builder);
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* FLAG_CONFIG_HEADER_RUNNER_HPP__ */

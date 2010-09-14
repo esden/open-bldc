@@ -7,6 +7,9 @@
 #include <iostream>
 #include <yaml.h>
 
+
+namespace YAMLGen { 
+
 class InterpreterException : public ::std::exception 
 {
 
@@ -80,5 +83,7 @@ public:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif /* INTERPRETER_EXCEPTION_HPP__ */

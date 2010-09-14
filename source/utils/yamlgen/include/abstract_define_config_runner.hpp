@@ -6,6 +6,9 @@
 #include "define_config_strategy.hpp"
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class AbstractDefineConfigRunner : public AbstractConfigRunner<DefineConfigStrategy>
 {
 
@@ -25,5 +28,8 @@ public:
 	virtual void run(DefineConfigBuilder * const builder) = 0; 
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif /* ABSTRACT_DEFINE_CONFIG_RUNNER_HPP__ */

@@ -11,6 +11,10 @@
 #include "exception/builder_exception.hpp"
 #include "exception/config_exception.hpp"
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 YAMLConfig::read(char const * filename) 
 {
@@ -35,3 +39,5 @@ YAMLConfig::read(char const * filename)
 
 }
 
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

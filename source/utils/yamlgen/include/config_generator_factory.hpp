@@ -9,6 +9,7 @@
 
 #include "config_generator.hpp"
 
+namespace YAMLGen { 
 
 template <class TGeneratorStrategy>
 class ConfigGenerator; // : public AbstractConfigGenerator;
@@ -32,5 +33,7 @@ public:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif

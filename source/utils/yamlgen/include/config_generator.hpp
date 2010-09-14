@@ -27,6 +27,8 @@
 
 */
 
+namespace YAMLGen { 
+
 template <class TGeneratorStrategy>
 class ConfigGenerator : public AbstractConfigGenerator
 {
@@ -60,5 +62,7 @@ public:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif /* CONFIG_GENERATOR_HPP__ */

@@ -36,19 +36,19 @@ int main(int argc, char * argv[]) {
 	}
 
 	try { 
-		YAMLConfig config;
+		YAMLGen::OBLDC::YAMLConfig config;
 		config.read(argv[1]);
 		return 0; 
 	} 
-	catch(ParserException pe) { 
+	catch(YAMLGen::ParserException pe) { 
 		::std::cerr << "Syntax error: " << ::std::endl;
 		::std::cerr << "   " << pe.what() << ::std::endl;
 	} 
-	catch(InterpreterException ie) { 
+	catch(YAMLGen::InterpreterException ie) { 
 		::std::cerr << "Interpreter error: " << ::std::endl;
 		::std::cerr << "   " << ie.what() << ::std::endl;
 	}
-	catch(BuilderException be) { 
+	catch(YAMLGen::BuilderException be) { 
 		::std::cerr << "Builder error: " << ::std::endl;
 		::std::cerr << "   " << be.what() << ::std::endl;
 	}

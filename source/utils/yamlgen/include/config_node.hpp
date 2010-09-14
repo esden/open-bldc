@@ -8,6 +8,9 @@
 #include "yaml_context.hpp"
 #include "logging.hpp"
 
+
+namespace YAMLGen { 
+
 class ConfigNode 
 {
 
@@ -156,5 +159,7 @@ public:
 	}
 	
 };
+
+} /* namespace YAMLGen */
 
 #endif

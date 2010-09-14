@@ -7,6 +7,8 @@
 #include <iostream>
 
 
+namespace YAMLGen { 
+
 void 
 ConfigNode::log(unsigned char indent) const 
 { 
@@ -68,3 +70,5 @@ ConfigNode::inject(ConfigNode const & other)
 		set_value((*inject_values_it).first, (*inject_values_it).second); 
 	}
 }
+
+} /* namespace YAMLGen */

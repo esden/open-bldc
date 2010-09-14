@@ -7,6 +7,9 @@
 #include <string>
 #include <map>
 
+
+namespace YAMLGen { 
+
 void 
 Postprocessor::merge(ConfigNode & node, const char * filename) const 
 { 
@@ -75,3 +78,5 @@ Postprocessor::process_node(ConfigNode & node)
 
 	return node; 
 }
+
+} /* namespace YAMLGen */

@@ -8,6 +8,9 @@
 #include <vector>
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class RegisterGroupConfig : public PropertyConfig
 {
 
@@ -41,17 +44,20 @@ public:
 	}
 
 	inline void log(void) const { 
-		LOG_INFO_PRINT("Register group %s", m_name.c_str());
+		LOG_INFO_PRINT("|- Register group %s", m_name.c_str());
 		
 		PropertyConfig::log();
 
 		::std::vector<RegisterConfig>::const_iterator it; 
 		::std::vector<RegisterConfig>::const_iterator end = m_register_configs.end(); 
 		for(it = m_register_configs.begin(); it != end; ++it) { 
-				(*it).log(); 
+			(*it).log(); 
 		}
 	}
 	
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif

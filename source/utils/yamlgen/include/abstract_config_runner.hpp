@@ -3,6 +3,9 @@
 
 #include "exception/runner_exception.hpp"
 
+
+namespace YAMLGen { 
+
 template <class TStrategy>
 class AbstractConfigRunner
 {
@@ -13,5 +16,7 @@ public:
 
 	virtual void run(Builder * const builder) = 0; 
 };
+
+} /* namespace YAMLGen */
 
 #endif /* ABSTRACT_CONFIG_RUNNER_HPP__ */

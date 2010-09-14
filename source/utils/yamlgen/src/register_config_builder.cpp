@@ -7,6 +7,10 @@
 #include "abstract_register_config_runner.hpp"
 #include "exception/builder_exception.hpp"
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 RegisterConfigBuilder::parse(ConfigNode const & config)
 {
@@ -69,3 +73,6 @@ RegisterConfigBuilder::run(AbstractRegisterConfigRunner & runner)
 {
 	runner.run(this); 
 }
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

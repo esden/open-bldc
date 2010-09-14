@@ -10,6 +10,8 @@
 #include <yaml.h>
 
 
+namespace YAMLGen { 
+
 class BuilderException : public ::std::exception 
 {
 
@@ -39,5 +41,7 @@ public:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif /* BUILDER_EXCEPTION_HPP__ */

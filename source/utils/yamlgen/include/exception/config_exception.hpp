@@ -7,6 +7,9 @@
 #include <iostream>
 #include <yaml.h>
 
+
+namespace YAMLGen {
+
 class ConfigException : public ::std::exception 
 {
 
@@ -28,5 +31,7 @@ public:
 	}
 
 };
+
+} /* namespace YAMLGen */
 
 #endif /* CONFIG_EXCEPTION_HPP__ */

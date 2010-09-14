@@ -11,6 +11,9 @@
 #include "exception/config_exception.hpp"
 
 
+namespace YAMLGen { 
+namespace OBLDC { 
+
 class YAMLConfig
 {
 private: 
@@ -31,5 +34,8 @@ public:
 	}
 
 };
+
+} /* namespace OBLDC */
+} /* namespace YAMLGen */
 
 #endif

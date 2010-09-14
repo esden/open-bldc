@@ -16,6 +16,10 @@
 #include <iostream>
 #include <vector>
 
+
+namespace YAMLGen { 
+namespace OBLDC { 
+
 void
 ModuleConfigHeaderRunner::run(ModuleConfigBuilder * builder) 
 { 
@@ -75,3 +79,5 @@ ModuleConfigHeaderRunner::run(ModuleConfigBuilder * builder)
 	::std::cout << "#endif /* MODULE_CONFIG_HPP__ */" << ::std::endl;
 }
 
+} /* namespace OBLDC */
+} /* namespace YAMLGen */

@@ -60,7 +60,9 @@ clean:
 .PHONY: test
 test: yamlgen
 	@echo "  TEST  "
-	$(Q)./bin/yamlgen ./test/main.yaml >/dev/null
+	$(Q)./bin/yamlgen ./test/main.yaml >test/test_output.hpp
+	$(Q)diff test/test_output.hpp test/expected_main.hpp
+	$(Q)rm test/test_output.hpp
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "  DEP   $@"

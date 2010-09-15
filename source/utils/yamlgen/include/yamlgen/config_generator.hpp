@@ -1,15 +1,14 @@
 #ifndef CONFIG_GENERATOR_HPP__
 #define CONFIG_GENERATOR_HPP__
 
-#include "abstract_config_generator.hpp"
-#include "abstract_config_builder.hpp"
-#include "abstract_config_runner.hpp"
-#include "interpreter.hpp"
-#include "postprocessor.hpp"
-#include "register_config_strategy.hpp"
-#include "exception/interpreter_exception.hpp"
-#include "exception/config_exception.hpp"
-#include "exception/runner_exception.hpp"
+#include <yamlgen/abstract_config_generator.hpp>
+#include <yamlgen/abstract_config_builder.hpp>
+#include <yamlgen/abstract_config_runner.hpp>
+#include <yamlgen/interpreter.hpp>
+#include <yamlgen/postprocessor.hpp>
+#include <yamlgen/exception/interpreter_exception.hpp>
+#include <yamlgen/exception/config_exception.hpp>
+#include <yamlgen/exception/runner_exception.hpp>
 
 /*
   Usage: 

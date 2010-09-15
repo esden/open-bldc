@@ -1,10 +1,10 @@
 #ifndef ABSTRACT_CONFIG_BUILDER_HPP__
 #define ABSTRACT_CONFIG_BUILDER_HPP__
 
-#include "interpreter.hpp"
-#include "abstract_config_runner.hpp"
-#include "exception/builder_exception.hpp"
-#include "exception/runner_exception.hpp"
+#include <yamlgen/interpreter.hpp>
+#include <yamlgen/abstract_config_runner.hpp>
+#include <yamlgen/exception/builder_exception.hpp>
+#include <yamlgen/exception/runner_exception.hpp>
 
 
 namespace YAMLGen { 

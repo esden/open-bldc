@@ -1,8 +1,6 @@
 #ifndef ABSTRACT_CONFIG_RUNNER_HPP__
 #define ABSTRACT_CONFIG_RUNNER_HPP__
 
-#include "exception/runner_exception.hpp"
-
 
 namespace YAMLGen { 
 

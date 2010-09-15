@@ -4,7 +4,7 @@ Q := @
 endif
 
 CC=g++
-CFLAGS+=-Wall -I./include
+CFLAGS+=-Wall -I./include -I./include/yamlgen
 LDFLAGS+=-lyaml
 
 ifdef LOG
@@ -12,14 +12,13 @@ CFLAGS += -DLOG=$(LOG) -g
 endif
 
 # Objects needed for the test app: 
-BINOBJFILES = yamlgen.o yaml_config.o error_handling.o interpreter.o \
-							config_node.o register_config_builder.o \
-							register_config_header_runner.o module_config_builder.o \
-							module_config_header_runner.o flag_config_header_runner.o \
-							flag_config_builder.o postprocessor.o define_config_builder.o \
-							define_config_header_runner.o
+# BINOBJFILES = error_handling.o interpreter.o config_node.o \
+# 							register_config_builder.o register_config_header_runner.o \
+# 							module_config_builder.o module_config_header_runner.o \
+# 							flag_config_header_runner.o flag_config_builder.o postprocessor.o \
+# 							define_config_builder.o define_config_header_runner.o
 
-LIBOBJFILES = error_handling.o interpreter.o config_node.o postprocessor.o
+LIBOBJFILES = interpreter.o config_node.o postprocessor.o
 
 BINDIR=bin
 IDIR=include
@@ -28,22 +27,23 @@ SRCDIR=src
 DEPDIR=deps
 LIBDIR=lib
 
-BINOBJ = $(patsubst %,$(BUILDDIR)/%,$(BINOBJFILES))
+# BINOBJ = $(patsubst %,$(BUILDDIR)/%,$(BINOBJFILES))
 LIBOBJ = $(patsubst %,$(BUILDDIR)/%,$(LIBOBJFILES))
 
-all: base_dirs yamlgen libyamlgen.so test
+all: base_dirs libyamlgen.so 
+# all: base_dirs yamlgen libyamlgen.so test
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo "  CC    $(@)"
 	$(Q)$(CC) -c -fPIC -o $@ $< $(CFLAGS)
 
-yamlgen: $(BINOBJ) 
-	@echo "  LL    $(BINDIR)/$(@)"
-	$(Q)$(CC) -o $(BINDIR)/$(@) $^ $(LDFLAGS)
+#	yamlgen: $(BINOBJ) 
+#		@echo "  LL    $(BINDIR)/$(@)"
+#		$(Q)$(CC) -o $(BINDIR)/$(@) $^ $(LDFLAGS)
 
 libyamlgen.so: $(LIBOBJ)
 	@echo "  LL    $(LIBDIR)/$(@)"
-	$(Q)$(CC) -shared -Wl,-soname,libyamlgen -o $(LIBDIR)/$(@) $^ $(LDFLAGS)
+	$(Q)$(CC) -shared -Wl,-soname,$(@) -o $(LIBDIR)/$(@) $^ $(LDFLAGS)
 
 .PHONY: base_dirs
 base_dirs: 

@@ -4,11 +4,11 @@
 #include <yaml.h>
 #include <vector>
 
-#include "config_node.hpp"
-#include "exception/interpreter_exception.hpp"
-#include "exception/parser_exception.hpp"
-#include "exception/builder_exception.hpp"
-#include "exception/config_exception.hpp"
+#include <yamlgen/config_node.hpp>
+#include <yamlgen/exception/interpreter_exception.hpp>
+#include <yamlgen/exception/parser_exception.hpp>
+#include <yamlgen/exception/builder_exception.hpp>
+#include <yamlgen/exception/config_exception.hpp>
 
 #define register_handler(mode, fun) \
 	m_mode_handlers[mode] = &Interpreter::fun

@@ -1,7 +1,7 @@
 #ifndef BUILDER_EXCEPTION_HPP__
 #define BUILDER_EXCEPTION_HPP__
 
-#include "config_node.hpp"
+#include <yamlgen/config_node.hpp>
 
 #include <exception>
 #include <string>

@@ -1,12 +1,13 @@
 #ifndef CONFIG_NODE_HPP__
 #define CONFIG_NODE_HPP__
 
+#include <yamlgen/yaml_context.hpp>
+#include <yamlgen/logging.hpp>
+
 #include <vector>
 #include <string>
 #include <map>
 #include <iostream>
-#include "yaml_context.hpp"
-#include "logging.hpp"
 
 
 namespace YAMLGen { 

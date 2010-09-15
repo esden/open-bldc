@@ -1,7 +1,7 @@
 #ifndef POSTPROCESSOR_HPP__
 #define POSTPROCESSOR_HPP__
 
-#include "config_node.hpp"
+#include <yamlgen/config_node.hpp>
 
 
 namespace YAMLGen { 

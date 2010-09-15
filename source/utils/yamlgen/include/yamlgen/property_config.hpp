@@ -1,7 +1,9 @@
 #ifndef PROPERTY_CONFIG_HPP__
 #define PROPERTY_CONFIG_HPP__
 
-#include "config.hpp"
+#include <yamlgen/logging.hpp>
+#include <yamlgen/config.hpp>
+#include <yamlgen/exception/config_exception.hpp>
 
 
 namespace YAMLGen {

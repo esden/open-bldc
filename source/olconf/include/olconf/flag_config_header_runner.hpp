@@ -2,8 +2,7 @@
 #define FLAG_CONFIG_HEADER_RUNNER_HPP__
 
 #include <olconf/flag_config.hpp>
-
-#include <yamlgen/abstract_flag_config_runner.hpp>
+#include <olconf/abstract_flag_config_runner.hpp>
 
 #include <vector>
 

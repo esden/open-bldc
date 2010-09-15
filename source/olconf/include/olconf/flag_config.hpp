@@ -6,6 +6,8 @@
 #include <yamlgen/property_config.hpp>
 
 #include <string>
+#include <algorithm>
+#include <cctype>
 
 
 namespace YAMLGen { 

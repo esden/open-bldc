@@ -1,10 +1,10 @@
 
 #include <olconf/yaml_config.hpp>
-#include <olconf/config_generator.hpp>
 #include <olconf/module_config_strategy.hpp>
 #include <olconf/module_config_header_runner.hpp>
 
 #include <yamlgen/logging.hpp>
+#include <yamlgen/config_generator.hpp>
 #include <yamlgen/exception/interpreter_exception.hpp>
 #include <yamlgen/exception/parser_exception.hpp>
 #include <yamlgen/exception/builder_exception.hpp>

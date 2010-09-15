@@ -4,8 +4,9 @@ Q := @
 endif
 
 CC=g++
-CFLAGS+=-Wall -I./include
-LDFLAGS+=-lyaml
+CFLAGS+=-Wall -I./include -I../utils/yamlgen/include
+LIB_LDFLAGS+=-lyaml -L../utils/yamlgen/lib -lyamlgen 
+BIN_LDFLAGS+=-lyaml -L../utils/yamlgen/lib -lyamlgen -L./lib -lolconf
 
 ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g
@@ -15,12 +16,10 @@ endif
 BINOBJFILES = olconfgen.o yaml_config.o 
 
 # Objects needed for the shared library: 
-LIBOBJFILES = error_handling.o interpreter.o config_node.o \
-							register_config_builder.o register_config_header_runner.o \
+LIBOBJFILES = register_config_builder.o register_config_header_runner.o \
 							module_config_builder.o module_config_header_runner.o \
-							flag_config_header_runner.o flag_config_builder.o \
-							postprocessor.o define_config_builder.o \
-							define_config_header_runner.o
+							flag_config_builder.o flag_config_header_runner.o \
+							define_config_builder.o define_config_header_runner.o
 
 BINDIR=bin
 IDIR=include
@@ -40,11 +39,11 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 
 olconfgen: $(BINOBJ) 
 	@echo "  LL    $(BINDIR)/$(@)"
-	$(Q)$(CC) -o $(BINDIR)/$(@) $^ $(LDFLAGS)
+	$(Q)$(CC) -o $(BINDIR)/$(@) $^ $(BIN_LDFLAGS)
 
 libolconf.so: $(LIBOBJ)
 	@echo "  LL    $(LIBDIR)/$(@)"
-	$(Q)$(CC) -shared -Wl,-soname,libolconf -o $(LIBDIR)/$(@) $^ $(LDFLAGS)
+	$(Q)$(CC) -shared -Wl,-soname,$(@) -o $(LIBDIR)/$(@) $^ $(LIB_LDFLAGS)
 
 .PHONY: base_dirs
 base_dirs: 
@@ -59,7 +58,7 @@ clean:
 	@echo "  CLEAN "
 
 .PHONY: test
-test: yamlgen
+test: olconfgen
 	@echo "  TEST  "
 	$(Q)./bin/olconfgen ./test/main.yaml >test/test_output.hpp
 	$(Q)diff test/test_output.hpp test/expected_main.hpp

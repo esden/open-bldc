@@ -11,7 +11,6 @@ namespace OBLDC {
 
 void
 DefineConfigHeaderRunner::run(DefineConfigBuilder * builder) 
-throw (RunnerException) 
 { 
 	::std::map< ::std::string, ::std::string> const defines = builder->defines(); 
 

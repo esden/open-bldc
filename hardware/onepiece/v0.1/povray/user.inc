@@ -305,3 +305,25 @@ union{
   translate<0,0.4,0>
 }
 #end
+
+/*******************************************************************************/
+// ASE oscillator
+/*******************************************************************************/
+#macro USER_ASE_OSCILLATOR(value)
+union{
+  difference {
+    box{<-1.6,0,-1.25>    <+1.6,0.8,+1.25>  pigment{Gray30}}
+    cylinder {<0,-0.1,0>  <0,1.1,0> 0.3 translate < 1.6,0, 1.25>}
+    cylinder {<0,-0.1,0>  <0,1.1,0> 0.2 translate < 1.6,0,-1.25>}
+    cylinder {<0,-0.1,0>  <0,1.1,0> 0.2 translate <-1.6,0, 1.25>}
+    cylinder {<0,-0.1,0>  <0,1.1,0> 0.2 translate <-1.6,0,-1.25>}
+    cylinder {<0,-0.1,0>  <0,1.1,0> 0.2 translate <0.,0, 1.25>}
+    cylinder {<0,-0.1,0>  <0,1.1,0> 0.2 translate <0.,0,-1.25>}
+  }
+  box{<-1.4,0.8,-1.05>  <+1.4,0.95,+1.05> texture{col_gold}}
+  box{<-1.3,0.95,-0.95><+1.3,1.,+0.95>   texture{col_silver}}
+
+  text {ttf global_fontfile_arial_bold "ASE" 0.05, 0 pigment{Gray30} scale <0.8,1.,.7> rotate<90,0,0> translate<-0.8,1.01,+0.1>}  // Marking
+  text {ttf global_fontfile_arial_bold value 0.05, 0 pigment{Gray20} scale <0.6,1,0.6> rotate<90,0,0> translate<-0.8,1.01,-0.8>}  // Marking
+  }
+#end

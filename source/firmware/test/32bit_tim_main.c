@@ -83,6 +83,6 @@ int main(void)
 			dir = -1;
 		}
 		my_delay(1000);
-		//LED_GREEN_TOGGLE();
+		//TOGGLE(LED_GREEN);
 	}
 }

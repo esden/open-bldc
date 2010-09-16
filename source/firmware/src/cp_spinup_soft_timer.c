@@ -36,6 +36,7 @@
 
 #include "cp_spinup.h"
 #include "control_process.h"
+#include "cp_spinning.h"
 
 #include "types.h"
 #include "pwm/pwm.h"
@@ -118,15 +119,11 @@ enum control_process_cb_state
 control_process_spinup_cb(struct control_process *cps)
 {
 
-#if 0
 	/* Check if the spinning process is able to run */
-	if (control_process_spinning_ready()) {
+	if (cp_spinning_ready()) {
 		cps->state = cps_spinning;
 		return cps_cb_resume_control;
 	}
-#else
-	cps = cps;
-#endif
 
 	/* Calculate the duration of the next commutation cycle */
 	spinup_process.step = spinup_process.step -
@@ -157,7 +154,7 @@ control_process_spinup_state_in_cb(struct control_process *cps)
 {
 	cps = cps;
 
-	LED_GREEN_OFF();
+	OFF(LED_GREEN);
 	cp_spinup_reset();
 
 	spinup_process.timer =
@@ -177,7 +174,7 @@ control_process_spinup_state_out_cb(struct control_process *cps)
 {
 	cps = cps;
 
-	LED_GREEN_ON();
+	ON(LED_GREEN);
 
 	sys_tick_timer_unregister(spinup_process.timer);
 
@@ -198,7 +195,7 @@ void control_process_soft_timer_callback(int id)
 	/* trigger the control process spinup process */
 	cps_trigger = true;
 
-	LED_RED_TOGGLE();
+	TOGGLE(LED_RED);
 
 	/* set new time for us */
 	sys_tick_timer_update(id, spinup_process.step >> CP_SST_FIXED_POINT);

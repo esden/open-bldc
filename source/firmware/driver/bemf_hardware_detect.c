@@ -26,6 +26,9 @@
  * This implementation uses a comparator output as source of zero crossing
  * detection.
  */
+
+#include "types.h"
+
 #include "bemf_hardware_detect.h"
 
 #include <stm32/misc.h>
@@ -34,6 +37,9 @@
 #include <stm32/gpio.h>
 
 #include "driver/led.h"
+#include "comm_tim.h"
+
+struct bemf_hd_data bemf_hd_data;
 
 /**
  * Initialize the hardware based BEMF detection peripherals
@@ -43,6 +49,8 @@ void bemf_hd_init(void)
 	NVIC_InitTypeDef nvic;
 	EXTI_InitTypeDef exti;
 	GPIO_InitTypeDef gpio;
+
+	bemf_hd_reset();
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
 			       RCC_APB2Periph_AFIO, ENABLE);
@@ -89,29 +97,59 @@ void bemf_hd_init(void)
 
 }
 
+void bemf_hd_reset(void)
+{
+	bemf_hd_data.source = bemf_hd_phase_none;
+	bemf_hd_data.trigger = false;
+}
+
 /**
- * External interrupt bank 0 handler
+ * External interrupt bank 0 handler (phase U)
  */
 void exti0_irq_handler(void)
 {
-	LED_ORANGE_TOGGLE();
+	comm_tim_capture_time();
 	EXTI_ClearITPendingBit(EXTI_Line0);
+
+	if ((GPIOA->IDR & (1 << 0)) != 0) {
+		bemf_hd_data.source = bemf_hd_phase_u_rising;
+	}else{
+		bemf_hd_data.source = bemf_hd_phase_u_falling;
+	}
+
+	bemf_hd_data.trigger = true;
 }
 
 /**
- * External interrupt bank 1 handler
+ * External interrupt bank 1 handler (phase V)
  */
 void exti1_irq_handler(void)
 {
-	LED_ORANGE_TOGGLE();
+	comm_tim_capture_time();
 	EXTI_ClearITPendingBit(EXTI_Line1);
+
+	if ((GPIOA->IDR & (1 << 1)) != 0) {
+		bemf_hd_data.source = bemf_hd_phase_v_rising;
+	}else{
+		bemf_hd_data.source = bemf_hd_phase_v_falling;
+	}
+
+	bemf_hd_data.trigger = true;
 }
 
 /**
- * External interrupt bank 2 handler
+ * External interrupt bank 2 handler (phase W)
  */
 void exti2_irq_handler(void)
 {
-	LED_ORANGE_TOGGLE();
+	comm_tim_capture_time();
 	EXTI_ClearITPendingBit(EXTI_Line2);
+
+	if ((GPIOA->IDR & (1 << 2)) != 0) {
+		bemf_hd_data.source = bemf_hd_phase_w_rising;
+	}else{
+		bemf_hd_data.source = bemf_hd_phase_w_falling;
+	}
+
+	bemf_hd_data.trigger = true;
 }

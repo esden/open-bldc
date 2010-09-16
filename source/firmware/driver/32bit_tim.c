@@ -230,7 +230,7 @@ void tim2_irq_handler(void)
 			TIM_ITConfig(TIM2, TIM_IT_CC1, DISABLE);
 			TIM_ITConfig(TIM3, TIM_IT_CC1, ENABLE);
 		}
-		LED_ORANGE_TOGGLE();
+		TOGGLE(LED_ORANGE);
 	}
 }
 
@@ -243,6 +243,6 @@ void tim3_irq_handler(void)
 	if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET) {
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
 		TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
-		LED_RED_TOGGLE();
+		TOGGLE(LED_RED);
 	}
 }

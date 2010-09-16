@@ -67,7 +67,7 @@ control_process_aligning_cb(struct control_process *cps)
 #if CP_ALIGN_ENABLE == 1
 	if (aligning_process.align_time == 0) {
 		cps->state = cps_spinup;
-		LED_RED_TOGGLE();
+		TOGGLE(LED_RED);
 	} else {
 		aligning_process.align_time--;
 	}

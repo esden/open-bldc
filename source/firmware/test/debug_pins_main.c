@@ -33,6 +33,7 @@
 
 #include "types.h"
 #include "driver/led.h"
+#include "driver/debug_pins.h"
 
 /**
  * Initialize the STM32
@@ -60,47 +61,55 @@ static void my_delay(unsigned long delay)
 }
 
 /**
- * Turn on LED by id.
+ * Turn on LED and debug pin by id.
  *
- * @param id LED id
+ * @param id LED and debug pin id
  */
-static void led_on(int id)
+static void dp_on(int id)
 {
 	switch (id) {
 	case 0:
 		ON(LED_RED);
+		ON(DP_EXT_SCL);
 		break;
 	case 1:
 		ON(LED_GREEN);
+		ON(DP_EXT_SDA);
 		break;
 	case 2:
 		ON(LED_BLUE);
+		ON(DP_ENC_A);
 		break;
 	case 3:
 		ON(LED_ORANGE);
+		ON(DP_ENC_B);
 		break;
 	}
 }
 
 /**
- * Turn off LED by id
+ * Turn off LED and debug pin by id
  *
- * @param id LED id
+ * @param id LED and debug pin id
  */
-static void led_off(int id)
+static void dp_off(int id)
 {
 	switch (id) {
 	case 0:
 		OFF(LED_RED);
+		OFF(DP_EXT_SCL);
 		break;
 	case 1:
 		OFF(LED_GREEN);
+		OFF(DP_EXT_SDA);
 		break;
 	case 2:
 		OFF(LED_BLUE);
+		OFF(DP_ENC_A);
 		break;
 	case 3:
 		OFF(LED_ORANGE);
+		OFF(DP_ENC_B);
 		break;
 	}
 }
@@ -112,32 +121,33 @@ static void led_off(int id)
  */
 int main(void)
 {
-	int i, j, led_id;
+	int i, j, dp_id;
 
 	system_init();
 	led_init();
+	debug_pins_init();
 
-	led_id = 0;
+	dp_id = 0;
 
 	while (true) {
 		for (j = 0; j < 20; j++) {
 			for (i = 0; i < 125; i++) {
-				led_on(led_id);
+				dp_on(dp_id);
 				my_delay((unsigned long)(50 * j));
-				led_off(led_id);
+				dp_off(dp_id);
 				my_delay((unsigned long)(1200 - 50 * j));
 			}
 		}
 		for (j = 0; j < 20; j++) {
 			for (i = 0; i < 125; i++) {
-				led_off(led_id);
+				dp_off(dp_id);
 				my_delay((unsigned long)(200 + 50 * j));
-				led_on(led_id);
+				dp_on(dp_id);
 				my_delay((unsigned long)(1000 - 50 * j));
 			}
 		}
-		led_off(led_id);
-		led_id++;
-		led_id %= 4;
+		dp_off(dp_id);
+		dp_id++;
+		dp_id %= 4;
 	}
 }

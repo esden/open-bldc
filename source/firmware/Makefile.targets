@@ -40,7 +40,7 @@ TARGETS = mc test_blink test_governor test_32bit_tim test_sys_tick
 CP_SPINUP_STRATEGY ?= soft_timer
 #CP_SPINNING_STRATEGY ?=
 #CP_ERROR_STRATEGY ?=
-COMMP_STRATEGY = sampling
+COMMP_STRATEGY = hardware
 
 mc.PARAMS = CP_SPINUP_STRATEGY COMMP_STRATEGY
 
@@ -49,6 +49,8 @@ mc.OBJECTS = \
 	driver/usart.o \
 	driver/adc.o \
 	driver/sys_tick.o \
+	driver/bemf_hardware_detect.o \
+	driver/debug_pins.o \
 	src/cpu_load_process.o \
 	src/pwm/pwm.o \
 	src/pwm/pwm_scheme_6step_h_pwm_l_on.o \
@@ -61,8 +63,7 @@ mc.OBJECTS = \
 	src/cp_spinup_$(CP_SPINUP_STRATEGY).o \
 	src/cp_spinning.o \
 	src/cp_error.o \
-	src/control_process.o \
-	src/bemf_hardware_detect.o
+	src/control_process.o
 
 OBJECTS += $(mc.OBJECTS)
 
@@ -90,3 +91,9 @@ test_sys_tick.OBJECTS = \
 	driver/sys_tick.o
 
 OBJECTS += $(test_sys_tick.OBJECTS)
+
+test_debug_pins.OBJECTS = \
+	driver/debug_pins.o \
+	test/debug_pins_main.o
+
+OBJECTS += $(test_debug_pins.OBJECTS)

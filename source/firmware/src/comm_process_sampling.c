@@ -52,12 +52,25 @@ struct comm_process_state {
 	u32 prev_phase_voltage;	/**< Previous PWM cycle phase voltage memory */
 };
 
+/**
+ * Comm process parameters
+ *
+ * @todo clean up documentation
+ */
+struct comm_params {
+	s16 spark_advance;	 /**< advance commutation relative to calculated time */
+	u16 direct_cutoff;	 /**< distance from the last calc time that makes the new invalid */
+	u16 direct_cutoff_slope; /**< what is the control slope when outside the direct control window */
+	u16 iir;		 /**< IIR value for the commutation time */
+	u16 hold_off;		 /**< how many bemf samples after a commutation should be dropped */
+};
+
 static struct comm_process_state comm_process_state;	/**< Internal state instance */
-struct comm_data comm_data;			/**< Public data instance */
-struct comm_params comm_params;			/**< Parameters */
-s32 new_cycle_time;				/**< New commutation time
-						  temporary variable, @todo
-						  remove */
+static struct comm_params comm_params;			/**< Parameters */
+struct comm_data comm_data;			        /**< Public data instance */
+s32 new_cycle_time;				        /**< New commutation time
+						             temporary variable, @todo
+						             remove */
 
 /**
  * Initialize commutation process
@@ -178,7 +191,7 @@ static void comm_process_calc_next_comm(void)
 				  (new_cycle_time +
 				   comm_params.spark_advance)) /
 		    (comm_params.iir + 1);
-		comm_tim_data.freq = (u32)new_cycle_time;
+		comm_tim_data.freq = (u16)new_cycle_time;
 		comm_tim_update_freq();
 	}
 }
@@ -191,7 +204,7 @@ void run_comm_process(void)
 	if (comm_process_state.pwm_count < (s32)comm_params.hold_off) {
 		comm_process_state.pwm_count++;
 		comm_process_state.prev_phase_voltage = sensors.phase_voltage;
-		LED_ORANGE_OFF();
+		OFF(LED_ORANGE);
 		return;
 	}
 
@@ -205,9 +218,9 @@ void run_comm_process(void)
 			    && (!comm_data.bemf_crossing_detected)) {
 				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
-				LED_ORANGE_ON();
+				ON(LED_ORANGE);
 			} else {
-				LED_ORANGE_OFF();
+				OFF(LED_ORANGE);
 			}
 		} else {
 			if ((comm_process_state.prev_phase_voltage >
@@ -217,14 +230,24 @@ void run_comm_process(void)
 			    && (!comm_data.bemf_crossing_detected)) {
 				comm_process_calc_next_comm();
 				comm_data.bemf_crossing_detected = true;
-				LED_ORANGE_ON();
+				ON(LED_ORANGE);
 			} else {
-				LED_ORANGE_OFF();
+				OFF(LED_ORANGE);
 			}
 		}
 	} else {
-		LED_ORANGE_OFF();
+		OFF(LED_ORANGE);
 	}
 
 	comm_process_state.prev_phase_voltage = sensors.phase_voltage;
+}
+
+/**
+ * Are we ready to runn closed loop?
+ *
+ * @todo impl
+ */
+bool comm_process_ready(void)
+{
+	return false;
 }

@@ -162,6 +162,9 @@ void pwm_init(void)
 
 	/* Main output enable */
 	TIM_CtrlPWMOutputs(TIM1, ENABLE);
+
+	/* Setting default state of pwm to pwm_off */
+	pwm_off();
 }
 
 /**
@@ -206,7 +209,7 @@ void tim1_trg_com_irq_handler(void)
 {
 	TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
 
-	LED_BLUE_ON();
+	ON(LED_BLUE);
 
 	TIM_SetCompare1(TIM1, pwm_val);
 	TIM_SetCompare2(TIM1, pwm_val);
@@ -214,7 +217,7 @@ void tim1_trg_com_irq_handler(void)
 	TIM_SetCompare4(TIM1, pwm_offset);
 
 	PWM_SCHEME();
-	LED_BLUE_OFF();
+	ON(LED_BLUE);
 }
 
 /**
@@ -226,6 +229,6 @@ void tim1_cc_irq_handler(void)
 		TIM_ClearITPendingBit(TIM1, TIM_IT_CC4);
 
 		/* Toggling ORANGE LED ca. 22us after pwm duty cycle start of PWM1 */
-		//if(pwm_trig_led) LED_ORANGE_TOGGLE();
+		//if(pwm_trig_led) TOGGLE(LED_ORANGE);
 	}
 }

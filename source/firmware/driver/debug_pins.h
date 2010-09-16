@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __CP_SPINNING_H
-#define __CP_SPINNING_H
+#ifndef __DEBUG_PINS_H
+#define __DEBUG_PINS_H
 
-#include "control_process.h"
+#include "config.h"
 
-void cp_spinning_init(void);
-void cp_spinning_reset(void);
-bool cp_spinning_ready(void);
+#include "macro_utils.h"
 
-#endif /* __CP_SPINNING_H */
+#ifdef DP_USE_ENCODER
+
+#define DP_ENC_A_PORT GPIOA
+#define DP_ENC_A_PIN 6
+
+#define DP_ENC_B_PORT GPIOA
+#define DP_ENC_B_PIN 7
+
+#endif
+
+#ifdef DP_USE_EXT_I2C
+
+#define DP_EXT_SCL_PORT GPIOB
+#define DP_EXT_SCL_PIN 8
+
+#define DP_EXT_SDA_PORT GPIOB
+#define DP_EXT_SDA_PIN 9
+
+#endif
+
+void debug_pins_init(void);
+
+#endif /* __DP_EXT_PINS_H */

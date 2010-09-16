@@ -144,7 +144,7 @@ void run_sensor_process(void)
 	u16 half_battery_voltage = adc_data.half_battery_voltage;
 	u16 global_current = adc_data.global_current;
 
-	//LED_RED_ON();
+	//ON(LED_RED);
 	/* High priority sensors */
 	if (sensors.phase_voltage == 0) {
 		sensors.phase_voltage = 1;
@@ -198,5 +198,5 @@ void run_sensor_process(void)
 	} else {
 		sensor_trigger_debug_output++;
 	}
-	//LED_RED_OFF();
+	//OFF(LED_RED);
 }

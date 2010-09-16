@@ -25,6 +25,8 @@
  *
  */
 
+#include "config.h"
+
 #include <stm32/rcc.h>
 #include <stm32/misc.h>
 #include <stm32/usart.h>
@@ -82,7 +84,7 @@ void usart_init(void)
 	GPIO_Init(GPIOB, &gpio);
 
 	/* Initialize the usart subsystem */
-	usart.USART_BaudRate = 115200;
+	usart.USART_BaudRate = USART_BAUD;
 	usart.USART_WordLength = USART_WordLength_8b;
 	usart.USART_StopBits = USART_StopBits_1;
 	usart.USART_Parity = USART_Parity_No;

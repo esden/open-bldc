@@ -20,6 +20,8 @@ YAMLConfig::read(char const * filename)
 	m_interpreter.read(filename); 
 
 	ConfigGenerator<ModuleConfigStrategy> generator(m_interpreter); 
+
+	
 	ModuleConfigHeaderRunner runner_strategy; 
 	generator.run(runner_strategy); 
 

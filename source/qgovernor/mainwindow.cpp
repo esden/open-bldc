@@ -25,6 +25,10 @@ extern "C" {
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "govconfig.h"
+
+#include <iostream>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -192,6 +196,22 @@ void MainWindow::on_registerTableView_customContextMenuRequested(QPoint pos)
     else if(action == updateAllRegisters)
         for(int i=0; i<32; i++)
             governorMaster->sendGet(i);
+}
+
+void MainWindow::on_actionLoadTarget_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this,
+                                            tr("Load target"), "",
+                                            tr("Target files (*.yml *.yaml)"));
+
+    GovConfig config = GovConfig(filename);
+
+    addTargetTab(config);
+}
+
+void MainWindow::addTargetTab(GovConfig const & config)
+{
+
 }
 
 void MainWindow::on_actionAbout_Qt_triggered()

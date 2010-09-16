@@ -576,7 +576,7 @@
      <x>0</x>
      <y>0</y>
      <width>914</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -589,6 +589,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionLoadTarget"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -659,6 +660,14 @@
    </property>
    <property name="text">
     <string>Connect...</string>
+   </property>
+  </action>
+  <action name="actionLoadTarget">
+   <property name="text">
+    <string>&amp;Load target</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

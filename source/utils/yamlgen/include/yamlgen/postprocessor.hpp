@@ -20,7 +20,7 @@ public:
 
 public: 
 
-	void run(); 
+	virtual void run(); 
 
 	ConfigNode const & config() { return m_config; } 
 

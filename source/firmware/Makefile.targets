@@ -47,7 +47,6 @@ mc.PARAMS = CP_SPINUP_STRATEGY COMMP_STRATEGY
 mc.OBJECTS = \
 	src/mc_main.o \
 	driver/usart.o \
-	driver/adc.o \
 	driver/sys_tick.o \
 	driver/bemf_hardware_detect.o \
 	driver/debug_pins.o \
@@ -64,6 +63,7 @@ mc.OBJECTS = \
 	src/cp_spinning.o \
 	src/cp_error.o \
 	src/control_process.o
+#	driver/adc.o \
 
 OBJECTS += $(mc.OBJECTS)
 

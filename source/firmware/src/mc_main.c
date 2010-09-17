@@ -91,10 +91,12 @@ int main(void)
 	while (true) {
 		run_cpu_load_process();
 
+/*
 		if (adc_new_data_trigger) {
 			adc_new_data_trigger = false;
 			run_sensor_process();
 		}
+*/
 
 		if (*comm_process_trigger) {
 			*comm_process_trigger = false;

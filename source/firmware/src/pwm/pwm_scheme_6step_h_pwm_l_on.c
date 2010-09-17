@@ -70,7 +70,7 @@ inline void pwm_scheme_6step_h_pwm_l_on(void)
 	switch (pwm_phase) {
 	case 1:		// 000º
 
-		adc_set(ADC_CHANNEL_B);
+		//adc_set(ADC_CHANNEL_B);
 		comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
 		/* Configure step 2 */
@@ -80,7 +80,7 @@ inline void pwm_scheme_6step_h_pwm_l_on(void)
 		break;
 	case 2:		// 060º
 
-		adc_set(ADC_CHANNEL_C);
+		//adc_set(ADC_CHANNEL_C);
 		comm_process_config(COMM_PROCESS_RISING);
 
 		/* Configure step 3 */
@@ -90,7 +90,7 @@ inline void pwm_scheme_6step_h_pwm_l_on(void)
 		break;
 	case 3:		// 120º
 
-		adc_set(ADC_CHANNEL_A);
+		//adc_set(ADC_CHANNEL_A);
 		comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
 		/* Configure step 4 */
@@ -100,7 +100,7 @@ inline void pwm_scheme_6step_h_pwm_l_on(void)
 		break;
 	case 4:		// 180º
 
-		adc_set(ADC_CHANNEL_B);
+		//adc_set(ADC_CHANNEL_B);
 		comm_process_config_and_reset(COMM_PROCESS_RISING);
 
 		/* Configure step 4 */
@@ -110,7 +110,7 @@ inline void pwm_scheme_6step_h_pwm_l_on(void)
 		break;
 	case 5:		// 220º
 
-		adc_set(ADC_CHANNEL_C);
+		//adc_set(ADC_CHANNEL_C);
 		comm_process_config_and_reset(COMM_PROCESS_FALLING);
 
 		/* Configure step 4 */
@@ -120,7 +120,7 @@ inline void pwm_scheme_6step_h_pwm_l_on(void)
 		break;
 	case 6:		// 280º
 
-		adc_set(ADC_CHANNEL_A);
+		//adc_set(ADC_CHANNEL_A);
 		comm_process_config_and_reset(COMM_PROCESS_RISING);
 
 		/* Configure step 4 */

@@ -41,6 +41,7 @@
 #include "comm_tim.h"
 
 struct bemf_hd_data bemf_hd_data;
+u16 bemf_line_state;
 
 /**
  * Initialize the hardware based BEMF detection peripherals
@@ -109,7 +110,7 @@ void bemf_hd_reset(void)
  */
 void exti0_irq_handler(void)
 {
-	u16 line_state = GPIOA->IDR;
+	bemf_line_state = GPIOA->IDR;
 	OFF(DP_EXT_SDA);
 
 	/*
@@ -120,7 +121,7 @@ void exti0_irq_handler(void)
 		(bemf_hd_data.source != bemf_hd_phase_u_falling)) {
 		comm_tim_update_capture();
 		comm_tim_capture_time();
-		if ((line_state & (1 << 0)) != 0) {
+		if ((bemf_line_state & (1 << 0)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_u_rising;
 			bemf_hd_data.trigger = true;
 			OFF(LED_ORANGE);
@@ -141,7 +142,7 @@ void exti0_irq_handler(void)
  */
 void exti1_irq_handler(void)
 {
-	u16 line_state = GPIOA->IDR;
+	bemf_line_state = GPIOA->IDR;
 	OFF(DP_EXT_SDA);
 
 	/*
@@ -152,7 +153,7 @@ void exti1_irq_handler(void)
 		(bemf_hd_data.source != bemf_hd_phase_v_falling)) {
 		comm_tim_update_capture();
 		comm_tim_capture_time();
-		if ((line_state & (1 << 1)) != 0) {
+		if ((bemf_line_state & (1 << 1)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_v_rising;
 			bemf_hd_data.trigger = true;
 			OFF(LED_ORANGE);
@@ -173,7 +174,7 @@ void exti1_irq_handler(void)
  */
 void exti2_irq_handler(void)
 {
-	u16 line_state = GPIOA->IDR;
+	bemf_line_state = GPIOA->IDR;
 	OFF(DP_EXT_SDA);
 
 	/*
@@ -184,7 +185,7 @@ void exti2_irq_handler(void)
 		(bemf_hd_data.source != bemf_hd_phase_w_falling)) {
 		comm_tim_update_capture();
 		comm_tim_capture_time();
-		if ((line_state & (1 << 2)) != 0) {
+		if ((bemf_line_state & (1 << 2)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_w_rising;
 			bemf_hd_data.trigger = true;
 			OFF(LED_ORANGE);

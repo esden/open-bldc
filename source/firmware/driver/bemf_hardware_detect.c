@@ -119,8 +119,7 @@ void exti0_irq_handler(void)
 	 */
 	if ((bemf_hd_data.source != bemf_hd_phase_u_rising) &&
 		(bemf_hd_data.source != bemf_hd_phase_u_falling)) {
-		comm_tim_update_capture();
-		comm_tim_capture_time();
+		comm_tim_update_capture_and_time();
 		if ((bemf_line_state & (1 << 0)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_u_rising;
 			bemf_hd_data.trigger = true;
@@ -151,8 +150,7 @@ void exti1_irq_handler(void)
 	 */
 	if ((bemf_hd_data.source != bemf_hd_phase_v_rising) &&
 		(bemf_hd_data.source != bemf_hd_phase_v_falling)) {
-		comm_tim_update_capture();
-		comm_tim_capture_time();
+		comm_tim_update_capture_and_time();
 		if ((bemf_line_state & (1 << 1)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_v_rising;
 			bemf_hd_data.trigger = true;
@@ -183,8 +181,7 @@ void exti2_irq_handler(void)
 	 */
 	if ((bemf_hd_data.source != bemf_hd_phase_w_rising) &&
 		(bemf_hd_data.source != bemf_hd_phase_w_falling)) {
-		comm_tim_update_capture();
-		comm_tim_capture_time();
+		comm_tim_update_capture_and_time();
 		if ((bemf_line_state & (1 << 2)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_w_rising;
 			bemf_hd_data.trigger = true;

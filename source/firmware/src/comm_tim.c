@@ -160,8 +160,6 @@ void comm_tim_update_freq(void)
 /**
  * Update our last capture time
  *
- * This is needed while starting up and not using the comm timer. The capture
- * time will diverge from the real commutation time points.
  */
 void comm_tim_update_capture(void)
 {
@@ -170,6 +168,22 @@ void comm_tim_update_capture(void)
 			comm_tim_data.last_capture_time + comm_tim_data.freq);
 
 	OFF(DP_EXT_SCL);
+}
+
+/**
+ * Update our last capture time and curr time
+ *
+ */
+void comm_tim_update_capture_and_time(void)
+{
+	comm_tim_data.last_capture_time = TIM_GetCounter(TIM2);
+	TIM_SetCompare1(TIM2,
+			comm_tim_data.last_capture_time + comm_tim_data.freq);
+
+	comm_tim_data.prev_time = comm_tim_data.curr_time;
+	comm_tim_data.curr_time = comm_tim_data.last_capture_time;
+	comm_tim_data.update_count = comm_tim_state.update_count;
+	comm_tim_state.update_count = 0;
 }
 
 /**

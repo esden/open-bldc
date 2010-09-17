@@ -1,9 +1,12 @@
 #ifndef MODULE_CONFIG_HPP__
 #define MODULE_CONFIG_HPP__
 
+#include <olconf/register_config.hpp>
 #include <olconf/register_config_builder.hpp>
+#include <olconf/flag_config.hpp>
 #include <olconf/flag_config_builder.hpp>
 #include <olconf/define_config_builder.hpp>
+#include <olconf/define_config.hpp>
 
 #include <yamlgen/config_node.hpp>
 
@@ -21,19 +24,19 @@ private:
 
 private: 
 
-	::std::vector<RegisterConfigBuilder> m_registers;
-	::std::vector<FlagConfigBuilder> m_flags; 
-	::std::vector<DefineConfigBuilder> m_defines; 
+	::std::vector<RegisterGroupConfig> m_registers;
+	::std::vector<FlagConfig> m_flags; 
+	::std::vector<DefineConfig> m_defines; 
 
 public: 
 
-	::std::vector<RegisterConfigBuilder> & registers() { 
+	::std::vector<RegisterGroupConfig> & registers() { 
 		return m_registers;
 	}
-	::std::vector<FlagConfigBuilder> & flags() { 
+	::std::vector<FlagConfig> & flags() { 
 		return m_flags;
 	}
-	::std::vector<DefineConfigBuilder> & defines() { 
+	::std::vector<DefineConfig> & defines() { 
 		return m_defines;
 	}
 
@@ -48,8 +51,8 @@ public:
 
 	inline void log(void) const { 
 		LOG_INFO_PRINT("|- Module");
-		::std::vector<RegisterConfigBuilder>::const_iterator reg_it; 
-		::std::vector<RegisterConfigBuilder>::const_iterator reg_end; 
+		::std::vector<RegisterGroupConfig>::const_iterator reg_it; 
+		::std::vector<RegisterGroupConfig>::const_iterator reg_end; 
 		reg_end = m_registers.end(); 
 		for(reg_it = m_registers.begin(); reg_it != reg_end; ++reg_it) { 
 			(*reg_it).log(); 
@@ -59,13 +62,16 @@ public:
 public: 
 
 	void add(RegisterConfigBuilder const & builder) { 
-		m_registers.push_back(builder); 
+		::std::vector<RegisterGroupConfig> added = builder.register_groups();
+		m_registers.insert(m_registers.end(), added.begin(), added.end());
 	}
 	void add(DefineConfigBuilder const & builder) { 
-		m_defines.push_back(builder); 
+		::std::vector<DefineConfig> added = builder.defines();
+		m_defines.insert(m_defines.end(), added.begin(), added.end());
 	}
 	void add(FlagConfigBuilder const & builder) { 
-		m_flags.push_back(builder); 
+		::std::vector<FlagConfig> added = builder.flags();
+		m_flags.insert(m_flags.end(), added.begin(), added.end());
 	}
 
 public: 

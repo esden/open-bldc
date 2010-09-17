@@ -2,6 +2,7 @@
 #define DEFINE_CONFIG_GENERATOR_STRATEGY_HPP__
 
 #include <olconf/define_config_strategy.hpp>
+#include <olconf/define_config.hpp>
 
 #include <yamlgen/abstract_config_builder.hpp>
 
@@ -19,7 +20,7 @@ class DefineConfigBuilder : public AbstractConfigBuilder<DefineConfigStrategy>
 private: 
 
 	::std::string m_module; 
-	::std::map< ::std::string, ::std::string> m_defines; 
+	::std::vector<DefineConfig> m_defines; 
 
 public: 
 
@@ -27,7 +28,7 @@ public:
 
 	virtual ~DefineConfigBuilder() { } 
 
-	::std::map< ::std::string, ::std::string> const & defines() const { 
+	::std::vector<DefineConfig> const & defines() const { 
 		return m_defines; 
 	}
 
@@ -37,7 +38,8 @@ public:
 		::std::string up_name = name; 
 		::std::transform(up_name.begin(), up_name.end(), up_name.begin(), 
 										 (int(*)(int))::std::toupper);
-		m_defines.insert(::std::pair< ::std::string, ::std::string>(up_name, value));
+		DefineConfig config = DefineConfig(name, value); 
+		m_defines.push_back(config); 
 	}
 
 public: 

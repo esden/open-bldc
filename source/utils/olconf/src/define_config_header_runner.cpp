@@ -12,14 +12,14 @@ namespace OBLDC {
 void
 DefineConfigHeaderRunner::run(DefineConfigBuilder * builder) 
 { 
-	::std::map< ::std::string, ::std::string> const defines = builder->defines(); 
+	::std::vector<DefineConfig> const defines = builder->defines(); 
 
-	::std::map< ::std::string, ::std::string>::const_iterator defines_it; 
-	::std::map< ::std::string, ::std::string>::const_iterator defines_end = defines.end(); 
+	::std::vector<DefineConfig>::const_iterator defines_it; 
+	::std::vector<DefineConfig>::const_iterator defines_end = defines.end(); 
 
 	for(defines_it = defines.begin(); defines_it != defines_end; ++defines_it) {
-		::std::string name  = (*defines_it).first; 
-		::std::string value = (*defines_it).second; 
+		::std::string name  = (*defines_it).name();
+		::std::string value = (*defines_it).value(); 
 
 		::std::cout << ::std::endl; 
 		::std::cout << "/* Module: " << m_module << " Define: " << name << " */" << ::std::endl;

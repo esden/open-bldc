@@ -55,7 +55,9 @@ public:
 		property_map::const_iterator prop_it  = m_properties.find(key); 
 		property_map::const_iterator prop_end = m_properties.end(); 
 		if (prop_it == prop_end) { 
-			throw ConfigException("Could not find property 'bit' in flag settings");
+			::std::stringstream what_ss; 
+			what_ss << "Could not find property " << key; 
+			throw ConfigException(what_ss.str().c_str());
 		}
 		::std::string value = (*prop_it).second; 
 		return value; 
@@ -80,7 +82,7 @@ public:
 		property_map::const_iterator it; 
 		property_map::const_iterator end = m_properties.end(); 
 
-		LOG_INFO_PRINT("Config %s", m_name.c_str());
+		LOG_INFO_PRINT("Properties in %s", m_name.c_str());
 		for(it = m_properties.begin(); it != end; ++it) { 
 			LOG_INFO_PRINT("|- %s = %s", 
 					(*it).first.c_str(), (*it).second.c_str());

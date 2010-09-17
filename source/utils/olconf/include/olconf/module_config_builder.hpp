@@ -18,10 +18,12 @@ class ModuleConfigBuilder : public AbstractConfigBuilder<ModuleConfigStrategy>
 private: 
 
 	::std::vector<ModuleConfig> m_modules; 
+	::std::string m_target_name; 
 
 public: 
 
-	ModuleConfigBuilder() { } 
+	ModuleConfigBuilder() 
+	: m_target_name("TheTarget") { } 
 	virtual ~ModuleConfigBuilder() { } 
 
 public: 
@@ -32,6 +34,7 @@ public:
 
 public: 
 
+	::std::string const & target_name() const { return m_target_name; } 
 	::std::vector<ModuleConfig> const & modules(void) const { return m_modules; }
 
 };

@@ -32,15 +32,17 @@ public:
 public: 
 
 	::std::string const & file(void) const { return m_file; } 
-	int line(void) const          { return m_line; } 
-	int column(void) const        { return m_column; } 
+	int line(void) const                   { return m_line; } 
+	int column(void) const                 { return m_column; } 
 
 public: 
 
 	::std::string to_string(void) const { 
 		::std::stringstream ss; 
 		ss << m_file << " "; 
-		ss << "line: " << m_line;
+		if(m_line != 0) { 
+			ss << "line: " << m_line;
+		}
 		return ss.str(); 
 	}
 

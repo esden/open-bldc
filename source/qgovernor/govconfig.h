@@ -1,13 +1,9 @@
 #ifndef GOVCONFIG_H
 #define GOVCONFIG_H
 
-#include <olconf/module_config_builder.hpp>
 #include <olconf/module_config.hpp>
-#include <yamlgen/interpreter.hpp>
-#include <yamlgen/postprocessor.hpp>
-
 #include <vector>
-
+#include <QString>
 
 class GovConfig
 {
@@ -22,17 +18,7 @@ public:
     GovConfig(QString const & filename)
         : m_filename(filename)
     {
-        YAMLGen::Interpreter interpreter;
-        interpreter.read(filename.toStdString().c_str());
-
-        YAMLGen::Postprocessor postproc(interpreter.config());
-        postproc.run();
-
-        YAMLGen::OBLDC::ModuleConfigBuilder builder;
-        builder.parse(postproc.config());
-
-        m_modules     = builder.modules();
-        m_target_name = builder.target_name();
+        load();
     }
 
     QString const & target_name(void) const {
@@ -42,6 +28,8 @@ public:
     ::std::vector<YAMLGen::OBLDC::ModuleConfig> const & modules(void) const {
         return m_modules;
     }
+
+    virtual void load(void);
 
 };
 

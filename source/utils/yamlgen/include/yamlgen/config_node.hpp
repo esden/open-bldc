@@ -3,6 +3,7 @@
 
 #include <yamlgen/yaml_context.hpp>
 #include <yamlgen/logging.hpp>
+#include <yamlgen/exception/config_exception.hpp>
 
 #include <vector>
 #include <string>
@@ -92,6 +93,23 @@ public:
 	void set_value(const char * key, ::std::string & value) { 
 		::std::string skey(key); 
 		set_value(skey, value); 
+	}
+
+public: 
+
+	ConfigNode const & node(::std::string const & key) const { 
+		if(has_node(key)) { 
+			return (*(m_nodes.find(key))).second;
+		} 
+		else { 
+			::std::stringstream what_ss; 
+			what_ss << "No configuration entry with key '" << key << "'";
+			throw ConfigException(what_ss.str().c_str(), m_context);
+		}
+	}
+
+	bool has_node(::std::string const & key) const { 
+		return m_nodes.find(key) != m_nodes.end(); 
 	}
 
 public: 

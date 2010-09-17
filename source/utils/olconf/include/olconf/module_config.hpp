@@ -46,6 +46,18 @@ public:
 
 public: 
 
+	inline void log(void) const { 
+		LOG_INFO_PRINT("|- Module");
+		::std::vector<RegisterConfigBuilder>::const_iterator reg_it; 
+		::std::vector<RegisterConfigBuilder>::const_iterator reg_end; 
+		reg_end = m_registers.end(); 
+		for(reg_it = m_registers.begin(); reg_it != reg_end; ++reg_it) { 
+			(*reg_it).log(); 
+		}
+	}
+
+public: 
+
 	void add(RegisterConfigBuilder const & builder) { 
 		m_registers.push_back(builder); 
 	}

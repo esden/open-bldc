@@ -57,12 +57,11 @@ clean:
 	$(Q)find -name '*~' -exec rm {} \;
 	@echo "  CLEAN "
 
-.PHONY: test
-test: yamlgen
-	@echo "  TEST  "
-	$(Q)./bin/yamlgen ./test/main.yaml >test/test_output.hpp
-	$(Q)diff test/test_output.hpp test/expected_main.hpp
-	$(Q)rm test/test_output.hpp
+.PHONY: install
+install: base_dirs libyamlgen.so
+	@echo "  INST  "
+	$(Q)cp ./lib/libyamlgen.so /usr/local/lib/
+	$(Q)ldconfig
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "  DEP   $@"

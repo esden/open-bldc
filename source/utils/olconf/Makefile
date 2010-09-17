@@ -64,6 +64,12 @@ test: olconfgen
 	$(Q)diff test/test_output.hpp test/expected_main.hpp
 	$(Q)rm test/test_output.hpp
 
+.PHONY: install
+install: libolconf.so
+	@echo "  INST  "
+	$(Q)cp ./lib/libolconf.so /usr/local/lib/
+	$(Q)ldconfig
+
 $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "  DEP   $@"
 	$(Q)mkdir -p $(@D)

@@ -33,6 +33,18 @@ public:
 
 public: 
 
+	inline void log(void) const { 
+		LOG_INFO_PRINT("|- RegisterBuilder");
+		::std::vector<RegisterGroupConfig>::const_iterator reg_it; 
+		::std::vector<RegisterGroupConfig>::const_iterator reg_end; 
+		reg_end = m_register_groups.end(); 
+		for(reg_it = m_register_groups.begin(); reg_it != reg_end; ++reg_it) {
+			(*reg_it).log(); 
+		}
+	}
+
+public: 
+
 	virtual void parse(ConfigNode const & config);
 	virtual void parse_partial(ConfigNode const & config_node);
 	virtual void run(AbstractRegisterConfigRunner & runner);

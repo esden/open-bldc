@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     registermodel.cpp \
     protocolmodel.cpp \
     governorsimulator.cpp \
-    governorftdi.cpp
+    governorftdi.cpp \
+    govconfig.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
     governormaster.h \
@@ -52,7 +53,7 @@ macx {
     QMAKE_BUNDLE_DATA += FILETYPES
 }
 INCLUDEPATH += ../utils/yamlgen/include \
-               ../utils/olconf/include
+    ../utils/olconf/include
 LIBS += -lgovernor \
     -lftdi \
     -lusb \

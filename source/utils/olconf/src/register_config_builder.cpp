@@ -21,7 +21,7 @@ RegisterConfigBuilder::parse(ConfigNode const & config)
 		root = (*root_it).second;
 	}
 	else { 
-		throw BuilderException("Could not find config_root", config);
+		throw BuilderException("Could not find config_root", config.context());
 	}
 	parse_partial(root);
 }
@@ -41,7 +41,7 @@ RegisterConfigBuilder::parse_partial(ConfigNode const & config_node)
 		ConfigNode registers = (*it_groups).second; 
 		ConfigNode::const_iterator reglist = registers.find("registers"); 
 		if(reglist == registers.end()) { 
-			throw BuilderException("No entry 'registers:' found", registers);
+			throw BuilderException("No entry 'registers:' found", registers.context());
 		}
 		ConfigNode register_list = (*reglist).second; 
 		
@@ -54,10 +54,21 @@ RegisterConfigBuilder::parse_partial(ConfigNode const & config_node)
 			reg.set_properties(properties.values());
 			
 			if(!reg.has_property("register")) { 
-				throw BuilderException("No property 'register: <index>' found", (*it_regs).second);
+				throw BuilderException("No property 'register: <index>' found", 
+															 (*it_regs).second.context());
 			}
 			if(!reg.has_property("label")) { 
-				throw BuilderException("No property 'label: <string>' found", (*it_regs).second);
+				throw BuilderException("No property 'label: <string>' found", 
+															 (*it_regs).second.context());
+			}
+			
+			WidgetConfig widget; 
+			if(properties.has_node("widget")) { 
+				widget.set_properties(properties.node("widget").values());
+			} 
+			else {
+				throw BuilderException("No property 'widget: <widget attribs>' found", 
+															 (*it_regs).second.context());
 			}
 			
 			group.add_register(reg); 

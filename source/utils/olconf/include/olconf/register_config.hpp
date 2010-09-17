@@ -50,7 +50,6 @@ public:
 public: 
 
 	inline const char * register_nr(void) const { 
-		LOG_INFO_PRINT("Register %s", m_name.c_str());
 		property_map::const_iterator prop_it  = m_properties.find(::std::string("register")); 
 		property_map::const_iterator prop_end = m_properties.end(); 
 		if (prop_it == prop_end) { 

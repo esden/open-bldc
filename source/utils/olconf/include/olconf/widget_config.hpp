@@ -11,7 +11,7 @@
 namespace YAMLGen { 
 namespace OBLDC { 
 
-class WidgetConfig : PropertyConfig
+class WidgetConfig : public PropertyConfig
 {
 
 public:

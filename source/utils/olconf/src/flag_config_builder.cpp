@@ -20,7 +20,7 @@ FlagConfigBuilder::parse(ConfigNode const & config)
 		root = (*root_it).second;
 	}
 	else { 
-		throw BuilderException("Could not find config_root", config);
+		throw BuilderException("Could not find config_root", config.context());
 	}
 	parse_partial(root);
 }

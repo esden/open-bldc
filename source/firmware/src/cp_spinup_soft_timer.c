@@ -124,8 +124,8 @@ control_process_spinup_cb(struct control_process *cps)
 	/* Check if the spinning process is able to run */
 	if (cp_spinning_ready() &&
 		(spinup_process.step < (CP_SST_SAFE_FOR_CLOSED_LOOP << CP_SST_FIXED_POINT))) {
-		//cps->state = cps_spinning;
-		//return cps_cb_resume_control;
+		cps->state = cps_spinning;
+		return cps_cb_resume_control;
 	}
 
 	/* Calculate the duration of the next commutation cycle */
@@ -141,9 +141,7 @@ control_process_spinup_cb(struct control_process *cps)
 			spinup_process.hold--;
 			return cps_cb_continue;
 		}else{
-			cps->state = cps_spinning;
-			return cps_cb_resume_control;
-			//return cps_cb_exit_control;
+			return cps_cb_exit_control;
 		}
 	}
 

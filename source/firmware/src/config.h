@@ -127,7 +127,7 @@
 /**
  * Default spinup power
  */
-#define CP_SST_POWER 300
+#define CP_SST_POWER 200
 
 /**
  * Default maximum delay between commutations while spinning up
@@ -149,11 +149,11 @@
 /**
  * How long to hold the maximum step if staying in open loop
  */
-#define CP_SST_HOLD 5000
+#define CP_SST_HOLD 0
 
 /**
  * When is it safe to try to transition to closed loop.
  */
-#define CP_SST_SAFE_FOR_CLOSED_LOOP 200
+#define CP_SST_SAFE_FOR_CLOSED_LOOP 1000
 
 #endif /* __CONFIG_H */

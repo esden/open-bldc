@@ -159,8 +159,8 @@ void run_comm_process(void)
 		comm_tim_data.prev_time);
 	u32 big_new_freq = new_freq / 2;
 
-	big_freq = big_freq * 6;
-	big_new_freq = (big_freq + big_new_freq) / 7;
+	big_freq = big_freq * 5;
+	big_new_freq = (big_freq + big_new_freq) / 6;
 
 	if (comm_process_time_valid()) {
 		comm_tim_data.freq = big_new_freq;
@@ -221,7 +221,7 @@ bool comm_process_ready(void)
 	 * check if we detected enough valid transitions that we
 	 * are comfortable to proceed with closed loop
 	 */
-	if (comm_process_state.detect_count < 3) {
+	if (comm_process_state.detect_count < 20) {
 		return false;
 	}
 

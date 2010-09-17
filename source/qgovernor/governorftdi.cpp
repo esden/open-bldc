@@ -80,7 +80,7 @@ bool GovernorFtdi::open(OpenMode mode)
         return false;
     }
 
-    ret = ftdi_set_baudrate(&ftdic, 921600);
+    ret = ftdi_set_baudrate(&ftdic, 230400);
     if(ret < 0){
         qDebug("Error: unable to set baudrate: %d (%s)", ret, ftdi_get_error_string(&ftdic));
         return false;

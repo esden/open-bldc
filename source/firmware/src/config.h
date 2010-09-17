@@ -78,7 +78,7 @@
 /**
  * Baudrate to use
  */
-#define USART_BAUD 921600
+#define USART_BAUD 230400
 
 /*============================================================================
  * Control process configuration

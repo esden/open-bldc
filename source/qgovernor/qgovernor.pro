@@ -38,7 +38,8 @@ HEADERS += mainwindow.h \
     protocolmodel.h \
     governorsimulator.h \
     governorftdi.h \
-    govconfig.h
+    govconfig.h \
+    targetwidgetfactory.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
     simulator.ui

@@ -19,7 +19,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define LOG DEBUG
 
 #include <QMainWindow>
 #include <QtGui>

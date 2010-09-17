@@ -55,21 +55,27 @@ RegisterConfigBuilder::parse_partial(ConfigNode const & config_node)
 			
 			if(!reg.has_property("register")) { 
 				throw BuilderException("No property 'register: <index>' found", 
-															 (*it_regs).second.context());
+															 properties.context());
 			}
 			if(!reg.has_property("label")) { 
 				throw BuilderException("No property 'label: <string>' found", 
-															 (*it_regs).second.context());
+															 properties.context());
 			}
 			
 			WidgetConfig widget; 
 			if(properties.has_node("widget")) { 
-				widget.set_properties(properties.node("widget").values());
+				ConfigNode widget_properties = properties.node("widget");
+				widget.set_properties(widget_properties.values());
+				if(!widget.has_property("class")) { 
+					throw BuilderException("No property 'class: <string>' found", 
+																 widget_properties.context());
+				}
 			} 
 			else {
 				throw BuilderException("No property 'widget: <widget attribs>' found", 
-															 (*it_regs).second.context());
+															 properties.context());
 			}
+			reg.set_widget(widget); 
 			
 			group.add_register(reg); 
 		}

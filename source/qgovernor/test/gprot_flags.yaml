@@ -21,5 +21,5 @@ register_groups:
         register: 0
         ro: yes
         label: Flag register
-        widget_: 
-          class: SpinScrollBox
+        widget: 
+          class: SpinBox

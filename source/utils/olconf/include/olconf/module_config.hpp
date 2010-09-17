@@ -30,7 +30,7 @@ private:
 
 public: 
 
-	::std::vector<RegisterGroupConfig> & registers() { 
+	::std::vector<RegisterGroupConfig> const & registers() const { 
 		return m_registers;
 	}
 	::std::vector<FlagConfig> & flags() { 

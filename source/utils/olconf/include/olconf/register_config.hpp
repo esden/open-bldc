@@ -58,6 +58,17 @@ public:
 		::std::string register_nr = (*prop_it).second; 
 		return register_nr.c_str(); 
 	}
+
+public:
+
+	::std::string const & label(void) const { 
+		property_map::const_iterator prop_it  = m_properties.find(::std::string("label")); 
+		property_map::const_iterator prop_end = m_properties.end(); 
+		if (prop_it == prop_end) { 
+			throw ConfigException("Could not find property 'register' in register settings");
+		}
+		return (*prop_it).second;
+	}
 	
 };
 

@@ -26,7 +26,7 @@ GovConfig::load(void) {
         ::std::vector<YAMLGen::OBLDC::ModuleConfig>::const_iterator mod_end;
         mod_end = m_modules.end();
         for(mod_it  = m_modules.begin(); mod_it != mod_end; ++mod_it) {
-            ::std::cerr << "  Module: " << ::std::endl;
+            ::std::cerr << "Module: " << (*mod_it).name() << ::std::endl;
             (*mod_it).log();
         }
     } catch(YAMLGen::ParserException pe) {

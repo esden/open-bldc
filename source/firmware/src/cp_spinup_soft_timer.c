@@ -42,6 +42,8 @@
 #include "pwm/pwm.h"
 #include "driver/led.h"
 #include "driver/sys_tick.h"
+#include "driver/debug_pins.h"
+#include "comm_tim.h"
 
 /**
  * Control process spinup trigger variable
@@ -120,9 +122,10 @@ control_process_spinup_cb(struct control_process *cps)
 {
 
 	/* Check if the spinning process is able to run */
-	if (cp_spinning_ready()) {
-		cps->state = cps_spinning;
-		return cps_cb_resume_control;
+	if (cp_spinning_ready() &&
+		(spinup_process.step < (CP_SST_SAFE_FOR_CLOSED_LOOP << CP_SST_FIXED_POINT))) {
+		//cps->state = cps_spinning;
+		//return cps_cb_resume_control;
 	}
 
 	/* Calculate the duration of the next commutation cycle */
@@ -138,7 +141,9 @@ control_process_spinup_cb(struct control_process *cps)
 			spinup_process.hold--;
 			return cps_cb_continue;
 		}else{
-			return cps_cb_exit_control;
+			cps->state = cps_spinning;
+			return cps_cb_resume_control;
+			//return cps_cb_exit_control;
 		}
 	}
 
@@ -174,8 +179,6 @@ control_process_spinup_state_out_cb(struct control_process *cps)
 {
 	cps = cps;
 
-	ON(LED_GREEN);
-
 	sys_tick_timer_unregister(spinup_process.timer);
 
 	return cps_cb_continue;
@@ -189,13 +192,16 @@ control_process_spinup_state_out_cb(struct control_process *cps)
  */
 void control_process_soft_timer_callback(int id)
 {
+	/* update the capture time of the comm timer so it stays in sync with us */
+	//comm_tim_update_capture();
+
 	/* commutate the motor because it is about time */
 	pwm_comm();
 
 	/* trigger the control process spinup process */
 	cps_trigger = true;
 
-	TOGGLE(LED_RED);
+	TOGGLE(DP_ENC_A);
 
 	/* set new time for us */
 	sys_tick_timer_update(id, spinup_process.step >> CP_SST_FIXED_POINT);

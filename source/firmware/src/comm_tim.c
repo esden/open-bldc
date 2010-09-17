@@ -44,9 +44,18 @@
 #include "gprot.h"
 #include "driver/led.h"
 #include "driver/adc.h"
+#include "driver/debug_pins.h"
 #include "pwm/pwm.h"
 
+/**
+ * Commutation timer internal state
+ */
+struct comm_tim_state {
+	volatile u32 update_count;              /**< update count since curr_time, needed for data.update_count calculation */
+};
+
 struct comm_tim_data comm_tim_data;		/**< Commutation timer data instance */
+static struct comm_tim_state comm_tim_state;    /**< Commutation timer internal state instance */
 bool comm_tim_trigger_comm = false;		/**< Commutation timer trigger commutations flag */
 bool comm_tim_trigger_comm_once = false;	/**< Commutation timer trigger one commutation flag */
 bool comm_tim_trigger = false;			/**< Commutation timer trigger (it's an output not input) */
@@ -85,7 +94,7 @@ void comm_tim_init(void)
 	TIM_TimeBaseInit(TIM2, &tim_base);
 
 	/* TIM2 prescaler configuration */
-	TIM_PrescalerConfig(TIM2, 2, TIM_PSCReloadMode_Immediate);
+	TIM_PrescalerConfig(TIM2, 4, TIM_PSCReloadMode_Immediate);
 
 	/* TIM2 Output Compare Timing Mode configuration: Channel1 */
 	tim_oc.TIM_OCMode = TIM_OCMode_Timing;
@@ -105,8 +114,10 @@ void comm_tim_init(void)
 
 	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
 
-	/* TIM1 IT enable */
+	/* TIM2 Capture Compare 1 IT enable */
 	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+	/* TIM2 Update IT enable */
+	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 
 	TIM_Cmd(TIM2, ENABLE);
 
@@ -131,6 +142,8 @@ void comm_tim_capture_time(void)
 	u16 new_time = TIM_GetCounter(TIM2);
 	comm_tim_data.prev_time = comm_tim_data.curr_time;
 	comm_tim_data.curr_time = new_time;
+	comm_tim_data.update_count = comm_tim_state.update_count;
+	comm_tim_state.update_count = 0;
 }
 
 /**
@@ -141,6 +154,22 @@ void comm_tim_update_freq(void)
 {
 	TIM_SetCompare1(TIM2,
 			comm_tim_data.last_capture_time + comm_tim_data.freq);
+
+}
+
+/**
+ * Update our last capture time
+ *
+ * This is needed while starting up and not using the comm timer. The capture
+ * time will diverge from the real commutation time points.
+ */
+void comm_tim_update_capture(void)
+{
+	comm_tim_data.last_capture_time = TIM_GetCounter(TIM2);
+	TIM_SetCompare1(TIM2,
+			comm_tim_data.last_capture_time + comm_tim_data.freq);
+
+	OFF(DP_EXT_SCL);
 }
 
 /**
@@ -168,6 +197,17 @@ void tim2_irq_handler(void)
 		/* Set next comm time */
 		TIM_SetCompare1(TIM2,
 				comm_tim_data.last_capture_time +
-				comm_tim_data.freq);
+				(comm_tim_data.freq * 2));
+		//TIM_SetCompare1(TIM2,
+		//		comm_tim_data.last_capture_time +
+		//		65535);
+
+		TOGGLE(DP_EXT_SCL);
+	}
+
+	if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+
+		comm_tim_state.update_count++;
 	}
 }

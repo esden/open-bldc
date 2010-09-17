@@ -37,6 +37,7 @@
 #include <stm32/gpio.h>
 
 #include "driver/led.h"
+#include "driver/debug_pins.h"
 #include "comm_tim.h"
 
 struct bemf_hd_data bemf_hd_data;
@@ -108,16 +109,31 @@ void bemf_hd_reset(void)
  */
 void exti0_irq_handler(void)
 {
-	comm_tim_capture_time();
-	EXTI_ClearITPendingBit(EXTI_Line0);
+	u16 line_state = GPIOA->IDR;
+	OFF(DP_EXT_SDA);
 
-	if ((GPIOA->IDR & (1 << 0)) != 0) {
-		bemf_hd_data.source = bemf_hd_phase_u_rising;
-	}else{
-		bemf_hd_data.source = bemf_hd_phase_u_falling;
+	/*
+	 * Take care of oscillating interrupt triggers and filter them out
+	 * also detect the source of the interrupt.
+	 */
+	if ((bemf_hd_data.source != bemf_hd_phase_u_rising) &&
+		(bemf_hd_data.source != bemf_hd_phase_u_falling)) {
+		comm_tim_update_capture();
+		comm_tim_capture_time();
+		if ((line_state & (1 << 0)) != 0) {
+			bemf_hd_data.source = bemf_hd_phase_u_rising;
+			bemf_hd_data.trigger = true;
+			OFF(LED_ORANGE);
+		}else{
+			bemf_hd_data.source = bemf_hd_phase_u_falling;
+			bemf_hd_data.trigger = true;
+			ON(LED_ORANGE);
+		}
 	}
 
-	bemf_hd_data.trigger = true;
+	EXTI_ClearITPendingBit(EXTI_Line0);
+	ON(DP_EXT_SDA);
+
 }
 
 /**
@@ -125,16 +141,31 @@ void exti0_irq_handler(void)
  */
 void exti1_irq_handler(void)
 {
-	comm_tim_capture_time();
-	EXTI_ClearITPendingBit(EXTI_Line1);
+	u16 line_state = GPIOA->IDR;
+	OFF(DP_EXT_SDA);
 
-	if ((GPIOA->IDR & (1 << 1)) != 0) {
-		bemf_hd_data.source = bemf_hd_phase_v_rising;
-	}else{
-		bemf_hd_data.source = bemf_hd_phase_v_falling;
+	/*
+	 * Take care of oscillating interrupt triggers and filter them out
+	 * also detect the source of the interrupt.
+	 */
+	if ((bemf_hd_data.source != bemf_hd_phase_v_rising) &&
+		(bemf_hd_data.source != bemf_hd_phase_v_falling)) {
+		comm_tim_update_capture();
+		comm_tim_capture_time();
+		if ((line_state & (1 << 1)) != 0) {
+			bemf_hd_data.source = bemf_hd_phase_v_rising;
+			bemf_hd_data.trigger = true;
+			OFF(LED_ORANGE);
+		}else{
+			bemf_hd_data.source = bemf_hd_phase_v_falling;
+			bemf_hd_data.trigger = true;
+			ON(LED_ORANGE);
+		}
 	}
 
-	bemf_hd_data.trigger = true;
+	EXTI_ClearITPendingBit(EXTI_Line1);
+	ON(DP_EXT_SDA);
+
 }
 
 /**
@@ -142,14 +173,29 @@ void exti1_irq_handler(void)
  */
 void exti2_irq_handler(void)
 {
-	comm_tim_capture_time();
-	EXTI_ClearITPendingBit(EXTI_Line2);
+	u16 line_state = GPIOA->IDR;
+	OFF(DP_EXT_SDA);
 
-	if ((GPIOA->IDR & (1 << 2)) != 0) {
-		bemf_hd_data.source = bemf_hd_phase_w_rising;
-	}else{
-		bemf_hd_data.source = bemf_hd_phase_w_falling;
+	/*
+	 * Take care of oscillating interrupt triggers and filter them out
+	 * also detect the source of the interrupt.
+	 */
+	if ((bemf_hd_data.source != bemf_hd_phase_w_rising) &&
+		(bemf_hd_data.source != bemf_hd_phase_w_falling)) {
+		comm_tim_update_capture();
+		comm_tim_capture_time();
+		if ((line_state & (1 << 2)) != 0) {
+			bemf_hd_data.source = bemf_hd_phase_w_rising;
+			bemf_hd_data.trigger = true;
+			OFF(LED_ORANGE);
+		}else{
+			bemf_hd_data.source = bemf_hd_phase_w_falling;
+			bemf_hd_data.trigger = true;
+			ON(LED_ORANGE);
+		}
 	}
 
-	bemf_hd_data.trigger = true;
+	EXTI_ClearITPendingBit(EXTI_Line2);
+	ON(DP_EXT_SDA);
+
 }

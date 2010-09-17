@@ -34,6 +34,7 @@
 
 #include "gprot.h"
 #include "driver/led.h"
+#include "driver/debug_pins.h"
 #include "driver/bemf_hardware_detect.h"
 #include "comm_tim.h"
 #include "comm_process.h"
@@ -48,6 +49,7 @@ volatile bool *comm_process_trigger;
 struct comm_process_state {
 	volatile bool rising;	/**< Waiting for rising or falling edge of BEMF */
 	bool closed_loop;	/**< Running in closed loop control flag */
+	u32 detect_count;
 };
 
 /**
@@ -70,6 +72,8 @@ s32 new_cycle_time;				/**< New commutation time
 						  temporary variable, @todo
 						  remove */
 
+bool comm_process_time_valid(void);
+
 /**
  * Initialize commutation process
  */
@@ -86,6 +90,7 @@ void comm_process_init(void)
 
 	comm_process_state.rising = true;
 	comm_process_state.closed_loop = false;
+	comm_process_state.detect_count = 0;
 
 	comm_data.bemf_crossing_detected = false;
 	comm_data.calculated_freq = 0;
@@ -103,7 +108,7 @@ void comm_process_init(void)
  */
 void comm_process_reset(void)
 {
-
+	comm_process_state.detect_count = 0;
 }
 
 /**
@@ -149,7 +154,54 @@ void comm_process_closed_loop_off(void)
  */
 void run_comm_process(void)
 {
+	u32 big_freq = comm_tim_data.freq;
+	u16 new_freq = (comm_tim_data.curr_time -
+		comm_tim_data.prev_time);
+	u32 big_new_freq = new_freq / 2;
 
+	big_freq = big_freq * 6;
+	big_new_freq = (big_freq + big_new_freq) / 7;
+
+	if (comm_process_time_valid()) {
+		comm_tim_data.freq = big_new_freq;
+		(void)gpc_register_touched(GPROT_COMM_TIM_FREQ_REG_ADDR);
+
+		comm_tim_update_freq();
+
+		OFF(DP_EXT_SCL);
+	} else {
+		comm_tim_update_freq();
+		OFF(DP_EXT_SCL);
+	}
+
+	if (comm_process_state.closed_loop) {
+
+		comm_data.bemf_crossing_detected = true;
+		comm_tim_trigger_comm = true;
+	}
+}
+
+bool comm_process_time_valid(void) {
+	/*
+	 * check if we are in the range where the comm timer is able
+	 * to operate
+	 */
+	if ((comm_tim_data.update_count > 1) ||
+		((comm_tim_data.update_count == 1) &&
+			(comm_tim_data.curr_time > comm_tim_data.prev_time))) {
+		return false;
+	}
+
+	/*
+	 * check if we are far away from the edge of the maximal time
+	 * comm timer can work in so that we have enough freedom to operate
+	 */
+	if ((comm_tim_data.curr_time -
+			comm_tim_data.prev_time) > (65535 - 1000)) {
+		return false;
+	}
+
+	return true;
 }
 
 /**
@@ -157,5 +209,21 @@ void run_comm_process(void)
  */
 bool comm_process_ready(void)
 {
-	return false;
+
+	if (!comm_process_time_valid()) {
+		comm_process_state.detect_count = 0;
+		return false;
+	}
+
+	comm_process_state.detect_count++;
+
+	/*
+	 * check if we detected enough valid transitions that we
+	 * are comfortable to proceed with closed loop
+	 */
+	if (comm_process_state.detect_count < 3) {
+		return false;
+	}
+
+	return true;
 }

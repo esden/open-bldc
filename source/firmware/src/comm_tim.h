@@ -27,6 +27,7 @@ struct comm_tim_data {
 	volatile u16 curr_time;		/**< Current commutation timestamp */
 	volatile u16 prev_time;		/**< Previous commutation timestamp */
 	volatile u16 freq;		/**< Current commutation frequency */
+	volatile u32 update_count;      /**< Update count between prev_time and curr_time */
 };
 
 extern struct comm_tim_data comm_tim_data;
@@ -38,5 +39,6 @@ void comm_tim_init(void);
 void comm_tim_reset(void);
 void comm_tim_capture_time(void);
 void comm_tim_update_freq(void);
+void comm_tim_update_capture(void);
 
 #endif /* __COMM_TIM_H */

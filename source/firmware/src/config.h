@@ -64,7 +64,7 @@
  *
  * counter = ((counter * iir_val) + new_counter) / (iir_val + 1)
  */
-#define CLP_IIR_VALUE 100
+#define CLP_IIR_VALUE 10
 
 /**
  * Every how many time base times send the CPU load values to the PC
@@ -127,7 +127,7 @@
 /**
  * Default spinup power
  */
-#define CP_SST_POWER 200
+#define CP_SST_POWER 300
 
 /**
  * Default maximum delay between commutations while spinning up
@@ -139,7 +139,7 @@
  *
  * When the minimum delay is reached the spinup process gives up.
  */
-#define CP_SST_MIN_STEP 100
+#define CP_SST_MIN_STEP 200
 
 /**
  * Default decrement divider for spinup
@@ -149,6 +149,11 @@
 /**
  * How long to hold the maximum step if staying in open loop
  */
-#define CP_SST_HOLD 1000
+#define CP_SST_HOLD 5000
+
+/**
+ * When is it safe to try to transition to closed loop.
+ */
+#define CP_SST_SAFE_FOR_CLOSED_LOOP 200
 
 #endif /* __CONFIG_H */

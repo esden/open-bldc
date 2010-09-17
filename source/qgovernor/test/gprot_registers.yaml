@@ -2,98 +2,68 @@
 # -> RegisterConfigGeneratorStrategy
 register_groups: 
 
-  PWM: 
-    description: PWM settings
+  POWER: 
+    description: Power
     registers: 
       pwm_offset_reg_addr: 
         register: 1
-        label: Offset register address
+        label: PWM duty cycle value
         widget: 
-          class: SpinBox
-          ctype: u16
+          class: Slider
+          ctype: u32
           dtype: plain
           min: 0
-          max: 666
-      pwm_val_reg_addr: 
-        register: 2
-        label: PWM value register address
-        widget: 
-          class: SpinScrollBox
+          max: 3000
+          default: 1
 
-  ADC: 
-    description: Register settings for the A/D converter
-    registers: 
-      adc_zero_value_reg_addr: 
-        register: 4
-        label: Zero value
-        widget: 
-          class: Input
-      adc_global_current_reg_addr: 
-        register: 8
-        ro: yes
-        label: Global current
-        widget: 
-          class: Input
-      adc_phase_voltage_reg_addr: 
-        register: 9
-        ro: yes
-        label: Phase voltage
-        widget: 
-          class: Input
-
-  Commutation_Timer: 
-    description: Register settings for the commutation timer
+  COMM_TIM: 
+    description: Commutation timer
     registers: 
       comm_tim_spark_advance_reg_addr: 
         register: 5
         label: Spark advance
         widget: 
-          class: Input
+          class: SpinBox
       comm_tim_direct_cutoff_reg_addr: 
         register: 6
         label: Cutoff
         widget: 
-          class: Input
+          class: SpinBox
       comm_tim_iir_pole_reg_addr: 
         register: 7
         label: Pole
         widget: 
-          class: Input
+          class: SpinBox
       comm_tim_freq_reg_addr: 
         register: 3
         label: Frequency
         widget: 
-          class: Input
+          class: SpinBox
 
-  Other: 
-    descriptions: Custom other register settings
+  COMM_DETECT: 
+    description: Commutation detection
     registers: 
       new_cycle_time: 
         widget: 
-          class: SpinScrollBox
+          class: SpinBox
         register: 10
         ro: no
+        default: 1000
         label: New cycle time
 
-  CPU Load: 
-    description: For resolving thresholds of CPU load
+  MONITOR: 
+    description: Monitoring
     registers: 
-      cpu_load: 
+      comm_tim_value: 
         register: 11
         ro: yes
-        label: CPU load
+        label: Monitor commutation timer value
         widget: 
-          class: SpinScrollBox
-      cpu_load_max: 
+          class: Checkbox
+      adc_zero_value: 
         register: 12
         ro: yes
-        label: CPU max load
+        label: Monitor ADC zero value
         widget: 
-          class: SpinScrollBox
-      cpu_load_min: 
-        register: 13
-        ro: yes
-        label: CPU min load
-        widget: 
-          class: SpinScrollBox
+          class: Checkbox
 

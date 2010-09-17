@@ -44,6 +44,10 @@ public:
 		m_description = ::std::string((const char * )(description)); 
 	}
 
+	inline ::std::string const & description(void) const { 
+		return m_description; 
+	}
+
 	inline void log(void) const { 
 		LOG_INFO_PRINT("|- Register group %s", m_name.c_str());
 		

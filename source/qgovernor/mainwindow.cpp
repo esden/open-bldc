@@ -147,7 +147,7 @@ void MainWindow::on_registerChanged(unsigned char addr)
 
 void MainWindow::on_guiRegisterChanged(QStandardItem *item)
 {
-    int value;
+    int value = 0;
     bool conversion_ok;
 
     switch(item->column()) {

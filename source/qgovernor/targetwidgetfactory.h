@@ -72,6 +72,8 @@ public:
         QGroupBox * group_box = new QGroupBox(parent);
         QVBoxLayout * layout  = new QVBoxLayout();
 
+        group_box->setTitle(QString::fromStdString(config.description()));
+
         ::std::vector<YAMLGen::OBLDC::RegisterConfig>::const_iterator reg_it;
         ::std::vector<YAMLGen::OBLDC::RegisterConfig>::const_iterator reg_end;
         reg_end = config.registers().end();
@@ -89,20 +91,64 @@ public:
     static QWidget * createFrom(QWidget * parent, YAMLGen::OBLDC::RegisterConfig const & config) {
         QWidget * container_widget = new QWidget(parent);
         QLabel * label             = new QLabel(QString::fromStdString(config.label()), container_widget);
-        QHBoxLayout * layout       = new QHBoxLayout();
-
-        layout->addWidget(label);
 
         YAMLGen::OBLDC::WidgetConfig widget_conf = config.widget();
         ::std::string widget_class = widget_conf.classname();
+
         if(widget_class == "SpinBox") {
-            QSpinBox * input = new QSpinBox(container_widget);
+            QHBoxLayout * layout = new QHBoxLayout();
+            layout->addWidget(label);
+            QSpinBox * input;
+            input = new QSpinBox(container_widget);
+            input->setValue(widget_conf.default_value());
+
+            QPushButton * commit_button;
+            commit_button = new QPushButton("commit", container_widget);
+
+
             layout->addWidget(input);
+            layout->addWidget(commit_button);
+            container_widget->setLayout(layout);
+        }
+        else if(widget_class == "Checkbox") {
+            QHBoxLayout * layout = new QHBoxLayout();
+            layout->addWidget(label);
+            QCheckBox * input;
+            input = new QCheckBox(container_widget);
+
+            layout->addWidget(input);
+            container_widget->setLayout(layout);
         }
         else if(widget_class == "Slider") {
+            QWidget * input_container_widget = new QWidget(container_widget);
+            
+            QVBoxLayout * vlayout = new QVBoxLayout();
+            vlayout->addWidget(label);
+            QHBoxLayout * hlayout = new QHBoxLayout();
 
+            QSpinBox * spin_box;
+            spin_box = new QSpinBox(input_container_widget);
+            spin_box->setValue(widget_conf.default_value());
+
+            QPushButton * commit_button;
+            commit_button = new QPushButton("commit", input_container_widget);
+
+            QSlider * input;
+            input = new QSlider(Qt::Horizontal, input_container_widget);
+            input->setSingleStep(widget_conf.step());
+            input->setMinimum(widget_conf.min());
+            input->setMaximum(widget_conf.max() || 100);
+            input->setValue(widget_conf.default_value());
+            vlayout->addWidget(input);
+
+            hlayout->addWidget(spin_box);
+            hlayout->addWidget(commit_button);
+
+            input_container_widget->setLayout(hlayout);
+            vlayout->addWidget(input_container_widget);
+            container_widget->setLayout(vlayout);
         }
-        container_widget->setLayout(layout);
+
         return container_widget;
     }
 

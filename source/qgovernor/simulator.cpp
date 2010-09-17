@@ -98,7 +98,7 @@ void Simulator::on_registerChanged(unsigned char addr)
 
 void Simulator::on_guiRegisterChanged(QStandardItem *item)
 {
-    int value;
+    int value = 0;
     bool conversion_ok;
 
     switch(item->column()){

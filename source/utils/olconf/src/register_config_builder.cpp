@@ -37,6 +37,10 @@ RegisterConfigBuilder::parse_partial(ConfigNode const & config_node)
 		
 		ConfigNode group_config = (*it_groups).second;
 		group.set_properties(group_config.values());
+
+		if(group.has_property("description")) { 
+			group.set_description(group["description"]);
+		}
 		
 		ConfigNode registers = (*it_groups).second; 
 		ConfigNode::const_iterator reglist = registers.find("registers"); 

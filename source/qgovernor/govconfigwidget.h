@@ -24,7 +24,7 @@
 #include <yamlgen/config.hpp>
 
 
-class GovConfigWidget : public QWidget
+class GovConfigWidget
 {
 protected:
 
@@ -35,7 +35,7 @@ protected:
 public:
 
     GovConfigWidget(QWidget * parent, YAMLGen::OBLDC::RegisterConfig config)
-    : QWidget(parent), m_config(config)
+    : m_parent(parent), m_config(config)
     {
        m_widget = new QWidget(parent);
     }

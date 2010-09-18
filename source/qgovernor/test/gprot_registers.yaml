@@ -33,7 +33,7 @@ register_groups:
         register: 7
         label: Pole
         widget: 
-          class: SpinBox
+          class: Slider
       comm_tim_freq_reg_addr: 
         register: 3
         label: Frequency
@@ -50,6 +50,13 @@ register_groups:
         ro: no
         default: 1000
         label: New cycle time
+      even_newer_cycle_time: 
+        widget: 
+          class: Checkbox
+        register: 10
+        ro: no
+        default: 1000
+        label: Even newer cycle time
 
   MONITOR: 
     description: Monitoring

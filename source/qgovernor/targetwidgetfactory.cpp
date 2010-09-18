@@ -51,7 +51,7 @@ TargetWidgetFactory::createFrom(GovConfig const & config)
     ::std::vector<YAMLGen::OBLDC::ModuleConfig>::const_iterator mod_end;
     mod_end = config.modules().end();
     for(mod_it = config.modules().begin(); mod_it != mod_end; ++mod_it) {
-        QWidget * widget = createWidgetList(container_widget, *mod_it);
+        QWidget * widget = createWidgetGroups(container_widget, *mod_it);
         layout->addWidget(widget);
     }
 
@@ -60,7 +60,7 @@ TargetWidgetFactory::createFrom(GovConfig const & config)
 }
 
 QWidget *
-TargetWidgetFactory::createWidgetList(QWidget * parent, YAMLGen::OBLDC::ModuleConfig const & config)
+TargetWidgetFactory::createWidgetGroups(QWidget * parent, YAMLGen::OBLDC::ModuleConfig const & config)
 {
     ::std::vector<YAMLGen::OBLDC::RegisterGroupConfig>::const_iterator rg_it;
     ::std::vector<YAMLGen::OBLDC::RegisterGroupConfig>::const_iterator rg_end;
@@ -88,8 +88,8 @@ TargetWidgetFactory::createWidgetGroup(QWidget * parent, YAMLGen::OBLDC::Registe
     ::std::vector<YAMLGen::OBLDC::RegisterConfig>::const_iterator reg_end;
     reg_end = config.registers().end();
     for(reg_it = config.registers().begin(); reg_it != reg_end; ++reg_it) {
-        GovConfigWidget * widget = createWidget(group_box, *reg_it);
-        layout->addWidget(widget);
+        GovConfigWidget * govwidget = createWidget(group_box, *reg_it);
+        layout->addWidget(govwidget->widget());
     }
     group_box->setLayout(layout);
     return group_box;
@@ -99,7 +99,6 @@ GovConfigWidget *
 TargetWidgetFactory::createWidget(QWidget * parent, YAMLGen::OBLDC::RegisterConfig const & config)
 {
     QWidget * container_widget = new QWidget(parent);
-
 
     YAMLGen::OBLDC::WidgetConfig widget_conf = config.widget();
     ::std::string widget_class = widget_conf.classname();

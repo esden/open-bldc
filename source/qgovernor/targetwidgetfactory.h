@@ -57,7 +57,7 @@ private:
      *  - A list of register groups
      *  - Flag settings
      */
-    QWidget * createWidgetList(QWidget * parent, YAMLGen::OBLDC::ModuleConfig const & config);
+    QWidget * createWidgetGroups(QWidget * parent, YAMLGen::OBLDC::ModuleConfig const & config);
 
     /** Creates widget for a given register group.
      *

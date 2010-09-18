@@ -214,7 +214,10 @@ void MainWindow::on_actionLoadTarget_triggered()
 
 void MainWindow::addTargetTab(GovConfig const & config)
 {
-    QWidget * page = TargetWidgetFactory::createFrom(this, config);
+    TargetWidgetFactory * factory = new TargetWidgetFactory(this);
+
+    QWidget * page = factory->createFrom(config);
+
     ui->OpenBLDCTabWidget->addTab(page, config.target_name());
 }
 

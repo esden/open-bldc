@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     protocolmodel.cpp \
     governorsimulator.cpp \
     governorftdi.cpp \
-    govconfig.cpp
+    govconfig.cpp \
+    targetwidgetfactory.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
     governormaster.h \
@@ -39,7 +40,11 @@ HEADERS += mainwindow.h \
     governorsimulator.h \
     governorftdi.h \
     govconfig.h \
-    targetwidgetfactory.h
+    targetwidgetfactory.h \
+    govconfigwidget.h \
+    govconfigspinbox.h \
+    govconfigslider.h \
+    govconfigcheckbox.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
     simulator.ui

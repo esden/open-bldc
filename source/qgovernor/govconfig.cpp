@@ -1,3 +1,20 @@
+/*
+ * qgovernor - QT based Open-BLDC PC interface tool
+ * Copyright (C) 2010 by Tobias Fuchs <twh.fuchs@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "govconfig.h"
 #include <olconf/module_config_builder.hpp>
@@ -21,14 +38,6 @@ GovConfig::load(void) {
         m_modules     = builder.modules();
         m_target_name = QString::fromStdString(builder.target_name());
 
-        ::std::cerr << "Target loaded: " << m_target_name.toStdString() << ::std::endl;
-        ::std::vector<YAMLGen::OBLDC::ModuleConfig>::const_iterator mod_it;
-        ::std::vector<YAMLGen::OBLDC::ModuleConfig>::const_iterator mod_end;
-        mod_end = m_modules.end();
-        for(mod_it  = m_modules.begin(); mod_it != mod_end; ++mod_it) {
-            ::std::cerr << "Module: " << (*mod_it).name() << ::std::endl;
-            (*mod_it).log();
-        }
     } catch(YAMLGen::ParserException pe) {
         QMessageBox::critical( 0, "GovConf",
           QString("Syntax error in configuration:\n\n") + pe.what()

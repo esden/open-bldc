@@ -72,6 +72,21 @@
 #define CLP_REPORT_DIVIDER 10
 
 /*============================================================================
+ * Hardware based BEMF detection driver configuration
+ *============================================================================*/
+
+/**
+ * Enable BEMF indication LED
+ */
+#define BEMF_HD_USE_LED
+
+/**
+ * Toggle the BEMF indication LED when getting an interrupt instead of
+ * outputting it phase correct.
+ */
+#define BEMF_HD_LED_TOGGLE
+
+/*============================================================================
  * USART driver configuration
  *============================================================================*/
 

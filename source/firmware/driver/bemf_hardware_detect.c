@@ -27,6 +27,8 @@
  * detection.
  */
 
+#include "config.h"
+
 #include "types.h"
 
 #include "bemf_hardware_detect.h"
@@ -42,6 +44,19 @@
 
 struct bemf_hd_data bemf_hd_data;
 u16 bemf_line_state;
+
+#ifdef BEMF_HD_USE_LED
+#  ifdef BEMF_HD_LED_TOGGLE
+#    define BEMF_HD_LED_RISING() TOGGLE(LED_ORANGE)
+#    define BEMF_HD_LED_FALLING() TOGGLE(LED_ORANGE)
+#  else
+#    define BEMF_HD_LED_RISING() OFF(LED_ORANGE)
+#    define BEMF_HD_LED_FALLING() ON(LED_ORANGE)
+#  endif
+#else
+#    define BEMF_HD_LED_RISING() ((void)0)
+#    define BEMF_HD_LED_FALLING() ((void)0)
+#endif
 
 /**
  * Initialize the hardware based BEMF detection peripherals
@@ -123,11 +138,11 @@ void exti0_irq_handler(void)
 		if ((bemf_line_state & (1 << 0)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_u_rising;
 			bemf_hd_data.trigger = true;
-			OFF(LED_ORANGE);
+			BEMF_HD_LED_RISING();
 		}else{
 			bemf_hd_data.source = bemf_hd_phase_u_falling;
 			bemf_hd_data.trigger = true;
-			ON(LED_ORANGE);
+			BEMF_HD_LED_FALLING();
 		}
 	}
 
@@ -154,11 +169,11 @@ void exti1_irq_handler(void)
 		if ((bemf_line_state & (1 << 1)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_v_rising;
 			bemf_hd_data.trigger = true;
-			OFF(LED_ORANGE);
+			BEMF_HD_LED_RISING();
 		}else{
 			bemf_hd_data.source = bemf_hd_phase_v_falling;
 			bemf_hd_data.trigger = true;
-			ON(LED_ORANGE);
+			BEMF_HD_LED_FALLING();
 		}
 	}
 
@@ -185,11 +200,11 @@ void exti2_irq_handler(void)
 		if ((bemf_line_state & (1 << 2)) != 0) {
 			bemf_hd_data.source = bemf_hd_phase_w_rising;
 			bemf_hd_data.trigger = true;
-			OFF(LED_ORANGE);
+			BEMF_HD_LED_RISING();
 		}else{
 			bemf_hd_data.source = bemf_hd_phase_w_falling;
 			bemf_hd_data.trigger = true;
-			ON(LED_ORANGE);
+			BEMF_HD_LED_FALLING();
 		}
 	}
 

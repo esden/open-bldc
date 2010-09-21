@@ -40,7 +40,7 @@
  * - pwm_scheme_6step_pwm_on
  * - pwm_scheme_12step_pwm_on_pwm
  */
-#define PWM_SCHEME pwm_scheme_6step_h_pwm_l_on
+#define PWM_SCHEME pwm_scheme_6step_pwm_on
 
 /**
  * Indicate that we are using a 12step pwm scheme

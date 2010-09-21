@@ -157,7 +157,11 @@ void run_comm_process(void)
 	u32 big_freq = comm_tim_data.freq;
 	u16 new_freq = (comm_tim_data.curr_time -
 		comm_tim_data.prev_time);
+#ifdef PWM_SCHEME_12STEP
+	u32 big_new_freq = new_freq / 4;
+#else
 	u32 big_new_freq = new_freq / 2;
+#endif
 
 	big_freq = big_freq * 5;
 	big_new_freq = (big_freq + big_new_freq) / 6;

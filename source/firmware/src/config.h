@@ -43,6 +43,11 @@
 #define PWM_SCHEME pwm_scheme_6step_h_pwm_l_on
 
 /**
+ * Indicate that we are using a 12step pwm scheme
+ */
+//#define PWM_SCHEME_12STEP
+
+/**
  * PWM frequency
  */
 #define PWM_FREQUENCY 16000

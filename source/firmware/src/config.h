@@ -45,7 +45,7 @@
 /**
  * PWM frequency
  */
-#define PWM_FREQUENCY 24000
+#define PWM_FREQUENCY 16000
 
 /*============================================================================
  * Debug pins configuration
@@ -120,7 +120,7 @@
 /**
  * Default motor alignement power.
  */
-#define CP_ALIGN_POWER 300
+#define CP_ALIGN_POWER 400
 
 /*----------------------------------------------------------------------------
  * Spinup two step configuration
@@ -147,7 +147,7 @@
 /**
  * Default spinup power
  */
-#define CP_SST_POWER 200
+#define CP_SST_POWER 400
 
 /**
  * Default maximum delay between commutations while spinning up
@@ -159,7 +159,7 @@
  *
  * When the minimum delay is reached the spinup process gives up.
  */
-#define CP_SST_MIN_STEP 200
+#define CP_SST_MIN_STEP 100
 
 /**
  * Default decrement divider for spinup

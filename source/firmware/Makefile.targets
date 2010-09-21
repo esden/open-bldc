@@ -53,6 +53,7 @@ mc.OBJECTS = \
 	src/cpu_load_process.o \
 	src/pwm/pwm.o \
 	src/pwm/pwm_scheme_6step_h_pwm_l_on.o \
+	src/pwm/pwm_scheme_12step_pwm_on_pwm.o \
 	src/comm_tim.o \
 	src/gprot.o \
 	src/sensor_process.o \

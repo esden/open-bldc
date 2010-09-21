@@ -87,21 +87,21 @@ void pwm_scheme_6step_pwm_on(void)
 		break;
 	case 4:		// 180º
 
-		/* Configure step 4 */
+		/* Configure step 5 */
 		pwm_set_a_low__b_hpwm_c_off();
 
 		pwm_phase++;
 		break;
 	case 5:		// 220º
 
-		/* Configure step 4 */
+		/* Configure step 6 */
 		pwm_set_a_off__b_high_c_lpwm();
 
 		pwm_phase++;
 		break;
 	case 6:		// 280º
 
-		/* Configure step 4 */
+		/* Configure step 1 */
 		pwm_set_a_hpwm_b_off__c_low();
 
 		pwm_phase = 1;

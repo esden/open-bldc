@@ -53,7 +53,7 @@
  * --: Low side on
  * ++: High side on
  *   : Floating/NC
- * \endverbatim
+ * @endverbatim
  */
 
 #include <stm32/tim.h>

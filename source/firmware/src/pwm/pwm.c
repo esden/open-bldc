@@ -107,9 +107,7 @@ void pwm_init(void)
 	GPIO_Init(GPIOB, &gpio);
 
 	/* Time base configuration */
-	//tim_base.TIM_Period = 9001;
-	//tim_base.TIM_Period = 3999;
-	tim_base.TIM_Period = 2999;
+	tim_base.TIM_Period = 72000000 / PWM_FREQUENCY;
 	tim_base.TIM_Prescaler = 0;
 	tim_base.TIM_ClockDivision = 0;
 	tim_base.TIM_CounterMode = TIM_CounterMode_Up;

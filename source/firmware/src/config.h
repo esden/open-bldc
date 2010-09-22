@@ -106,6 +106,20 @@
 #define USART_BAUD 230400
 
 /*============================================================================
+ * Comm process configuration
+ *============================================================================*/
+
+/**
+ * Default Comm Process Spark Advance value
+ */
+#define COMMP_SPARK_ADVANCE -1000
+
+/**
+ * Default Comm Process IIR filter coefficient
+ */
+#define COMMP_IIR 5
+
+/*============================================================================
  * Control process configuration
  *============================================================================*/
 

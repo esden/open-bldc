@@ -96,10 +96,10 @@ void comm_process_init(void)
 	comm_data.calculated_freq = 0;
 	comm_data.in_range_counter = 0;
 
-	comm_params.spark_advance = 0;
+	comm_params.spark_advance = COMMP_SPARK_ADVANCE;
 	comm_params.direct_cutoff = 10000;
 	comm_params.direct_cutoff_slope = 20;
-	comm_params.iir = 6;
+	comm_params.iir = COMMP_IIR;
 	comm_params.hold_off = 1;
 }
 
@@ -157,14 +157,18 @@ void run_comm_process(void)
 	u32 big_freq = comm_tim_data.freq;
 	u16 new_freq = (comm_tim_data.curr_time -
 		comm_tim_data.prev_time);
+	u32 big_new_freq = new_freq;
+
+	big_new_freq += comm_params.spark_advance;
+
 #ifdef PWM_SCHEME_12STEP
-	u32 big_new_freq = new_freq / 4;
+	big_new_freq /= 4;
 #else
-	u32 big_new_freq = new_freq / 2;
+	big_new_freq /= 2;
 #endif
 
-	big_freq = big_freq * 5;
-	big_new_freq = (big_freq + big_new_freq) / 6;
+	big_freq = big_freq * comm_params.iir;
+	big_new_freq = (big_freq + big_new_freq) / (comm_params.iir + 1);
 
 	if (comm_process_time_valid()) {
 		comm_tim_data.freq = big_new_freq;

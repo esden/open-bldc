@@ -52,6 +52,7 @@
  */
 struct comm_tim_state {
 	volatile u32 update_count;              /**< update count since curr_time, needed for data.update_count calculation */
+	volatile u16 next_prev_time;
 };
 
 struct comm_tim_data comm_tim_data;		/**< Commutation timer data instance */
@@ -140,8 +141,9 @@ void comm_tim_reset(void)
 void comm_tim_capture_time(void)
 {
 	u16 new_time = TIM_GetCounter(TIM2);
-	comm_tim_data.prev_time = comm_tim_data.curr_time;
+	comm_tim_data.prev_time = comm_tim_state.next_prev_time;
 	comm_tim_data.curr_time = new_time;
+	comm_tim_state.next_prev_time = new_time;
 	comm_tim_data.update_count = comm_tim_state.update_count;
 	comm_tim_state.update_count = 0;
 }
@@ -171,6 +173,14 @@ void comm_tim_update_capture(void)
 }
 
 /**
+ * Update the next prev time to the current time
+ */
+void comm_tim_update_next_prev(void)
+{
+	comm_tim_state.next_prev_time = TIM_GetCounter(TIM2);
+}
+
+/**
  * Update our last capture time and curr time
  *
  */
@@ -180,8 +190,9 @@ void comm_tim_update_capture_and_time(void)
 	TIM_SetCompare1(TIM2,
 			comm_tim_data.last_capture_time + comm_tim_data.freq);
 
-	comm_tim_data.prev_time = comm_tim_data.curr_time;
+	comm_tim_data.prev_time = comm_tim_state.next_prev_time;
 	comm_tim_data.curr_time = comm_tim_data.last_capture_time;
+	comm_tim_state.next_prev_time = comm_tim_data.last_capture_time;
 	comm_tim_data.update_count = comm_tim_state.update_count;
 	comm_tim_state.update_count = 0;
 }

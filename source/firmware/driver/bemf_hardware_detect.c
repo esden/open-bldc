@@ -144,6 +144,8 @@ void exti0_irq_handler(void)
 			bemf_hd_data.trigger = true;
 			BEMF_HD_LED_FALLING();
 		}
+	} else {
+		comm_tim_update_next_prev();
 	}
 
 	EXTI_ClearITPendingBit(EXTI_Line0);
@@ -175,6 +177,8 @@ void exti1_irq_handler(void)
 			bemf_hd_data.trigger = true;
 			BEMF_HD_LED_FALLING();
 		}
+	} else {
+		comm_tim_update_next_prev();
 	}
 
 	EXTI_ClearITPendingBit(EXTI_Line1);
@@ -206,6 +210,8 @@ void exti2_irq_handler(void)
 			bemf_hd_data.trigger = true;
 			BEMF_HD_LED_FALLING();
 		}
+	} else {
+		comm_tim_update_next_prev();
 	}
 
 	EXTI_ClearITPendingBit(EXTI_Line2);

@@ -39,6 +39,7 @@ void comm_tim_init(void);
 void comm_tim_reset(void);
 void comm_tim_capture_time(void);
 void comm_tim_update_freq(void);
+void comm_tim_update_next_prev(void);
 void comm_tim_update_capture(void);
 void comm_tim_update_capture_and_time(void);
 

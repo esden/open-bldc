@@ -30,7 +30,7 @@
 #define PWM_LO_OFF TIM_CCxN_Disable
 
 #define pwm_enable(A_HI, A_LO, B_HI, B_LO, C_HI, C_LO)		\
-	TIM1->CCER = (TIM1->CCER & 0xF000) |			\
+	TIM1->CCER = (TIM1->CCER & 0xFAAA) |			\
 		     ((A_HI | A_LO) << 0) |			\
 		     ((B_HI | B_LO) << 4) |			\
 		     ((C_HI | C_LO) << 8)

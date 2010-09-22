@@ -19,7 +19,10 @@
 #ifndef __PWM_H
 #define __PWM_H
 
-extern volatile uint16_t pwm_val;
+#define PWM_SET(VAL) \
+	pwm_val = (((PWM_BASE_CLOCK / PWM_FREQUENCY) * VAL) / PWM_MAX_POWER)
+
+extern volatile uint32_t pwm_val;
 
 void pwm_init(void);
 void pwm_off(void);

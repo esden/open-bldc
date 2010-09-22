@@ -56,7 +56,7 @@
 //volatile uint16_t pwm_val = 700;
 //volatile uint16_t pwm_offset = 250;
 /** Current PWM duty cycle */
-volatile uint16_t pwm_val = PWM_VALUE;
+volatile uint32_t pwm_val = PWM_VALUE;
 /** Current PWM offset for ADC triggering */
 static volatile uint16_t pwm_offset = PWM_OFFSET;
 
@@ -72,7 +72,6 @@ void pwm_init(void)
 	TIM_BDTRInitTypeDef tim_bdtr;
 
 	(void)gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
-	(void)gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, &pwm_val);
 
 	/* Enable clock for TIM1 subsystem */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |
@@ -107,7 +106,7 @@ void pwm_init(void)
 	GPIO_Init(GPIOB, &gpio);
 
 	/* Time base configuration */
-	tim_base.TIM_Period = 72000000 / PWM_FREQUENCY;
+	tim_base.TIM_Period = PWM_BASE_CLOCK / PWM_FREQUENCY;
 	tim_base.TIM_Prescaler = 0;
 	tim_base.TIM_ClockDivision = 0;
 	tim_base.TIM_CounterMode = TIM_CounterMode_Up;

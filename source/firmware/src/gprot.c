@@ -29,6 +29,8 @@
  * purpose protocol library.
  */
 
+#include "config.h"
+
 #include <stm32/gpio.h>
 
 #include "types.h"
@@ -79,6 +81,11 @@ u16 gprot_dummy_val;
 static u16 gprot_flag_reg;
 
 /**
+ * PWM power register
+ */
+static u32 gprot_pwm_power = CP_SST_POWER;
+
+/**
  * Previous value of the flag register for detection of flag transitions.
  */
 static u16 gprot_flag_reg_old;
@@ -87,6 +94,7 @@ static u16 gprot_flag_reg_old;
 static void gprot_trigger_output(void *data);
 static void gprot_register_changed(void *data, u8 addr);
 static void gprot_update_flags(void);
+static void gprot_update_pwm_power(void);
 
 /* Function implementations */
 /**
@@ -104,6 +112,8 @@ void gprot_init()
 	(void)gpc_setup_reg(GPROT_FLAG_REG_ADDR, &gprot_flag_reg);
 
 	(void)gpc_setup_reg(GPROT_NEW_CYCLE_TIME, (u16 *) & new_cycle_time);
+
+	(void)gpc_setup_reg(GPROT_PWM_VAL_REG_ADDR, (u16 *) & gprot_pwm_power);
 }
 
 /**
@@ -128,6 +138,8 @@ void gprot_register_changed(void *data, u8 addr)
 	data = data;
 	if (addr == GPROT_FLAG_REG_ADDR) {
 		gprot_update_flags();
+	}else if(addr == GPROT_PWM_VAL_REG_ADDR) {
+		gprot_update_pwm_power();
 	}
 }
 
@@ -180,4 +192,14 @@ void gprot_update_flags(void)
 	/* add other flags here (up to 16) */
 
 	gprot_flag_reg_old = gprot_flag_reg;
+}
+
+/**
+ * Autamatically called by @ref gprot_register_changed()
+ *
+ * Implements setting PWM power in the PWM subsystem
+ */
+void gprot_update_pwm_power(void)
+{
+	PWM_SET(gprot_pwm_power);
 }

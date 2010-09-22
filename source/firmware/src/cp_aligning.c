@@ -99,7 +99,7 @@ void cp_aligning_init(void)
 void cp_aligning_reset(void)
 {
 	aligning_process.align_time = CP_ALIGN_TIME;
-	pwm_val = CP_ALIGN_POWER;
+	PWM_SET(CP_ALIGN_POWER);
 }
 
 /**

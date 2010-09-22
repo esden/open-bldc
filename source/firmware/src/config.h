@@ -19,6 +19,14 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+/*============================================================================
+ * General system preferences
+ *============================================================================*/
+
+/*============================================================================
+ * PWM subsystem configuration
+ *============================================================================*/
+
 /**
  * Enable and configure PWM phase reference signal generation.
  *
@@ -48,9 +56,19 @@
 //#define PWM_SCHEME_12STEP
 
 /**
+ * Base clock base for the PWM subsystem
+ */
+#define PWM_BASE_CLOCK 72000000
+
+/**
  * PWM frequency
  */
 #define PWM_FREQUENCY 16000
+
+/**
+ * PWM max duty cycle / power value
+ */
+#define PWM_MAX_POWER 65535
 
 /*============================================================================
  * Debug pins configuration
@@ -139,7 +157,7 @@
 /**
  * Default motor alignement power.
  */
-#define CP_ALIGN_POWER 400
+#define CP_ALIGN_POWER 6000
 
 /*----------------------------------------------------------------------------
  * Spinup two step configuration
@@ -166,7 +184,7 @@
 /**
  * Default spinup power
  */
-#define CP_SST_POWER 400
+#define CP_SST_POWER 4000
 
 /**
  * Default maximum delay between commutations while spinning up

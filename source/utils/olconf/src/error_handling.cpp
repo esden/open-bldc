@@ -1,5 +1,5 @@
 /*
- * OpenBLDC yamlgenconfig - YAML-based configuration for OpenBLDC
+ * olconf - yamlgen based Open-BLDC configuration header generator
  * Copyright (C) 2010 by Tobias Fuchs <twh.fuchs@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify

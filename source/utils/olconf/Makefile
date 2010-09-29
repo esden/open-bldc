@@ -8,6 +8,10 @@ CFLAGS+=-Wall -I./include -I../yamlgen/include
 LIB_LDFLAGS+=-lyaml -L../yamlgen/lib -lyamlgen 
 BIN_LDFLAGS+=-lyaml -L../yamlgen/lib -lyamlgen -L./lib -lolconf
 
+LIBTOOL=`which libtool > /dev/zero && echo glibtool || echo libtool`
+
+PREFIX ?= /usr/local
+
 ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g
 endif
@@ -28,22 +32,22 @@ SRCDIR=src
 DEPDIR=deps
 LIBDIR=lib
 
-BINOBJ = $(patsubst %,$(BUILDDIR)/%,$(BINOBJFILES))
-LIBOBJ = $(patsubst %,$(BUILDDIR)/%,$(LIBOBJFILES))
+BINOBJ = $(patsubst %.o,$(BUILDDIR)/%.lo,$(BINOBJFILES))
+LIBOBJ = $(patsubst %.o,$(BUILDDIR)/%.lo,$(LIBOBJFILES))
 
-all: base_dirs libolconf.so olconfgen test
+all: base_dirs $(LIBDIR)/libolconf.la $(BINDIR)/olconfgen test
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
+$(BUILDDIR)/%.lo: $(SRCDIR)/%.cpp
 	@echo "  CC    $(@)"
-	$(Q)$(CC) -c -fPIC -o $@ $< $(CFLAGS)
+	$(Q)$(LIBTOOL) --mode=compile --tag=CXX  $(CC) $(CFLAGS) -c -o $@ $<
 
-olconfgen: $(BINOBJ) 
+$(BINDIR)/olconfgen: $(BINOBJ) 
 	@echo "  LL    $(BINDIR)/$(@)"
-	$(Q)$(CC) -o $(BINDIR)/$(@) $^ $(BIN_LDFLAGS)
+	$(Q)$(LIBTOOL) --mode=link --tag=CXX $(CC) -o $(@) $^ $(BIN_LDFLAGS)
 
-libolconf.so: $(LIBOBJ)
+$(LIBDIR)/libolconf.la: $(LIBOBJ)
 	@echo "  LL    $(LIBDIR)/$(@)"
-	$(Q)$(CC) -shared -Wl,-soname,$(@) -o $(LIBDIR)/$(@) $^ $(LIB_LDFLAGS)
+	$(Q)$(LIBTOOL) --mode=link --tag=CXX $(CC) -o $(@) $^ $(LIB_LDFLAGS) -rpath $(PREFIX)/lib
 
 .PHONY: base_dirs
 base_dirs: 
@@ -54,21 +58,23 @@ base_dirs:
 .PHONY: clean
 clean: 
 	$(Q)rm -Rf ./$(BUILDDIR) ./$(BINDIR) ./$(DEPDIR) ./$(LIBDIR) 
-	$(Q)find -name '*~' -exec rm {} \;
+	$(Q)find . -name '*~' -exec rm {} \;
 	@echo "  CLEAN "
 
 .PHONY: test
-test: olconfgen
+test: $(BINDIR)/olconfgen
 	@echo "  TEST  "
 	$(Q)./bin/olconfgen ./test/main.yaml >test/test_output.hpp
 	$(Q)diff test/test_output.hpp test/expected_main.hpp
 	$(Q)rm test/test_output.hpp
 
 .PHONY: install
-install: libolconf.so
+install: $(LIBDIR)/libolconf.la $(BINDIR)/olconfgen
 	@echo "  INST  "
-	$(Q)cp ./lib/libolconf.so /usr/local/lib/
-	$(Q)ldconfig
+	$(Q)install -d $(PREFIX)/lib
+	$(Q)install -d $(PREFIX)/bin
+	$(Q)$(LIBTOOL) --mode=install install -c $(LIBDIR)/libolconf.la $(PREFIX)/lib
+	$(Q)$(LIBTOOL) --mode=install install -c $(BINDIR)/olconfgen $(PREFIX)/bin
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "  DEP   $@"

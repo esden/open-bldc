@@ -7,6 +7,8 @@ CC=g++
 CFLAGS+=-Wall -I./include -I./include/yamlgen
 LDFLAGS+=-lyaml
 
+LIBTOOL=`which libtool > /dev/zero && echo glibtool || echo libtool`
+
 ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g
 endif
@@ -26,24 +28,25 @@ BUILDDIR=build
 SRCDIR=src
 DEPDIR=deps
 LIBDIR=lib
+PREFIX ?= /usr/local
 
 # BINOBJ = $(patsubst %,$(BUILDDIR)/%,$(BINOBJFILES))
-LIBOBJ = $(patsubst %,$(BUILDDIR)/%,$(LIBOBJFILES))
+LIBOBJ = $(patsubst %.o,$(BUILDDIR)/%.lo,$(LIBOBJFILES))
 
-all: base_dirs libyamlgen.so 
+all: base_dirs $(LIBDIR)/libyamlgen.la
 # all: base_dirs yamlgen libyamlgen.so test
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
+$(BUILDDIR)/%.lo: $(SRCDIR)/%.cpp
 	@echo "  CC    $(@)"
-	$(Q)$(CC) -c -fPIC -o $@ $< $(CFLAGS)
+	$(Q)$(LIBTOOL) --mode=compile --tag=CXX $(CC) $(CFLAGS) -c -o $@ $<
 
 #	yamlgen: $(BINOBJ) 
 #		@echo "  LL    $(BINDIR)/$(@)"
 #		$(Q)$(CC) -o $(BINDIR)/$(@) $^ $(LDFLAGS)
 
-libyamlgen.so: $(LIBOBJ)
+$(LIBDIR)/libyamlgen.la: $(LIBOBJ)
 	@echo "  LL    $(LIBDIR)/$(@)"
-	$(Q)$(CC) -shared -Wl,-soname,$(@) -o $(LIBDIR)/$(@) $^ $(LDFLAGS)
+	$(Q)$(LIBTOOL) --mode=link --tag=CXX $(CC) $(LDFLAGS) -o $@ $^ -rpath $(PREFIX)/lib
 
 .PHONY: base_dirs
 base_dirs: 
@@ -54,14 +57,14 @@ base_dirs:
 .PHONY: clean
 clean: 
 	$(Q)rm -Rf ./$(BUILDDIR) ./$(BINDIR) ./$(DEPDIR) ./$(LIBDIR) 
-	$(Q)find -name '*~' -exec rm {} \;
+	$(Q)find . -name '*~' -exec rm {} \;
 	@echo "  CLEAN "
 
 .PHONY: install
-install: base_dirs libyamlgen.so
+install: base_dirs $(LIBDIR)/libyamlgen.la
 	@echo "  INST  "
-	$(Q)cp ./lib/libyamlgen.so /usr/local/lib/
-	$(Q)ldconfig
+	$(Q)install -d $(PREFIX)/lib
+	$(Q)$(LIBTOOL) --mode=install install -c lib/libyamlgen.la $(PREFIX)/lib
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "  DEP   $@"

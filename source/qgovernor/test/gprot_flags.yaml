@@ -1,0 +1,14 @@
+
+flags: 
+  pwm_comm: 
+    bit: 0
+    ro: yes
+  comm_tim: 
+    bit: 1
+  adc_comm: 
+    bit: 2
+  all_lo: 
+    bit: 3
+  all_hi: 
+    bit: 4
+

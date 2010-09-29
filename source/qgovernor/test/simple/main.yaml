@@ -1,0 +1,20 @@
+---
+
+# INLINES: 
+#   register_groups: 
+#     adc: 
+#       description: ADC settings
+#       registers: 
+#         adc_offset_reg_addr: 
+#           register: 2
+#           label: ADC register address
+    
+
+INCLUDES:
+  register_groups: 
+    foo: bar
+    batz: wombat
+#    include_yaml: ./test/simple/flags.yaml
+    include_yaml: 
+      - ./test/simple/flags.yaml
+      - ./test/simple/pwm.yaml

@@ -1,16 +1,13 @@
 # qgovernor - QT based Open-BLDC PC interface tool
 # Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
-#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
-#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -------------------------------------------------
@@ -30,7 +27,9 @@ SOURCES += main.cpp \
     registermodel.cpp \
     protocolmodel.cpp \
     governorsimulator.cpp \
-    governorftdi.cpp
+    governorftdi.cpp \
+    govconfig.cpp \
+    targetwidgetfactory.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
     governormaster.h \
@@ -39,7 +38,13 @@ HEADERS += mainwindow.h \
     registermodel.h \
     protocolmodel.h \
     governorsimulator.h \
-    governorftdi.h
+    governorftdi.h \
+    govconfig.h \
+    targetwidgetfactory.h \
+    govconfigwidget.h \
+    govconfigspinbox.h \
+    govconfigslider.h \
+    govconfigcheckbox.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
     simulator.ui
@@ -53,7 +58,12 @@ macx {
     FILETYPES.path = Contents/Frameworks
     QMAKE_BUNDLE_DATA += FILETYPES
 }
+INCLUDEPATH += ../utils/yamlgen/include \
+    ../utils/olconf/include
 LIBS += -lgovernor \
     -lftdi \
-    -lusb
+    -lusb \
+    -lyaml \
+    -lyamlgen \
+    -lolconf
 RESOURCES += qgovernor.qrc

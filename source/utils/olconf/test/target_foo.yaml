@@ -1,0 +1,5 @@
+
+TARGET: 
+
+  defines: 
+    import_config: ./test/target_defs.yaml

@@ -25,6 +25,11 @@ extern "C" {
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "govconfig.h"
+#include "targetwidgetfactory.h"
+
+#include <iostream>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -142,10 +147,10 @@ void MainWindow::on_registerChanged(unsigned char addr)
 
 void MainWindow::on_guiRegisterChanged(QStandardItem *item)
 {
-    int value;
+    int value = 0;
     bool conversion_ok;
 
-    switch(item->column()){
+    switch(item->column()) {
     case 0:
         value = item->data(Qt::DisplayRole).toString().toInt(&conversion_ok, 10);
         break;
@@ -161,11 +166,12 @@ void MainWindow::on_guiRegisterChanged(QStandardItem *item)
         break;
     }
 
-    if(conversion_ok && connected){
+    if(conversion_ok && connected) {
         registerModel.setRegisterValue(item->row(), value);
         if(governorMaster->getRegisterMapValue(item->row()) != value)
             governorMaster->sendSet(item->row(), value);
-    }else{
+    }
+    else {
         registerModel.setRegisterValue(item->row(), governorMaster->getRegisterMapValue(item->row()));
         if(!connected)
             ui->statusBar->showMessage(tr("Please connect first before changing register values..."), 5000);
@@ -178,10 +184,11 @@ void MainWindow::on_registerTableView_customContextMenuRequested(QPoint pos)
     QMenu menu(this);
     QAction *action;
 
-    if(index.isValid()){
+    if(index.isValid()) {
         menu.addAction(updateRegister);
         menu.addAction(updateAllRegisters);
-    }else{
+    }
+    else {
         menu.addAction(updateAllRegisters);
     }
 
@@ -192,6 +199,26 @@ void MainWindow::on_registerTableView_customContextMenuRequested(QPoint pos)
     else if(action == updateAllRegisters)
         for(int i=0; i<32; i++)
             governorMaster->sendGet(i);
+}
+
+void MainWindow::on_actionLoadTarget_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this,
+                                            tr("Load target configuration"), "",
+                                            tr("Target files (*.yml *.yaml)"));
+
+    GovConfig config = GovConfig(filename);
+
+    addTargetTab(config);
+}
+
+void MainWindow::addTargetTab(GovConfig const & config)
+{
+    TargetWidgetFactory * factory = new TargetWidgetFactory(this);
+
+    QWidget * page = factory->createFrom(config);
+
+    ui->OpenBLDCTabWidget->addTab(page, config.target_name());
 }
 
 void MainWindow::on_actionAbout_Qt_triggered()

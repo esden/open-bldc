@@ -1,0 +1,10 @@
+---
+
+import_config: ./test/target_foo.yaml
+
+GPROT: # module GPROT
+  import_config: 
+  - ./test/gprot_flags.yaml
+  - ./test/gprot_registers.yaml
+
+

@@ -576,7 +576,7 @@
      <x>0</x>
      <y>0</y>
      <width>914</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -589,6 +589,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionLoadTarget"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -653,7 +654,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="qgovernor.qrc">
+    <iconset>
      <normaloff>:/icons/icons/connect-32x32.png</normaloff>
      <normalon>:/icons/icons/disconnect-32x32.png</normalon>:/icons/icons/connect-32x32.png</iconset>
    </property>
@@ -661,11 +662,17 @@
     <string>Connect...</string>
    </property>
   </action>
+  <action name="actionLoadTarget">
+   <property name="text">
+    <string>&amp;Load target</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="qgovernor.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionQuit</sender>

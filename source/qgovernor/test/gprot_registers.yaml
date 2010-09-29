@@ -1,0 +1,76 @@
+
+# -> RegisterConfigGeneratorStrategy
+register_groups: 
+
+  POWER: 
+    description: Power
+    registers: 
+      pwm_offset_reg_addr: 
+        register: 1
+        label: PWM duty cycle value
+        widget: 
+          class: Slider
+          ctype: u32
+          dtype: plain
+          min: 0
+          max: 3000
+          default: 1
+
+  COMM_TIM: 
+    description: Commutation timer
+    registers: 
+      comm_tim_spark_advance_reg_addr: 
+        register: 5
+        label: Spark advance
+        widget: 
+          class: SpinBox
+      comm_tim_direct_cutoff_reg_addr: 
+        register: 6
+        label: Cutoff
+        widget: 
+          class: SpinBox
+      comm_tim_iir_pole_reg_addr: 
+        register: 7
+        label: Pole
+        widget: 
+          class: Slider
+      comm_tim_freq_reg_addr: 
+        register: 3
+        label: Frequency
+        widget: 
+          class: SpinBox
+
+  COMM_DETECT: 
+    description: Commutation detection
+    registers: 
+      new_cycle_time: 
+        widget: 
+          class: SpinBox
+        register: 10
+        ro: no
+        default: 1000
+        label: New cycle time
+      even_newer_cycle_time: 
+        widget: 
+          class: Checkbox
+        register: 10
+        ro: no
+        default: 1000
+        label: Even newer cycle time
+
+  MONITOR: 
+    description: Monitoring
+    registers: 
+      comm_tim_value: 
+        register: 11
+        ro: yes
+        label: Monitor commutation timer value
+        widget: 
+          class: Checkbox
+      adc_zero_value: 
+        register: 12
+        ro: yes
+        label: Monitor ADC zero value
+        widget: 
+          class: Checkbox
+

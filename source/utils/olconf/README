@@ -1,0 +1,14 @@
+
+OLConf (OpenbLdConf) is a shared library based on yamlgen, providing builders and 
+runners specific to OpenBLDC. 
+These are: 
+
+- RegisterConfigBuilder and -Runners
+- FlagConfigBuilder and -Runners
+- DefineConfigBuilder and -Runners
+
+Run `make` to generate 
+
+- The shared library libolconf (olconf/lib/libolconf.so)
+- The command line tool olconfgen (olconf/bin/olconfgen)
+

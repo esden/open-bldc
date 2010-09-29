@@ -1,0 +1,41 @@
+---
+
+import_config: ./test/target_foo.yaml
+
+GLOBAL: # module GLOBAL
+
+  define: 
+    #define GLOBAL_VERSION "0.3.1"
+    version: "0.3.1"  
+
+  GPROT: # module GPROT
+    if: $(TARGET) == foo
+    then: 
+      import_config: [ ./test/gprot_flags.yaml, ./test/gprot_registers.yaml ]
+
+      # -> DefinesConfigBuilder
+      define: 
+        #define GPROT_NUM_ADC 10
+        num_adc: 10 
+        max_foo: 100
+  
+    elsif: $(TARGET) == bar
+    then: 
+      - foo_x: 10
+      - foo_y: 20
+
+      while: condition < 10
+      do: 
+        print $var
+
+      for: [ x = 4, x < 10, x++ ]
+      do:
+        print $x
+
+      # -> DefinesConfigBuilder
+      define: 
+        #define GPROT_NUM_ADC 10
+        num_adc: 10 
+        max_foo: 100
+
+

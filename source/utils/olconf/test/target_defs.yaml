@@ -1,0 +1,7 @@
+
+num_adc: 10
+adc_bit_res: 12
+adc_tim: TIM4
+use_adc1: yes
+use_adc2: no
+use_adc3: yes

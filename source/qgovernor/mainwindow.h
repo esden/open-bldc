@@ -19,6 +19,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 #include <QMainWindow>
 #include <QtGui>
 #include <QTcpSocket>
@@ -30,6 +31,10 @@
 #include "connectdialog.h"
 #include "governorsimulator.h"
 #include "governorftdi.h"
+
+#include "govconfig.h"
+
+
 
 namespace Ui {
     class MainWindow;
@@ -77,6 +82,7 @@ private slots:
     void on_forcedCommCheckBox_clicked(bool checked);
     void on_actionConnect_triggered(bool checked);
     void on_governorInterface_aboutToClose();
+    void on_actionLoadTarget_triggered();
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();
     void on_registerTableView_customContextMenuRequested(QPoint pos);
@@ -84,6 +90,8 @@ private slots:
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);
     void on_governorInterface_readyRead();
+
+    void addTargetTab(GovConfig const & config);
 };
 
 #endif // MAINWINDOW_H

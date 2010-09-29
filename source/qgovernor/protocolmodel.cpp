@@ -74,9 +74,9 @@ void ProtocolModel::handleByte(unsigned char byte)
         if((byte & GP_MODE_MASK) == GP_MODE_WRITE){
             addr = byte & GP_ADDR_MASK;
             state = 1;
-        }else if((byte & GP_MODE_MASK) == GP_MODE_READ | GP_MODE_PEEK){
+        }else if((byte & GP_MODE_MASK) == (GP_MODE_READ | GP_MODE_PEEK)){
             addPacket(false, 'R', byte & GP_ADDR_MASK);
-        }else if((byte & GP_MODE_MASK) == GP_MODE_READ | GP_MODE_CONT){
+        }else if((byte & GP_MODE_MASK) == (GP_MODE_READ | GP_MODE_CONT)){
             addPacket(true, 'R', byte & GP_ADDR_MASK);
         }
         break;

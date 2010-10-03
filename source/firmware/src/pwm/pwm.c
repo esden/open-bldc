@@ -46,19 +46,19 @@
 
 #include "driver/led.h"
 
-//#define PWM_VALUE 700
-//#define PWM_OFFSET 250
+//#define PWM__VALUE 700
+//#define PWM__OFFSET 250
 /** Default PWM duty cycle value */
-#define PWM_VALUE 300
+#define PWM__VALUE 300
 /** Default PWM offset for ADC triggering */
-#define PWM_OFFSET 187
+#define PWM__OFFSET 187
 
 //volatile uint16_t pwm_val = 700;
 //volatile uint16_t pwm_offset = 250;
 /** Current PWM duty cycle */
-volatile uint32_t pwm_val = PWM_VALUE;
+volatile uint32_t pwm_val = PWM__VALUE;
 /** Current PWM offset for ADC triggering */
-static volatile uint16_t pwm_offset = PWM_OFFSET;
+static volatile uint16_t pwm_offset = PWM__OFFSET;
 
 /**
  * Initialize the three phase (6outputs) PWM peripheral and internal state.
@@ -106,7 +106,7 @@ void pwm_init(void)
 	GPIO_Init(GPIOB, &gpio);
 
 	/* Time base configuration */
-	tim_base.TIM_Period = PWM_BASE_CLOCK / PWM_FREQUENCY;
+	tim_base.TIM_Period = PWM__BASE_CLOCK / PWM__FREQUENCY;
 	tim_base.TIM_Prescaler = 0;
 	tim_base.TIM_ClockDivision = 0;
 	tim_base.TIM_CounterMode = TIM_CounterMode_Up;
@@ -213,7 +213,7 @@ void tim1_trg_com_irq_handler(void)
 	TIM_SetCompare3(TIM1, pwm_val);
 	TIM_SetCompare4(TIM1, pwm_offset);
 
-	PWM_SCHEME();
+	PWM__SCHEME();
 	ON(LED_BLUE);
 }
 

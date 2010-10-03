@@ -46,7 +46,7 @@
 /**
  * Infinite Impulse Response filter calculation
  */
-#define CLP_IIR(VALUE, NEW_VALUE, IIR) \
+#define CLP__IIR(VALUE, NEW_VALUE, IIR) \
 	(((VALUE * IIR) + (NEW_VALUE)) / (IIR + 1))
 
 /**
@@ -73,7 +73,7 @@ void cpu_load_process_init()
 	(void)gpc_setup_reg(GPROT_CPU_LOAD_MAX, (u16 *)&cpu_load_process_state.max_cycles);
 	(void)gpc_setup_reg(GPROT_CPU_LOAD_MIN, (u16 *)&cpu_load_process_state.min_cycles);
 	(void)sys_tick_timer_register(cpu_load_process_soft_timer_callback,
-				CLP_TIME_BASE);
+				CLP__TIME_BASE);
 	cpu_load_process_reset();
 }
 
@@ -86,7 +86,7 @@ void cpu_load_process_reset()
 	cpu_load_process_state.mean_cycles = 0;
 	cpu_load_process_state.max_cycles = 0;
 	cpu_load_process_state.min_cycles = -1;
-	cpu_load_process_state.report_counter = CLP_REPORT_DIVIDER;
+	cpu_load_process_state.report_counter = CLP__REPORT_DIVIDER;
 }
 
 /**
@@ -113,14 +113,14 @@ void cpu_load_process_soft_timer_callback(int id)
 	if(cpu_load_process_state.mean_cycles == 0){
 		cpu_load_process_state.mean_cycles = cpu_load_process_state.cycles;
 	} else {
-		cpu_load_process_state.mean_cycles = CLP_IIR(cpu_load_process_state.mean_cycles,
+		cpu_load_process_state.mean_cycles = CLP__IIR(cpu_load_process_state.mean_cycles,
 							cpu_load_process_state.cycles,
-							CLP_IIR_VALUE);
+							CLP__IIR_VALUE);
 	}
 	cpu_load_process_state.cycles = 0;
 
 	if(cpu_load_process_state.report_counter == 0){
-		cpu_load_process_state.report_counter = CLP_REPORT_DIVIDER;
+		cpu_load_process_state.report_counter = CLP__REPORT_DIVIDER;
 		(void)gpc_register_touched(GPROT_CPU_LOAD);
 		(void)gpc_register_touched(GPROT_CPU_LOAD_MAX);
 		(void)gpc_register_touched(GPROT_CPU_LOAD_MIN);

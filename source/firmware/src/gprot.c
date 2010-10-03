@@ -83,7 +83,7 @@ static u16 gprot_flag_reg;
 /**
  * PWM power register
  */
-static u32 gprot_pwm_power = CP_SST_POWER;
+static u32 gprot_pwm_power = CP__SST_POWER;
 
 /**
  * Previous value of the flag register for detection of flag transitions.

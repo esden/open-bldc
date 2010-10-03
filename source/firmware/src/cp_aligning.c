@@ -56,7 +56,7 @@ control_process_aligning_state_in_cb(struct control_process * cps);
 /**
  * Callback function to be hooked as handler for state
  * cps_aligning in control_process.c.
- * Implements a simple countdown from @ref CP_ALIGN_TIME
+ * Implements a simple countdown from @ref CP__ALIGN_TIME
  * to 0.
  * Finally sets transition to control process state spinup by
  * setting control_process.state to cps_spinup.
@@ -64,7 +64,7 @@ control_process_aligning_state_in_cb(struct control_process * cps);
 static enum control_process_cb_state
 control_process_aligning_cb(struct control_process *cps)
 {
-#if CP_ALIGN_ENABLE == 1
+#if CP__ALIGN_ENABLE == 1
 	if (aligning_process.align_time == 0) {
 		cps->state = cps_spinup;
 		TOGGLE(LED_RED);
@@ -73,7 +73,7 @@ control_process_aligning_cb(struct control_process *cps)
 	}
 #else
 	cps->state = cps_spinup;
-#endif /* CP_ALIGN_ENABLE == 1 */
+#endif /* CP__ALIGN_ENABLE == 1 */
 	return cps_cb_continue;
 }
 
@@ -94,12 +94,12 @@ void cp_aligning_init(void)
 /**
  * Reset function for the aligning callback process.
  * Sets countdown to state transition back to
- * @ref CP_ALIGN_TIME.
+ * @ref CP__ALIGN_TIME.
  */
 void cp_aligning_reset(void)
 {
-	aligning_process.align_time = CP_ALIGN_TIME;
-	PWM_SET(CP_ALIGN_POWER);
+	aligning_process.align_time = CP__ALIGN_TIME;
+	PWM_SET(CP__ALIGN_POWER);
 }
 
 /**
@@ -111,7 +111,7 @@ control_process_aligning_state_in_cb(struct control_process * cps) {
 
 	cps = cps;
 
-#if CP_ALIGN_ENABLE == 1
+#if CP__ALIGN_ENABLE == 1
 	cp_aligning_reset();
 	pwm_comm();
 #endif

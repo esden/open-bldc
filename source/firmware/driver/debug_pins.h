@@ -23,7 +23,7 @@
 
 #include "macro_utils.h"
 
-#ifdef DP_USE_ENCODER
+#ifdef DP__USE_ENCODER
 
 #define DP_ENC_A_PORT GPIOA
 #define DP_ENC_A_PIN 6
@@ -33,7 +33,7 @@
 
 #endif
 
-#ifdef DP_USE_EXT_I2C
+#ifdef DP__USE_EXT_I2C
 
 #define DP_EXT_SCL_PORT GPIOB
 #define DP_EXT_SCL_PIN 8

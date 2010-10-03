@@ -1,0 +1,71 @@
+#
+# Open-BLDC - Open BrushLess DC Motor Controller
+# Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Open-BLDC Configuration file
+
+PWM:
+
+  defines:
+    PHASE_TRIGGER: 1
+    SCHEME: pwm_scheme_6step_pwm_on
+    SCHEME_12STEP: no
+    BASE_CLOCK: 72000000
+    FREQUENCY: 16000
+    MAX_POWER: 65535
+
+DP:
+  defines:
+    USE_EXT_I2C: yes
+    USE_ENCODER: yes
+
+CLP:
+  defines:
+    TIME_BASE: 10000
+    IIR_VALUE: 10
+    REPORT_DIVIDER: 10
+
+BEMF_HD:
+  defines:
+    USE_LED: yes
+    LED_TOGGLE: yes
+
+USART:
+  defines:
+    BAUD: 230400
+
+COMMP:
+  defines:
+    SPARK_ADVANCE: -1000
+    IIR: 5
+
+CP:
+  defines:
+    ALIGN_ENABLE: 1
+    ALIGN_TIME: 200
+    ALIGN_POWER: 6000
+
+    STS_COARSE_MAX_STEP: 30
+    STS_COARSE_DEC_DIV: 50
+    STS_FINE_DEC_DIV: 60000
+
+    SST_POWER: 4000
+    SST_MAX_STEP: 1000
+    SST_MIN_STEP: 100
+    SST_DEC_DIV: 150
+    SST_HOLD: 0
+    SST_SAFE_FOR_CLOSED_LOOP: 1000

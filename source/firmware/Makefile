@@ -51,6 +51,7 @@ OD		= $(PREFIX)-objdump
 SIZE		= $(PREFIX)-size
 OOCD		= openocd
 LINT		= splint
+OLCONFGEN	= olconfgen
 
 TOOLCHAIN_DIR = `dirname \`which $(CC)\``/..
 TOOLCHAIN_LIB_DIR = $(TOOLCHAIN_DIR)/$(PREFIX)/lib
@@ -182,7 +183,7 @@ doc:
 	fi
 
 
-check_params: check_params_exist $(patsubst %,%.check_param, $($(TARGET).PARAMS))
+check_params: check_params_exist $(patsubst %,%.check_param, $($(TARGET).PARAMS)) $(INCDIR)/config.h
 
 check_params_exist:
 	@echo "checking if $(INCDIR)/params.h exists... \c"
@@ -207,6 +208,10 @@ check_params_exist:
 	else \
 		echo "exists and not missing."; \
 	fi
+
+$(INCDIR)/config.h: ../conf/$(TARGET)-config.yaml
+	@echo "  OC    $@"
+	$(Q)$(OLCONFGEN) $< > $@
 
 # Suffix rules
 

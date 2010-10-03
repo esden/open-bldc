@@ -20,7 +20,7 @@
 #define __PWM_H
 
 #define PWM_SET(VAL) \
-	pwm_val = (((PWM_BASE_CLOCK / PWM_FREQUENCY) * VAL) / PWM_MAX_POWER)
+	pwm_val = (((PWM__BASE_CLOCK / PWM__FREQUENCY) * VAL) / PWM__MAX_POWER)
 
 extern volatile uint32_t pwm_val;
 

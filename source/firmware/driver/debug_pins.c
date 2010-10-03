@@ -40,7 +40,7 @@ void debug_pins_init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
 			       RCC_APB2Periph_GPIOB, ENABLE);
 
-#ifdef DP_USE_ENCODER
+#ifdef DP__USE_ENCODER
 #warning "Using encoder pins as debug outputs"
 	/* GPIOA: ENCODER_A, ENCODER_B pin as output push-pull */
 	GPIO_WriteBit(GPIOA, GPIO_Pin_6 | GPIO_Pin_7, Bit_SET);
@@ -50,7 +50,7 @@ void debug_pins_init(void)
 	GPIO_Init(GPIOA, &gpio);
 #endif
 
-#ifdef DP_USE_EXT_I2C
+#ifdef DP__USE_EXT_I2C
 #warning "Using I2C pins as debug outputs"
 	/* GPIOB: EXT_SCL and EXT_SDA pin as output push-pull */
 	gpio.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9;

@@ -96,10 +96,10 @@ void comm_process_init(void)
 	comm_data.calculated_freq = 0;
 	comm_data.in_range_counter = 0;
 
-	comm_params.spark_advance = COMMP_SPARK_ADVANCE;
+	comm_params.spark_advance = COMMP__SPARK_ADVANCE;
 	comm_params.direct_cutoff = 10000;
 	comm_params.direct_cutoff_slope = 20;
-	comm_params.iir = COMMP_IIR;
+	comm_params.iir = COMMP__IIR;
 	comm_params.hold_off = 1;
 }
 

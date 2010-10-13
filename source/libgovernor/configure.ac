@@ -163,7 +163,11 @@ fi
 # Test for check unittest library
 # ===============================
 
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
+AC_ARG_ENABLE(check, AC_HELP_STRING([--enable-check],[turn on check unittest library]))
+if test "x$enable_check" = "xyes";
+then
+   PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
+fi
 
 # ============
 # Output files

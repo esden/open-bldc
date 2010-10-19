@@ -35,7 +35,7 @@ CFLAGS+=-Wall -I./include -I../yamlgen/include
 LIB_LDFLAGS+=-lyaml -L../yamlgen/lib -lyamlgen 
 BIN_LDFLAGS+=-lyaml -L../yamlgen/lib -lyamlgen -L./lib -lolconf
 
-LIBTOOL=`which libtool > /dev/zero && echo libtool || echo glibtool`
+LIBTOOL=`which glibtool > /dev/zero && echo glibtool || echo libtool`
 
 PREFIX ?= /usr/local
 

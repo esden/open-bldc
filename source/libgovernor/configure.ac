@@ -25,7 +25,7 @@ AC_INIT([libgovernor], [0.1], [piotr@esden.net])
 case "$host" in
 	arm-*)
 		CFLAGS="$CFLAGS -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections"
-		LDFLAGS="$LDFLAGS -T${top_builddir}../firmware/src/stm32.ld -nostartfiles"
+		LDFLAGS="$LDFLAGS -T${srcdir}/../firmware/src/stm32.ld -nostartfiles"
 	;;
 esac
 
@@ -45,7 +45,7 @@ AC_DEFINE_UNQUOTED([HOST],["$host"],[The canonical host])
 # set it to the default of -O2 -g -Wall.
 #test -z "$CFLAGS" && CFLAGS="-O2 -g -Wall"
 
-AC_SUBST(EXTRACFLAGS, "-Wall -Wextra -Wshadow")
+AC_SUBST(EXTRACFLAGS, "-Wall -Wextra -Wshadow -I${srcdir}/include")
 AC_SUBST(CHECK_EXTRACFLAGS, "-Wall -Wextra -Wshadow")
 AC_SUBST(EXTRALDFLAGS, "")
 AC_SUBST(CHECK_EXTRALDFLAGS, "")

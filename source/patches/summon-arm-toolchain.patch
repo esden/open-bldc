@@ -1,0 +1,39 @@
+--- var/source/summon-arm-toolchain	2010-10-18 20:50:01.000000000 -0700
++++ var/build/sat/summon-arm-toolchain-template	2010-10-19 01:05:31.000000000 -0700
+@@ -19,21 +19,21 @@
+ # You probably want to customize those
+ ##############################################################################
+ TARGET=arm-none-eabi		# Or: TARGET=arm-elf
+-PREFIX=${HOME}/arm-none-eabi	# Install location of your final toolchain
+-PARALLEL=			# Or: PARALLEL="-j 5" for 4 CPUs
++PREFIX=stagedirectory    # Install location of your final toolchain
++PARALLEL='-j 3'			# Or: PARALLEL="-j 5" for 4 CPUs
+ DARWIN_OPT_PATH=/opt/local	# Path in which MacPorts or Fink is installed
+ # Set to 'sudo' if you need superuser privileges while installing
+ SUDO=
+ # Set to 1 to be quieter while running
+ QUIET=0
+ # Set to 1 to use linaro gcc instead of the FSF gcc
+-USE_LINARO=0
++USE_LINARO=1
+ # Set to 1 to build libstm32 provided by ST
+-LIBSTM32_EN=0
++LIBSTM32_EN=1
+ # Set to 1 to build libopenstm32 an open source library for stm32
+-LIBOPENSTM32_EN=0
++LIBOPENSTM32_EN=1
+ # Make the gcc default to Cortex-M3
+-DEFAULT_TO_CORTEX_M3=0
++DEFAULT_TO_CORTEX_M3=1
+ 
+ ##############################################################################
+ # Version and download url settings section
+@@ -116,7 +116,7 @@
+ function unpack {
+     log Unpacking $*
+     # Use 'auto' mode decompression.  Replace with a switch if tar doesn't support -a
+-    tar xaf${TARFLAGS} ${SOURCES}/$1.tar.*
++    gnutar xaf${TARFLAGS} ${SOURCES}/$1.tar.*
+ }
+ 
+ # Install a build

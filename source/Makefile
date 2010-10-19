@@ -1,4 +1,4 @@
-TOPDIR=`pwd`
+TOPDIR=$(shell pwd)
 VARDIR=$(TOPDIR)/var
 BUILDDIR=$(VARDIR)/build
 STAGEDIR=$(VARDIR)/stage
@@ -57,7 +57,6 @@ $(BUILDDIR)/sat/summon-arm-toolchain: $(SOURCEDIR)/summon-arm-toolchain
 		$(PATCH) -p0 -i $(PATCHDIR)/summon-arm-toolchain.patch -o $(BUILDDIR)/sat/summon-arm-toolchain-template; \
 		cat $(BUILDDIR)/sat/summon-arm-toolchain-template | sed s,stagedirectory,$(STAGEDIR), > $(BUILDDIR)/sat/summon-arm-toolchain
 
-
 sat: $(BUILDDIR)/sat/summon-arm-toolchain
 	@cd $(BUILDDIR)/sat; \
 		sh ./summon-arm-toolchain
@@ -73,10 +72,8 @@ libgovernor/configure:
 libgovernor-stm32-configure: libgovernor/configure sat
 	@mkdir -p $(BUILDDIR)/libgovernor-stm32; \
 		export PATH=$(STAGEDIR)/bin:$$PATH; \
-		export TOPDIR=$(TOPDIR); \
-		export STAGEDIR=$(STAGEDIR); \
 		cd $(BUILDDIR)/libgovernor-stm32; \
-		$$TOPDIR/libgovernor/configure --prefix=$$STAGEDIR --disable-shared --host=arm-none-eabi --disable-check
+		$(TOPDIR)/libgovernor/configure --prefix=$(STAGEDIR) --disable-shared --host=arm-none-eabi --disable-check
 
 libgovernor-stm32: libgovernor-stm32-configure
 	@export PATH=$(STAGEDIR)/bin:$$PATH; \
@@ -106,7 +103,7 @@ firmware: olconf-install libgovernor-stm32-install
 # Clean
 #######################################################################
 
-clean: firmware-clean libgovernor-clean yamlgen-clean olconf-clean
+clean: firmware-clean libgovernor-stm32-clean yamlgen-clean olconf-clean
 
 olconf-clean:
 	$(MAKE) -C utils/olconf clean
@@ -114,8 +111,8 @@ olconf-clean:
 yamlgen-clean:
 	$(MAKE) -C utils/yamlgen clean
 
-libgovernor-clean:
-	$(MAKE) -C libgovernor distclean
+libgovernor-stm32-clean:
+	$(MAKE) -C $(BUILDDIR)/libgovernor-stm32 distclean
 
 firmware-clean:
 	$(MAKE) -C firmware clean

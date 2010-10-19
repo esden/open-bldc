@@ -44,23 +44,23 @@
 #define GPROT__PWM_VAL_REG_ADDR 2
 
 
-/* Module: TARGET Define: ADC_BIT_RES */
-#define TARGET__ADC_BIT_RES 12
+/* Module: TARGET Define: adc_bit_res */
+#define TARGET__adc_bit_res 12
 
-/* Module: TARGET Define: ADC_TIM */
-#define TARGET__ADC_TIM TIM4
+/* Module: TARGET Define: adc_tim */
+#define TARGET__adc_tim TIM4
 
-/* Module: TARGET Define: IMPORT_CONFIG */
-#define TARGET__IMPORT_CONFIG ./test/target_defs.yaml
+/* Module: TARGET Define: import_config */
+#define TARGET__import_config ./test/target_defs.yaml
 
-/* Module: TARGET Define: NUM_ADC */
-#define TARGET__NUM_ADC 10
+/* Module: TARGET Define: num_adc */
+#define TARGET__num_adc 10
 
-/* Module: TARGET Define: USE_ADC1 */
-#define TARGET__USE_ADC1
-/* Module: TARGET Define: USE_ADC2 */
-// #define TARGET__USE_ADC2
-/* Module: TARGET Define: USE_ADC3 */
-#define TARGET__USE_ADC3
+/* Module: TARGET Define: use_adc1 */
+#define TARGET__use_adc1
+/* Module: TARGET Define: use_adc2 */
+// #define TARGET__use_adc2
+/* Module: TARGET Define: use_adc3 */
+#define TARGET__use_adc3
 
 #endif /* MODULE_CONFIG_HPP__ */

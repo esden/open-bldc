@@ -92,7 +92,7 @@ clean:
 test: $(BINDIR)/olconfgen
 	@echo "  TEST  "
 	$(Q)./bin/olconfgen ./test/main.yaml >test/test_output.hpp
-	$(Q)diff test/test_output.hpp test/expected_main.hpp
+	$(Q)diff -u  test/test_output.hpp test/expected_main.hpp
 	$(Q)rm test/test_output.hpp
 
 .PHONY: install

@@ -34,7 +34,7 @@ CC=g++
 CFLAGS+=-Wall -I./include -I./include/yamlgen
 LDFLAGS+=-lyaml
 
-LIBTOOL=`which glibtool > /dev/zero && echo glibtool || echo libtool`
+LIBTOOL=$(shell which glibtool > /dev/zero && echo glibtool || echo libtool)
 
 ifdef LOG
 CFLAGS += -DLOG=$(LOG) -g

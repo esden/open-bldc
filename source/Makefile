@@ -103,7 +103,7 @@ firmware: olconf-install libgovernor-stm32-install
 # Clean
 #######################################################################
 
-clean: firmware-clean libgovernor-stm32-clean yamlgen-clean olconf-clean
+clean: firmware-clean yamlgen-clean olconf-clean libgovernor-stm32-clean
 
 olconf-clean:
 	$(MAKE) -C utils/olconf clean

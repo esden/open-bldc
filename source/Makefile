@@ -45,23 +45,6 @@ yamlgen: $(STAGEDIR)
 	+$(MAKE) -C utils/yamlgen PREFIX=$(STAGEDIR)
 
 #######################################################################
-# summon-arm-toolchain
-#######################################################################
-
-$(SOURCEDIR)/summon-arm-toolchain: $(SOURCEDIR)
-	@cd $(SOURCEDIR); \
-		wget -c http://github.com/esden/summon-arm-toolchain/raw/master/summon-arm-toolchain
-
-$(BUILDDIR)/sat/summon-arm-toolchain: $(SOURCEDIR)/summon-arm-toolchain
-	@mkdir -p $(BUILDDIR)/sat; \
-		$(PATCH) -p0 -i $(PATCHDIR)/summon-arm-toolchain.patch -o $(BUILDDIR)/sat/summon-arm-toolchain-template; \
-		cat $(BUILDDIR)/sat/summon-arm-toolchain-template | sed s,stagedirectory,$(STAGEDIR), > $(BUILDDIR)/sat/summon-arm-toolchain
-
-sat: $(BUILDDIR)/sat/summon-arm-toolchain
-	@cd $(BUILDDIR)/sat; \
-		sh ./summon-arm-toolchain
-
-#######################################################################
 # libgovernor stm32
 #######################################################################
 
@@ -69,9 +52,8 @@ libgovernor/configure:
 	@cd libgovernor; \
 		./autogen.sh
 
-libgovernor-stm32-configure: libgovernor/configure sat
+libgovernor-stm32-configure: libgovernor/configure
 	@mkdir -p $(BUILDDIR)/libgovernor-stm32; \
-		export PATH=$(STAGEDIR)/bin:$$PATH; \
 		cd $(BUILDDIR)/libgovernor-stm32; \
 		$(TOPDIR)/libgovernor/configure --prefix=$(STAGEDIR) --disable-shared --host=arm-none-eabi --disable-check
 

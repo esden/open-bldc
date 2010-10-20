@@ -52,12 +52,12 @@ libgovernor/configure:
 	@cd libgovernor; \
 		./autogen.sh
 
-libgovernor-stm32-configure: libgovernor/configure
+$(BUILDDIR)/libgovernor-stm32/Makefile: libgovernor/configure
 	@mkdir -p $(BUILDDIR)/libgovernor-stm32; \
 		cd $(BUILDDIR)/libgovernor-stm32; \
 		$(TOPDIR)/libgovernor/configure --prefix=$(STAGEDIR) --disable-shared --host=arm-none-eabi --disable-check
 
-libgovernor-stm32: libgovernor-stm32-configure
+libgovernor-stm32: $(BUILDDIR)/libgovernor-stm32/Makefile
 	@export PATH=$(STAGEDIR)/bin:$$PATH; \
 		$(MAKE) -C $(BUILDDIR)/libgovernor-stm32
 
@@ -85,7 +85,7 @@ firmware: olconf-install libgovernor-stm32-install
 # Clean
 #######################################################################
 
-clean: firmware-clean yamlgen-clean olconf-clean libgovernor-stm32-clean
+clean: firmware-clean yamlgen-clean olconf-clean libgovernor-clean libgovernor-stm32-clean
 
 olconf-clean:
 	$(MAKE) -C utils/olconf clean
@@ -93,12 +93,21 @@ olconf-clean:
 yamlgen-clean:
 	$(MAKE) -C utils/yamlgen clean
 
+libgovernor-clean:
+	@if [ -f libgovernor/Makefile ]; then \
+		$(MAKE) -C libgovernor distclean; \
+	fi
+
 libgovernor-stm32-clean:
-	$(MAKE) -C $(BUILDDIR)/libgovernor-stm32 distclean
+	@if [ -f $(BUILDDIR)/libgovernor-stm32/Makefile ]; then \
+		$(MAKE) -C $(BUILDDIR)/libgovernor-stm32 distclean; \
+	fi
 
 firmware-clean:
 	$(MAKE) -C firmware clean
 
 qgovernor-clean:
-	$(MAKE) -C qgovernor clean
+	@if [ -f qgovernor ]; \
+		$(MAKE) -C qgovernor clean; \
+	fi
 

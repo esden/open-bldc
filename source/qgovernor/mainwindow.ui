@@ -183,6 +183,16 @@
              </property>
             </widget>
            </item>
+           <item row="4" column="4">
+            <widget class="QLabel" name="RPMValueLabel">
+             <property name="text">
+              <string>RPM Value</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -576,7 +586,7 @@
      <x>0</x>
      <y>0</y>
      <width>914</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -654,7 +664,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="qgovernor.qrc">
      <normaloff>:/icons/icons/connect-32x32.png</normaloff>
      <normalon>:/icons/icons/disconnect-32x32.png</normalon>:/icons/icons/connect-32x32.png</iconset>
    </property>
@@ -672,7 +682,9 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="qgovernor.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>

@@ -129,6 +129,15 @@ void MainWindow::on_registerChanged(unsigned char addr)
         break;
     case GPROT_COMM_TIM_FREQ_REG_ADDR:
         ui->forcedCommTimValSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        ui->RPMValueLabel->setText(QString("%1RPM").arg(60.0 /
+                                                        ((1.0/(32000000.0/4.0)) *
+                                                         6.0 *
+                                                         7.0 *
+                                                         governorMaster->getRegisterMapValue(addr)),
+                                                        8,
+                                                        'f',
+                                                        2,
+                                                        '0'));
         break;
     case GPROT_ADC_ZERO_VALUE_REG_ADDR:
         ui->ADCZeroValueSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
@@ -358,6 +367,15 @@ void MainWindow::on_PWMOffsetSpinBox_valueChanged(int value)
 void MainWindow::on_forcedCommTimValSpinBox_valueChanged(int value)
 {
     registerModel.setRegisterValue(GPROT_COMM_TIM_FREQ_REG_ADDR, value);
+    ui->RPMValueLabel->setText(QString("%1RPM").arg(60.0 /
+                                                    ((1.0/(32000000.0/4.0)) *
+                                                     6.0 *
+                                                     7.0 *
+                                                     value),
+                                                    8,
+                                                    'f',
+                                                    2,
+                                                    '0'));
 }
 
 void MainWindow::on_ADCZeroValueSpinBox_valueChanged(int value)

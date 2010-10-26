@@ -42,6 +42,8 @@ ifneq ($(VERBOSE),1)
 Q := @
 endif
 
+TOPDIR = $(shell pwd)
+
 CC		= $(PREFIX)-gcc
 LD		= $(PREFIX)-ld
 AR		= $(PREFIX)-ar
@@ -51,13 +53,16 @@ OD		= $(PREFIX)-objdump
 SIZE		= $(PREFIX)-size
 OOCD		= openocd
 LINT		= splint
-OLCONFGEN	= olconfgen
+OLCONFGEN	= $(shell which olconfgen && echo olconfgen || echo $(TOPDIR)/../var/stage/bin/olconfgen)
 
-TOOLCHAIN_DIR = `dirname \`which $(CC)\``/..
+COMPILER = $(shell which $(CC))
+TOOLCHAIN_DIR = $(shell dirname $(COMPILER))/..
 TOOLCHAIN_LIB_DIR = $(TOOLCHAIN_DIR)/$(PREFIX)/lib
 TOOLCHAIN_INC_DIR = $(TOOLCHAIN_DIR)/$(PREFIX)/include
 GOVERNOR_LIB_DIR = $(TOOLCHAIN_DIR)/lib
 GOVERNOR_INC_DIR = $(TOOLCHAIN_DIR)/include
+STAGE_LIB_DIR = $(TOPDIR)/../var/stage/lib
+STAGE_INC_DIR = $(TOPDIR)/../var/stage/include
 
 BUILDDIR	= build/$(TARGET)
 BINDIR		= $(BUILDDIR)/bin
@@ -70,13 +75,15 @@ INCDIRS		= \
 	-Isrc \
 	-Itest \
 	-I$(GOVERNOR_INC_DIR) \
-	-I$(INCDIR)
+	-I$(INCDIR) \
+	-I$(STAGE_INC_DIR)
 CFLAGS          = $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections
 ASFLAGS         = -ahls -mapcs-32
 LDFLAGS         = -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
-		                    -L$(GOVERNOR_LIB_DIR) --gc-sections
+		                    -L$(GOVERNOR_LIB_DIR) --gc-sections \
+				    -L$(STAGE_LIB_DIR)
 LDLIBS          = -lcmsis -lstm32 -lgovernor
 CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
@@ -209,7 +216,7 @@ check_params_exist:
 		echo "exists and not missing."; \
 	fi
 
-$(INCDIR)/config.h: ../conf/$(TARGET)-config.yaml
+$(INCDIR)/config.h: $(TOPDIR)/../conf/$(TARGET)-config.yaml
 	@echo "  OC    $@"
 	$(Q)$(OLCONFGEN) $< > $@
 

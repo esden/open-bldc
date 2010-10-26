@@ -70,12 +70,7 @@ libgovernor-stm32-install: libgovernor-stm32
 #######################################################################
 
 firmware: olconf-install libgovernor-stm32-install
-	@export PATH=$(STAGEDIR)/bin:$$PATH; \
-		export CFLAGS="-I$(STAGEDIR)/include"; \
-		export LDFLAGS="-L$(STAGEDIR)/lib"; \
-		echo $$PATH; \
-		echo `which arm-none-eabi-gcc`; \
-		$(MAKE) -C firmware
+	$(MAKE) -C firmware VERBOSE=$(VERBOSE)
 
 #######################################################################
 # QGovernor

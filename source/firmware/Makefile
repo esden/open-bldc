@@ -53,7 +53,7 @@ OD		= $(PREFIX)-objdump
 SIZE		= $(PREFIX)-size
 OOCD		= openocd
 LINT		= splint
-OLCONFGEN	= $(shell which olconfgen && echo olconfgen || echo $(TOPDIR)/../var/stage/bin/olconfgen)
+OLCONFGEN	= $(shell which olconfgen > /dev/null && echo olconfgen || echo $(TOPDIR)/../var/stage/bin/olconfgen)
 
 COMPILER = $(shell which $(CC))
 TOOLCHAIN_DIR = $(shell dirname $(COMPILER))/..

@@ -160,12 +160,12 @@ SECTIONS
     /* after that it's only debugging information. */
 
     /* remove the debugging information from the standard libraries */
-    /*DISCARD/ :
+    /DISCARD/ :
     {
      libc.a ( * )
      libm.a ( * )
      libgcc.a ( * )
-     }*/
+     }
 
     /* Stabs debugging sections.  */
     .stab          0 : { *(.stab) }

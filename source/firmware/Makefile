@@ -45,7 +45,7 @@ endif
 TOPDIR = $(shell pwd)
 
 CC		= $(PREFIX)-gcc
-LD		= $(PREFIX)-ld
+LD		= $(PREFIX)-gcc
 AR		= $(PREFIX)-ar
 AS		= $(PREFIX)-as
 CP		= $(PREFIX)-objcopy
@@ -84,7 +84,7 @@ ASFLAGS         = -ahls -mapcs-32
 LDFLAGS         = -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
 		                    -L$(GOVERNOR_LIB_DIR) --gc-sections \
 				    -L$(STAGE_LIB_DIR)
-LDLIBS          = -lcmsis -lstm32 -lgovernor
+LDLIBS          = -lcmsis -lstm32 -lgovernor -lc -lgcc
 CPFLAGS         = -j .isr_vector -j .text -j .data
 ODFLAGS         = -S
 SIZEFLAGS       = -A -x

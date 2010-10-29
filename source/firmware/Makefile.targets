@@ -50,6 +50,7 @@ mc.OBJECTS = \
 	driver/sys_tick.o \
 	driver/bemf_hardware_detect.o \
 	driver/debug_pins.o \
+	driver/adc.o \
 	src/cpu_load_process.o \
 	src/pwm/pwm.o \
 	src/pwm/pwm_scheme_6step_h_pwm_l_on.o \
@@ -67,7 +68,6 @@ mc.OBJECTS = \
 	src/cp_spinning.o \
 	src/cp_error.o \
 	src/control_process.o
-#	driver/adc.o \
 
 OBJECTS += $(mc.OBJECTS)
 

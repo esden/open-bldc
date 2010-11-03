@@ -1,13 +1,13 @@
 function current_sensor()
 
 # Opamp gain resistors
-R = 5400.0;
-r = 1000.0;
+R = 12000.0; # 5400
+r = 1000.0; # 1000
 
 # Opamp input resistor network
-r1 = 660.0;
-r2 = 560.0;
-r3 = 4700.0;
+r1 = 665.0; # 660
+r2 = 562.0; # 560
+r3 = 11800.0; # 4700
 
 # Shunt resistance
 shunt = 0.0025;
@@ -37,6 +37,13 @@ v = (trans + shunt_v/(k*r1));
 
 # opamp output
 S = v * G;
+
+# maxi/min value
+printf("Max: ");
+max(S)
+printf("Min: ");
+min(S)
+
 
 plot(A, shunt_v, "1", A, v, "2", A, S, "3")
 legend('e', 'v', 'S');

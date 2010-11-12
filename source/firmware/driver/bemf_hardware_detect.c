@@ -45,8 +45,8 @@
 struct bemf_hd_data bemf_hd_data;
 u16 bemf_line_state;
 
-#ifdef BEMF_HD_USE_LED
-#  ifdef BEMF_HD_LED_TOGGLE
+#ifdef BEMF_HD__USE_LED
+#  ifdef BEMF_HD__LED_TOGGLE
 #    define BEMF_HD_LED_RISING() TOGGLE(LED_ORANGE)
 #    define BEMF_HD_LED_FALLING() TOGGLE(LED_ORANGE)
 #  else

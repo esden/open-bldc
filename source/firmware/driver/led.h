@@ -21,17 +21,17 @@
 
 #include "macro_utils.h"
 
-#define LED_ORANGE_PORT GPIOB
-#define LED_ORANGE_PIN 2
+#define LED_ORANGE_PORT GPIOA
+#define LED_ORANGE_PIN 6
 
 #define LED_RED_PORT GPIOB
-#define LED_RED_PIN 12
+#define LED_RED_PIN 1
 
-#define LED_GREEN_PORT GPIOC
-#define LED_GREEN_PIN  14
+#define LED_GREEN_PORT GPIOA
+#define LED_GREEN_PIN  7
 
-#define LED_BLUE_PORT GPIOC
-#define LED_BLUE_PIN 13
+#define LED_BLUE_PORT GPIOB
+#define LED_BLUE_PIN 0
 
 void led_init(void);
 

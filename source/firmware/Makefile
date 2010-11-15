@@ -133,6 +133,7 @@ $(BINDIR)/%.images: $(BINDIR)/%.bin $(BINDIR)/%.hex $(BINDIR)/%.srec $(BINDIR)/%
 	@echo "Cleaning target $(*)"
 	$(Q)rm -rf build/$(*)
 
+
 ifdef TARGET
 %.flash: $$(*).target_exists $$(*).hex
 	@echo "  OOCD  $(*).hex"
@@ -140,7 +141,8 @@ ifdef TARGET
 		    -f board/$(OOCD_TARGET).cfg \
 		    -c init \
 		    -c "reset halt" \
-		    -c "flash write_image erase $*.hex" \
+		    -c "stm32x mass_erase 0" \
+		    -c "flash write_image $*.hex" \
 		    -c reset \
 		    -c shutdown
 else

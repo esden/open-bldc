@@ -23,7 +23,7 @@
  *
  * @brief  Implementation of 6step PWM ON scheme
  *
- * Table of the pwm scheme zone configurations:
+ * Table of the pwm scheme zone configurations when driving:
  * @verbatim
  *  | 1| 2| 3| 4| 5| 6|
  * -+--+--+--+--+--+--+
@@ -66,7 +66,7 @@ void pwm_scheme_6step_pwm_on(void)
 	switch (pwm_phase) {
 	case 1:		// 000º
 
-		/* Configure step 2 */
+                /* Configure step 2 */
 		pwm_set_a_high_b_lpwm_c_off();
 
 		pwm_phase++;

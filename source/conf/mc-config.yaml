@@ -22,11 +22,11 @@ PWM:
 
   defines:
     PHASE_TRIGGER: 1
-    SCHEME: pwm_scheme_6step_pwm_on
+    SCHEME: pwm_scheme_6step_h_pwm_l_on
     SCHEME_12STEP: no
     BASE_CLOCK: 72000000
     FREQUENCY: 16000
-    MAX_POWER: 65535
+    MAX_POWER: 32767
 
 DP:
   defines:
@@ -57,13 +57,13 @@ CP:
   defines:
     ALIGN_ENABLE: 1
     ALIGN_TIME: 200
-    ALIGN_POWER: 6000
+    ALIGN_POWER: 2000
 
     STS_COARSE_MAX_STEP: 30
     STS_COARSE_DEC_DIV: 50
     STS_FINE_DEC_DIV: 60000
 
-    SST_POWER: 4000
+    SST_POWER: 2000
     SST_MAX_STEP: 1000
     SST_MIN_STEP: 100
     SST_DEC_DIV: 150

@@ -23,7 +23,7 @@
  *
  * @brief  Implementation of the 6step H PWM L ON scheme.
  *
- * Table of the pwm scheme zone configurations:
+ * Table of the pwm scheme zone configurations when driving:
  * @verbatim
  *  | 1| 2| 3| 4| 5| 6|
  * -+--+--+--+--+--+--+
@@ -32,6 +32,23 @@
  * B|  |--|--|  |p+|p+|
  * -+--+--+--+--+--+--+
  * C|--|  |p+|p+|  |--|
+ * -+--+--+--+--+--+--+
+ *  |  |  |  |  |  |  '- 360º
+ *  |  |  |  |  |  '---- 300º
+ *  |  |  |  |  '------- 240º
+ *  |  |  |  '---------- 180º
+ *  |  |  '------------- 120º
+ *  |  '----------------  60º
+ *  '-------------------   0º
+ *
+ * Table of the pwm scheme zone configurations when braking:
+ *  | 1| 2| 3| 4| 5| 6|
+ * -+--+--+--+--+--+--+
+ * A|p-|p-|  |  |  |  |
+ * -+--+--+--+--+--+--+
+ * B|  |  |  |  |p-|p-|
+ * -+--+--+--+--+--+--+
+ * C|  |  |p-|p-|  |  |
  * -+--+--+--+--+--+--+
  *  |  |  |  |  |  |  '- 360º
  *  |  |  |  |  |  '---- 300º
@@ -51,12 +68,9 @@
  */
 
 #include <stm32/tim.h>
-#include <stm32/adc.h>
 
-#include "types.h"
 #include "pwm/pwm_utils.h"
-#include "driver/adc.h"
-#include "comm_process.h"
+#include "pwm/pwm.h"
 
 #include "pwm_scheme_6step_h_pwm_l_on.h"
 
@@ -67,66 +81,95 @@ inline void pwm_scheme_6step_h_pwm_l_on(void)
 {
 	static int pwm_phase = 1;
 
-	switch (pwm_phase) {
-	case 1:		// 000º
+	if (pwm_dir == PWM_FORWARD) {
+		switch (pwm_phase) {
+		case 1:		// 000º
 
-		//adc_set(ADC_CHANNEL_B);
-		comm_process_config_and_reset(COMM_PROCESS_FALLING);
+			/* Configure step 2 */
+			pwm_set_a_hpwm_b_low__c_off();
 
-		/* Configure step 2 */
-		pwm_set_a_hpwm_b_low__c_off();
+			pwm_phase++;
+			break;
+		case 2:		// 060º
 
-		pwm_phase++;
-		break;
-	case 2:		// 060º
+			/* Configure step 3 */
+			pwm_set_a_off__b_low__c_hpwm();
 
-		//adc_set(ADC_CHANNEL_C);
-		comm_process_config(COMM_PROCESS_RISING);
+			pwm_phase++;
+			break;
+		case 3:		// 120º
 
-		/* Configure step 3 */
-		pwm_set_a_off__b_low__c_hpwm();
+			/* Configure step 4 */
+			pwm_set_a_low__b_off__c_hpwm();
 
-		pwm_phase++;
-		break;
-	case 3:		// 120º
+			pwm_phase++;
+			break;
+		case 4:		// 180º
 
-		//adc_set(ADC_CHANNEL_A);
-		comm_process_config_and_reset(COMM_PROCESS_FALLING);
+			/* Configure step 5 */
+			pwm_set_a_low__b_hpwm_c_off();
 
-		/* Configure step 4 */
-		pwm_set_a_low__b_off__c_hpwm();
+			pwm_phase++;
+			break;
+		case 5:		// 220º
 
-		pwm_phase++;
-		break;
-	case 4:		// 180º
+			/* Configure step 6 */
+			pwm_set_a_off__b_hpwm_c_low();
 
-		//adc_set(ADC_CHANNEL_B);
-		comm_process_config_and_reset(COMM_PROCESS_RISING);
+			pwm_phase++;
+			break;
+		case 6:		// 280º
 
-		/* Configure step 4 */
-		pwm_set_a_low__b_hpwm_c_off();
+			/* Configure step 1 */
+			pwm_set_a_hpwm_b_off__c_low();
 
-		pwm_phase++;
-		break;
-	case 5:		// 220º
+			pwm_phase = 1;
+			break;
+		}
+	} else {
+		switch (pwm_phase) {
+		case 1:		// 000º
 
-		//adc_set(ADC_CHANNEL_C);
-		comm_process_config_and_reset(COMM_PROCESS_FALLING);
+			/* Configure step 2 */
+			pwm_set_a_lpwm_b_off__c_off();
 
-		/* Configure step 4 */
-		pwm_set_a_off__b_hpwm_c_low();
+			pwm_phase++;
+			break;
+		case 2:		// 060º
 
-		pwm_phase++;
-		break;
-	case 6:		// 280º
+			/* Configure step 3 */
+			pwm_set_a_off__b_off__c_lpwm();
 
-		//adc_set(ADC_CHANNEL_A);
-		comm_process_config_and_reset(COMM_PROCESS_RISING);
+			pwm_phase++;
+			break;
+		case 3:		// 120º
 
-		/* Configure step 4 */
-		pwm_set_a_hpwm_b_off__c_low();
+			/* Configure step 4 */
+			pwm_set_a_off__b_off__c_lpwm();
 
-		pwm_phase = 1;
-		break;
+			pwm_phase++;
+			break;
+		case 4:		// 180º
+
+			/* Configure step 5 */
+			pwm_set_a_off__b_lpwm_c_off();
+
+			pwm_phase++;
+			break;
+		case 5:		// 220º
+
+			/* Configure step 6 */
+			pwm_set_a_off__b_lpwm_c_off();
+
+			pwm_phase++;
+			break;
+		case 6:		// 280º
+
+			/* Configure step 1 */
+			pwm_set_a_lpwm_b_off__c_off();
+
+			pwm_phase = 1;
+			break;
+		}
 	}
 }

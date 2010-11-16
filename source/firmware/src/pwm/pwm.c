@@ -48,6 +48,8 @@
 
 //#define PWM__VALUE 700
 //#define PWM__OFFSET 250
+/** Default PWM direction */
+#define PWM__DIR PWM_FORWARD
 /** Default PWM duty cycle value */
 #define PWM__VALUE 300
 /** Default PWM offset for ADC triggering */
@@ -55,6 +57,8 @@
 
 //volatile uint16_t pwm_val = 700;
 //volatile uint16_t pwm_offset = 250;
+/** Current PWM direction */
+volatile enum pwm_dir pwm_dir = PWM__DIR;
 /** Current PWM duty cycle */
 volatile uint32_t pwm_val = PWM__VALUE;
 /** Current PWM offset for ADC triggering */
@@ -214,7 +218,7 @@ void tim1_trg_com_irq_handler(void)
 	TIM_SetCompare4(TIM1, pwm_offset);
 
 	PWM__SCHEME();
-	ON(LED_BLUE);
+	OFF(LED_BLUE);
 }
 
 /**

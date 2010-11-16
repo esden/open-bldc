@@ -182,4 +182,104 @@
 		   PWM_HI_OFF, PWM_LO_ON,			\
 		   PWM_HI_ON, PWM_LO_ON)
 
+/* High PWM low off manipulators */
+#define pwm_set_a_hpwm_b_off__c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_ON, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+#define pwm_set_a_hpwm_b_off__c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_ON, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+#define pwm_set_a_off__b_off__c_hpwm()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_ON, PWM_LO_OFF)
+#define pwm_set_a_off__b_off__c_hpwm()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_ON, PWM_LO_OFF)
+#define pwm_set_a_off__b_hpwm_c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_ON, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+#define pwm_set_a_off__b_hpwm_c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_ON, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+
+/* High off low PWM manipulators */
+#define pwm_set_a_lpwm_b_off__c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_ON,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+#define pwm_set_a_lpwm_b_off__c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_ON,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+#define pwm_set_a_off__b_off__c_lpwm()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_ON)
+#define pwm_set_a_off__b_off__c_lpwm()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_ON)
+#define pwm_set_a_off__b_lpwm_c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_ON,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+#define pwm_set_a_off__b_lpwm_c_off()				\
+	pwm_disable_all();					\
+	pwm_conf(pwm_conf_mode_off,				\
+		 pwm_conf_mode_pwm,				\
+		 pwm_conf_mode_off);				\
+	pwm_enable(PWM_HI_OFF, PWM_LO_OFF,			\
+		   PWM_HI_OFF, PWM_LO_ON,			\
+		   PWM_HI_OFF, PWM_LO_OFF)
+
 #endif /* __PWM_UTILS_H */

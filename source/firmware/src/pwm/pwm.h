@@ -19,9 +19,21 @@
 #ifndef __PWM_H
 #define __PWM_H
 
-#define PWM_SET(VAL) \
-	pwm_val = (((PWM__BASE_CLOCK / PWM__FREQUENCY) * VAL) / PWM__MAX_POWER)
+#define PWM_SET(VAL)							\
+	if(VAL >= 0) {							\
+		pwm_dir = PWM_FORWARD;					\
+		pwm_val = (((PWM__BASE_CLOCK / PWM__FREQUENCY) * VAL) / PWM__MAX_POWER); \
+	} else {							\
+		pwm_dir = PWM_REVERSE;					\
+		pwm_val = (((PWM__BASE_CLOCK / PWM__FREQUENCY) * -VAL) / PWM__MAX_POWER); \
+	}
 
+enum pwm_dir {
+	PWM_FORWARD,
+	PWM_REVERSE,
+};
+
+extern volatile enum pwm_dir pwm_dir;
 extern volatile uint32_t pwm_val;
 
 void pwm_init(void);

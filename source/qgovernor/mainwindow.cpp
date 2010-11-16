@@ -124,8 +124,8 @@ void MainWindow::on_registerChanged(unsigned char addr)
         ui->PWMOffsetSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
     case GPROT_PWM_VAL_REG_ADDR:
-        ui->PWMDutyCycleSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
-        ui->PWMDutyCycleHorizontalSlider->setValue(governorMaster->getRegisterMapValue(addr));
+        ui->PWMDutyCycleSpinBox->setValue((int16_t)governorMaster->getRegisterMapValue(addr));
+        ui->PWMDutyCycleHorizontalSlider->setValue((int16_t)governorMaster->getRegisterMapValue(addr));
         break;
     case GPROT_COMM_TIM_FREQ_REG_ADDR:
         ui->forcedCommTimValSpinBox->setValue(governorMaster->getRegisterMapValue(addr));

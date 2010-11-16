@@ -143,7 +143,7 @@ void MainWindow::on_registerChanged(unsigned char addr)
         ui->ADCZeroValueSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
     case GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR:
-        ui->commSparkAdvanceSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
+        ui->commSparkAdvanceSpinBox->setValue((int16_t)governorMaster->getRegisterMapValue(addr));
         break;
     case GPROT_COMM_TIM_DIRECT_CUTOFF_REG_ADDR:
         ui->commDirectCutoffSpinBox->setValue(governorMaster->getRegisterMapValue(addr));

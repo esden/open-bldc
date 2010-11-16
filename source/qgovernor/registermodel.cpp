@@ -41,7 +41,7 @@ RegisterModel::RegisterModel()
     }
 }
 
-void RegisterModel::setRegisterValue(unsigned char addr, unsigned short value)
+void RegisterModel::setRegisterValue(uint8_t addr, uint16_t value)
 {
     item(addr, 0)->setData(QString::number(value, 10).rightJustified(5, '0', false), Qt::DisplayRole);
     item(addr, 1)->setData(QString::number(value, 16).rightJustified(4, '0', false), Qt::DisplayRole);

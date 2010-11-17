@@ -22,7 +22,7 @@ PWM:
 
   defines:
     PHASE_TRIGGER: 1
-    SCHEME: pwm_scheme_6step_h_pwm_l_on
+    SCHEME: pwm_scheme_6step_pwm_on
     SCHEME_12STEP: no
     BASE_CLOCK: 72000000
     FREQUENCY: 16000

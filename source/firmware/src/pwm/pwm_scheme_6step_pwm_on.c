@@ -41,6 +41,24 @@
  *  |  '----------------  60º
  *  '-------------------   0º
  *
+ * Table of the pwm scheme zone configurations when braking:
+ * @verbatim
+ *  | 1| 2| 3| 4| 5| 6|
+ * -+--+--+--+--+--+--+
+ * A|p-|  |  |p+|  |  |
+ * -+--+--+--+--+--+--+
+ * B|  |p+|  |  |p-|  |
+ * -+--+--+--+--+--+--+
+ * C|  |  |p-|  |  |p+|
+ * -+--+--+--+--+--+--+
+ *  |  |  |  |  |  |  '- 360º
+ *  |  |  |  |  |  '---- 300º
+ *  |  |  |  |  '------- 240º
+ *  |  |  |  '---------- 180º
+ *  |  |  '------------- 120º
+ *  |  '----------------  60º
+ *  '-------------------   0º
+ *
  * Legend:
  * p+: PWM on the high side
  * p-: PWM on the low side
@@ -53,6 +71,7 @@
 #include <stm32/tim.h>
 
 #include "pwm_utils.h"
+#include "pwm/pwm.h"
 
 #include "pwm_scheme_6step_pwm_on.h"
 
@@ -63,48 +82,95 @@ void pwm_scheme_6step_pwm_on(void)
 {
 	static int pwm_phase = 1;
 
-	switch (pwm_phase) {
-	case 1:		// 000º
+	if (pwm_dir == PWM_FORWARD) {
+		switch (pwm_phase) {
+		case 1:		// 000º
 
-                /* Configure step 2 */
-		pwm_set_a_high_b_lpwm_c_off();
+			/* Configure step 2 */
+			pwm_set_a_high_b_lpwm_c_off();
 
-		pwm_phase++;
-		break;
-	case 2:		// 060º
+			pwm_phase++;
+			break;
+		case 2:		// 060º
 
-		/* Configure step 3 */
-		pwm_set_a_off__b_low__c_hpwm();
+			/* Configure step 3 */
+			pwm_set_a_off__b_low__c_hpwm();
 
-		pwm_phase++;
-		break;
-	case 3:		// 120º
+			pwm_phase++;
+			break;
+		case 3:		// 120º
 
-		/* Configure step 4 */
-		pwm_set_a_lpwm_b_off__c_high();
+			/* Configure step 4 */
+			pwm_set_a_lpwm_b_off__c_high();
 
-		pwm_phase++;
-		break;
-	case 4:		// 180º
+			pwm_phase++;
+			break;
+		case 4:		// 180º
 
-		/* Configure step 5 */
-		pwm_set_a_low__b_hpwm_c_off();
+			/* Configure step 5 */
+			pwm_set_a_low__b_hpwm_c_off();
 
-		pwm_phase++;
-		break;
-	case 5:		// 220º
+			pwm_phase++;
+			break;
+		case 5:		// 220º
 
-		/* Configure step 6 */
-		pwm_set_a_off__b_high_c_lpwm();
+			/* Configure step 6 */
+			pwm_set_a_off__b_high_c_lpwm();
 
-		pwm_phase++;
-		break;
-	case 6:		// 280º
+			pwm_phase++;
+			break;
+		case 6:		// 280º
 
-		/* Configure step 1 */
-		pwm_set_a_hpwm_b_off__c_low();
+			/* Configure step 1 */
+			pwm_set_a_hpwm_b_off__c_low();
 
-		pwm_phase = 1;
-		break;
+			pwm_phase = 1;
+			break;
+		}
+	} else {
+		switch (pwm_phase) {
+		case 1:		// 000º
+
+			/* Configure step 2 */
+			pwm_set_a_off__b_hpwm_c_off();
+
+			pwm_phase++;
+			break;
+		case 2:		// 060º
+
+			/* Configure step 3 */
+			pwm_set_a_off__b_off__c_lpwm();
+
+			pwm_phase++;
+			break;
+		case 3:		// 120º
+
+			/* Configure step 4 */
+			pwm_set_a_hpwm_b_off__c_off();
+
+			pwm_phase++;
+			break;
+		case 4:		// 180º
+
+			/* Configure step 5 */
+			pwm_set_a_off__b_lpwm_c_off();
+
+			pwm_phase++;
+			break;
+		case 5:		// 220º
+
+			/* Configure step 6 */
+			pwm_set_a_off__b_off__c_hpwm();
+
+			pwm_phase++;
+			break;
+		case 6:		// 280º
+
+			/* Configure step 1 */
+			pwm_set_a_lpwm_b_off__c_off();
+
+			pwm_phase = 1;
+			break;
+		}
 	}
 }

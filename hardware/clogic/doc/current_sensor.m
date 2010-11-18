@@ -1,13 +1,13 @@
 function current_sensor()
 
 # Opamp gain resistors
-R = 12000.0; # 5400
+R = 68000.0; # 5400
 r = 1000.0; # 1000
 
 # Opamp input resistor network
 r1 = 665.0; # 660
 r2 = 562.0; # 560
-r3 = 11800.0; # 4700
+r3 = 56000.0; # 4700
 
 # Shunt resistance
 shunt = 0.0025;
@@ -47,3 +47,10 @@ min(S)
 
 plot(A, shunt_v, "1", A, v, "2", A, S, "3")
 legend('e', 'v', 'S');
+
+# calculate output voltage for 1A
+shunt_v_1 = shunt * 1;
+v_1 = (trans + shunt_v_1/(k*r1));
+
+printf("Output voltage at 1A");
+S_1 = v_1 * G

@@ -48,19 +48,14 @@
 #include "pwm/pwm.h"
 #include "comm_tim.h"
 #include "gprot.h"
+#include "driver/sys_tick.h"
+
+void adc_conv_trigger(int id);
 
 /**
  * ADC data instance
  */
 struct adc_data adc_data;
-
-/**
- * ADC output trigger
- *
- * Can be used to trigger actions in the userspace every time new data is
- * available from the ADC.
- */
-volatile bool adc_new_data_trigger;
 
 /**
  * Initialize the ADC peripherals and internal state of the driver
@@ -73,7 +68,6 @@ void adc_init(void)
 
 	/* enable ADC1 clock */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
-			       RCC_APB2Periph_GPIOB |
 			       RCC_APB2Periph_ADC1, ENABLE);
 
 	/* Configure and enable ADC interrupt */
@@ -84,29 +78,26 @@ void adc_init(void)
 	NVIC_Init(&nvic);
 
 	/* GPIOA: ADC Channel 0, 1, 2, 3 as analog input
-	 * Ch 0 -> BEMF/I_Sense of PHASE A
-	 * Ch 1 -> BEMF/I_Sense of PHASE B
-	 * Ch 2 -> BEMF/I_Sense of PHASE C
 	 * Ch 3 -> Battery Voltage
-	 * Ch 9 -> Global Current
+	 * Ch 4 -> Current
+	 * Ch 5 -> Temperature
 	 */
-	gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
+	gpio.GPIO_Pin =
+		GPIO_Pin_3 |
+		GPIO_Pin_4 |
+		GPIO_Pin_5;
 	gpio.GPIO_Mode = GPIO_Mode_AIN;
 	gpio.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &gpio);
 
-	gpio.GPIO_Pin = GPIO_Pin_1;
-	gpio.GPIO_Mode = GPIO_Mode_AIN;
-	GPIO_Init(GPIOB, &gpio);
-
-	adc_data.phase_voltage = 0;
-	adc_data.half_battery_voltage = 0;
-	adc_data.global_current = 0;
+	adc_data.battery_voltage = 0;
+	adc_data.current = 0;
+	adc_data.temp = 0;
 
 	/* Configure ADC1 */
 	adc.ADC_Mode = ADC_Mode_Independent;
 	adc.ADC_ScanConvMode = ENABLE;
-	adc.ADC_ContinuousConvMode = DISABLE;
+	adc.ADC_ContinuousConvMode = ENABLE;
 	adc.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
 	adc.ADC_DataAlign = ADC_DataAlign_Right;
 	adc.ADC_NbrOfChannel = 0;
@@ -114,17 +105,15 @@ void adc_init(void)
 
 	ADC_InjectedSequencerLengthConfig(ADC1, 3);
 
-	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_C, 1,
-				  ADC_SampleTime_41Cycles5);
-	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_HALF_BATTERY_VOLTAGE, 2,
-				  ADC_SampleTime_41Cycles5);
-	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_GLOBAL_CURRENT, 3,
-				  ADC_SampleTime_41Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_BATTERY_VOLTAGE, 1,
+				  ADC_SampleTime_239Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_CURRENT, 2,
+				  ADC_SampleTime_239Cycles5);
+	ADC_InjectedChannelConfig(ADC1, ADC_CHANNEL_TEMP, 3,
+				  ADC_SampleTime_239Cycles5);
 
-	ADC_ExternalTrigInjectedConvConfig(ADC1,
-					   ADC_ExternalTrigInjecConv_T1_CC4);
-
-	ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
+        /* ADC1 injected external trigger configuration */
+        ADC_ExternalTrigInjectedConvConfig(ADC1, ADC_ExternalTrigInjecConv_None);
 
 	/* Enable ADC1 JEOC interrupt */
 	ADC_ITConfig(ADC1, ADC_IT_JEOC, ENABLE);
@@ -144,24 +133,11 @@ void adc_init(void)
 	/* Check the end of ADC1 calibration */
 	while (ADC_GetCalibrationStatus(ADC1) == SET) ;
 
-	/* Enable ADC1 External Trigger */
-	ADC_ExternalTrigConvCmd(ADC1, ENABLE);
+	/* Start ADC1 Software Conversion */
+	ADC_SoftwareStartInjectedConvCmd(ADC1, ENABLE);
 
-}
-
-/**
- * Select the adc channel to sample.
- *
- * @param channel ID of the channel to be sampled.
- */
-void adc_set(u8 channel)
-{
-
-	ADC_ExternalTrigInjectedConvCmd(ADC1, DISABLE);
-
-	ADC_InjectedChannelConfig(ADC1, channel, 1, ADC_SampleTime_28Cycles5);
-
-	ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
+	/* Register adc as a timed callback */
+	sys_tick_timer_register(adc_conv_trigger, 1000);
 }
 
 /**
@@ -171,14 +147,21 @@ void adc1_2_irq_handler(void)
 {
 	ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
 
-	comm_tim_capture_time();
+	adc_data.battery_voltage =
+		ADC_GetInjectedConversionValue(ADC1, ADC_BATTERY_VOLTAGE);
+	adc_data.current =
+		ADC_GetInjectedConversionValue(ADC1, ADC_CURRENT);
+	adc_data.temp =
+		ADC_GetInjectedConversionValue(ADC1, ADC_TEMP);
 
-	adc_data.phase_voltage =
-	    ADC_GetInjectedConversionValue(ADC1, ADC_PHASE_VOLTAGE);
-	adc_data.half_battery_voltage =
-	    ADC_GetInjectedConversionValue(ADC1, ADC_HALF_BATTERY_VOLTAGE);
-	adc_data.global_current =
-	    ADC_GetInjectedConversionValue(ADC1, ADC_GLOBAL_CURRENT);
+	adc_data.trigger = true;
+}
 
-	adc_new_data_trigger = true;
+/**
+ * Trigger timer callback
+ */
+void adc_conv_trigger(int id) {
+
+	/* Start ADC1 Software Conversion */
+	ADC_SoftwareStartInjectedConvCmd(ADC1, ENABLE);
 }

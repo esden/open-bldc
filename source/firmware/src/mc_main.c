@@ -78,7 +78,7 @@ int main(void)
 	cpu_load_process_init();
 	comm_process_init();
 	sensor_process_init();
-	//adc_init();
+	adc_init();
 	pwm_init();
 	comm_tim_init();
 	control_process_init();
@@ -91,19 +91,17 @@ int main(void)
 	while (true) {
 		run_cpu_load_process();
 
-/*
-		if (adc_new_data_trigger) {
-			adc_new_data_trigger = false;
-			run_sensor_process();
-		}
-*/
-
 		if (*comm_process_trigger) {
 			*comm_process_trigger = false;
 			run_comm_process();
 		}
 
 		run_control_process();
+
+		if (*sensor_process_trigger) {
+			*sensor_process_trigger = false;
+			run_sensor_process();
+		}
 
 		if (demo) {
 			if (demo_counter == 0) {

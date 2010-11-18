@@ -23,12 +23,14 @@
  * Sensor values
  */
 struct sensors {
-	u16 phase_voltage;	  /**< Voltage of the currently selected phase */
-	u32 half_battery_voltage; /**< Half of the supply rail voltage */
-	u16 global_current;	  /**< Global controller current */
+	s16 battery_voltage;      /**< Supply rail voltage */
+	s16 current;	          /**< Global controller current */
+	s16 temp;                 /**< Powerstage temperature */
 };
 
 extern struct sensors sensors;
+
+extern volatile bool *sensor_process_trigger;
 
 void sensor_process_init(void);
 void sensor_process_reset(void);

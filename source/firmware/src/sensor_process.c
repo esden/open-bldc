@@ -51,20 +51,26 @@ struct sensor_params {
 		u32 iir;    /**< IIR filter value */
 	} pv;
 	/**
-	 * Half supply rail voltage post processing parameters
+	 * Supply rail voltage post processing parameters
 	 */
-	struct hbv {
+	struct bv {
 		s32 offset; /**< how much to offset the value */
 		u32 iir;    /**< IIR filter value */
-	} hbv;
+	} bv;
 	/**
 	 * Global controller current
 	 */
-	struct gc {
-		s32 zero_current_offset; /**< Zero current offset value */
-		s32 zero_current;	 /**< The value of zero */
-		u32 iir;		 /**< IIR filter value */
-	} gc;
+	struct c {
+		s32 offset;	 /**< The value of zero */
+		u32 iir;	 /**< IIR filter value */
+	} c;
+	/**
+	 * Powerstage temperature
+	 */
+	struct t {
+		s32 offset; /**< Zero temperature offset value */
+		u32 iir;	 /**< IIR filter value */
+	} t;
 };
 
 /**
@@ -78,6 +84,11 @@ struct sensors sensors;
 static struct sensor_params sensor_params;
 
 /**
+ * Sensor process Trigger
+ */
+volatile bool *sensor_process_trigger;
+
+/**
  * Generate debug output flag
  */
 static int sensor_trigger_debug_output;
@@ -89,11 +100,6 @@ static int sensor_trigger_debug_output;
 	(((VALUE * IIR) + (NEW_VALUE + OFFSET)) / (IIR + 1))
 
 /**
- * Delay counter for low priority sensor updates
- */
-static int sensor_process_low_prio_update_cnt = 0;
-
-/**
  * Sensor process initializer.
  *
  * Resets all global presets.
@@ -101,35 +107,37 @@ static int sensor_process_low_prio_update_cnt = 0;
 void sensor_process_init(void)
 {
 
-	(void)gpc_setup_reg(GPROT_ADC_ZERO_VALUE_REG_ADDR,
-			    (u16 *) & (sensors.half_battery_voltage));
-	(void)gpc_setup_reg(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR,
-			    (u16 *) & (sensors.global_current));
-	(void)gpc_setup_reg(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR,
-			    (u16 *) & (sensors.phase_voltage));
+	(void)gpc_setup_reg(GPROT_ADC_BATTERY_VOLTAGE_REG_ADDR,
+			    (u16 *) & (sensors.battery_voltage));
+	(void)gpc_setup_reg(GPROT_ADC_CURRENT_REG_ADDR,
+			    (u16 *) & (sensors.current));
+	(void)gpc_setup_reg(GPROT_ADC_TEMPERATURE_REG_ADDR,
+			    (u16 *) & (sensors.temp));
 
-	sensors.phase_voltage = 0;
-	sensors.half_battery_voltage = 0;
-	sensors.global_current = 0;
+	sensor_process_trigger = &adc_data.trigger;
 
-	sensor_params.pv.offset = 0;
-	sensor_params.pv.iir = 0;
-	sensor_params.hbv.offset = 000;
-	sensor_params.hbv.iir = 20;
-	sensor_params.gc.zero_current_offset = 0;
-	sensor_params.gc.zero_current = 2045;
-	sensor_params.gc.iir = 20;
+	sensors.battery_voltage = 0;
+	sensors.current = 0;
+	sensors.temp = 0;
+
+	sensor_params.bv.offset = 0;
+	sensor_params.bv.iir = 20;
+	sensor_params.c.offset = 0;
+	sensor_params.c.iir = 20;
+	sensor_params.t.offset = 0;
+	sensor_params.t.iir = 20;
 
 	sensor_trigger_debug_output = 0;
-	sensor_process_low_prio_update_cnt = 0;
 }
 
 /**
- * Resets all current sensor data to default values.
+ * Resets all sensor data to default values.
  */
 void sensor_process_reset(void)
 {
-	sensors.phase_voltage = 0;
+	sensors.battery_voltage = 0;
+	sensors.current = 0;
+	sensors.temp = 0;
 }
 
 /**
@@ -140,63 +148,36 @@ void sensor_process_reset(void)
  */
 void run_sensor_process(void)
 {
-	u16 phase_voltage = adc_data.phase_voltage;
-	u16 half_battery_voltage = adc_data.half_battery_voltage;
-	u16 global_current = adc_data.global_current;
+	u16 battery_voltage = adc_data.battery_voltage;
+	u16 current = adc_data.current;
+	u16 temp = adc_data.temp;
 
-	//ON(LED_RED);
-	/* High priority sensors */
-	if (sensors.phase_voltage == 0) {
-		sensors.phase_voltage = 1;
-	} else if (sensors.phase_voltage == 1) {
-		sensors.phase_voltage = phase_voltage;
-	} else if (sensors.phase_voltage == 65535) {
-		sensors.phase_voltage = 65534;
-	} else if (sensors.phase_voltage == 65534) {
-		sensors.phase_voltage = phase_voltage;
-	} else {
-		sensors.phase_voltage = SENSOR_OFFSET_IIR(sensors.phase_voltage,
-							  phase_voltage,
-							  sensor_params.pv.
-							  offset,
-							  sensor_params.pv.iir);
+	TOGGLE(LED_RED);
+	/* Calculate battery voltage */
+	sensors.battery_voltage =
+		SENSOR_OFFSET_IIR(sensors.battery_voltage, battery_voltage,
+				sensor_params.bv.offset,
+				sensor_params.bv.iir);
 
-	}
+	/* Calculate global current */
+	sensors.current =
+		SENSOR_OFFSET_IIR(sensors.current, current,
+				sensor_params.c.offset,
+				sensor_params.c.iir);
 
-	/* Low priority sensors */
-	if (sensor_process_low_prio_update_cnt == 211) {
-		sensor_process_low_prio_update_cnt = 0;
+	/* Calculate power stage temperature */
+	sensors.temp =
+		SENSOR_OFFSET_IIR(sensors.temp, temp,
+				sensor_params.t.offset,
+				sensor_params.t.iir);
 
-		/* Jump to the current battery voltage when initializing */
-		if (sensors.half_battery_voltage == 0) {
-			sensors.half_battery_voltage = half_battery_voltage;
-		}
-		/* Adjust slowly the half battery voltage according to measurement */
-		if ((u16)((s32)half_battery_voltage + (s32)sensor_params.hbv.offset) >
-		    sensors.half_battery_voltage) {
-			sensors.half_battery_voltage++;
-		} else if ((u16)((s32)half_battery_voltage + (s32)sensor_params.hbv.offset) <
-			   sensors.half_battery_voltage) {
-			sensors.half_battery_voltage--;
-		}
-
-		/* Calculate global current */
-		sensors.global_current =
-		    SENSOR_OFFSET_IIR(sensors.global_current, global_current,
-				      (sensor_params.gc.zero_current +
-				       sensor_params.gc.zero_current_offset),
-				      sensor_params.gc.iir);
-	} else {
-		sensor_process_low_prio_update_cnt++;
-	}
-
-	if (sensor_trigger_debug_output == 100) {
+	if (sensor_trigger_debug_output == 10) {
 		sensor_trigger_debug_output = 0;
-		(void)gpc_register_touched(GPROT_ADC_ZERO_VALUE_REG_ADDR);
-		(void)gpc_register_touched(GPROT_ADC_GLOBAL_CURRENT_REG_ADDR);
-		(void)gpc_register_touched(GPROT_ADC_PHASE_VOLTAGE_REG_ADDR);
+		(void)gpc_register_touched(GPROT_ADC_BATTERY_VOLTAGE_REG_ADDR);
+		(void)gpc_register_touched(GPROT_ADC_CURRENT_REG_ADDR);
+		(void)gpc_register_touched(GPROT_ADC_TEMPERATURE_REG_ADDR);
 	} else {
 		sensor_trigger_debug_output++;
 	}
-	//OFF(LED_RED);
+
 }

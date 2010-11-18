@@ -139,7 +139,7 @@ void MainWindow::on_registerChanged(unsigned char addr)
                                                         2,
                                                         '0'));
         break;
-    case GPROT_ADC_ZERO_VALUE_REG_ADDR:
+    case GPROT_ADC_BATTERY_VOLTAGE_REG_ADDR:
         ui->ADCZeroValueSpinBox->setValue(governorMaster->getRegisterMapValue(addr));
         break;
     case GPROT_COMM_TIM_SPARK_ADVANCE_REG_ADDR:
@@ -380,7 +380,7 @@ void MainWindow::on_forcedCommTimValSpinBox_valueChanged(int value)
 
 void MainWindow::on_ADCZeroValueSpinBox_valueChanged(int value)
 {
-    registerModel.setRegisterValue(GPROT_ADC_ZERO_VALUE_REG_ADDR, value);
+    registerModel.setRegisterValue(GPROT_ADC_BATTERY_VOLTAGE_REG_ADDR, value);
 }
 
 void MainWindow::on_triggerCommPushButton_clicked()
@@ -401,7 +401,7 @@ void MainWindow::on_forcedCommMonCheckBox_clicked(bool checked)
 
 void MainWindow::on_ADCLevelMonCheckBox_clicked(bool checked)
 {
-    governorMaster->sendGetCont(GPROT_ADC_ZERO_VALUE_REG_ADDR);
+    governorMaster->sendGetCont(GPROT_ADC_BATTERY_VOLTAGE_REG_ADDR);
 }
 
 void MainWindow::on_commSparkAdvanceSpinBox_valueChanged(int value)

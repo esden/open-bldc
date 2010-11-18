@@ -23,24 +23,23 @@
 /**
  * ADC Channel to sensor name mappings
  */
-#define ADC_CHANNEL_A ADC_Channel_0
-#define ADC_CHANNEL_B ADC_Channel_1
-#define ADC_CHANNEL_C ADC_Channel_2
-#define ADC_CHANNEL_HALF_BATTERY_VOLTAGE ADC_Channel_3
-#define ADC_CHANNEL_GLOBAL_CURRENT ADC_Channel_9
+#define ADC_CHANNEL_BATTERY_VOLTAGE ADC_Channel_3
+#define ADC_CHANNEL_CURRENT ADC_Channel_4
+#define ADC_CHANNEL_TEMP ADC_Channel_5
 
-#define ADC_PHASE_VOLTAGE ADC_InjectedChannel_1
-#define ADC_HALF_BATTERY_VOLTAGE ADC_InjectedChannel_2
-#define ADC_GLOBAL_CURRENT ADC_InjectedChannel_3
+#define ADC_BATTERY_VOLTAGE ADC_InjectedChannel_1
+#define ADC_CURRENT ADC_InjectedChannel_2
+#define ADC_TEMP ADC_InjectedChannel_3
 /** @} */
 
 /**
  * ADC output data
  */
 struct adc_data {
-	u16 phase_voltage; /**< Raw phase voltage value */
-	u16 half_battery_voltage; /**< Raw half battery voltage value */
-	u16 global_current; /**< Raw global current value */
+	bool trigger; /**< New data arrived trigger */
+	u16 battery_voltage; /**< Raw half battery voltage value */
+	u16 current; /**< Raw global current value */
+	u16 temp; /**< RAW temperature measurement */
 };
 
 extern struct adc_data adc_data;

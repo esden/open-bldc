@@ -115,7 +115,7 @@ void pwm_scheme_6step_pwm_on(void)
 {
 	static int pwm_phase = 1;
 
-	if (pwm_dir == PWM_FORWARD) {
+	if (pwm_mode == PWM_DRIVE) {
 		switch (pwm_phase) {
 		case 1:		// 000º
 
@@ -160,7 +160,7 @@ void pwm_scheme_6step_pwm_on(void)
 			pwm_phase = 1;
 			break;
 		}
-	} else {
+	} else { /* pwm_mode == PWM_BRAKE */
 		switch (pwm_phase) {
 		case 1:		// 000º
 

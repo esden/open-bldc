@@ -48,8 +48,8 @@
 
 //#define PWM__VALUE 700
 //#define PWM__OFFSET 250
-/** Default PWM direction */
-#define PWM__DIR PWM_FORWARD
+/** Default PWM mode */
+#define PWM__MODE PWM_DRIVE
 /** Default PWM duty cycle value */
 #define PWM__VALUE 300
 /** Default PWM offset for ADC triggering */
@@ -58,7 +58,7 @@
 //volatile uint16_t pwm_val = 700;
 //volatile uint16_t pwm_offset = 250;
 /** Current PWM direction */
-volatile enum pwm_dir pwm_dir = PWM__DIR;
+volatile enum pwm_mode pwm_mode = PWM__MODE;
 /** Current PWM duty cycle */
 volatile uint32_t pwm_val = PWM__VALUE;
 /** Current PWM offset for ADC triggering */

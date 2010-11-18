@@ -41,6 +41,14 @@
  *  |  '----------------  60º
  *  '-------------------   0º
  *
+ * Legend:
+ * p+: PWM on the high side
+ * p-: PWM on the low side
+ * --: Low side on
+ * ++: High side on
+ *   : Floating/NC
+ * @endverbatim
+ *
  * Table of the pwm scheme zone configurations when braking:
  * @verbatim
  *  | 1| 2| 3| 4| 5| 6|
@@ -65,6 +73,31 @@
  * --: Low side on
  * ++: High side on
  *   : Floating/NC
+ * @endverbatim
+ *
+ * Table of the BEMF states throughout the electrical circle:
+ * @verbatim
+ *  | 1| 2| 3| 4| 5| 6|
+ * -+--+--+--+--+--+--+
+ * A|++|++|+-|--|--|-+|
+ * -+--+--+--+--+--+--+
+ * B|+-|--|--|-+|++|++|
+ * -+--+--+--+--+--+--+
+ * C|--|-+|++|++|+-|--|
+ * -+--+--+--+--+--+--+
+ *  |  |  |  |  |  |  '- 360º
+ *  |  |  |  |  |  '---- 300º
+ *  |  |  |  |  '------- 240º
+ *  |  |  |  '---------- 180º
+ *  |  |  '------------- 120º
+ *  |  '----------------  60º
+ *  '-------------------   0º
+ *
+ * Legend:
+ * ++: BEMF higher then starpoint
+ * --: BEMF lower then starpoint
+ * +-: BEMF transitioning from higher to lower then starpoint
+ * -+: BEMF transitioning from lower to higher then starpoint
  * @endverbatim
  */
 

@@ -22,11 +22,11 @@
 #include <QFile>
 #include <lg/types.h>
 
-class QGLogger : QFile {
-  public: 
-  QGLogger(const QString &name);
-  ~QGLogger();
-  void writeRegisters(s32 (*getreg)(unsigned char));
+class QGLogger:QFile {
+public:
+	QGLogger(const QString & name);
+	~QGLogger();
+	void writeRegisters(s32(*getreg) (unsigned char));
 };
 
 #endif // LOG_H

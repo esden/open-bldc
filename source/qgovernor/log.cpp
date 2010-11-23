@@ -25,40 +25,41 @@
 #define NUM_REGISTERS 32
 #define BUFFER_SIZE 2048
 
-QGLogger::QGLogger(const QString &name) : QFile(name)
+QGLogger::QGLogger(const QString & name):QFile(name)
 {
-  QTextStream err(stderr, (QIODevice::ReadWrite));
+	QTextStream err(stderr, (QIODevice::ReadWrite));
 
-  if (!(this->open(QIODevice::WriteOnly | QIODevice::Text)))
-    err << "Warning!  Couldn't open log file '" << name << "' for writing.\n";
+	if (!(this->open(QIODevice::WriteOnly | QIODevice::Text)))
+		err << "Warning!  Couldn't open log file '" << name <<
+		    "' for writing.\n";
 }
 
 QGLogger::~QGLogger()
 {
-  this->close();
+	this->close();
 }
 
 void
-QGLogger::writeRegisters(s32 (*getreg)(unsigned char))
+ QGLogger::writeRegisters(s32(*getreg) (unsigned char))
 {
-  QString line;
-  QTextStream out(this);
+	QString line;
+	QTextStream out(this);
 
-  struct timeval tv;
-  time_t tim;
-  time(&tim);
-  struct tm *ts;
-  gettimeofday(&tv, NULL);
-  ts = localtime(&tim);
-  
-  out << ts->tm_year << ts->tm_mon << ts->tm_mday;
+	struct timeval tv;
+	time_t tim;
+	time(&tim);
+	struct tm *ts;
+	gettimeofday(&tv, NULL);
+	ts = localtime(&tim);
 
-  out << ":" << ts->tm_hour << ":" << ts->tm_min;
-  out << ":" << ts->tm_sec << ":" << tv.tv_usec << "\t";
+	out << ts->tm_year << ts->tm_mon << ts->tm_mday;
 
-  for(int j=0; j<32; j++) {
-    out << getreg(j) << "\t";
-  } 
+	out << ":" << ts->tm_hour << ":" << ts->tm_min;
+	out << ":" << ts->tm_sec << ":" << tv.tv_usec << "\t";
 
-  out << "\n";
+	for (int j = 0; j < 32; j++) {
+		out << getreg(j) << "\t";
+	}
+
+	out << "\n";
 }

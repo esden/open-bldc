@@ -42,8 +42,8 @@ struct gpm_hooks {
 	void *trigger_output_data;
 	gp_with_addr_hook_t register_changed;
 	void *register_changed_data;
-  gp_simple_hook_t log_callback;
-  void *log_data;
+	gp_simple_hook_t log_callback;
+	void *log_data;
 } gpm_hooks;
 
 u16 gpm_register_map[32];
@@ -69,8 +69,8 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	gpm_hooks.trigger_output_data = trigger_output_data;
 	gpm_hooks.register_changed = register_changed;
 	gpm_hooks.register_changed_data = register_changed_data;
-        gpm_hooks.log_callback = 0;
-        gpm_hooks.log_data = 0;
+	gpm_hooks.log_callback = 0;
+	gpm_hooks.log_data = 0;
 
 	for (i = 0; i < 32; i++)
 		gpm_register_map[i] = 0;
@@ -82,9 +82,9 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 
 int gpm_set_log(gp_simple_hook_t cb, void *data)
 {
-  gpm_hooks.log_callback = cb;
-  gpm_hooks.log_data = data;
-  return 0;
+	gpm_hooks.log_callback = cb;
+	gpm_hooks.log_data = data;
+	return 0;
 }
 
 s32 gpm_get_register_map_val(u8 addr)
@@ -115,8 +115,8 @@ int gpm_send_set(u8 addr, u16 val)
 		if (gpm_hooks.trigger_output)
 			gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
 		gpm_register_map[addr] = val;
-                if (gpm_hooks.log_callback)
-                  gpm_hooks.log_callback(gpm_hooks.log_data);
+		if (gpm_hooks.log_callback)
+			gpm_hooks.log_callback(gpm_hooks.log_data);
 		return 0;
 	}
 
@@ -173,11 +173,11 @@ int gpm_handle_byte(u8 byte)
 		gpm_data |= byte << 8;
 		gpm_register_map[gpm_addr] = gpm_data;
 		if (gpm_hooks.register_changed)
-			gpm_hooks.register_changed(gpm_hooks.
-						   register_changed_data,
-						   gpm_addr);
-                if (gpm_hooks.log_callback)
-                  gpm_hooks.log_callback(gpm_hooks.log_data);
+			gpm_hooks.
+			    register_changed(gpm_hooks.register_changed_data,
+					     gpm_addr);
+		if (gpm_hooks.log_callback)
+			gpm_hooks.log_callback(gpm_hooks.log_data);
 		gpm_state = GPMS_IDLE;
 		break;
 	}

@@ -223,7 +223,7 @@ void MainWindow::on_actionLoadTarget_triggered()
 
 void MainWindow::on_actionOpenLog_triggered()
 {
-  QString filename = QFileDialog::getSaveFileName(this, 
+  QString filename = QFileDialog::getSaveFileName(this,
                                                   tr("Choose a log file"), "",
                                                   tr("Target files (*.log)"));
 

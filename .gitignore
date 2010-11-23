@@ -1,2 +1,5 @@
 *~
 *.swp
+source/var
+source/qgovernor/qgovernor
+source/firmware/build

@@ -26,6 +26,8 @@
 int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	     gp_with_addr_hook_t register_changed, void *register_changed_data);
 
+int gpm_set_log(gp_simple_hook_t cb, void *data);
+
 s32 gpm_get_register_map_val(u8 addr);
 s32 gpm_pickup_byte(void);
 

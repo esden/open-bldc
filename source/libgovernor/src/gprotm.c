@@ -30,14 +30,20 @@
 #include "lg/types.h"
 #include "lg/ring.h"
 #include "lg/gpdef.h"
-
 #include "lg/gprotm.h"
+
+/* The void pointers below get passed in the callback so that the code
+ * using the governor protocol can associate the callback with a
+ * particular object if it likes.  For example, in QGovernor, these
+ * are secretly pointers to a GovernorMaster instance.  */
 
 struct gpm_hooks {
 	gp_simple_hook_t trigger_output;
 	void *trigger_output_data;
 	gp_with_addr_hook_t register_changed;
 	void *register_changed_data;
+  gp_simple_hook_t log_callback;
+  void *log_data;
 } gpm_hooks;
 
 u16 gpm_register_map[32];
@@ -63,6 +69,8 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	gpm_hooks.trigger_output_data = trigger_output_data;
 	gpm_hooks.register_changed = register_changed;
 	gpm_hooks.register_changed_data = register_changed_data;
+        gpm_hooks.log_callback = 0;
+        gpm_hooks.log_data = 0;
 
 	for (i = 0; i < 32; i++)
 		gpm_register_map[i] = 0;
@@ -70,6 +78,13 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	ring_init(&gpm_output_ring, gpm_output_buffer, 128);
 
 	return 0;
+}
+
+int gpm_set_log(gp_simple_hook_t cb, void *data)
+{
+  gpm_hooks.log_callback = cb;
+  gpm_hooks.log_data = data;
+  return 0;
 }
 
 s32 gpm_get_register_map_val(u8 addr)
@@ -100,6 +115,8 @@ int gpm_send_set(u8 addr, u16 val)
 		if (gpm_hooks.trigger_output)
 			gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
 		gpm_register_map[addr] = val;
+                if (gpm_hooks.log_callback)
+                  gpm_hooks.log_callback(gpm_hooks.log_data);
 		return 0;
 	}
 
@@ -159,6 +176,8 @@ int gpm_handle_byte(u8 byte)
 			gpm_hooks.register_changed(gpm_hooks.
 						   register_changed_data,
 						   gpm_addr);
+                if (gpm_hooks.log_callback)
+                  gpm_hooks.log_callback(gpm_hooks.log_data);
 		gpm_state = GPMS_IDLE;
 		break;
 	}

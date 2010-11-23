@@ -16,33 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GOVERNORMASTER_H
-#define GOVERNORMASTER_H
+#ifndef LOG_H
+#define LOG_H
 
-#include <QObject>
-#include "log.h"
+#include <QFile>
+#include <lg/types.h>
 
-class GovernorMaster : public QObject
-{
-    Q_OBJECT
-public:
-    ~GovernorMaster();
-    GovernorMaster();
-    void outputTriggerCB();
-    void registerChangedCB(unsigned char addr);
-    signed short pickupByte();
-    int sendSet(unsigned char addr, unsigned short data);
-    int sendGet(unsigned char addr);
-    int sendGetCont(unsigned char addr);
-    unsigned short getRegisterMapValue(unsigned char addr);
-    int handleByte(unsigned char byte);
-    void newLog(const QString &name);
-    QGLogger * reglog;
-
-  signals:
-    void outputTriggered();
-    void registerChanged(unsigned char addr);
-
+class QGLogger : QFile {
+  public: 
+  QGLogger(const QString &name);
+  ~QGLogger();
+  void writeRegisters(s32 (*getreg)(unsigned char));
 };
 
-#endif // GOVERNORMASTER_H
+#endif // LOG_H

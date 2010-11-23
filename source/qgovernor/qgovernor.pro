@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     governorsimulator.cpp \
     governorftdi.cpp \
     govconfig.cpp \
-    targetwidgetfactory.cpp
+    targetwidgetfactory.cpp \
+    log.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
     governormaster.h \
@@ -44,7 +45,8 @@ HEADERS += mainwindow.h \
     govconfigwidget.h \
     govconfigspinbox.h \
     govconfigslider.h \
-    govconfigcheckbox.h
+    govconfigcheckbox.h \
+    log.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
     simulator.ui
@@ -59,11 +61,15 @@ macx {
     QMAKE_BUNDLE_DATA += FILETYPES
 }
 INCLUDEPATH += ../utils/yamlgen/include \
-    ../utils/olconf/include
+    ../utils/olconf/include \
+    ../var/stage/include \
+
 LIBS += -lgovernor \
     -lftdi \
     -lusb \
     -lyaml \
     -lyamlgen \
-    -lolconf
+    -lolconf \
+    -L../var/stage/lib 
 RESOURCES += qgovernor.qrc
+QMAKE_CXXFLAGS += ""

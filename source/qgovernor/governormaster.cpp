@@ -26,7 +26,13 @@ extern "C" {
 
 extern "C" {
 void gpm_output_trigger(void *data);
+void gpm_log_callback(void *data);
 void gpm_register_changed(void *data, u8 addr);
+}
+
+GovernorMaster::~GovernorMaster()
+{
+  delete reglog;
 }
 
 GovernorMaster::GovernorMaster()
@@ -74,6 +80,16 @@ void GovernorMaster::registerChangedCB(unsigned char addr)
     emit registerChanged(addr);
 }
 
+void GovernorMaster::newLog(const QString &name)
+{
+  reglog = new QGLogger(name);
+  gpm_set_log(&gpm_log_callback, static_cast<void *>(this));
+}
+
+// The libgovernor callbacks use a void pointer to keep the address of
+// the GovernorMaster instance; these callbacks then re-cast it to
+// call the methods on the right instance.  
+
 extern "C" {
 void gpm_output_trigger(void *data)
 {
@@ -84,4 +100,11 @@ void gpm_register_changed(void *data, u8 addr)
 {
     static_cast<GovernorMaster *>(data)->registerChangedCB(addr);
 }
+
+void gpm_log_callback(void *data)
+{
+  static_cast<GovernorMaster *>(data)->reglog->
+    writeRegisters(&gpm_get_register_map_val);
+}
+
 }

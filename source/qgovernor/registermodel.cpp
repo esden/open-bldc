@@ -17,6 +17,7 @@
  */
 
 #include "registermodel.h"
+#include <stdint.h>
 
 RegisterModel::RegisterModel()
 {

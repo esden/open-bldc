@@ -221,6 +221,15 @@ void MainWindow::on_actionLoadTarget_triggered()
     addTargetTab(config);
 }
 
+void MainWindow::on_actionOpenLog_triggered()
+{
+  QString filename = QFileDialog::getSaveFileName(this, 
+                                                  tr("Choose a log file"), "",
+                                                  tr("Target files (*.log)"));
+
+  governorMaster->newLog(filename);
+}
+
 void MainWindow::addTargetTab(GovConfig const & config)
 {
     TargetWidgetFactory * factory = new TargetWidgetFactory(this);

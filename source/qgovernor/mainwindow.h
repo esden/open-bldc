@@ -83,6 +83,7 @@ private slots:
     void on_actionConnect_triggered(bool checked);
     void on_governorInterface_aboutToClose();
     void on_actionLoadTarget_triggered();
+    void on_actionOpenLog_triggered();
     void on_actionAbout_triggered();
     void on_actionAbout_Qt_triggered();
     void on_registerTableView_customContextMenuRequested(QPoint pos);

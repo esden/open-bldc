@@ -613,6 +613,7 @@
     </property>
     <addaction name="actionLoadTarget"/>
     <addaction name="actionQuit"/>
+    <addaction name="actionOpenLog"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -690,6 +691,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionOpenLog">
+   <property name="text">
+    <string>&amp;Open log file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

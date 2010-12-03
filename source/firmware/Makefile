@@ -34,6 +34,7 @@ NAME		?= open-bldc
 PREFIX		?= arm-none-eabi
 OOCD_INTERFACE	?= flossjtag
 OOCD_TARGET	?= open-bldc
+OOCD_SERIAL	?=
 
 VERBOSE		?= 0
 
@@ -135,6 +136,7 @@ $(BINDIR)/%.images: $(BINDIR)/%.bin $(BINDIR)/%.hex $(BINDIR)/%.srec $(BINDIR)/%
 
 
 ifdef TARGET
+ifeq ($(OOCD_SERIAL),)
 %.flash: $$(*).target_exists $$(*).hex
 	@echo "  OOCD  $(*).hex"
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
@@ -145,6 +147,19 @@ ifdef TARGET
 		    -c "flash write_image $*.hex" \
 		    -c reset \
 		    -c shutdown
+else
+%.flash: $$(*).target_exists $$(*).hex
+	@echo "  OOCD  $(*).hex"
+	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
+		    -f board/$(OOCD_TARGET).cfg \
+		    -c "ft2232_serial $(OOCD_SERIAL)" \
+		    -c init \
+		    -c "reset halt" \
+		    -c "stm32x mass_erase 0" \
+		    -c "flash write_image $*.hex" \
+		    -c reset \
+		    -c shutdown
+endif
 else
 %.flash: $$(*).target_exists
 	make TARGET=$(*) check_params

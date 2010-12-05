@@ -33,7 +33,12 @@ OBJECTS = $(COMMON_OBJECTS)
 
 DEFAULT_TARGET = mc
 
-TARGETS = mc test_blink test_governor test_32bit_tim test_sys_tick
+TARGETS = mc \
+	  test_blink \
+	  test_governor \
+	  test_32bit_tim \
+	  test_sys_tick \
+	  test_can
 
 #CP_IDLE_STRATEGY ?=
 #CP_ALIGNING_STRATEGY ?=
@@ -101,3 +106,10 @@ test_debug_pins.OBJECTS = \
 	test/debug_pins_main.o
 
 OBJECTS += $(test_debug_pins.OBJECTS)
+
+test_can.OBJECTS = \
+	driver/sys_tick.o \
+	driver/can.o \
+	test/can_main.o
+
+OBJECTS += $(test_can.OBJECTS)

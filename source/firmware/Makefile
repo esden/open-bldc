@@ -64,6 +64,11 @@ GOVERNOR_LIB_DIR = $(TOOLCHAIN_DIR)/lib
 GOVERNOR_INC_DIR = $(TOOLCHAIN_DIR)/include
 STAGE_LIB_DIR = $(TOPDIR)/../var/stage/lib
 STAGE_INC_DIR = $(TOPDIR)/../var/stage/include
+ifdef CAN_ADDR
+CAN_PARAM = -DCAN_ADDR=$(CAN_ADDR)
+else
+CAN_PARAM =
+endif
 
 BUILDDIR	= build/$(TARGET)
 BINDIR		= $(BUILDDIR)/bin
@@ -80,7 +85,8 @@ INCDIRS		= \
 	-I$(STAGE_INC_DIR)
 CFLAGS          = $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
-		  -ffunction-sections -fdata-sections -msoft-float
+		  -ffunction-sections -fdata-sections -msoft-float \
+		  $(CAN_PARAM)
 ASFLAGS         = -ahls -mapcs-32
 LDFLAGS         = -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
 		                    -L$(GOVERNOR_LIB_DIR) --gc-sections \
@@ -142,7 +148,7 @@ ifeq ($(OOCD_SERIAL),)
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		    -f board/$(OOCD_TARGET).cfg \
 		    -c init \
-		    -c "reset halt" \
+		    -c "reset init" \
 		    -c "stm32x mass_erase 0" \
 		    -c "flash write_image $*.hex" \
 		    -c reset \
@@ -154,7 +160,7 @@ else
 		    -f board/$(OOCD_TARGET).cfg \
 		    -c "ft2232_serial $(OOCD_SERIAL)" \
 		    -c init \
-		    -c "reset halt" \
+		    -c "reset init" \
 		    -c "stm32x mass_erase 0" \
 		    -c "flash write_image $*.hex" \
 		    -c reset \

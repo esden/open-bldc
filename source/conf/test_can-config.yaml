@@ -25,3 +25,4 @@ CAN:
     ERR_RESUME: DISABLE
     USE_EXT_ID: no
     DEFAULT_ADDR: 1
+    SEND: yes

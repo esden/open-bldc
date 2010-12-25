@@ -70,10 +70,12 @@ int main(void)
 		if (sys_tick_check_timer(timer, 10000)) {
 			data[0]++;
 			timer = sys_tick_get_timer();
+#ifdef CAN__SEND
 #ifdef CAN_ADDR
 			can_transmit(CAN_ADDR, data, 1);
 #else
 			can_transmit(CAN__DEFAULT_ADDR, data, 1);
+#endif
 #endif
 		}
 	}

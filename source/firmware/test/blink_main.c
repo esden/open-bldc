@@ -25,11 +25,8 @@
  *
  */
 
-#include <stm32/rcc.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/gpio.h>
-#include <stm32/tim.h>
+#include <libopenstm32/rcc.h>
+#include <libopenstm32/gpio.h>
 
 #include "types.h"
 #include "driver/led.h"
@@ -39,8 +36,8 @@
  */
 static void system_init(void)
 {
-	/* Initialize the microcontroller system. Initialize clocks. */
-	SystemInit();
+	/* Initialize clocks. */
+	rcc_clock_setup_in_hse_8mhz_out_72mhz();
 }
 
 /**

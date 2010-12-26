@@ -93,7 +93,7 @@ ASFLAGS         += -ahls -mapcs-32
 LDFLAGS         += -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
 		                    -L$(GOVERNOR_LIB_DIR) -Wl,--gc-sections \
 				    -L$(STAGE_LIB_DIR)
-LDLIBS          += -lcmsis -lstm32 -lgovernor -lc -lgcc
+LDLIBS          += -lopenstm32 -lgovernor -lc -lgcc
 CPFLAGS         += -j .isr_vector -j .text -j .data
 ODFLAGS         += -S
 SIZEFLAGS       += -A -x

@@ -41,6 +41,8 @@ VERBOSE		?= 0
 # Use 'make VERBOSE=1' for more debug output.
 ifneq ($(VERBOSE),1)
 Q := @
+else
+LDFLAGS += -Wl,--print-gc-sections
 endif
 
 TOPDIR = $(shell pwd)
@@ -83,20 +85,20 @@ INCDIRS		= \
 	-I$(GOVERNOR_INC_DIR) \
 	-I$(INCDIR) \
 	-I$(STAGE_INC_DIR)
-CFLAGS          = $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
+CFLAGS          += $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections -msoft-float \
 		  $(CAN_PARAM)
-ASFLAGS         = -ahls -mapcs-32
-LDFLAGS         = -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
-		                    -L$(GOVERNOR_LIB_DIR) --gc-sections \
+ASFLAGS         += -ahls -mapcs-32
+LDFLAGS         += -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
+		                    -L$(GOVERNOR_LIB_DIR) -Wl,--gc-sections \
 				    -L$(STAGE_LIB_DIR)
-LDLIBS          = -lcmsis -lstm32 -lgovernor -lc -lgcc
-CPFLAGS         = -j .isr_vector -j .text -j .data
-ODFLAGS         = -S
-SIZEFLAGS       = -A -x
+LDLIBS          += -lcmsis -lstm32 -lgovernor -lc -lgcc
+CPFLAGS         += -j .isr_vector -j .text -j .data
+ODFLAGS         += -S
+SIZEFLAGS       += -A -x
 
-LINTFLAGS	= +quiet \
+LINTFLAGS	+= +quiet \
 		  $(INCDIRS) \
 		  -I$(TOOLCHAIN_INC_DIR) \
 		  -systemdirs $(TOOLCHAIN_INC_DIR) \

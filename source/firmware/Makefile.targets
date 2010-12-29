@@ -25,9 +25,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-COMMON_OBJECTS = src/exceptions.o \
-		 src/vector_table.o \
-		 driver/led.o
+COMMON_OBJECTS = driver/led.o
 
 OBJECTS = $(COMMON_OBJECTS)
 

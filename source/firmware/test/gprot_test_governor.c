@@ -27,7 +27,7 @@
  *
  */
 
-#include <stm32/gpio.h>
+#include <libopenstm32/gpio.h>
 
 #include "types.h"
 

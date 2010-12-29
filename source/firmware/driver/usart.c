@@ -27,11 +27,10 @@
 
 #include "config.h"
 
-#include <stm32/rcc.h>
-#include <stm32/misc.h>
-#include <stm32/usart.h>
-#include <stm32/gpio.h>
-#include <stm32/tim.h>
+#include <libopenstm32/rcc.h>
+#include <libopenstm32/usart.h>
+#include <libopenstm32/gpio.h>
+#include <libopenstm32/nvic.h>
 
 #include "types.h"
 
@@ -52,54 +51,40 @@ static volatile s16 data_buf;
  */
 void usart_init(void)
 {
-	NVIC_InitTypeDef nvic;
-	GPIO_InitTypeDef gpio;
-	USART_InitTypeDef usart;
 
 	/* enable clock for USART1 peripherial */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 |
-			       RCC_APB2Periph_GPIOB |
-			       RCC_APB2Periph_AFIO, ENABLE);
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPBEN);
+        rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_AFIOEN);
+        rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_USART1EN);
 
 	/* Enable the USART1 interrupts */
-	nvic.NVIC_IRQChannel = USART1_IRQn;
-	nvic.NVIC_IRQChannelPreemptionPriority = 0;
-	nvic.NVIC_IRQChannelSubPriority = 1;
-	nvic.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&nvic);
+	nvic_enable_irq(NVIC_USART1_IRQ);
 
 	/* enable USART1 pin software remapping */
-	GPIO_PinRemapConfig(GPIO_Remap_USART1, ENABLE);
+	AFIO_MAPR |= AFIO_MAPR_USART1_REMAP;
 
 	/* GPIOB: USART1 Tx push-pull */
-	//GPIO_WriteBit(GPIOB, GPIO_Pin_6, Bit_SET);
-	gpio.GPIO_Pin = GPIO_Pin_6;
-	gpio.GPIO_Mode = GPIO_Mode_AF_PP;
-	gpio.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &gpio);
+	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ,
+                      GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART1_RE_TX);
 
 	/* GPIOB: USART1 Rx pin as floating input */
-	gpio.GPIO_Pin = GPIO_Pin_7;
-	gpio.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-	GPIO_Init(GPIOB, &gpio);
+	gpio_set_mode(GPIOB, GPIO_MODE_INPUT,
+                      GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RE_RX);
 
 	/* Initialize the usart subsystem */
-	usart.USART_BaudRate = USART__BAUD;
-	usart.USART_WordLength = USART_WordLength_8b;
-	usart.USART_StopBits = USART_StopBits_1;
-	usart.USART_Parity = USART_Parity_No;
-	usart.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-	usart.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-
-	/* Configure USART1 */
-	USART_Init(USART1, &usart);
+	usart_set_baudrate(USART1, USART__BAUD);
+	usart_set_databits(USART1, 8);
+	usart_set_stopbits(USART1, USART_STOPBITS_1);
+	usart_set_parity(USART1, USART_PARITY_NONE);
+	usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
+	usart_set_mode(USART1, USART_MODE_RX | USART_MODE_TX);
 
 	/* Enable USART1 Receive and Transmit interrupts */
-	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-	//USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+	USART_CR1(USART1) |= USART_CR1_RXNEIE;
+	//USART_CR1(USART1) |= USART_CR1_TXEIE;
 
 	/* Enable the USART1 */
-	USART_Cmd(USART1, ENABLE);
+	usart_enable(USART1);
 }
 
 /**
@@ -107,7 +92,7 @@ void usart_init(void)
  */
 void usart_enable_send(void)
 {
-	USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+	USART_CR1(USART1) |= USART_CR1_TXEIE;
 }
 
 /**
@@ -115,19 +100,19 @@ void usart_enable_send(void)
  */
 void usart_disable_send(void)
 {
-	USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+	USART_CR1(USART1) &= ~USART_CR1_TXEIE;
 }
 
 /**
  * USART interrupt handler.
  */
-void usart1_irq_handler(void)
+void usart1_isr(void)
 {
 
-	//LED_GREEN_TOGGLE();
+	//TOGGLE(GREEN);
 	/* input (RX) handler */
-	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
-		data_buf = (s16)USART_ReceiveData(USART1);
+	if ((USART_SR(USART1) & USART_SR_RXNE) != 0) {
+		data_buf = usart_recv(USART1);
 
 		if (gpc_handle_byte((u8)data_buf) != 0) {
 			//LED_GREEN_TOGGLE();
@@ -137,9 +122,9 @@ void usart1_irq_handler(void)
 	}
 
 	/* output (TX) handler */
-	if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET) {
+	if ((USART_SR(USART1) & USART_SR_TXE) != 0) {
 		if ((data_buf = gpc_pickup_byte()) >= 0) {
-			USART_SendData(USART1, (uint16_t)data_buf);
+			usart_send(USART1, (uint16_t)data_buf);
 			//LED_GREEN_TOGGLE();
 		} else {
 			usart_disable_send();

@@ -25,19 +25,17 @@
  *
  */
 
-#include "types.h"
-
 #include "config.h"
 
 #include <stdint.h>
 #include <string.h>
 
-#include "driver/can.h"
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/can.h>
+#include <libopencm3/stm32/nvic.h>
 
-#include <libopenstm32/rcc.h>
-#include <libopenstm32/gpio.h>
-#include <libopenstm32/can.h>
-#include <libopenstm32/nvic.h>
+#include "driver/can.h"
 
 #include "led.h"
 

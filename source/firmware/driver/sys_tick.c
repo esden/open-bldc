@@ -27,7 +27,7 @@
  * This implementation uses it as a coarce soft timer source.
  */
 
-#include <libopenstm32/systick.h>
+#include <libopencm3/stm32/systick.h>
 
 #include "types.h"
 #include "sys_tick.h"

@@ -27,10 +27,10 @@
 
 #include "config.h"
 
-#include <libopenstm32/rcc.h>
-#include <libopenstm32/usart.h>
-#include <libopenstm32/gpio.h>
-#include <libopenstm32/nvic.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/usart.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/nvic.h>
 
 #include "types.h"
 

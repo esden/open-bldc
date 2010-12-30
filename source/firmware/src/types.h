@@ -19,7 +19,7 @@
 #ifndef __TYPES_H
 #define __TYPES_H
 
-#include <cm3/common.h>
+#include <libopencm3/cm3/common.h>
 
 #define false 0
 #define true 1

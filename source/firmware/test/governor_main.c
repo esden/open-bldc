@@ -24,8 +24,8 @@
  * @brief  Governor protocol test implementation
  *
  */
-#include <libopenstm32/rcc.h>
-#include <libopenstm32/gpio.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
 
 #include "types.h"
 

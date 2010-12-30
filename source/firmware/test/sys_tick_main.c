@@ -25,8 +25,8 @@
  *
  */
 
-#include <libopenstm32/rcc.h>
-#include <libopenstm32/gpio.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
 
 #include "types.h"
 #include "driver/led.h"

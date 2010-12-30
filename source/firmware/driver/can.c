@@ -25,6 +25,8 @@
  *
  */
 
+#include "types.h"
+
 #include "config.h"
 
 #include <stdint.h>
@@ -32,130 +34,148 @@
 
 #include "driver/can.h"
 
-#include <stm32/rcc.h>
-#include <stm32/gpio.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/can.h>
+#include <libopenstm32/rcc.h>
+#include <libopenstm32/gpio.h>
+#include <libopenstm32/can.h>
+#include <libopenstm32/nvic.h>
 
 #include "led.h"
 
-#define RCC_APB2Periph_GPIO_CAN RCC_APB2Periph_GPIOA
-#define GPIO_CAN GPIOA
-#define GPIO_Pin_CAN_RX GPIO_Pin_11
-#define GPIO_Pin_CAN_TX GPIO_Pin_12
+struct can_tx_msg {
+	u32 id;
+	bool ide;
+        bool rtr;
+	u8 dlc;
+	u8 data[8];
+};
 
-CanTxMsg can_tx_msg;
-CanRxMsg can_rx_msg;
+struct can_rx_msg {
+	u32 id;
+        bool ide;
+	bool rtr;
+	u8 dlc;
+	u8 data[8];
+	u32 fmi;
+};
+
+struct can_tx_msg can_tx_msg;
+struct can_rx_msg can_rx_msg;
 
 //void _can_run_rx_callback(uint32_t id, uint8_t *buf, uint8_t len);
 
-void can_init(void)
+void can_setup(void)
 {
-	GPIO_InitTypeDef gpio;
-	NVIC_InitTypeDef nvic;
-	CAN_InitTypeDef can;
-	CAN_FilterInitTypeDef can_filter;
 
-	/* Enable peripheral clocks */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO |
-			       RCC_APB2Periph_GPIOA, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
+	/* Enable peripheral clocks. */
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_AFIOEN);
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN);
+	rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_CANEN);
 
 	/* Configure CAN pin: RX */
-	gpio.GPIO_Pin = GPIO_Pin_11;
-	gpio.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_Init(GPIOA, &gpio);
+	gpio_set_mode(GPIOA, GPIO_MODE_INPUT,
+		      GPIO_CNF_INPUT_PULL_UPDOWN, GPIO_CAN_RX);
+	gpio_set(GPIOA, GPIO_CAN_RX);
 
 	/* Configure CAN pin: TX */
-	gpio.GPIO_Pin = GPIO_Pin_12;
-	gpio.GPIO_Mode = GPIO_Mode_AF_PP;
-	gpio.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &gpio);
+	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ,
+		      GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_CAN_TX);
 
 	/* NVIC configuration */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-
-	nvic.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
-	nvic.NVIC_IRQChannelPreemptionPriority = 0x00;
-	nvic.NVIC_IRQChannelSubPriority = 0x00;
-	nvic.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&nvic);
+	nvic_enable_irq(NVIC_USB_LP_CAN_RX0_IRQ);
+	nvic_set_priority(NVIC_USB_LP_CAN_RX0_IRQ, 1);
 
 	/* CAN register init */
-	CAN_DeInit(CAN1);
-	CAN_StructInit(&can);
+	can_reset(CAN1);
 
 	/* CAN cell init */
-	can.CAN_TTCM = DISABLE;
-	can.CAN_ABOM = CAN__ERR_RESUME;
-	can.CAN_AWUM = DISABLE;
-	can.CAN_NART = DISABLE;
-	can.CAN_RFLM = DISABLE;
-	can.CAN_TXFP = DISABLE;
-	can.CAN_Mode = CAN_Mode_Normal;
-	can.CAN_SJW = CAN__SJW_TQ;
-	can.CAN_BS1 = CAN__BS1_TQ;
-	can.CAN_BS2 = CAN__BS2_TQ;
-	can.CAN_Prescaler = CAN__PRESCALER;
-	can.CAN_ABOM = ENABLE;
-	CAN_Init(CAN1, &can);
+	if (can_init(CAN1,
+		     false,           /* TTCM: Time triggered comm mode? */
+		     true,            /* ABOM: Automatic bus-off management? */
+		     false,           /* AWUM: Automatic wakeup mode? */
+		     false,           /* NART: No automatic retransmission? */
+		     false,           /* RFLM: Receive FIFO locked mode? */
+		     false,           /* TXFP: Transmit FIFO priority? */
+		     CAN_BTR_SJW_1TQ,
+		     CAN_BTR_TS1_3TQ,
+		     CAN_BTR_TS2_4TQ,
+		     12))             /* BRP+1: Baud rate prescaler */
+	{
+		ON(LED_RED);
+		OFF(LED_GREEN);
+		OFF(LED_BLUE);
+		OFF(LED_ORANGE);
+
+		/* Die because we failed to initialize. */
+		while (1)
+			__asm__("nop");
+	}
 
 	/* CAN filter init */
-	can_filter.CAN_FilterNumber = 0;
-	can_filter.CAN_FilterMode = CAN_FilterMode_IdMask;
-	can_filter.CAN_FilterScale = CAN_FilterScale_32bit;
-	can_filter.CAN_FilterIdHigh = 0x0000;
-	can_filter.CAN_FilterIdLow = 0x0000;
-	can_filter.CAN_FilterMaskIdHigh = 0x0000;
-	can_filter.CAN_FilterMaskIdLow = 0x0000;
-	can_filter.CAN_FilterFIFOAssignment = 0;
-	can_filter.CAN_FilterActivation = ENABLE;
-	CAN_FilterInit(&can_filter);
+	can_filter_id_mask_32bit_init(CAN1,
+				      0,     /* Filter ID */
+				      0,     /* CAN ID */
+				      0,     /* CAN ID mask */
+				      0,     /* FIFO assignment (here: FIFO0) */
+				      true); /* Enable the filter. */
 
 	/* transmit struct init */
-	can_tx_msg.StdId = 0x0;
-	can_tx_msg.ExtId = 0x0;
-	can_tx_msg.RTR = CAN_RTR_DATA;
+	can_tx_msg.id = 0x0;
+	can_tx_msg.rtr = false;
 #ifdef CAN__USE_EXT_ID
-	can_tx_msg.IDE = CAN_ID_EXT;
+	can_tx_msg.ide = true;
 #else
-	can_tx_msg.IDE = CAN_ID_STD;
+	can_tx_msg.ide = false;
 #endif
-	can_tx_msg.DLC = 1;
+	can_tx_msg.dlc = 1;
 
-	CAN_ITConfig(CAN1, CAN_IT_FMP0, ENABLE);
+	can_enable_irq(CAN1, CAN_IER_FMPIE0);
 }
 
-int can_transmit(uint32_t id, const uint8_t *buf, uint8_t len)
+int can_trans(uint32_t id, const uint8_t *buf, uint8_t len)
 {
 	if(len > 8){
 		return -1;
 	}
 
-#ifdef CAN__USE_EXT_ID
-	can_tx_msg.ExtId = id;
-#else
-	can_tx_msg.StdId = id;
-#endif
-	can_tx_msg.DLC = len;
+	can_tx_msg.id = id;
+	can_tx_msg.dlc = len;
 
-	memcpy(can_tx_msg.Data, buf, len);
+	memcpy(can_tx_msg.data, buf, len);
 
-	CAN_Transmit(CAN1, &can_tx_msg);
-
-	TOGGLE(LED_ORANGE);
-
-	return 0;
+	return can_transmit(CAN1,
+			    can_tx_msg.id,
+			    can_tx_msg.ide,
+			    can_tx_msg.rtr,
+			    can_tx_msg.dlc,
+			    can_tx_msg.data);
 }
 
-void usb_lp_can_rx0_irq_handler(void)
+void usb_lp_can_rx0_isr(void)
 {
 	static int delay = 100;
 
-	//ADC_ClearITPendingBit(CAN1, CAN_IT_FMP0);
+	can_receive(CAN1, 0, false,
+		    &can_rx_msg.id,
+		    &can_rx_msg.ide,
+		    &can_rx_msg.rtr,
+		    &can_rx_msg.fmi,
+		    &can_rx_msg.dlc,
+		    can_rx_msg.data);
 
-	CAN_Receive(CAN1, CAN_FIFO0, &can_rx_msg);
+	can_fifo_release(CAN1, 0);
+
+
+	if (can_rx_msg.data[0] & 1) {
+		ON(LED_ORANGE);
+	} else {
+		OFF(LED_ORANGE);
+	}
+
+	if (can_rx_msg.data[0] & 2) {
+		ON(LED_GREEN);
+	} else {
+		OFF(LED_GREEN);
+	}
 
 	if(delay == 0) {
 		delay = 100;
@@ -164,10 +184,8 @@ void usb_lp_can_rx0_irq_handler(void)
 		delay--;
 	}
 		TOGGLE(LED_BLUE);
-#ifdef CAN__USE_EXT_ID
-	//_can_run_rx_callback(can_rx_msg.ExtId, can_rx_msg.Data, can_rx_msg.DLC);
-#else
-	//_can_run_rx_callback(can_rx_msg.StdId, can_rx_msg.Data, can_rx_msg.DLC);
-#endif
+
+	//_can_run_rx_callback(can_rx_msg.id, can_rx_msg.data, can_rx_msg.dlc);
+
 }
 

@@ -27,11 +27,9 @@
 
 #include "config.h"
 
-#include <stm32/rcc.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/gpio.h>
-#include <stm32/tim.h>
+
+#include <libopenstm32/rcc.h>
+#include <libopenstm32/gpio.h>
 
 #include "types.h"
 #include "driver/led.h"
@@ -43,12 +41,12 @@
  */
 static void system_init(void)
 {
-	/* Initialize the microcontroller system. Initialize clocks. */
-	SystemInit();
+	/* Initialize clocks. */
+	rcc_clock_setup_in_hse_8mhz_out_72mhz();
 }
 
 /**
- * Blink test main function
+ * CAN test main function
  *
  * @return Nothing really...
  */
@@ -60,7 +58,7 @@ int main(void)
 	system_init();
 	led_init();
 	sys_tick_init();
-	can_init();
+	can_setup();
 
 	timer = sys_tick_get_timer();
 
@@ -72,9 +70,9 @@ int main(void)
 			timer = sys_tick_get_timer();
 #ifdef CAN__SEND
 #ifdef CAN_ADDR
-			can_transmit(CAN_ADDR, data, 1);
+			can_trans(CAN_ADDR, data, 1);
 #else
-			can_transmit(CAN__DEFAULT_ADDR, data, 1);
+			can_trans(CAN__DEFAULT_ADDR, data, 1);
 #endif
 #endif
 		}

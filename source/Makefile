@@ -55,7 +55,7 @@ libgovernor/configure:
 $(BUILDDIR)/libgovernor-stm32/Makefile: libgovernor/configure
 	@mkdir -p $(BUILDDIR)/libgovernor-stm32; \
 		cd $(BUILDDIR)/libgovernor-stm32; \
-		$(TOPDIR)/libgovernor/configure --prefix=$(STAGEDIR) --disable-shared --host=arm-none-eabi --disable-check
+		$(TOPDIR)/libgovernor/configure --prefix=$(STAGEDIR)/arm-none-eabi --disable-shared --host=arm-none-eabi --disable-check
 
 libgovernor-stm32: $(BUILDDIR)/libgovernor-stm32/Makefile
 	@export PATH=$(STAGEDIR)/bin:$$PATH; \

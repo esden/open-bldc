@@ -30,9 +30,10 @@
  * peripheral handling code together with the commutation handling part.
  */
 
-#include <stm32/rcc.h>
-#include <stm32/misc.h>
-#include <stm32/tim.h>
+#include <libopencm3/stm32/nvic.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/timer.h>
+#include <libopencm3/stm32/gpio.h>
 
 #include "types.h"
 
@@ -66,61 +67,59 @@ bool comm_tim_trigger = false;			/**< Commutation timer trigger (it's an output 
  */
 void comm_tim_init(void)
 {
-	NVIC_InitTypeDef nvic;
-	TIM_TimeBaseInitTypeDef tim_base;
-	TIM_OCInitTypeDef tim_oc;
 
 	comm_tim_data.freq = 65535;
 
 	(void)gpc_setup_reg(GPROT_COMM_TIM_FREQ_REG_ADDR, &(comm_tim_data.freq));
 
 	/* TIM2 clock enable */
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN);
 
-	/* Enable the TIM2 gloabal interrupt */
-	nvic.NVIC_IRQChannel = TIM2_IRQn;
-	nvic.NVIC_IRQChannelPreemptionPriority = 0;
-	nvic.NVIC_IRQChannelSubPriority = 1;
-	nvic.NVIC_IRQChannelCmd = ENABLE;
+	/* Enable the TIM2 gloabal interrupt. */
+	nvic_enable_irq(NVIC_TIM2_IRQ);
 
-	NVIC_Init(&nvic);
+	/* Reset TIM2 peripheral. */
+	timer_reset(TIM2);
 
 	/* TIM2 time base configuration */
-	tim_base.TIM_Period = 65535;
-	tim_base.TIM_Prescaler = 0;
-	tim_base.TIM_ClockDivision = 0;
-	tim_base.TIM_CounterMode = TIM_CounterMode_Up;
-	tim_base.TIM_RepetitionCounter = 0;
+	timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT,
+		       TIM_CR1_CMS_EDGE,
+		       TIM_CR1_DIR_UP);
 
-	TIM_TimeBaseInit(TIM2, &tim_base);
+	/* Set prescaler value */
+	timer_set_prescaler(TIM2, 4);
 
-	/* TIM2 prescaler configuration */
-	TIM_PrescalerConfig(TIM2, 4, TIM_PSCReloadMode_Immediate);
+	/* Disable preload. */
+	timer_disable_preload(TIM2);
+
+	/* Set continous mode. */
+	timer_continuous_mode(TIM2);
+
+	/* Set period to maximum */
+	timer_set_period(TIM2, 65535);
+
+	/* Disable outputs. */
+	timer_disable_oc_output(TIM2, TIM_OC1);
+	timer_disable_oc_output(TIM2, TIM_OC2);
+	timer_disable_oc_output(TIM2, TIM_OC3);
+	timer_disable_oc_output(TIM2, TIM_OC4);
 
 	/* TIM2 Output Compare Timing Mode configuration: Channel1 */
-	tim_oc.TIM_OCMode = TIM_OCMode_Timing;
-	tim_oc.TIM_OutputState = TIM_OutputState_Enable;
-	tim_oc.TIM_Pulse = comm_tim_data.freq;
-	tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
+	timer_disable_oc_clear(TIM2, TIM_OC1);
+	timer_disable_oc_preload(TIM2, TIM_OC1);
+	timer_set_oc_slow_mode(TIM2, TIM_OC1);
+	timer_set_oc_mode(TIM2, TIM_OC1, TIM_OCM_FROZEN);
+	timer_set_oc_polarity_high(TIM2, TIM_OC1);
 
-	/* Not necessary for TIM2 because it is not an advanced timer
-	 * but we are trying to make lint happy here.
-	 */
-	tim_oc.TIM_OutputNState = TIM_OutputNState_Disable;
-	tim_oc.TIM_OCNPolarity = TIM_OCNPolarity_High;
-	tim_oc.TIM_OCIdleState = TIM_OCIdleState_Set;
-	tim_oc.TIM_OCNIdleState = TIM_OCNIdleState_Set;
-
-	TIM_OC1Init(TIM2, &tim_oc);
-
-	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
+	/* Set initial capture compare value for OC1 */
+	timer_set_oc_value(TIM2, TIM_OC1, comm_tim_data.freq);
 
 	/* TIM2 Capture Compare 1 IT enable */
-	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+	timer_enable_irq(TIM2, TIM_DIER_CC1IE);
 	/* TIM2 Update IT enable */
-	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+	timer_enable_irq(TIM2, TIM_DIER_UIE);
 
-	TIM_Cmd(TIM2, ENABLE);
+	timer_enable_counter(TIM2);
 
 	comm_tim_reset();
 }
@@ -140,7 +139,7 @@ void comm_tim_reset(void)
  */
 void comm_tim_capture_time(void)
 {
-	u16 new_time = TIM_GetCounter(TIM2);
+	u16 new_time = timer_get_counter(TIM2);
 	comm_tim_data.prev_time = comm_tim_state.next_prev_time;
 	comm_tim_data.curr_time = new_time;
 	comm_tim_state.next_prev_time = new_time;
@@ -154,7 +153,7 @@ void comm_tim_capture_time(void)
  */
 void comm_tim_update_freq(void)
 {
-	TIM_SetCompare1(TIM2,
+	timer_set_oc_value(TIM2, TIM_OC1,
 			comm_tim_data.last_capture_time + comm_tim_data.freq);
 
 }
@@ -165,9 +164,9 @@ void comm_tim_update_freq(void)
  */
 void comm_tim_update_capture(void)
 {
-	comm_tim_data.last_capture_time = TIM_GetCounter(TIM2);
-	TIM_SetCompare1(TIM2,
-			comm_tim_data.last_capture_time + comm_tim_data.freq);
+	comm_tim_data.last_capture_time = timer_get_counter(TIM2);
+	timer_set_oc_value(TIM2, TIM_OC1,
+			   comm_tim_data.last_capture_time + comm_tim_data.freq);
 
 	OFF(DP_EXT_SCL);
 }
@@ -177,7 +176,7 @@ void comm_tim_update_capture(void)
  */
 void comm_tim_update_next_prev(void)
 {
-	comm_tim_state.next_prev_time = TIM_GetCounter(TIM2);
+	comm_tim_state.next_prev_time = timer_get_counter(TIM2);
 }
 
 /**
@@ -186,8 +185,8 @@ void comm_tim_update_next_prev(void)
  */
 void comm_tim_update_capture_and_time(void)
 {
-	comm_tim_data.last_capture_time = TIM_GetCounter(TIM2);
-	TIM_SetCompare1(TIM2,
+	comm_tim_data.last_capture_time = timer_get_counter(TIM2);
+	timer_set_oc_value(TIM2, TIM_OC1,
 			comm_tim_data.last_capture_time + comm_tim_data.freq);
 
 	comm_tim_data.prev_time = comm_tim_state.next_prev_time;
@@ -200,19 +199,20 @@ void comm_tim_update_capture_and_time(void)
 /**
  * Timer 2 interrupt handler
  */
-void tim2_irq_handler(void)
+void tim2_isr(void)
 {
 
-	if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET) {
-		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+	if (timer_get_flag(TIM2, TIM_SR_CC1IF)) {
+		timer_clear_flag(TIM2, TIM_SR_CC1IF);
 
 		/* prepare for next comm */
-		comm_tim_data.last_capture_time = TIM_GetCapture1(TIM2);
+		//comm_tim_data.last_capture_time = timer_get_ic_value(TIM2, TIM_OC1);
+		comm_tim_data.last_capture_time = TIM2_CCR1;
 
 		/* triggering commutation event */
 		if (comm_tim_trigger_comm || comm_tim_trigger_comm_once) {
-			TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
-			//TIM_GenerateEvent(TIM1, TIM_EventSource_COM | TIM_EventSource_Update);
+			timer_generate_event(TIM1, TIM_EGR_COMG);
+			//timer_generate_event(TIM1, TIM_EGR_COMG | TIM_EGR_UG);
 		}
 
 		/* (re)setting "semaphors" */
@@ -220,18 +220,18 @@ void tim2_irq_handler(void)
 		comm_tim_trigger = true;
 
 		/* Set next comm time */
-		TIM_SetCompare1(TIM2,
+		timer_set_oc_value(TIM2, TIM_OC1,
 				comm_tim_data.last_capture_time +
 				(comm_tim_data.freq * 2));
-		//TIM_SetCompare1(TIM2,
+		//timer_set_oc_value(TIM2, TIM_OC1,
 		//		comm_tim_data.last_capture_time +
 		//		65535);
 
 		TOGGLE(DP_EXT_SCL);
 	}
 
-	if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	if (timer_get_flag(TIM2, TIM_SR_UIF)) {
+		timer_clear_flag(TIM2, TIM_SR_UIF);
 
 		comm_tim_state.update_count++;
 	}

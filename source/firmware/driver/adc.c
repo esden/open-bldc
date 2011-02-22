@@ -143,7 +143,7 @@ void adc_init(void)
 /**
  * ADC1 interrupt hander
  */
-void adc1_2_irq_handler(void)
+void adc1_2_isr(void)
 {
 	ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
 

@@ -28,10 +28,10 @@
 
 #include "config.h"
 
-#include <stm32/rcc.h>
-#include <stm32/misc.h>
-#include <stm32/tim.h>
-#include <stm32/gpio.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/nvic.h>
+#include <libopencm3/stm32/timer.h>
+#include <libopencm3/stm32/gpio.h>
 
 #include "types.h"
 
@@ -69,100 +69,153 @@ static volatile uint16_t pwm_offset = PWM__OFFSET;
  */
 void pwm_init(void)
 {
-	NVIC_InitTypeDef nvic;
-	GPIO_InitTypeDef gpio;
-	TIM_TimeBaseInitTypeDef tim_base;
-	TIM_OCInitTypeDef tim_oc;
-	TIM_BDTRInitTypeDef tim_bdtr;
 
 	(void)gpc_setup_reg(GPROT_PWM_OFFSET_REG_ADDR, &pwm_offset);
 
 	/* Enable clock for TIM1 subsystem */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 |
-			       RCC_APB2Periph_GPIOA |
-			       RCC_APB2Periph_GPIOB, ENABLE);
-
-	/* Enable TIM1 interrupt */
-	nvic.NVIC_IRQChannel = TIM1_TRG_COM_IRQn;
-	nvic.NVIC_IRQChannelPreemptionPriority = 0;
-	nvic.NVIC_IRQChannelSubPriority = 1;
-	nvic.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&nvic);
-
-	/* Enable TIM1 interrupt */
-	nvic.NVIC_IRQChannel = TIM1_CC_IRQn;
-	nvic.NVIC_IRQChannelPreemptionPriority = 0;
-	nvic.NVIC_IRQChannelSubPriority = 1;
-	nvic.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&nvic);
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_TIM1EN |
+		RCC_APB2ENR_IOPAEN |
+		RCC_APB2ENR_IOPBEN |
+		RCC_APB2ENR_AFIOEN);
 
 	/* GPIOA: TIM1 channel 1, 2 and 3 as alternate function
 	   push-pull */
-	gpio.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
-	gpio.GPIO_Mode = GPIO_Mode_AF_PP;
-	gpio.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &gpio);
+	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ,
+		      GPIO_CNF_OUTPUT_ALTFN_PUSHPULL,
+		      GPIO_TIM1_CH1 |
+		      GPIO_TIM1_CH2 |
+		      GPIO_TIM1_CH3);
 
 	/* GPIOB: TIM1 channel 1N, 2N and 3N as alternate function
 	 * push-pull
 	 */
-	gpio.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-	GPIO_Init(GPIOB, &gpio);
+	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ,
+		      GPIO_CNF_OUTPUT_ALTFN_PUSHPULL,
+		      GPIO_TIM1_CH1N |
+		      GPIO_TIM1_CH2N |
+		      GPIO_TIM1_CH3N);
 
-	/* Time base configuration */
-	tim_base.TIM_Period = PWM__BASE_CLOCK / PWM__FREQUENCY;
-	tim_base.TIM_Prescaler = 0;
-	tim_base.TIM_ClockDivision = 0;
-	tim_base.TIM_CounterMode = TIM_CounterMode_Up;
-	tim_base.TIM_RepetitionCounter = 0;
+	/* Enable TIM1 commutation interrupt */
+	nvic_enable_irq(NVIC_TIM1_TRG_COM_IRQ);
 
-	TIM_TimeBaseInit(TIM1, &tim_base);
+	/* Enable TIM1 capture/compare interrupt */
+	nvic_enable_irq(NVIC_TIM1_CC_IRQ);
 
-	/* TIM1 channel 1, 2 and 3 settings */
-	tim_oc.TIM_OCMode = TIM_OCMode_Timing;
-	tim_oc.TIM_OutputState = TIM_OutputState_Enable;
-	tim_oc.TIM_OutputNState = TIM_OutputNState_Enable;
-	tim_oc.TIM_Pulse = pwm_val;
-	tim_oc.TIM_OCPolarity = TIM_OCPolarity_High;
-	tim_oc.TIM_OCNPolarity = TIM_OCNPolarity_High;
-	tim_oc.TIM_OCIdleState = TIM_OCIdleState_Set;
-	tim_oc.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+	/* Reset TIM1 peripheral */
+	timer_reset(TIM1);
 
-	TIM_OC1Init(TIM1, &tim_oc);
-	TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable);
-	TIM_OC2Init(TIM1, &tim_oc);
-	TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);
-	TIM_OC3Init(TIM1, &tim_oc);
-	TIM_OC3PreloadConfig(TIM1, TIM_OCPreload_Enable);
+	/* Timer global mode:
+	 * - No divider
+	 * - alignment edge
+	 * - direction up
+	 */
+	timer_set_mode(TIM1, TIM_CR1_CKD_CK_INT,
+		       TIM_CR1_CMS_EDGE,
+		       TIM_CR1_DIR_UP);
 
-	/* TIM1 configure channel 4 as adc trigger source */
-	tim_oc.TIM_OCMode = TIM_OCMode_PWM2;
-	tim_oc.TIM_Pulse = pwm_offset;
-	TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
-	TIM_OC4Init(TIM1, &tim_oc);
+	/* Enable preload. */
+	timer_enable_preload(TIM1);
 
-	/* Automatic Output enable, break, dead time and lock configuration */
-	tim_bdtr.TIM_OSSRState = TIM_OSSRState_Enable;
-	tim_bdtr.TIM_OSSIState = TIM_OSSIState_Enable;
-	tim_bdtr.TIM_LOCKLevel = TIM_LOCKLevel_OFF;
-	tim_bdtr.TIM_DeadTime = 10;
-	tim_bdtr.TIM_Break = TIM_Break_Disable;
-	tim_bdtr.TIM_BreakPolarity = TIM_BreakPolarity_High;
-	tim_bdtr.TIM_AutomaticOutput = TIM_AutomaticOutput_Disable;
+	/* Continous mode. */
+	timer_continuous_mode(TIM1);
 
-	TIM_BDTRConfig(TIM1, &tim_bdtr);
+	/* Period (PWM__FREQUENCY) */
+	timer_set_period(TIM1, PWM__BASE_CLOCK / PWM__FREQUENCY);
 
-	TIM_CCPreloadControl(TIM1, ENABLE);
+	/* Configure break and deadtime */
+	timer_set_deadtime(TIM1, 10);
+	timer_set_enabled_off_state_in_idle_mode(TIM1);
+	timer_set_enabled_off_state_in_run_mode(TIM1);
+	timer_disable_break(TIM1);
+	timer_set_break_polarity_high(TIM1);
+	timer_disable_break_automatic_output(TIM1);
+	timer_set_break_lock(TIM1, TIM_BDTR_LOCK_OFF);
 
-	/* Enable COM and CC interrupt */
-	TIM_ITConfig(TIM1, TIM_IT_COM, ENABLE);
-	//TIM_ITConfig(TIM1, TIM_IT_COM | TIM_IT_CC4, ENABLE);
+	/* -- OC1 and OC1N configuration -- */
 
-	/* TIM1 enable counter */
-	TIM_Cmd(TIM1, ENABLE);
+	/* Disable outputs. */
+	timer_disable_oc_output(TIM1, TIM_OC1);
+	timer_disable_oc_output(TIM1, TIM_OC1N);
 
-	/* Main output enable */
-	TIM_CtrlPWMOutputs(TIM1, ENABLE);
+	/* Configure global mode of line 1. */
+	timer_disable_oc_clear(TIM1, TIM_OC1);
+	timer_enable_oc_preload(TIM1, TIM_OC1);
+	timer_set_oc_slow_mode(TIM1, TIM_OC1);
+	timer_set_oc_mode(TIM1, TIM_OC1, TIM_OCM_FROZEN);
+
+	/* Configure OC1. */
+	timer_set_oc_polarity_high(TIM1, TIM_OC1);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC1);
+
+	/* Configure OC1N. */
+	timer_set_oc_polarity_high(TIM1, TIM_OC1N);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC1N);
+
+	/* Set the capture compare value for OC1. */
+	timer_set_oc_value(TIM1, TIM_OC1, pwm_val);
+
+	/* -- OC2 and OC2N configuration -- */
+
+	/* Disable outputs. */
+	timer_disable_oc_output(TIM1, TIM_OC2);
+	timer_disable_oc_output(TIM1, TIM_OC2N);
+
+	/* Configure global mode of line 2. */
+	timer_disable_oc_clear(TIM1, TIM_OC2);
+	timer_enable_oc_preload(TIM1, TIM_OC2);
+	timer_set_oc_slow_mode(TIM1, TIM_OC2);
+	timer_set_oc_mode(TIM1, TIM_OC2, TIM_OCM_FROZEN);
+
+	/* Configure OC2. */
+	timer_set_oc_polarity_high(TIM1, TIM_OC2);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC2);
+
+	/* Configure OC2N. */
+	timer_set_oc_polarity_high(TIM1, TIM_OC2N);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC2N);
+
+	/* Set the capture compare value for OC1. */
+	timer_set_oc_value(TIM1, TIM_OC2, pwm_val);
+
+	/* -- OC3 and OC3N configuration -- */
+
+	/* Disable outputs. */
+	timer_disable_oc_output(TIM1, TIM_OC3);
+	timer_disable_oc_output(TIM1, TIM_OC3N);
+
+	/* Configure global mode of line 3. */
+	timer_disable_oc_clear(TIM1, TIM_OC3);
+	timer_enable_oc_preload(TIM1, TIM_OC3);
+	timer_set_oc_slow_mode(TIM1, TIM_OC3);
+	timer_set_oc_mode(TIM1, TIM_OC3, TIM_OCM_FROZEN);
+
+	/* Configure OC3. */
+	timer_set_oc_polarity_high(TIM1, TIM_OC3);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC3);
+
+	/* Configure OC3N. */
+	timer_set_oc_polarity_high(TIM1, TIM_OC3N);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC3N);
+
+	/* Set the capture compare value for OC3. */
+	timer_set_oc_value(TIM1, TIM_OC3, pwm_val);
+
+	/* ---- */
+	/* ARR reload enable */
+	timer_enable_preload(TIM1);
+
+	/* Enable preload of complementary channel configurations and update on COM event */
+	timer_enable_preload_complementry_enable_bits(TIM1);
+
+	/* Enable outputs in the break subsystem */
+	timer_enable_break_main_output(TIM1);
+
+	/* Counter enable */
+	timer_enable_counter(TIM1);
+
+	/* Enable commutation interrupt */
+	timer_enable_irq(TIM1, TIM_DIER_COMIE);
+	//timer_enable_irq(TIM1, TIM_DIER_COMIE | TIM_DIER_CC4IE);
 
 	/* Setting default state of pwm to pwm_off */
 	pwm_off();
@@ -173,7 +226,7 @@ void pwm_init(void)
  */
 void pwm_comm(void)
 {
-	TIM_GenerateEvent(TIM1, TIM_EventSource_COM);
+	timer_generate_event(TIM1, TIM_EGR_COMG);
 }
 
 /**
@@ -206,16 +259,15 @@ void pwm_all_hi(void)
 /**
  * PWM timer commutation event interrupt handler
  */
-void tim1_trg_com_irq_handler(void)
+void tim1_trg_com_isr(void)
 {
-	TIM_ClearITPendingBit(TIM1, TIM_IT_COM);
+	timer_clear_flag(TIM1, TIM_SR_COMIF);
 
 	ON(LED_BLUE);
 
-	TIM_SetCompare1(TIM1, pwm_val);
-	TIM_SetCompare2(TIM1, pwm_val);
-	TIM_SetCompare3(TIM1, pwm_val);
-	TIM_SetCompare4(TIM1, pwm_offset);
+	timer_set_oc_value(TIM1, TIM_OC1, pwm_val);
+	timer_set_oc_value(TIM1, TIM_OC2, pwm_val);
+	timer_set_oc_value(TIM1, TIM_OC3, pwm_val);
 
 	PWM__SCHEME();
 	OFF(LED_BLUE);
@@ -224,7 +276,8 @@ void tim1_trg_com_irq_handler(void)
 /**
  * PWM timer capture compare event interrupt handler
  */
-void tim1_cc_irq_handler(void)
+#if 0
+void tim1_cc_isr(void)
 {
 	if (TIM_GetITStatus(TIM1, TIM_IT_CC4) != RESET) {
 		TIM_ClearITPendingBit(TIM1, TIM_IT_CC4);
@@ -233,3 +286,4 @@ void tim1_cc_irq_handler(void)
 		//if(pwm_trig_led) TOGGLE(LED_ORANGE);
 	}
 }
+#endif

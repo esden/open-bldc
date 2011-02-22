@@ -26,11 +26,7 @@
  * Implements the main() function of the motor controller.
  */
 
-#include <stm32/rcc.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/gpio.h>
-#include <stm32/tim.h>
+#include <libopencm3/stm32/rcc.h>
 
 #include "types.h"
 #include "driver/led.h"
@@ -58,7 +54,7 @@ bool demo;
 static void system_init(void)
 {
 	/* Initialize the microcontroller system. Initialize clocks. */
-	SystemInit();
+	rcc_clock_setup_in_hse_8mhz_out_72mhz();
 }
 
 /**
@@ -71,14 +67,14 @@ int main(void)
 
 	system_init();
 	led_init();
-	debug_pins_init();
+	//debug_pins_init();
 	gprot_init();
 	usart_init();
 	sys_tick_init();
 	cpu_load_process_init();
 	comm_process_init();
-	sensor_process_init();
-	adc_init();
+	//sensor_process_init();
+	//adc_init();
 	pwm_init();
 	comm_tim_init();
 	control_process_init();
@@ -98,10 +94,10 @@ int main(void)
 
 		run_control_process();
 
-		if (*sensor_process_trigger) {
-			*sensor_process_trigger = false;
-			run_sensor_process();
-		}
+		//if (*sensor_process_trigger) {
+		//	*sensor_process_trigger = false;
+		//	run_sensor_process();
+		//}
 
 		if (demo) {
 			if (demo_counter == 0) {

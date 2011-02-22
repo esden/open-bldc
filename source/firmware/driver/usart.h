@@ -23,6 +23,4 @@ void usart_init(void);
 /*@unused@*/ void usart_enable_send(void);
 /*@unused@*/ void usart_disable_send(void);
 
-void usart3_irq_handler(void);
-
 #endif /* __USART_H */

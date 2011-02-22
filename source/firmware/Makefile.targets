@@ -34,9 +34,9 @@ DEFAULT_TARGET = mc
 TARGETS = mc \
 	  test_blink \
 	  test_governor \
-	  test_32bit_tim \
 	  test_sys_tick \
 	  test_can
+#	  test_32bit_tim \
 
 #CP_IDLE_STRATEGY ?=
 #CP_ALIGNING_STRATEGY ?=
@@ -52,8 +52,6 @@ mc.OBJECTS = \
 	driver/usart.o \
 	driver/sys_tick.o \
 	driver/bemf_hardware_detect.o \
-	driver/debug_pins.o \
-	driver/adc.o \
 	src/cpu_load_process.o \
 	src/pwm/pwm.o \
 	src/pwm/pwm_scheme_6step_h_pwm_l_on.o \
@@ -63,7 +61,6 @@ mc.OBJECTS = \
 	src/pwm/pwm_scheme_12step_pwm_on_pwm.o \
 	src/comm_tim.o \
 	src/gprot.o \
-	src/sensor_process.o \
 	src/comm_process_$(COMMP_STRATEGY).o \
 	src/cp_idle.o \
 	src/cp_aligning.o \
@@ -71,6 +68,9 @@ mc.OBJECTS = \
 	src/cp_spinning.o \
 	src/cp_error.o \
 	src/control_process.o
+#	src/sensor_process.o \
+#	driver/debug_pins.o \
+#	driver/adc.o \
 
 OBJECTS += $(mc.OBJECTS)
 

@@ -21,6 +21,8 @@
 
 #include "macro_utils.h"
 
+#include <libopencm3/stm32/gpio.h>
+
 #define LED_ORANGE_PORT GPIOA
 #define LED_ORANGE_PIN GPIO6
 

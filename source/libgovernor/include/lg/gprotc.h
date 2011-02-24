@@ -26,5 +26,6 @@ s32 gpc_pickup_byte(void);
 int gpc_send_reg(u8 addr);
 int gpc_handle_byte(u8 ch);
 int gpc_register_touched(u8 addr);
+int gpc_send_string(char *string, int len);
 
 #endif /* LG_GPROTC_H */

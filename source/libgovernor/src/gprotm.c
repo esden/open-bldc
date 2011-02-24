@@ -27,6 +27,15 @@
  * '--------- 0 ^= Read 1 ^= Write
  */
 
+//#define GPM_DEBUG
+
+#ifdef GPM_DEBUG
+#include <stdio.h>
+#define DEBUG(STR, ARGS...) printf(STR , ## ARGS)
+#else
+#define DEBUG(STR, ARGS...)
+#endif
+
 #include "lg/types.h"
 #include "lg/ring.h"
 #include "lg/gpdef.h"
@@ -44,6 +53,8 @@ struct gpm_hooks {
 	void *register_changed_data;
 	gp_simple_hook_t log_callback;
 	void *log_data;
+	gp_with_string_hook_t string_received;
+	void *string_received_data;
 } gpm_hooks;
 
 u16 gpm_register_map[32];
@@ -54,11 +65,15 @@ u8 gpm_output_buffer[128];
 enum gpm_states {
 	GPMS_IDLE,
 	GPMS_DATA_LSB,
-	GPMS_DATA_MSB
+	GPMS_DATA_MSB,
+	GPMS_STRING
 };
 enum gpm_states gpm_state = GPMS_IDLE;
 u16 gpm_addr;
 u16 gpm_data;
+char gpm_string[128];
+u16 gpm_string_len;
+u16 gpm_string_count;
 
 int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	     gp_with_addr_hook_t register_changed, void *register_changed_data)
@@ -71,6 +86,8 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	gpm_hooks.register_changed_data = register_changed_data;
 	gpm_hooks.log_callback = 0;
 	gpm_hooks.log_data = 0;
+	gpm_hooks.string_received = 0;
+	gpm_hooks.string_received_data = 0;
 
 	for (i = 0; i < 32; i++)
 		gpm_register_map[i] = 0;
@@ -82,8 +99,18 @@ int gpm_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 
 int gpm_set_log(gp_simple_hook_t cb, void *data)
 {
+
 	gpm_hooks.log_callback = cb;
 	gpm_hooks.log_data = data;
+	return 0;
+}
+
+int gpm_set_string_received_callback(gp_with_string_hook_t string_received, void *string_received_data)
+{
+
+	gpm_hooks.string_received = string_received;
+	gpm_hooks.string_received_data = string_received_data;
+
 	return 0;
 }
 
@@ -159,6 +186,26 @@ int gpm_handle_byte(u8 byte)
 {
 	switch (gpm_state) {
 	case GPMS_IDLE:
+		if ((byte & GP_MODE_STRING) != 0) {
+			DEBUG("Received string header %02X", byte);
+			gpm_string_len = byte & ~GP_MODE_STRING;
+			gpm_string_count = 0;
+
+			if (gpm_string_len == 0) {
+				if (gpm_hooks.string_received) {
+					gpm_string[gpm_string_count] = '\0';
+					gpm_hooks.string_received(gpm_hooks.string_received_data,
+								gpm_string, gpm_string_len);
+				}
+			} else {
+				gpm_state = GPMS_STRING;
+			}
+
+			DEBUG(" with len %i.\n", gpm_string_len);
+
+			return 0;
+		}
+
 		if (byte > 31)
 			return 1;
 
@@ -179,6 +226,19 @@ int gpm_handle_byte(u8 byte)
 		if (gpm_hooks.log_callback)
 			gpm_hooks.log_callback(gpm_hooks.log_data);
 		gpm_state = GPMS_IDLE;
+		break;
+	case GPMS_STRING:
+		DEBUG("Received byte %i of string with content '%c'.\n", gpm_string_count, byte);
+		gpm_string[gpm_string_count++] = byte;
+		if (gpm_string_count == gpm_string_len) {
+			if (gpm_hooks.string_received) {
+				gpm_string[gpm_string_count] = '\0';
+				DEBUG("Calling callback with strlen %i and string '%s'.\n", gpm_string_len, gpm_string);
+				gpm_hooks.string_received(gpm_hooks.string_received_data,
+							gpm_string, gpm_string_len);
+			}
+			gpm_state = GPMS_IDLE;
+		}
 		break;
 	}
 

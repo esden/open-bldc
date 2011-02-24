@@ -126,7 +126,7 @@ START_TEST(test_gprotc_handle_byte_read)
 	}
 
 	for(addr=0; addr<32; addr++){
-		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK | GP_MODE_RESERVED));
+		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_READ | GP_MODE_PEEK | GP_MODE_STRING));
 		fail_unless(0 == gpc_dummy_trigger_output_triggered);
 		fail_unless((void *)0 == gpc_dummy_trigger_output_data);
 		fail_unless(-1 == gpc_pickup_byte());
@@ -158,7 +158,7 @@ START_TEST(test_gprotc_handle_byte_write)
 	}
 
 	for(addr=0; addr<32; addr++){
-		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_WRITE | GP_MODE_RESERVED));
+		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_WRITE | GP_MODE_STRING));
 		fail_unless(0 == gpc_dummy_register_changed);
 		fail_unless(0 == gpc_dummy_register_changed_addr);
 		fail_unless((void *)0 == gpc_dummy_register_changed_data);
@@ -206,6 +206,67 @@ START_TEST(test_gprotc_read_cont)
 }
 END_TEST
 
+START_TEST(test_gprotc_send_short_string)
+{
+	int i;
+	char *string = "Hello World!";
+	int string_size = strlen(string);
+
+	fail_unless(string_size == gpc_send_string(string, string_size));
+
+	fail_unless((GP_MODE_STRING | string_size) == gpc_pickup_byte());
+
+	for (i=0; i<string_size; i++) {
+		fail_unless(string[i] == gpc_pickup_byte());
+	}
+
+	fail_unless(-1 == gpc_pickup_byte());
+}
+END_TEST
+
+START_TEST(test_gprotc_send_long_string)
+{
+	int i,j;
+	int string_size = (('z' - 'a') + 1) * ((('9' - '0') + 1) + 1);
+	char string[string_size];
+
+	/* Generate string. */
+	{
+		int gi, gj, gk = 0;
+
+		for(gi=0; gi<(('z' - 'a') + 1); gi++) {
+			string[gk++] = 'a'+gi;
+			for(gj=0; gj<(('9' - '0') + 1); gj++){
+				string[gk++] = '0'+gj;
+			}
+		}
+
+		string[gk] = '\0';
+
+	}
+
+	/* Run test. */
+	fail_unless(string_size == gpc_send_string(string, string_size));
+
+	for (j=0; j<(string_size / GP_STR_PAK_MAX_LEN); j++) {
+		fail_unless((GP_MODE_STRING | GP_STR_PAK_MAX_LEN) == gpc_pickup_byte());
+
+		for (i=0; i<GP_STR_PAK_MAX_LEN; i++) {
+			fail_unless(string[i + (j * GP_STR_PAK_MAX_LEN)] == gpc_pickup_byte());
+		}
+	}
+
+	fail_unless((GP_MODE_STRING | (string_size % GP_STR_PAK_MAX_LEN)) == gpc_pickup_byte());
+
+
+	for (i=0; i<(string_size % GP_STR_PAK_MAX_LEN); i++) {
+		fail_unless(string[i + (j * GP_STR_PAK_MAX_LEN)] == gpc_pickup_byte());
+	}
+
+	fail_unless(-1 == gpc_pickup_byte());
+}
+END_TEST
+
 Suite *make_lg_gprotc_suite(void)
 {
 	Suite *s;
@@ -220,6 +281,8 @@ Suite *make_lg_gprotc_suite(void)
 	tcase_add_test(tc, test_gprotc_handle_byte_read);
 	tcase_add_test(tc, test_gprotc_handle_byte_write);
 	tcase_add_test(tc, test_gprotc_read_cont);
+	tcase_add_test(tc, test_gprotc_send_short_string);
+	tcase_add_test(tc, test_gprotc_send_long_string);
 
 	return s;
 }

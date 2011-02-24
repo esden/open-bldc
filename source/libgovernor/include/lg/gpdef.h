@@ -23,11 +23,14 @@
 
 typedef void (*gp_simple_hook_t) (void *data);
 typedef void (*gp_with_addr_hook_t) (void *data, u8 addr);
+typedef void (*gp_with_string_hook_t) (void *data, char *string, int size);
 
-#define GP_MODE_RESERVED (1 << 5)
+#define GP_STR_PAK_MAX_LEN 0x7F
+
+#define GP_MODE_STRING (1 << 7)
 #define GP_MODE_PEEK 0
-#define GP_MODE_CONT (1 << 6)
-#define GP_MODE_READ (1 << 7)
+#define GP_MODE_CONT (1 << 5)
+#define GP_MODE_READ (1 << 6)
 #define GP_MODE_WRITE 0
 #define GP_MODE_MASK 0xE0
 #define GP_ADDR_MASK 0x1F

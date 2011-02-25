@@ -19,6 +19,7 @@
 #include <check.h>
 
 #include <string.h>
+#include <stdio.h>
 
 #include "lg/types.h"
 #include "lg/gpdef.h"
@@ -157,17 +158,17 @@ START_TEST(test_gprotc_handle_byte_write)
 		gpc_dummy_register_changed_data = 0;
 	}
 
-	for(addr=0; addr<32; addr++){
-		fail_unless(1 == gpc_handle_byte(addr | GP_MODE_WRITE | GP_MODE_STRING));
-		fail_unless(0 == gpc_dummy_register_changed);
-		fail_unless(0 == gpc_dummy_register_changed_addr);
-		fail_unless((void *)0 == gpc_dummy_register_changed_data);
-		fail_unless(-1 == gpc_pickup_byte());
-
-		gpc_dummy_register_changed = 0;
-		gpc_dummy_register_changed_addr = 0;
-		gpc_dummy_register_changed_data = 0;
-	}
+	//for(addr=0; addr<32; addr++){
+	//	fail_unless(1 == gpc_handle_byte(addr | GP_MODE_WRITE | GP_MODE_STRING));
+	//	fail_unless(0 == gpc_dummy_register_changed);
+	//	fail_unless(0 == gpc_dummy_register_changed_addr);
+	//	fail_unless((void *)0 == gpc_dummy_register_changed_data);
+	//	fail_unless(-1 == gpc_pickup_byte());
+	//
+	//	gpc_dummy_register_changed = 0;
+	//	gpc_dummy_register_changed_addr = 0;
+	//	gpc_dummy_register_changed_data = 0;
+	//}
 }
 END_TEST
 

@@ -25,6 +25,10 @@
 #define DEBUG(STR, ARGS...)
 #endif
 
+#include "config.h"
+
+#include <string.h>
+
 #include "lg/types.h"
 #include "lg/ring.h"
 #include "lg/gpdef.h"
@@ -55,6 +59,10 @@ u16 gpc_addr;
 u16 gpc_data;
 
 u32 gpc_monitor_map;
+
+char *gpc_version = PACKAGE_STRING VERSION_SUFFIX ", build " BUILDDATE "\n";
+char *gpc_copyright = COPYRIGHT "\n";
+char *gpc_license = LICENSE "\n";
 
 int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	     gp_with_addr_hook_t register_changed, void *register_changed_data)
@@ -156,6 +164,12 @@ int gpc_handle_byte(u8 byte)
 	switch (gpc_state) {
 	case GPCS_IDLE:
 		if (byte & GP_MODE_STRING) {
+			if (byte == GP_MODE_STRING) {
+				gpc_send_string(gpc_version, strlen(gpc_version));
+				gpc_send_string(gpc_copyright, strlen(gpc_copyright));
+				gpc_send_string(gpc_license, strlen(gpc_license));
+				return 0;
+			}
 			DEBUG("not handled\n");
 			return 1;
 		}

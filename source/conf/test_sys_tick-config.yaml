@@ -16,4 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import_config: ../conf/clogic-v1_1-board-config.yaml
+
 TEST_SYS_TICK_DUMMY:

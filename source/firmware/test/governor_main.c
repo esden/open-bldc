@@ -24,7 +24,6 @@
  * @brief  Governor protocol test implementation
  *
  */
-#include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
 #include "types.h"
@@ -32,18 +31,10 @@
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
+#include "driver/mcu.h"
 #include "driver/led.h"
 #include "test/gprot_test_governor.h"
 #include "driver/usart.h"
-
-/**
- * Initialize STM32
- */
-static void system_init(void)
-{
-	/* Initialize clocks. */
-	rcc_clock_setup_in_hse_8mhz_out_72mhz();
-}
 
 /**
  * Crude delay implementation.
@@ -67,7 +58,7 @@ int main(void)
 {
 	u16 test_counter;
 
-	system_init();
+	mcu_init();
 	led_init();
 	gprot_init();
 	usart_init();

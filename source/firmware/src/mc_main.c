@@ -26,9 +26,8 @@
  * Implements the main() function of the motor controller.
  */
 
-#include <libopencm3/stm32/rcc.h>
-
 #include "types.h"
+#include "driver/mcu.h"
 #include "driver/led.h"
 #include "gprot.h"
 #include "driver/usart.h"
@@ -49,15 +48,6 @@
 bool demo;
 
 /**
- * Initialize STM32 system specific subsystems.
- */
-static void system_init(void)
-{
-	/* Initialize the microcontroller system. Initialize clocks. */
-	rcc_clock_setup_in_hse_8mhz_out_72mhz();
-}
-
-/**
  * Main function of the motor controller.
  */
 int main(void)
@@ -65,7 +55,7 @@ int main(void)
 	int demo_counter;
 	int demo_dir;
 
-	system_init();
+	mcu_init();
 	led_init();
 	//debug_pins_init();
 	gprot_init();

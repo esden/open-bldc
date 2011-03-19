@@ -27,22 +27,13 @@
 
 #include "config.h"
 
-#include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
 #include "types.h"
+#include "driver/mcu.h"
 #include "driver/led.h"
 #include "driver/can.h"
 #include "driver/sys_tick.h"
-
-/**
- * Initialize the STM32
- */
-static void system_init(void)
-{
-	/* Initialize clocks. */
-	rcc_clock_setup_in_hse_8mhz_out_72mhz();
-}
 
 /**
  * CAN test main function
@@ -54,7 +45,7 @@ int main(void)
 	int timer;
 	uint8_t data[1];
 
-	system_init();
+	mcu_init();
 	led_init();
 	sys_tick_init();
 	can_setup();

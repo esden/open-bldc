@@ -20,6 +20,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <regex.h>
 
 #include "lg/types.h"
 #include "lg/gpdef.h"
@@ -46,6 +47,39 @@ void gpc_dummy_register_changed_hook(void* data, u8 addr)
 	gpc_dummy_register_changed_data = data;
 	gpc_dummy_register_changed = 1;
 	gpc_dummy_register_changed_addr = addr;
+}
+
+int regmatch(char *regex, char *string)
+{
+	regex_t r;
+	int ret;
+
+	if ((ret = regcomp(&r, regex, REG_EXTENDED | REG_NOSUB | REG_NEWLINE)) != 0 ) {
+		char error[1024];
+
+		regerror(ret, &r, error, 1024);
+
+		printf("ERR: regex compilation error: %s\n", error);
+		printf("ERR: regex used: '%s'\n", regex);
+
+		return 1;
+	}
+
+	if ((ret = regexec(&r, string, 0, NULL, 0)) != 0) {
+		char error[1024];
+
+		regerror(ret, &r, error, 1024);
+
+		printf("ERR: regex match error: %s\n", error);
+		printf("ERR: regex used: '%s'\n", regex);
+		printf("ERR: string used: '%s'\n", string);
+
+		return 1;
+	}
+
+	regfree(&r);
+
+	return 0;
 }
 
 void init_gprotc_tc(void)
@@ -268,6 +302,35 @@ START_TEST(test_gprotc_send_long_string)
 }
 END_TEST
 
+START_TEST(test_gprotc_send_version)
+{
+	s32 ch;
+	s32 to_read;
+	int i, j;
+	char string[3][128];
+
+        fail_unless(0 == gpc_handle_byte(GP_MODE_STRING));
+
+	/* we are expecting to receive three strings */
+	for (i = 0; i<3; i++) {
+		ch = gpc_pickup_byte();
+		to_read = (ch & ~GP_MODE_STRING);
+		fail_unless(ch == (GP_MODE_STRING | to_read));
+
+		for (j=0; j<to_read; j++) {
+			ch = gpc_pickup_byte();
+			fail_if(-1 == ch);
+			string[i][j] = ch;
+			//putchar(ch);
+		}
+	}
+
+	fail_unless(0 == regmatch("^libgovernor [[:digit:]]+\\.[[:digit:]]+-[[:alnum:]]{8}(-dirty)?, build [[:digit:]]{8}$", string[0]));
+	fail_unless(0 == regmatch("^Copyright \\(C\\) 2010-20[[:digit:]]{2} Piotr Esden-Tempski <piotr@esden.net>$", string[1]));
+	fail_unless(0 == regmatch("^License GPLv3\\+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>$", string[2]));
+}
+END_TEST
+
 Suite *make_lg_gprotc_suite(void)
 {
 	Suite *s;
@@ -284,6 +347,7 @@ Suite *make_lg_gprotc_suite(void)
 	tcase_add_test(tc, test_gprotc_read_cont);
 	tcase_add_test(tc, test_gprotc_send_short_string);
 	tcase_add_test(tc, test_gprotc_send_long_string);
+	tcase_add_test(tc, test_gprotc_send_version);
 
 	return s;
 }

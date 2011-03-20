@@ -35,6 +35,8 @@ int gpc_dummy_trigger_output_triggered = 0;
 void *gpc_dummy_register_changed_data = 0;
 int gpc_dummy_register_changed = 0;
 int gpc_dummy_register_changed_addr = 0;
+void *gpc_dummy_get_version_data = 0;
+int gpc_dummy_get_version_triggered = 0;
 
 void gpc_dummy_trigger_output_hook(void* data)
 {
@@ -49,6 +51,12 @@ void gpc_dummy_register_changed_hook(void* data, u8 addr)
 	gpc_dummy_register_changed_addr = addr;
 }
 
+void gpc_dummy_get_version_hook(void* data)
+{
+	gpc_dummy_get_version_data = data;
+	gpc_dummy_get_version_triggered = 1;
+}
+
 void init_gprotc_tc(void)
 {
 	int i;
@@ -57,12 +65,15 @@ void init_gprotc_tc(void)
 		gpc_dummy_register_map[i] = 0xAA55+i;
 
 	gpc_init(gpc_dummy_trigger_output_hook, (void *)1, gpc_dummy_register_changed_hook, (void*)1);
+	gpc_set_get_version_callback(gpc_dummy_get_version_hook, (void *)1);
 
 	gpc_dummy_trigger_output_data = 0;
 	gpc_dummy_trigger_output_triggered = 0;
 	gpc_dummy_register_changed_data = 0;
 	gpc_dummy_register_changed = 0;
 	gpc_dummy_register_changed_addr = 0;
+	gpc_dummy_get_version_data = 0;
+	gpc_dummy_get_version_triggered = 0;
 }
 
 void clean_gprotc_tc(void)
@@ -295,6 +306,9 @@ START_TEST(test_gprotc_send_version)
 	fail_unless(0 == regmatch("^libgovernor [[:digit:]]+\\.[[:digit:]]+-[[:alnum:]]{8}(-dirty)?, build [[:digit:]]{8}$", string[0]));
 	fail_unless(0 == regmatch("^Copyright \\(C\\) 2010-20[[:digit:]]{2} Piotr Esden-Tempski <piotr@esden.net>$", string[1]));
 	fail_unless(0 == regmatch("^License GPLv3\\+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>$", string[2]));
+
+	fail_unless((void *)1 == gpc_dummy_get_version_data);
+	fail_unless(1 == gpc_dummy_get_version_triggered);
 }
 END_TEST
 

@@ -40,6 +40,8 @@ struct gpc_hooks {
 	void *trigger_output_data;
 	gp_with_addr_hook_t register_changed;
 	void *register_changed_data;
+	gp_simple_hook_t get_version;
+	void *get_version_data;
 } gpc_hooks;
 
 volatile u16 *gpc_register_map[32];
@@ -75,6 +77,8 @@ int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	gpc_hooks.trigger_output_data = trigger_output_data;
 	gpc_hooks.register_changed = register_changed;
 	gpc_hooks.register_changed_data = register_changed_data;
+	gpc_hooks.get_version = 0;
+	gpc_hooks.get_version_data = 0;
 
 	for (i = 0; i < 32; i++)
 		gpc_register_map[i] = 0;
@@ -82,6 +86,15 @@ int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	gpc_monitor_map = 0;
 
 	ring_init(&gpc_output_ring, gpc_output_buffer, GPC_OUTPUT_BUFFER_SIZE);
+
+	return 0;
+}
+
+int gpc_set_get_version_callback(gp_simple_hook_t get_version, void *get_version_data)
+{
+
+	gpc_hooks.get_version = get_version;
+	gpc_hooks.get_version_data = get_version_data;
 
 	return 0;
 }
@@ -168,6 +181,8 @@ int gpc_handle_byte(u8 byte)
 				gpc_send_string(gpc_version, strlen(gpc_version));
 				gpc_send_string(gpc_copyright, strlen(gpc_copyright));
 				gpc_send_string(gpc_license, strlen(gpc_license));
+				if (gpc_hooks.get_version)
+					gpc_hooks.get_version(gpc_hooks.get_version_data);
 				return 0;
 			}
 			DEBUG("not handled\n");

@@ -26,6 +26,7 @@
 #include "lg/gprotm.h"
 #include "lg/gprotc.h"
 
+#include "check_utils.h"
 #include "check_suites.h"
 
 u16 gp_register_map[32];
@@ -267,6 +268,18 @@ START_TEST(test_gprot_send_arbitrary_string)
 }
 END_TEST
 
+START_TEST(test_gprot_get_client_version)
+{
+	fail_unless(0 == gpm_send_get_version());
+
+	fail_unless(0 == regmatch("^libgovernor [[:digit:]]+\\.[[:digit:]]+-[[:alnum:]]{8}(-dirty)?, build [[:digit:]]{8}$", gpm_string_received_string));
+	fail_unless(0 == regmatch("^Copyright \\(C\\) 2010-20[[:digit:]]{2} Piotr Esden-Tempski <piotr@esden.net>$", gpm_string_received_string));
+	fail_unless(0 == regmatch("^License GPLv3\\+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>$", gpm_string_received_string));
+
+	memset(gpm_string_received_string, 0, sizeof(gpm_string_received_string));
+}
+END_TEST
+
 Suite *make_lg_gprot_suite()
 {
 	Suite *s;
@@ -283,6 +296,7 @@ Suite *make_lg_gprot_suite()
 	tcase_add_test(tc, test_gprot_send_short_string);
 	tcase_add_test(tc, test_gprot_send_long_string);
 	tcase_add_test(tc, test_gprot_send_arbitrary_string);
+	tcase_add_test(tc, test_gprot_get_client_version);
 
 	return s;
 }

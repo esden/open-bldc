@@ -19,6 +19,7 @@ check_PROGRAMS = check_lg
 
 check_lg_SOURCES = check_suites.h \
 		   check_main.c \
+		   check_utils.c \
 		   check_ring_suite.c \
 		   check_gprotm_suite.c \
 		   check_gprotc_suite.c \

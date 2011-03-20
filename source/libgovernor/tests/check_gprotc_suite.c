@@ -1,6 +1,6 @@
 /*
  * libgovernor - Open-BLDC configuration and debug protocol library
- * Copyright (C) 2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2010-2011 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <regex.h>
 
 #include "lg/types.h"
 #include "lg/gpdef.h"
 #include "lg/gprotc.h"
 
+#include "check_utils.h"
 #include "check_suites.h"
 
 u16 gpc_dummy_register_map[32];
@@ -47,39 +47,6 @@ void gpc_dummy_register_changed_hook(void* data, u8 addr)
 	gpc_dummy_register_changed_data = data;
 	gpc_dummy_register_changed = 1;
 	gpc_dummy_register_changed_addr = addr;
-}
-
-int regmatch(char *regex, char *string)
-{
-	regex_t r;
-	int ret;
-
-	if ((ret = regcomp(&r, regex, REG_EXTENDED | REG_NOSUB | REG_NEWLINE)) != 0 ) {
-		char error[1024];
-
-		regerror(ret, &r, error, 1024);
-
-		printf("ERR: regex compilation error: %s\n", error);
-		printf("ERR: regex used: '%s'\n", regex);
-
-		return 1;
-	}
-
-	if ((ret = regexec(&r, string, 0, NULL, 0)) != 0) {
-		char error[1024];
-
-		regerror(ret, &r, error, 1024);
-
-		printf("ERR: regex match error: %s\n", error);
-		printf("ERR: regex used: '%s'\n", regex);
-		printf("ERR: string used: '%s'\n", string);
-
-		return 1;
-	}
-
-	regfree(&r);
-
-	return 0;
 }
 
 void init_gprotc_tc(void)

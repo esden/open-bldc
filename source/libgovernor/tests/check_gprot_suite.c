@@ -37,6 +37,7 @@ int gpm_register_changed_addr = 0;
 int gpm_string_received = 0;
 char gpm_string_received_string[1024];
 int gpm_string_received_len = 0;
+int gpc_get_version = 0;
 
 void gpm_trigger_output_hook(void *data)
 {
@@ -79,6 +80,13 @@ void gpm_string_received_hook(void *data, char *string, int len)
 	gpm_string_received_len += len;
 }
 
+void gpc_get_version_hook(void *data)
+{
+	data = data;
+
+	gpc_get_version = 1;
+}
+
 void init_gprot_tc(void)
 {
 	int i;
@@ -87,6 +95,7 @@ void init_gprot_tc(void)
 	gpm_set_string_received_callback(gpm_string_received_hook, NULL);
 
 	gpc_init(gpc_trigger_output_hook, NULL, NULL, NULL);
+	gpc_set_get_version_callback(gpc_get_version_hook, NULL);
 
 	for(i=0; i<32; i++){
 		gp_register_map[i] = 0xAA55+i;
@@ -271,6 +280,8 @@ END_TEST
 START_TEST(test_gprot_get_client_version)
 {
 	fail_unless(0 == gpm_send_get_version());
+
+	fail_unless(1 == gpc_get_version);
 
 	fail_unless(0 == regmatch("^libgovernor [[:digit:]]+\\.[[:digit:]]+-[[:alnum:]]{8}(-dirty)?, build [[:digit:]]{8}$", gpm_string_received_string));
 	fail_unless(0 == regmatch("^Copyright \\(C\\) 2010-20[[:digit:]]{2} Piotr Esden-Tempski <piotr@esden.net>$", gpm_string_received_string));

@@ -35,6 +35,8 @@ s32 gpm_pickup_byte(void);
 int gpm_send_set(u8 addr, u16 val);
 int gpm_send_get(u8 addr);
 int gpm_send_get_cont(u8 addr);
+int gpm_send_get_version(void);
+
 int gpm_handle_byte(u8 byte);
 
 #endif /* GPROTM_H */

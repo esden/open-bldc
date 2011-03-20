@@ -182,6 +182,17 @@ int gpm_send_get_cont(u8 addr)
 	return 1;
 }
 
+int gpm_send_get_version(void)
+{
+	if (0 <= ring_write_ch(&gpm_output_ring, GP_MODE_STRING)) {
+		if (gpm_hooks.trigger_output)
+			gpm_hooks.trigger_output(gpm_hooks.trigger_output_data);
+		return 0;
+	}
+
+	return 1;
+}
+
 int gpm_handle_byte(u8 byte)
 {
 	switch (gpm_state) {

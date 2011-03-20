@@ -222,6 +222,20 @@ START_TEST(test_gprotm_send_get_cont)
 }
 END_TEST
 
+START_TEST(test_gprotm_send_get_version)
+{
+	fail_unless(0 == gpm_send_get_version());
+
+	fail_unless(1 == gpm_dummy_trigger_output_triggered);
+	fail_unless((void *)1 == gpm_dummy_trigger_output_data);
+	fail_unless(GP_MODE_STRING == gpm_pickup_byte());
+	fail_unless(-1 == gpm_pickup_byte());
+
+	gpm_dummy_trigger_output_triggered = 0;
+	gpm_dummy_trigger_output_data = 0;
+}
+END_TEST
+
 START_TEST(test_gprotm_handle_byte_registers)
 {
 	u8 addr = 0;
@@ -395,10 +409,10 @@ Suite *make_lg_gprotm_suite(void)
 	tcase_add_test(tc, test_gprotm_send_set);
 	tcase_add_test(tc, test_gprotm_send_get);
 	tcase_add_test(tc, test_gprotm_send_get_cont);
+	tcase_add_test(tc, test_gprotm_send_get_version);
 	tcase_add_test(tc, test_gprotm_handle_byte_registers);
 	tcase_add_test(tc, test_gprotm_handle_byte_short_string);
 	tcase_add_test(tc, test_gprotm_handle_byte_long_string);
-
 
 	return s;
 }

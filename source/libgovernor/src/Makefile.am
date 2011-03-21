@@ -19,5 +19,5 @@ lib_LTLIBRARIES=libgovernor.la
 libgovernor_la_SOURCES = ring.c \
 			 gprotm.c \
 			 gprotc.c
-libgovernor_la_CFLAGS = @EXTRACFLAGS@ -DVERSION_SUFFIX=\"`../scripts/setlocalversion`\" -DBUILDDATE=\"`date +"%Y%m%d"`\"
+libgovernor_la_CFLAGS = @EXTRACFLAGS@ -DVERSION_SUFFIX=\"`$(srcdir)/../scripts/setlocalversion`\" -DBUILDDATE=\"`date +"%Y%m%d"`\"
 libgovernor_la_LDFLAGS = @EXTRALDFLAGS@

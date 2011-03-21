@@ -24,8 +24,8 @@ AC_INIT([libgovernor], [0.2], [open-bldc@open-bldc.org])
 
 case "$host" in
 	arm-*)
-		CFLAGS="$CFLAGS -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections"
-		LDFLAGS="$LDFLAGS -T${srcdir}/../firmware/src/stm32.ld -nostartfiles"
+		CFLAGS="$CFLAGS -mcpu=cortex-m3 -mthumb -mfix-cortex-m3-ldrd -ffunction-sections -fdata-sections -msoft-float -g"
+		LDFLAGS="$LDFLAGS -T${srcdir}/../firmware/src/stm32.ld -nostartfiles -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float"
 	;;
 esac
 

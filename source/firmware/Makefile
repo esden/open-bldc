@@ -88,12 +88,14 @@ INCDIRS		= \
 CFLAGS          += $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections -msoft-float \
+		  -mfix-cortex-m3-ldrd \
 		  $(CAN_PARAM)
 ASFLAGS         += -ahls -mapcs-32
 LDFLAGS         += -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
 		                    -L$(GOVERNOR_LIB_DIR) -Wl,--gc-sections \
 				    -L$(STAGE_LIB_DIR)
-LDLIBS          += -lcmsis -lstm32 -lgovernor -lc -lgcc
+LDFLAGS         += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
+LDLIBS          += -lcmsis -lstm32 -lgovernor -lc -lnosys -lgcc
 CPFLAGS         += -j .isr_vector -j .text -j .data
 ODFLAGS         += -S
 SIZEFLAGS       += -A -x

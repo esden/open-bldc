@@ -64,8 +64,8 @@ TOOLCHAIN_LIB_DIR = $(TOOLCHAIN_DIR)/$(PREFIX)/lib
 TOOLCHAIN_INC_DIR = $(TOOLCHAIN_DIR)/$(PREFIX)/include
 GOVERNOR_LIB_DIR = $(TOOLCHAIN_DIR)/lib
 GOVERNOR_INC_DIR = $(TOOLCHAIN_DIR)/include
-STAGE_LIB_DIR = $(TOPDIR)/../var/stage/lib
-STAGE_INC_DIR = $(TOPDIR)/../var/stage/include
+STAGE_LIB_DIR = $(TOPDIR)/../var/stage/arm-none-eabi/lib
+STAGE_INC_DIR = $(TOPDIR)/../var/stage/arm-none-eabi/include
 ifdef CAN_ADDR
 CAN_PARAM = -DCAN_ADDR=$(CAN_ADDR)
 else

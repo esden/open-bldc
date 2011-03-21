@@ -28,6 +28,7 @@ typedef void (*gp_with_string_hook_t) (void *data, char *string, int size);
 #define GP_STR_PAK_MAX_LEN 0x7F
 
 #define GP_MODE_STRING (1 << 7)
+#define GP_STR_LEN_MASK 0x7F
 #define GP_MODE_PEEK 0
 #define GP_MODE_CONT (1 << 5)
 #define GP_MODE_READ (1 << 6)

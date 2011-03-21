@@ -21,10 +21,12 @@
 
 int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	     gp_with_addr_hook_t register_changed, void *register_changed_data);
+int gpc_set_get_version_callback(gp_simple_hook_t get_version, void *get_version_data);
 int gpc_setup_reg(u8 addr, volatile u16 * reg);
 s32 gpc_pickup_byte(void);
 int gpc_send_reg(u8 addr);
 int gpc_handle_byte(u8 ch);
 int gpc_register_touched(u8 addr);
+int gpc_send_string(char *string, int len);
 
 #endif /* LG_GPROTC_H */

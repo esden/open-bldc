@@ -34,6 +34,8 @@ struct ring {
 void ring_init(struct ring *ring, u8 * buf, ring_size_t size);
 s32 ring_write_ch(struct ring *ring, u8 ch);
 s32 ring_write(struct ring *ring, u8 * data, ring_size_t size);
+s32 ring_safe_write_ch(struct ring *ring, u8 ch);
+s32 ring_safe_write(struct ring *ring, u8 * data, ring_size_t size);
 s32 ring_read_ch(struct ring *ring, u8 * ch);
 s32 ring_read(struct ring *ring, u8 * data, ring_size_t size);
 

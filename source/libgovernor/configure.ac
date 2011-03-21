@@ -16,7 +16,7 @@ dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ(2.50)
 
-AC_INIT([libgovernor], [0.1], [piotr@esden.net])
+AC_INIT([libgovernor], [0.2], [open-bldc@open-bldc.org])
 
 #===============================
 # cross compilation
@@ -24,8 +24,8 @@ AC_INIT([libgovernor], [0.1], [piotr@esden.net])
 
 case "$host" in
 	arm-*)
-		CFLAGS="$CFLAGS -mcpu=cortex-m3 -mthumb -ffunction-sections -fdata-sections"
-		LDFLAGS="$LDFLAGS -T${srcdir}/../firmware/src/stm32.ld -nostartfiles"
+		CFLAGS="$CFLAGS -mcpu=cortex-m3 -mthumb -mfix-cortex-m3-ldrd -ffunction-sections -fdata-sections -msoft-float -g"
+		LDFLAGS="$LDFLAGS -T${srcdir}/../firmware/src/stm32.ld -nostartfiles -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float"
 	;;
 esac
 
@@ -36,7 +36,9 @@ LT_INIT
 dnl AC_CONFIG_SRCDIR([src/master.c])
 AM_INIT_AUTOMAKE([libgovernor], [0.1])
 
-AC_COPYRIGHT([Copyright (C) 2010 Piotr Esden-Tempski])
+AC_COPYRIGHT([Copyright (C) 2010-2011 Piotr Esden-Tempski])
+AC_DEFINE([COPYRIGHT],["Copyright (C) 2010-2011 Piotr Esden-Tempski <piotr@esden.net>"],[Software package copyright])
+AC_DEFINE([LICENSE],["License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"],[Software package license])
 
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED([HOST],["$host"],[The canonical host])

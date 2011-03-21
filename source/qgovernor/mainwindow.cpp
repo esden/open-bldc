@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     governorMaster = new GovernorMaster();
     connect(governorMaster, SIGNAL(outputTriggered()), this, SLOT(on_outputTriggered()));
     connect(governorMaster, SIGNAL(registerChanged(unsigned char)), this, SLOT(on_registerChanged(unsigned char)));
+    connect(governorMaster, SIGNAL(stringReceived(QString)), this, SLOT(on_stringReceived(QString)));
 
     /* register display table */
     unsigned short value;
@@ -307,6 +308,8 @@ void MainWindow::on_actionConnect_triggered(bool checked)
                 connect(governorInterface, SIGNAL(readyRead()), this, SLOT(on_governorInterface_readyRead()));
                 connect(governorInterface, SIGNAL(aboutToClose()), this, SLOT(on_governorInterface_aboutToClose()));
 
+                governorMaster->sendGetVersion();
+
                 for(int i=0; i<32; i++)
                     governorMaster->sendGet(i);
                 ui->registerTableView->setEnabled(true);
@@ -406,11 +409,15 @@ void MainWindow::on_forcedCommTimIncSpinBox_valueChanged(int step)
 void MainWindow::on_forcedCommMonCheckBox_clicked(bool checked)
 {
     governorMaster->sendGetCont(GPROT_COMM_TIM_FREQ_REG_ADDR);
+
+    checked = checked;
 }
 
 void MainWindow::on_ADCLevelMonCheckBox_clicked(bool checked)
 {
     governorMaster->sendGetCont(GPROT_ADC_BATTERY_VOLTAGE_REG_ADDR);
+
+    checked = checked;
 }
 
 void MainWindow::on_commSparkAdvanceSpinBox_valueChanged(int value)
@@ -431,4 +438,15 @@ void MainWindow::on_commIIRPoleSpinBox_valueChanged(int value)
 void MainWindow::on_PWMDutyCycleHorizontalSlider_valueChanged(int value)
 {
     ui->PWMDutyCycleSpinBox->setValue(value);
+}
+
+void MainWindow::on_stringReceived(QString string)
+{
+    ui->consolePlainTextEdit->insertPlainText(string);
+}
+
+
+void MainWindow::on_consoleClearPushButton_pressed()
+{
+    ui->consolePlainTextEdit->clear();
 }

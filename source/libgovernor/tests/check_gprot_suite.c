@@ -26,12 +26,18 @@
 #include "lg/gprotm.h"
 #include "lg/gprotc.h"
 
+#include "check_utils.h"
 #include "check_suites.h"
 
 u16 gp_register_map[32];
 
 int gpm_register_changed = 0;
 int gpm_register_changed_addr = 0;
+
+int gpm_string_received = 0;
+char gpm_string_received_string[1024];
+int gpm_string_received_len = 0;
+int gpc_get_version = 0;
 
 void gpm_trigger_output_hook(void *data)
 {
@@ -65,13 +71,31 @@ void gpc_trigger_output_hook(void* data)
 	}
 }
 
+void gpm_string_received_hook(void *data, char *string, int len)
+{
+	data = data;
+
+	gpm_string_received = 1;
+	memcpy(gpm_string_received_string+gpm_string_received_len, string, len);
+	gpm_string_received_len += len;
+}
+
+void gpc_get_version_hook(void *data)
+{
+	data = data;
+
+	gpc_get_version = 1;
+}
+
 void init_gprot_tc(void)
 {
 	int i;
 
 	gpm_init(gpm_trigger_output_hook, NULL, gpm_register_changed_hook, NULL);
+	gpm_set_string_received_callback(gpm_string_received_hook, NULL);
 
 	gpc_init(gpc_trigger_output_hook, NULL, NULL, NULL);
+	gpc_set_get_version_callback(gpc_get_version_hook, NULL);
 
 	for(i=0; i<32; i++){
 		gp_register_map[i] = 0xAA55+i;
@@ -81,6 +105,11 @@ void init_gprot_tc(void)
 
 void clean_gprot_tc(void)
 {
+	gpm_register_changed = 0;
+	gpm_register_changed_addr = 0;
+	gpm_string_received = 0;
+	memset(gpm_string_received_string, 0, sizeof(gpm_string_received_string));
+	gpm_string_received_len = 0;
 }
 
 START_TEST(test_gprot_write)
@@ -153,6 +182,115 @@ START_TEST(test_gprot_read_write)
 }
 END_TEST
 
+START_TEST(test_gprot_send_short_string)
+{
+	int i;
+	char *string = "Hello World!";
+	int string_size = strlen(string);
+
+	fail_unless(string_size == gpc_send_string(string, string_size));
+
+	fail_unless(string_size == gpm_string_received_len);
+	fail_unless(1 == gpm_string_received);
+
+	for (i=0; i<string_size; i++) {
+		fail_unless(string[i] == gpm_string_received_string[i]);
+	}
+
+	fail_unless(0 == gpm_string_received_string[i]);
+}
+END_TEST
+
+START_TEST(test_gprot_send_long_string)
+{
+	int i;
+	int string_size = (('z' - 'a') + 1) * ((('9' - '0') + 1) + 1);
+	char string[string_size];
+
+	/* Generate string. */
+	{
+		int gi, gj, gk = 0;
+
+		for(gi=0; gi<(('z' - 'a') + 1); gi++) {
+			string[gk++] = 'a'+gi;
+			for(gj=0; gj<(('9' - '0') + 1); gj++){
+				string[gk++] = '0'+gj;
+			}
+		}
+
+		string[gk] = '\0';
+
+	}
+
+	fail_unless(string_size == gpc_send_string(string, string_size));
+
+	fail_unless(string_size == gpm_string_received_len);
+	fail_unless(1 == gpm_string_received);
+
+	for (i=0; i<string_size; i++) {
+		fail_unless(string[i] == gpm_string_received_string[i]);
+	}
+
+	fail_unless(0 == gpm_string_received_string[i]);
+}
+END_TEST
+
+START_TEST(test_gprot_send_arbitrary_string)
+{
+	int i, j;
+	int string_size = (('z' - 'a') + 1) * ((('9' - '0') + 1) + 1);
+	char string[string_size];
+
+	/* Generate string. */
+	{
+		int gi, gj, gk = 0;
+
+		for(gi=0; gi<(('z' - 'a') + 1); gi++) {
+			string[gk++] = 'a'+gi;
+			for(gj=0; gj<(('9' - '0') + 1); gj++){
+				string[gk++] = '0'+gj;
+			}
+		}
+
+		string[gk] = '\0';
+
+	}
+
+	for (j=0; j<=string_size; j++) {
+
+		fail_unless(j == gpc_send_string(string, j));
+
+		fail_unless(j == gpm_string_received_len);
+		fail_unless(1 == gpm_string_received);
+
+		for (i=0; i<j; i++) {
+			fail_unless(string[i] == gpm_string_received_string[i]);
+		}
+
+		fail_unless(0 == gpm_string_received_string[i]);
+
+		gpm_string_received_len = 0;
+		gpm_string_received = 0;
+		memset(gpm_string_received_string, 0, sizeof(gpm_string_received_string));
+	}
+
+}
+END_TEST
+
+START_TEST(test_gprot_get_client_version)
+{
+	fail_unless(0 == gpm_send_get_version());
+
+	fail_unless(1 == gpc_get_version);
+
+	fail_unless(0 == regmatch("^libgovernor [[:digit:]]+\\.[[:digit:]]+-[[:alnum:]]{8}(-dirty)?, build [[:digit:]]{8}$", gpm_string_received_string));
+	fail_unless(0 == regmatch("^Copyright \\(C\\) 2010-20[[:digit:]]{2} Piotr Esden-Tempski <piotr@esden.net>$", gpm_string_received_string));
+	fail_unless(0 == regmatch("^License GPLv3\\+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>$", gpm_string_received_string));
+
+	memset(gpm_string_received_string, 0, sizeof(gpm_string_received_string));
+}
+END_TEST
+
 Suite *make_lg_gprot_suite()
 {
 	Suite *s;
@@ -166,6 +304,10 @@ Suite *make_lg_gprot_suite()
 	tcase_add_test(tc, test_gprot_write);
 	tcase_add_test(tc, test_gprot_read);
 	tcase_add_test(tc, test_gprot_read_write);
+	tcase_add_test(tc, test_gprot_send_short_string);
+	tcase_add_test(tc, test_gprot_send_long_string);
+	tcase_add_test(tc, test_gprot_send_arbitrary_string);
+	tcase_add_test(tc, test_gprot_get_client_version);
 
 	return s;
 }

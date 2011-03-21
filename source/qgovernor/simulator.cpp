@@ -128,3 +128,8 @@ void Simulator::on_pushButton_clicked()
 {
     emit shutdown();
 }
+
+void Simulator::on_consoleSendStringPushButton_pressed()
+{
+    governorClient->sendString(ui->consoleLineEdit->text().append('\n'));
+}

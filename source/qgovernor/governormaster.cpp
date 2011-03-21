@@ -28,6 +28,7 @@ extern "C" {
 void gpm_output_trigger(void *data);
 void gpm_log_callback(void *data);
 void gpm_register_changed(void *data, u8 addr);
+void gpm_string_received(void *data, char *string, int size);
 }
 
 GovernorMaster::~GovernorMaster()
@@ -38,6 +39,7 @@ GovernorMaster::~GovernorMaster()
 GovernorMaster::GovernorMaster()
 {
     gpm_init(gpm_output_trigger, static_cast<void *>(this), gpm_register_changed, static_cast<void *>(this));
+    gpm_set_string_received_callback(gpm_string_received, static_cast<void *>(this));
 }
 
 signed short GovernorMaster::pickupByte()
@@ -58,6 +60,11 @@ int GovernorMaster::sendGet(unsigned char addr)
 int GovernorMaster::sendGetCont(unsigned char addr)
 {
     return gpm_send_get_cont(addr);
+}
+
+int GovernorMaster::sendGetVersion(void)
+{
+    return gpm_send_get_version();
 }
 
 unsigned short GovernorMaster::getRegisterMapValue(unsigned char addr)
@@ -86,6 +93,13 @@ void GovernorMaster::newLog(const QString &name)
   gpm_set_log(&gpm_log_callback, static_cast<void *>(this));
 }
 
+void GovernorMaster::stringReceivedCB(char *string, int size)
+{
+    emit stringReceived(QString(string));
+
+    size = size; /* we are ignoring size I think that it is a bad idea :/ */
+}
+
 // The libgovernor callbacks use a void pointer to keep the address of
 // the GovernorMaster instance; these callbacks then re-cast it to
 // call the methods on the right instance.  
@@ -105,6 +119,11 @@ void gpm_log_callback(void *data)
 {
   static_cast<GovernorMaster *>(data)->reglog->
     writeRegisters(&gpm_get_register_map_val);
+}
+
+void gpm_string_received(void *data, char *string, int size)
+{
+    static_cast<GovernorMaster *>(data)->stringReceivedCB(string, size);
 }
 
 }

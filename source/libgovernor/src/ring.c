@@ -52,6 +52,31 @@ s32 ring_write(struct ring * ring, u8 * data, ring_size_t size)
 	return i;
 }
 
+s32 ring_safe_write_ch(struct ring *ring, u8 ch)
+{
+	int ret;
+	int retry_count = 100;
+
+	do {
+		ret = ring_write_ch(ring, ch);
+	} while ((ret < 0) && ((retry_count--) > 0));
+
+	return ret;
+}
+
+s32 ring_safe_write(struct ring * ring, u8 * data, ring_size_t size)
+{
+	s32 i;
+
+	for (i = 0; i < size; i++) {
+		if (0 > ring_safe_write_ch(ring, data[i])) {
+			return -i;
+		}
+	}
+
+	return i;
+}
+
 s32 ring_read_ch(struct ring * ring, u8 * ch)
 {
 	s32 ret = -1;

@@ -34,14 +34,17 @@ public:
     int sendSet(unsigned char addr, unsigned short data);
     int sendGet(unsigned char addr);
     int sendGetCont(unsigned char addr);
+    int sendGetVersion(void);
     unsigned short getRegisterMapValue(unsigned char addr);
     int handleByte(unsigned char byte);
     void newLog(const QString &name);
+    void stringReceivedCB(char *string, int size);
     QGLogger * reglog;
 
   signals:
     void outputTriggered();
     void registerChanged(unsigned char addr);
+    void stringReceived(const QString &string);
 
 };
 

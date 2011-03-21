@@ -10,7 +10,7 @@ PATCH=patch
 
 .PHONY: all yamlgen olconf libgovernor firmware install clean
 
-all: firmware
+all: firmware libgovernor-install
 
 #######################################################################
 # General util targets
@@ -66,6 +66,23 @@ libgovernor-stm32-install: libgovernor-stm32
 		$(MAKE) -C $(BUILDDIR)/libgovernor-stm32 install
 
 #######################################################################
+# libgovernor host
+#######################################################################
+
+$(BUILDDIR)/libgovernor/Makefile: libgovernor/configure
+	@mkdir -p $(BUILDDIR)/libgovernor; \
+		cd $(BUILDDIR)/libgovernor; \
+		$(TOPDIR)/libgovernor/configure --prefix=$(STAGEDIR) --disable-check
+
+libgovernor: $(BUILDDIR)/libgovernor/Makefile
+	@export PATH=$(STAGEDIR)/bin:$$PATH; \
+		$(MAKE) -C $(BUILDDIR)/libgovernor
+
+libgovernor-install: libgovernor
+	@export PATH=$(STAGEDIR)/bin:$$PATH; \
+		$(MAKE) -C $(BUILDDIR)/libgovernor install
+
+#######################################################################
 # firmware
 #######################################################################
 
@@ -80,7 +97,7 @@ firmware: olconf-install libgovernor-stm32-install
 # Clean
 #######################################################################
 
-clean: firmware-clean yamlgen-clean olconf-clean libgovernor-clean libgovernor-stm32-clean
+clean: firmware-clean yamlgen-clean olconf-clean libgovernor-source-clean libgovernor-stm32-clean libgovernor-clean
 
 olconf-clean:
 	$(MAKE) -C utils/olconf clean
@@ -88,7 +105,7 @@ olconf-clean:
 yamlgen-clean:
 	$(MAKE) -C utils/yamlgen clean
 
-libgovernor-clean:
+libgovernor-source-clean:
 	@if [ -f libgovernor/Makefile ]; then \
 		$(MAKE) -C libgovernor distclean; \
 	fi
@@ -96,6 +113,11 @@ libgovernor-clean:
 libgovernor-stm32-clean:
 	@if [ -f $(BUILDDIR)/libgovernor-stm32/Makefile ]; then \
 		$(MAKE) -C $(BUILDDIR)/libgovernor-stm32 distclean; \
+	fi
+
+libgovernor-clean:
+	@if [ -f $(BUILDDIR)/libgovernor/Makefile ]; then \
+		$(MAKE) -C $(BUILDDIR)/libgovernor distclean; \
 	fi
 
 firmware-clean:

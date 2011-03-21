@@ -25,6 +25,10 @@
 #define DEBUG(STR, ARGS...)
 #endif
 
+#include "config.h"
+
+#include <string.h>
+
 #include "lg/types.h"
 #include "lg/ring.h"
 #include "lg/gpdef.h"
@@ -36,12 +40,16 @@ struct gpc_hooks {
 	void *trigger_output_data;
 	gp_with_addr_hook_t register_changed;
 	void *register_changed_data;
+	gp_simple_hook_t get_version;
+	void *get_version_data;
 } gpc_hooks;
 
 volatile u16 *gpc_register_map[32];
 
+#define GPC_OUTPUT_BUFFER_SIZE 1024
+
 struct ring gpc_output_ring;
-u8 gpc_output_buffer[128];
+u8 gpc_output_buffer[GPC_OUTPUT_BUFFER_SIZE];
 
 enum gpc_states {
 	GPCS_IDLE,
@@ -54,6 +62,10 @@ u16 gpc_data;
 
 u32 gpc_monitor_map;
 
+#define GPC_VERSION PACKAGE_STRING VERSION_SUFFIX ", build " BUILDDATE "\n"
+#define GPC_COPYRIGHT COPYRIGHT "\n"
+#define GPC_LICENSE LICENSE "\n"
+
 int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	     gp_with_addr_hook_t register_changed, void *register_changed_data)
 {
@@ -65,13 +77,24 @@ int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	gpc_hooks.trigger_output_data = trigger_output_data;
 	gpc_hooks.register_changed = register_changed;
 	gpc_hooks.register_changed_data = register_changed_data;
+	gpc_hooks.get_version = 0;
+	gpc_hooks.get_version_data = 0;
 
 	for (i = 0; i < 32; i++)
 		gpc_register_map[i] = 0;
 
 	gpc_monitor_map = 0;
 
-	ring_init(&gpc_output_ring, gpc_output_buffer, 128);
+	ring_init(&gpc_output_ring, gpc_output_buffer, GPC_OUTPUT_BUFFER_SIZE);
+
+	return 0;
+}
+
+int gpc_set_get_version_callback(gp_simple_hook_t get_version, void *get_version_data)
+{
+
+	gpc_hooks.get_version = get_version;
+	gpc_hooks.get_version_data = get_version_data;
 
 	return 0;
 }
@@ -116,14 +139,53 @@ int gpc_send_reg(u8 addr)
 	return 1;
 }
 
+int gpc_send_string(char *string, int len)
+{
+	int i;
+
+	for (i=0; i<(len / GP_STR_PAK_MAX_LEN); i++) {
+		/* Send out the start byte for a string */
+		if (0 > ring_safe_write_ch(&gpc_output_ring, GP_MODE_STRING |
+						GP_STR_PAK_MAX_LEN)) {
+			return -1;
+		}
+
+		/* Send packet contents */
+		if (0 > ring_safe_write(&gpc_output_ring, (u8 *)(string + (i * GP_STR_PAK_MAX_LEN)), GP_STR_PAK_MAX_LEN)) {
+			return -1;
+		}
+	}
+
+	if (0 > ring_safe_write_ch(&gpc_output_ring, GP_MODE_STRING | (len % GP_STR_PAK_MAX_LEN))) {
+		return -1;
+	}
+
+	if (0 > ring_safe_write(&gpc_output_ring, (u8 *)(string + (i * GP_STR_PAK_MAX_LEN)), (len % GP_STR_PAK_MAX_LEN))) {
+		return -1;
+	}
+
+	if (gpc_hooks.trigger_output)
+		gpc_hooks.trigger_output(gpc_hooks.trigger_output_data);
+
+	return len;
+}
+
 int gpc_handle_byte(u8 byte)
 {
 	DEBUG("got byte %04X ", byte);
 
 	switch (gpc_state) {
 	case GPCS_IDLE:
-		if (byte & GP_MODE_RESERVED) {
-			DEBUG("reserved\n");
+		if (byte & GP_MODE_STRING) {
+			if (byte == GP_MODE_STRING) {
+				gpc_send_string(GPC_VERSION, sizeof(GPC_VERSION) - 1);
+				gpc_send_string(GPC_COPYRIGHT, sizeof(GPC_COPYRIGHT) - 1);
+				gpc_send_string(GPC_LICENSE, sizeof(GPC_LICENSE) - 1);
+				if (gpc_hooks.get_version)
+					gpc_hooks.get_version(gpc_hooks.get_version_data);
+				return 0;
+			}
+			DEBUG("not handled\n");
 			return 1;
 		}
 

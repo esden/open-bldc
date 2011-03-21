@@ -26,12 +26,14 @@ extern "C" {
 extern "C" {
 void gpc_output_trigger(void *data);
 void gpc_register_changed(void *data, u8 addr);
+void gpc_get_version(void *data);
 }
 
 GovernorClient::GovernorClient()
 {
     int i;
     gpc_init(gpc_output_trigger, static_cast<void *>(this), gpc_register_changed, static_cast<void *>(this));
+    gpc_set_get_version_callback(gpc_get_version, static_cast<void *>(this));
     for(i=0; i<32; i++){
         register_map[i] = 0;
         gpc_setup_reg(i, &register_map[i]);
@@ -63,6 +65,11 @@ int GovernorClient::registerTouched(unsigned char addr)
     return gpc_register_touched(addr);
 }
 
+void GovernorClient::sendString(QString &string)
+{
+    gpc_send_string(string.toAscii().data(), string.length());
+}
+
 void GovernorClient::outputTriggerCB()
 {
     emit outputTriggered();
@@ -82,5 +89,14 @@ void gpc_output_trigger(void *data)
 void gpc_register_changed(void *data, u8 addr)
 {
     static_cast<GovernorClient *>(data)->registerChangedCB(addr);
+}
+
+void gpc_get_version(void *data)
+{
+    char version[] = "qgovernor governor protocol simulator\n";
+
+    gpc_send_string(version, strlen(version));
+
+    data = data;
 }
 }

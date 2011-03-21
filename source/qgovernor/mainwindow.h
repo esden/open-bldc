@@ -66,6 +66,7 @@ private:
     QAction *updateAllRegisters;
 
 private slots:
+    void on_consoleClearPushButton_pressed();
     void on_PWMDutyCycleHorizontalSlider_valueChanged(int value);
     void on_commIIRPoleSpinBox_valueChanged(int );
     void on_commDirectCutoffSpinBox_valueChanged(int );
@@ -91,6 +92,7 @@ private slots:
     void on_registerChanged(unsigned char addr);
     void on_guiRegisterChanged(QStandardItem *item);
     void on_governorInterface_readyRead();
+    void on_stringReceived(QString string);
 
     void addTargetTab(GovConfig const & config);
 };

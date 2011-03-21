@@ -128,3 +128,8 @@ void Simulator::on_pushButton_clicked()
 {
     emit shutdown();
 }
+
+void Simulator::on_consoleLineEdit_returnPressed()
+{
+
+}

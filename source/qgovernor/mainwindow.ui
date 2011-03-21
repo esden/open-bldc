@@ -25,7 +25,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="OpenBLDCTabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="OpenBLDCTab">
        <attribute name="title">
@@ -396,10 +396,41 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QGroupBox" name="graphicGroupBox">
+         <widget class="QGroupBox" name="consoleGroupBox">
           <property name="title">
-           <string>Graphic Display</string>
+           <string>Console</string>
           </property>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0" colspan="2">
+            <widget class="QPlainTextEdit" name="consolePlainTextEdit">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="acceptDrops">
+              <bool>false</bool>
+             </property>
+             <property name="undoRedoEnabled">
+              <bool>false</bool>
+             </property>
+             <property name="lineWrapMode">
+              <enum>QPlainTextEdit::NoWrap</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLineEdit" name="consoleLineEdit"/>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="consoleClearPushButton">
+             <property name="text">
+              <string>Clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item row="1" column="0">
@@ -677,7 +708,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="qgovernor.qrc">
+    <iconset>
      <normaloff>:/icons/icons/connect-32x32.png</normaloff>
      <normalon>:/icons/icons/disconnect-32x32.png</normalon>:/icons/icons/connect-32x32.png</iconset>
    </property>
@@ -703,9 +734,7 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="qgovernor.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionQuit</sender>

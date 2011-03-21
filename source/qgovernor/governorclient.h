@@ -31,6 +31,7 @@ public:
     int handleByte(unsigned char byte);
     void setRegister(unsigned char addr, unsigned short value);
     int registerTouched(unsigned char addr);
+    void sendString(QString &string);
     void outputTriggerCB();
     void registerChangedCB(unsigned char addr);
 

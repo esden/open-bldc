@@ -68,10 +68,16 @@ void ProtocolModel::handleByte(unsigned char byte)
     static int state = 0;
     static unsigned char addr;
     static unsigned short value;
+    static int string_len = 0;
 
     switch(state){
     case 0:
-        if((byte & GP_MODE_MASK) == GP_MODE_WRITE){
+        if ((byte & GP_MODE_STRING) == GP_MODE_STRING) {
+            string_len = (byte & GP_STR_LEN_MASK);
+            addPacket(false, 'S', 0, string_len);
+            if (string_len > 0)
+                state = 3;
+        } else if((byte & GP_MODE_MASK) == GP_MODE_WRITE){
             addr = byte & GP_ADDR_MASK;
             state = 1;
         }else if((byte & GP_MODE_MASK) == (GP_MODE_READ | GP_MODE_PEEK)){
@@ -88,6 +94,11 @@ void ProtocolModel::handleByte(unsigned char byte)
         value |= byte << 8;
         addPacket(false, 'W', addr, value);
         state = 0;
+        break;
+    case 3:
+        string_len--;
+        if(string_len == 0)
+            state = 0;
         break;
     }
 }

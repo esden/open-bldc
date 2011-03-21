@@ -62,9 +62,9 @@ u16 gpc_data;
 
 u32 gpc_monitor_map;
 
-char *gpc_version = PACKAGE_STRING VERSION_SUFFIX ", build " BUILDDATE "\n";
-char *gpc_copyright = COPYRIGHT "\n";
-char *gpc_license = LICENSE "\n";
+#define GPC_VERSION PACKAGE_STRING VERSION_SUFFIX ", build " BUILDDATE "\n"
+#define GPC_COPYRIGHT COPYRIGHT "\n"
+#define GPC_LICENSE LICENSE "\n"
 
 int gpc_init(gp_simple_hook_t trigger_output, void *trigger_output_data,
 	     gp_with_addr_hook_t register_changed, void *register_changed_data)
@@ -178,9 +178,9 @@ int gpc_handle_byte(u8 byte)
 	case GPCS_IDLE:
 		if (byte & GP_MODE_STRING) {
 			if (byte == GP_MODE_STRING) {
-				gpc_send_string(gpc_version, strlen(gpc_version));
-				gpc_send_string(gpc_copyright, strlen(gpc_copyright));
-				gpc_send_string(gpc_license, strlen(gpc_license));
+				gpc_send_string(GPC_VERSION, sizeof(GPC_VERSION) - 1);
+				gpc_send_string(GPC_COPYRIGHT, sizeof(GPC_COPYRIGHT) - 1);
+				gpc_send_string(GPC_LICENSE, sizeof(GPC_LICENSE) - 1);
 				if (gpc_hooks.get_version)
 					gpc_hooks.get_version(gpc_hooks.get_version_data);
 				return 0;

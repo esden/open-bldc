@@ -31,8 +31,8 @@ Q := @
 endif
 
 CC=g++
-CFLAGS+=-Wall -I./include -I./include/yamlgen
-LDFLAGS+=-lyaml
+CFLAGS+=-Wall -I./include -I./include/yamlgen -I/opt/local/include
+LDFLAGS+=-L/opt/local/lib -lyaml
 
 LIBTOOL=$(shell which glibtool > /dev/zero && echo glibtool || echo libtool)
 

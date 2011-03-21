@@ -65,7 +65,7 @@ int GovernorClient::registerTouched(unsigned char addr)
     return gpc_register_touched(addr);
 }
 
-void GovernorClient::sendString(QString &string)
+void GovernorClient::sendString(QString string)
 {
     gpc_send_string(string.toAscii().data(), string.length());
 }

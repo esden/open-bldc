@@ -67,6 +67,7 @@ int main(void)
 	(void)gpc_setup_reg(5, &test_counter);
 
 	while (true) {
+		gprot_get_version_process();
 		my_delay(500000);
 		test_counter++;
 		(void)gpc_register_touched(5);

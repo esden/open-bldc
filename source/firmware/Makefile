@@ -31,6 +31,9 @@
 ################################################################################
 
 NAME		?= open-bldc
+VERSION          = 0.1-beta
+COPYRIGHT        = 'Copyright (C) 2010-2011 Piotr Esden-Tempski <piotr@esden.net>'
+LICENSE          = 'License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>'
 PREFIX		?= arm-none-eabi
 OOCD_INTERFACE	?= flossjtag
 OOCD_TARGET	?= open-bldc
@@ -71,6 +74,8 @@ CAN_PARAM = -DCAN_ADDR=$(CAN_ADDR)
 else
 CAN_PARAM =
 endif
+VERSION_SUFFIX = `$(TOPDIR)/scripts/setlocalversion`
+BUILDDATE = `date +"%Y%m%d"`
 
 BUILDDIR	= build/$(TARGET)
 BINDIR		= $(BUILDDIR)/bin
@@ -88,8 +93,14 @@ INCDIRS		= \
 CFLAGS          += $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections -msoft-float \
-		  -mfix-cortex-m3-ldrd \
-		  $(CAN_PARAM)
+		  -mfix-cortex-m3-ldrd
+CFLAGS          += $(CAN_PARAM)
+CFLAGS          += -DVERSION=\"$(VERSION)\"
+CFLAGS          += -DVERSION_SUFFIX=\"$(VERSION_SUFFIX)\"
+CFLAGS          += -DBUILDDATE=\"$(BUILDDATE)\"
+CFLAGS          += -DPROJECT_NAME=\"$(NAME)\"
+CFLAGS          += -DCOPYRIGHT=\"$(COPYRIGHT)\"
+CFLAGS          += -DLICENSE=\"$(LICENSE)\"
 ASFLAGS         += -ahls -mapcs-32
 LDFLAGS         += -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
 		                    -L$(GOVERNOR_LIB_DIR) -Wl,--gc-sections \
@@ -268,7 +279,7 @@ $(INCDIR)/config.h: $(TOPDIR)/../conf/$(TARGET)-config.yaml
 $(OBJDIR)/%.o: %.c
 	@echo "  CC    $@"
 	$(Q)mkdir -p $(@D)
-	$(Q)$(CC) $(CFLAGS) -c $*.c -o $@
+	$(Q)$(CC) $(CFLAGS) -DTARGET=\"$(TARGET)\" -c $*.c -o $@
 
 $(DEPDIR)/%.d: %.c
 	@echo "  DEP   $@"

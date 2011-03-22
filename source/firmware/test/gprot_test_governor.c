@@ -40,6 +40,13 @@
 
 static void gprot_trigger_output(void *data);
 static void gprot_register_changed(void *data, u8 addr);
+static void gprot_get_version(void *data);
+
+static bool gprot_get_version_triggered = false;
+
+#define FIRMWARE_VERSION "\n" PROJECT_NAME " " TARGET " firmware " VERSION VERSION_SUFFIX ", build " BUILDDATE "\n"
+#define FIRMWARE_COPYRIGHT COPYRIGHT "\n"
+#define FIRMWARE_LICENSE LICENSE "\n"
 
 /**
  * Test governor registers.
@@ -55,6 +62,9 @@ void gprot_init()
 	int i;
 
 	(void)gpc_init(gprot_trigger_output, 0, gprot_register_changed, 0);
+	(void)gpc_set_get_version_callback(gprot_get_version, 0);
+
+	gprot_get_version_triggered = false;
 
 	for (i = 0; i < 32; i++) {
 		test_regs[i] = (u16)(i * 3);
@@ -89,4 +99,29 @@ void gprot_register_changed(void *data, u8 addr)
 {
 	data = data;
 	addr = addr;
+}
+
+/**
+ * Callback from libgovernor indicating a get version event.
+ *
+ * @param data Passthrough data to the callback.
+ */
+void gprot_get_version(void *data)
+{
+	data = data;
+
+	gprot_get_version_triggered = true;
+}
+
+/**
+ * Userspace process handling the get version event.
+ */
+void gprot_get_version_process(void)
+{
+	if (gprot_get_version_triggered) {
+		gprot_get_version_triggered = false;
+		gpc_send_string(FIRMWARE_VERSION, sizeof(FIRMWARE_VERSION));
+		gpc_send_string(FIRMWARE_COPYRIGHT, sizeof(FIRMWARE_COPYRIGHT));
+		gpc_send_string(FIRMWARE_LICENSE, sizeof(FIRMWARE_LICENSE));
+	}
 }

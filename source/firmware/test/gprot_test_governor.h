@@ -20,5 +20,6 @@
 #define __GPROT_H
 
 void gprot_init();
+void gprot_get_version_process(void);
 
 #endif /* __GPROT_H */

@@ -83,6 +83,7 @@ int main(void)
 		}
 
 		run_control_process();
+		run_gprot_get_version_process();
 
 		//if (*sensor_process_trigger) {
 		//	*sensor_process_trigger = false;

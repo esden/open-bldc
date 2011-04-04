@@ -190,9 +190,11 @@ else
 endif
 else
 %.flash: $$(*).target_exists $$(*.elf)
-	@echo "  GDB   $(*).elf"
-	@echo "target extended-remote $(BMP_PORT)" > /tmp/obldc_bmp_port_tmp.scr
-	$(Q)$(GDB) -x scripts/black_magic_probe_flash.scr $*.elf
+	@echo "  GDB   $(*).elf (flash)"
+	$(Q)$(GDB) --batch \
+		   -ex 'target extended-remote $(BMP_PORT)' \
+		   -x scripts/black_magic_probe_flash.scr \
+		   $*.elf
 
 endif
 else

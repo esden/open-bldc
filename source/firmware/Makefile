@@ -143,6 +143,7 @@ clean:
 	$(Q)rm -rf build
 
 flash: $(DEFAULT_TARGET).flash
+debug: $(DEFAULT_TARGET).debug
 
 ifdef TARGET
 %.all: $$(*).target_exists $(BINDIR)/$$(*).images $(BINDIR)/$$(*).size
@@ -201,6 +202,24 @@ else
 %.flash: $$(*).target_exists
 	make TARGET=$(*) check_params
 	make TARGET=$(*) CHECKED_PARAMS=true $(*).flash
+endif
+
+ifdef TARGET
+ifeq ($(BMP_PORT),)
+%.debug: $$(*).target_exists $$(*).elf
+	@echo "Debug is only supported when using black magic probe. Pleas set BMP_PORT environment variable."
+	@exit 1
+else
+%.debug: $$(*).target_exists $$(*).elf
+	@echo "  GDB  $(*).elf"
+	$(Q)$(GDB) -ex 'target extended-remote $(BMP_PORT)' \
+		   -x scripts/black_magic_probe_debug.scr \
+		   $(*).elf
+endif
+else
+%.debug: $$(*).target_exists
+	make TARGET=$(*) check_params
+	make TARGET=$(*) CHECKED_PARAMS=true $(*).debug
 endif
 
 ifdef TARGET

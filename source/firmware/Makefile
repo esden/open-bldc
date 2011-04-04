@@ -42,6 +42,8 @@ OOCD_SERIAL	?=
 # Black magic probe specific variables
 # Set the BMP_PORT to a serial port and then BMP is used for flashing
 BMP_PORT	?=
+# Set to 1 to get plain gdb terminal without text user interface.
+DEBUG_PLAIN     ?= 0
 
 # Set to 1 to go into verbose mode
 VERBOSE		?= 0
@@ -210,11 +212,20 @@ ifeq ($(BMP_PORT),)
 	@echo "Debug is only supported when using black magic probe. Pleas set BMP_PORT environment variable."
 	@exit 1
 else
+ifeq ($(DEBUG_PLAIN), 0)
+%.debug: $$(*).target_exists $$(*).elf
+	@echo "  GDB  $(*).elf"
+	$(Q)$(GDB) --tui \
+		   -ex 'target extended-remote $(BMP_PORT)' \
+		   -x scripts/black_magic_probe_debug.scr \
+		   $(*).elf
+else
 %.debug: $$(*).target_exists $$(*).elf
 	@echo "  GDB  $(*).elf"
 	$(Q)$(GDB) -ex 'target extended-remote $(BMP_PORT)' \
 		   -x scripts/black_magic_probe_debug.scr \
 		   $(*).elf
+endif
 endif
 else
 %.debug: $$(*).target_exists

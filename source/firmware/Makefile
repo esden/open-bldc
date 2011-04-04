@@ -39,6 +39,11 @@ OOCD_INTERFACE	?= flossjtag
 OOCD_TARGET	?= open-bldc
 OOCD_SERIAL	?=
 
+# Black magic probe specific variables
+# Set the BMP_PORT to a serial port and then BMP is used for flashing
+BMP_PORT	?=
+
+# Set to 1 to go into verbose mode
 VERBOSE		?= 0
 
 # Use 'make VERBOSE=1' for more debug output.
@@ -57,6 +62,7 @@ AS		= $(PREFIX)-as
 CP		= $(PREFIX)-objcopy
 OD		= $(PREFIX)-objdump
 SIZE		= $(PREFIX)-size
+GDB		= $(PREFIX)-gdb
 OOCD		= openocd
 LINT		= splint
 OLCONFGEN	= $(shell which olconfgen > /dev/null && echo olconfgen || echo $(TOPDIR)/../var/stage/bin/olconfgen)
@@ -157,6 +163,7 @@ $(BINDIR)/%.images: $(BINDIR)/%.bin $(BINDIR)/%.hex $(BINDIR)/%.srec $(BINDIR)/%
 
 
 ifdef TARGET
+ifeq ($(BMP_PORT),)
 ifeq ($(OOCD_SERIAL),)
 %.flash: $$(*).target_exists $$(*).hex
 	@echo "  OOCD  $(*).hex"
@@ -180,6 +187,13 @@ else
 		    -c "flash write_image $*.hex" \
 		    -c reset \
 		    -c shutdown
+endif
+else
+%.flash: $$(*).target_exists $$(*.elf)
+	@echo "  GDB   $(*).elf"
+	@echo "target extended-remote $(BMP_PORT)" > /tmp/obldc_bmp_port_tmp.scr
+	$(Q)$(GDB) -x scripts/black_magic_probe_flash.scr $*.elf
+
 endif
 else
 %.flash: $$(*).target_exists

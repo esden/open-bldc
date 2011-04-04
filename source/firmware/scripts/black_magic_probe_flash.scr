@@ -1,0 +1,7 @@
+source /tmp/obldc_bmp_port_tmp.scr
+monitor version
+monitor swdp_scan
+attach 1
+load
+kill
+quit

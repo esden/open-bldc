@@ -192,7 +192,7 @@ else
 		    -c shutdown
 endif
 else
-%.flash: $$(*).target_exists $$(*.elf)
+%.flash: $$(*).target_exists $$(*).elf
 	@echo "  GDB   $(*).elf (flash)"
 	$(Q)$(GDB) --batch \
 		   -ex 'target extended-remote $(BMP_PORT)' \

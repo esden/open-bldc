@@ -37,6 +37,7 @@
 #include "gprot_test_governor.h"
 #include "driver/led.h"
 #include "driver/usart.h"
+#include "driver/ext_flash.h"
 
 static void gprot_trigger_output(void *data);
 static void gprot_register_changed(void *data, u8 addr);
@@ -118,10 +119,33 @@ void gprot_get_version(void *data)
  */
 void gprot_get_version_process(void)
 {
+	char dat[3];
+	int i;
+
 	if (gprot_get_version_triggered) {
 		gprot_get_version_triggered = false;
 		gpc_send_string(FIRMWARE_VERSION, sizeof(FIRMWARE_VERSION));
 		gpc_send_string(FIRMWARE_COPYRIGHT, sizeof(FIRMWARE_COPYRIGHT));
 		gpc_send_string(FIRMWARE_LICENSE, sizeof(FIRMWARE_LICENSE));
+
+		for (i=0; i<EXT_FLASH_SIZE; i++) {
+			if (((ext_flash_data[i] >> 4) & 0x0F) < 10) {
+				dat[0] = ((ext_flash_data[i] >> 4) & 0x0F) + '0';
+			} else {
+				dat[0] = ((ext_flash_data[i] >> 4) & 0x0F) + 'A' - 10;
+			}
+
+			if (((ext_flash_data[i] >> 0) & 0x0F) < 10) {
+				dat[1] = ((ext_flash_data[i] >> 0) & 0x0F) + '0';
+			} else {
+				dat[1] = ((ext_flash_data[i] >> 0) & 0x0F) + 'A' - 10;
+			}
+
+			dat[2] = ' ';
+
+			gpc_send_string(dat, 3);
+		}
+
+		gpc_send_string("\n", 1);
 	}
 }

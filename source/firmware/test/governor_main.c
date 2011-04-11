@@ -35,6 +35,7 @@
 #include "driver/led.h"
 #include "test/gprot_test_governor.h"
 #include "driver/usart.h"
+#include "driver/ext_flash.h"
 
 /**
  * Crude delay implementation.
@@ -62,6 +63,7 @@ int main(void)
 	led_init();
 	gprot_init();
 	usart_init();
+	ext_flash_init();
 
 	test_counter = 0;
 	(void)gpc_setup_reg(5, &test_counter);

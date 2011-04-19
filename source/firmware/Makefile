@@ -168,18 +168,18 @@ $(BINDIR)/%.images: $(BINDIR)/%.bin $(BINDIR)/%.hex $(BINDIR)/%.srec $(BINDIR)/%
 ifdef TARGET
 ifeq ($(BMP_PORT),)
 ifeq ($(OOCD_SERIAL),)
-%.flash: $$(*).target_exists $$(*).hex
+%.flash: $$(*).target_exists $(BINDIR)/$$(*).hex
 	@echo "  OOCD  $(*).hex"
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		    -f board/$(OOCD_TARGET).cfg \
 		    -c init \
 		    -c "reset init" \
 		    -c "stm32x mass_erase 0" \
-		    -c "flash write_image $*.hex" \
+		    -c "flash write_image $(BINDIR)/$*.hex" \
 		    -c reset \
 		    -c shutdown
 else
-%.flash: $$(*).target_exists $$(*).hex
+%.flash: $$(*).target_exists $(BINDIR)/$$(*).hex
 	@echo "  OOCD  $(*).hex"
 	$(Q)$(OOCD) -f interface/$(OOCD_INTERFACE).cfg \
 		    -f board/$(OOCD_TARGET).cfg \
@@ -187,17 +187,17 @@ else
 		    -c init \
 		    -c "reset init" \
 		    -c "stm32x mass_erase 0" \
-		    -c "flash write_image $*.hex" \
+		    -c "flash write_image $(BINDIR)/$*.hex" \
 		    -c reset \
 		    -c shutdown
 endif
 else
-%.flash: $$(*).target_exists $$(*).elf
+%.flash: $$(*).target_exists $(BINDIR)/$$(*).elf
 	@echo "  GDB   $(*).elf (flash)"
 	$(Q)$(GDB) --batch \
 		   -ex 'target extended-remote $(BMP_PORT)' \
 		   -x scripts/black_magic_probe_flash.scr \
-		   $*.elf
+		   $(BINDIR)/$*.elf
 
 endif
 else
@@ -208,23 +208,23 @@ endif
 
 ifdef TARGET
 ifeq ($(BMP_PORT),)
-%.debug: $$(*).target_exists $$(*).elf
+%.debug: $$(*).target_exists $(BINDIR)/$$(*).elf
 	@echo "Debug is only supported when using black magic probe. Pleas set BMP_PORT environment variable."
 	@exit 1
 else
 ifeq ($(DEBUG_PLAIN), 0)
-%.debug: $$(*).target_exists $$(*).elf
+%.debug: $$(*).target_exists $(BINDIR)/$$(*).elf
 	@echo "  GDB  $(*).elf"
 	$(Q)$(GDB) --tui \
 		   -ex 'target extended-remote $(BMP_PORT)' \
 		   -x scripts/black_magic_probe_debug.scr \
-		   $(*).elf
+		   $(BINDIR)/$(*).elf
 else
-%.debug: $$(*).target_exists $$(*).elf
+%.debug: $$(*).target_exists $(BINDIR)/$$(*).elf
 	@echo "  GDB  $(*).elf"
 	$(Q)$(GDB) -ex 'target extended-remote $(BMP_PORT)' \
 		   -x scripts/black_magic_probe_debug.scr \
-		   $(*).elf
+		   $(BINDIR)/$(*).elf
 endif
 endif
 else

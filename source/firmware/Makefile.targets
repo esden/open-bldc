@@ -35,7 +35,8 @@ TARGETS = mc \
 	  test_blink \
 	  test_governor \
 	  test_sys_tick \
-	  test_can
+	  test_can \
+	  test_ext_flash
 #	  test_32bit_tim \
 
 #CP_IDLE_STRATEGY ?=
@@ -111,3 +112,12 @@ test_can.OBJECTS = \
 	test/can_main.o
 
 OBJECTS += $(test_can.OBJECTS)
+
+test_ext_flash.OBJECTS = \
+	test/ext_flash_main.o \
+	driver/usart.o \
+	driver/i2c1.o \
+	driver/ext_flash.o \
+	test/gprot_test_ext_flash.o
+
+OBJECTS += $(test_ext_flash.OBJECTS)

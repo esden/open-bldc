@@ -114,25 +114,28 @@ void i2c1_write_data(u8 addr, u8 *data, int size)
 	u32 reg32;
 	int i;
 
+	/* Make sure that the ACK Fail bit is reset. */
+	I2C_SR1(I2C1) &= ~I2C_SR1_AF;
+
 	/* Send START condition. */
-        i2c_send_start(I2C1);
+	i2c_send_start(I2C1);
 
 	/* Waiting for START is send and switched to master mode. */
-        while (!((I2C_SR1(I2C1) & I2C_SR1_SB)
+	while (!((I2C_SR1(I2C1) & I2C_SR1_SB)
 			& (I2C_SR2(I2C1) & (I2C_SR2_MSL | I2C_SR2_BUSY)))) {
 		__asm__("nop");
 	}
 
 	/* Send destination address. */
-        i2c_send_7bit_address(I2C1, addr, I2C_WRITE);
+	i2c_send_7bit_address(I2C1, addr, I2C_WRITE);
 
 	/* Waiting for address is transferred. */
-        while (!(I2C_SR1(I2C1) & I2C_SR1_ADDR)){
+	while (!(I2C_SR1(I2C1) & I2C_SR1_ADDR)){
 		__asm__("nop");
 	}
 
 	/* Cleaning ADDR condition sequence. */
-        reg32 = I2C_SR2(I2C1);
+	reg32 = I2C_SR2(I2C1);
 
 	/* Write data */
 	for (i = 0; i < size; i++) {

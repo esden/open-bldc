@@ -21,10 +21,10 @@
 
 #define EXT_FLASH_SIZE 128
 
-extern u8 ext_flash_data[EXT_FLASH_SIZE];
-
 void ext_flash_init(void);
-u8 ext_flash_random_read(u8 addr);
-void ext_flash_random_write(u8 addr, u8 data);
+int ext_flash_store(void);
+int ext_flash_read(void);
+s16 ext_flash_get_byte(u8 addr);
+int ext_flash_set_byte(u8 addr, u8 data);
 
 #endif /* __EXT_FLASH_H */

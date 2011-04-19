@@ -30,7 +30,7 @@
 u8 ext_flash_data[EXT_FLASH_SIZE];
 
 /**
- * Initialize external flash
+ * Initialize external flash driver.
  */
 void ext_flash_init(void)
 {
@@ -39,10 +39,12 @@ void ext_flash_init(void)
 	/* Initializing i2c1 */
 	i2c1_init();
 
+	/* Initializing the ram mirror of the flash content. */
 	for (i = 0; i < EXT_FLASH_SIZE; i++) {
 		ext_flash_data[i] = 0;
 	}
 
+	/* Writing some sequential data to the flash. Just testing. */
 	for (j = 0; j < EXT_FLASH_SIZE; j++) {
 		ext_flash_random_write(j, j);
 
@@ -56,6 +58,7 @@ void ext_flash_init(void)
 		}
 	}
 
+	/* Reading out the flash data into the ram mirror. */
 	for (i = 0; i < EXT_FLASH_SIZE; i++) {
 		ext_flash_data[i] = ext_flash_random_read(i);
 	}

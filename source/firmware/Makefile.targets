@@ -82,9 +82,7 @@ OBJECTS += $(test_blink.OBJECTS)
 test_governor.OBJECTS = \
 	test/governor_main.o \
 	driver/usart.o \
-	test/gprot_test_governor.o \
-	driver/i2c1.o \
-	driver/ext_flash.o
+	test/gprot_test_governor.o
 
 OBJECTS += $(test_governor.OBJECTS)
 

@@ -20,8 +20,8 @@
 
 #include "driver/i2c1.h"
 
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/f1/rcc.h>
+#include <libopencm3/stm32/f1/gpio.h>
 #include <libopencm3/stm32/i2c.h>
 
 #define I2C1_SLAVE_ADDR 0x32

@@ -28,7 +28,7 @@
 
 #include "config.h"
 
-#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/f1/rcc.h>
 
 #include "types.h"
 #include "driver/mcu.h"

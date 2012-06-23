@@ -23,8 +23,8 @@
 #include "driver/i2c1.h"
 #include "driver/led.h"
 
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/f1/rcc.h>
+#include <libopencm3/stm32/f1/gpio.h>
 #include <libopencm3/stm32/i2c.h>
 
 u8 ext_flash_data[EXT_FLASH_SIZE];
@@ -117,6 +117,7 @@ int ext_flash_store(void)
 		}
 	}
 
+	return 0;
 }
 
 /**
@@ -132,6 +133,7 @@ int ext_flash_read(void)
 		ext_flash_data[i] = ext_flash_hw_random_read(i);
 	}
 
+	return i;
 }
 
 /**

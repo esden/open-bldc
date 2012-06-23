@@ -27,9 +27,9 @@
 
 #include "config.h"
 
-#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/f1/rcc.h>
 #include <libopencm3/stm32/usart.h>
-#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/f1/gpio.h>
 #include <libopencm3/stm32/nvic.h>
 
 #include "types.h"

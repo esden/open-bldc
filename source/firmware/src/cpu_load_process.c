@@ -37,7 +37,7 @@
 #include <lg/gpdef.h>
 #include <lg/gprotc.h>
 
-#include "libopencm3/stm32/gpio.h"
+#include "libopencm3/stm32/f1/gpio.h"
 
 #include "gprot.h"
 #include "driver/sys_tick.h"

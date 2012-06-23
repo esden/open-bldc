@@ -101,7 +101,7 @@ INCDIRS		= \
 CFLAGS          += $(INCDIRS) -Wall -Wextra -ansi -std=c99 -c \
 		  -fno-common -Os -g -mcpu=cortex-m3 -mthumb \
 		  -ffunction-sections -fdata-sections -msoft-float \
-		  -mfix-cortex-m3-ldrd
+		  -mfix-cortex-m3-ldrd -DSTM32F1
 CFLAGS          += $(CAN_PARAM)
 CFLAGS          += -DVERSION=\"$(VERSION)\"
 CFLAGS          += -DVERSION_SUFFIX=\"$(VERSION_SUFFIX)\"
@@ -114,7 +114,7 @@ LDFLAGS         += -Tsrc/stm32.ld -nostartfiles -L$(TOOLCHAIN_LIB_DIR) -Os \
 		                    -L$(GOVERNOR_LIB_DIR) -Wl,--gc-sections \
 				    -L$(STAGE_LIB_DIR)
 LDFLAGS         += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
-LDLIBS          += -lopencm3_stm32 -lgovernor -lc -lnosys -lgcc
+LDLIBS          += -lopencm3_stm32f1 -lgovernor -lc -lnosys -lgcc
 CPFLAGS         += -j .isr_vector -j .text -j .data
 ODFLAGS         += -S
 SIZEFLAGS       += -A -x

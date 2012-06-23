@@ -25,7 +25,7 @@
  *
  */
 
-#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/f1/gpio.h>
 
 #include "types.h"
 #include "driver/mcu.h"

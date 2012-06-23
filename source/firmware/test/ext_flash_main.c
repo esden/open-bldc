@@ -16,14 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @file   governor_main.c
- * @author Piotr Esden-Tempski <piotr@esden.net>
- * @date   Tue Aug 17 01:46:21 2010
- *
- * @brief  Governor protocol test implementation
- *
- */
 #include <libopencm3/stm32/gpio.h>
 
 #include "types.h"
@@ -58,12 +50,33 @@ static void my_delay(unsigned long delay)
 int main(void)
 {
 	u16 test_counter;
+	int i;
+	int ret;
 
 	mcu_init();
 	led_init();
+	ext_flash_init();
 	gprot_init();
 	usart_init();
-	ext_flash_init();
+
+	/* Incrementing all the ext flash bytes by one for testing */
+	for (i = 0; i < EXT_FLASH_SIZE; i++) {
+		//ext_flash_set_byte(i, ext_flash_get_byte(i) + 1);
+		ext_flash_set_byte(i, 0xFF);
+	}
+
+	/* Storing the modified set of data to the hardware flash */
+	ret = ext_flash_store();
+
+	if (ret == 0) {
+		gpc_send_string("store!\n", 7);
+	} else if (ret == 1) {
+		gpc_send_string("store! ERR\n", 11);
+	} else if (ret == 2) {
+		gpc_send_string("store! WP\n", 10);
+	}
+
+
 
 	test_counter = 0;
 	(void)gpc_setup_reg(5, &test_counter);

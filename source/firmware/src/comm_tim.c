@@ -109,17 +109,21 @@ void comm_tim_init(void)
 	timer_disable_oc_preload(TIM2, TIM_OC1);
 	timer_set_oc_slow_mode(TIM2, TIM_OC1);
 	timer_set_oc_mode(TIM2, TIM_OC1, TIM_OCM_FROZEN);
-	timer_set_oc_polarity_high(TIM2, TIM_OC1);
+	//timer_set_oc_polarity_high(TIM2, TIM_OC1);
 
 	/* Set initial capture compare value for OC1 */
 	timer_set_oc_value(TIM2, TIM_OC1, comm_tim_data.freq);
+
+	/* ARR reload enable */
+	timer_disable_preload(TIM2);
+
+	/* Counter enable */
+	timer_enable_counter(TIM2);
 
 	/* TIM2 Capture Compare 1 IT enable */
 	timer_enable_irq(TIM2, TIM_DIER_CC1IE);
 	/* TIM2 Update IT enable */
 	timer_enable_irq(TIM2, TIM_DIER_UIE);
-
-	timer_enable_counter(TIM2);
 
 	comm_tim_reset();
 }
@@ -206,8 +210,9 @@ void tim2_isr(void)
 		timer_clear_flag(TIM2, TIM_SR_CC1IF);
 
 		/* prepare for next comm */
+		comm_tim_data.last_capture_time = timer_get_counter(TIM2);
 		//comm_tim_data.last_capture_time = timer_get_ic_value(TIM2, TIM_OC1);
-		comm_tim_data.last_capture_time = TIM2_CCR1;
+		//comm_tim_data.last_capture_time = TIM2_CCR1;
 
 		/* triggering commutation event */
 		if (comm_tim_trigger_comm || comm_tim_trigger_comm_once) {

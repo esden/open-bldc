@@ -58,6 +58,10 @@ u16 bemf_line_state;
 #    define BEMF_HD_LED_FALLING() ((void)0)
 #endif
 
+#define BEMF_U_LINE GPIO10
+#define BEMF_V_LINE GPIO11
+#define BEMF_W_LINE GPIO12
+
 /**
  * Initialize the hardware based BEMF detection peripherals
  */
@@ -66,33 +70,31 @@ void bemf_hd_init(void)
 
 	bemf_hd_reset();
 
-	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN |
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPBEN |
 				                  RCC_APB2ENR_AFIOEN);
 
-	nvic_enable_irq(NVIC_EXTI0_IRQ);
-	nvic_enable_irq(NVIC_EXTI1_IRQ);
-	nvic_enable_irq(NVIC_EXTI2_IRQ);
+	nvic_enable_irq(NVIC_EXTI15_10_IRQ);
 
-	/* GPIOA: EXTI Pin 0, 1, 2 as interrupt input
-	 * Pin 0 -> BEMF/I_Sense of PHASE A
-	 * Pin 1 -> BEMF/I_Sense of PHASE B
-	 * Pin 2 -> BEMF/I_Sense of PHASE C
+	/* GPIOB: EXTI Pin 10, 11, 12 as interrupt input
+	 * Pin 10 -> BEMF/I_Sense of PHASE A
+	 * Pin 11 -> BEMF/I_Sense of PHASE B
+	 * Pin 12 -> BEMF/I_Sense of PHASE C
 	 */
-	gpio_set_mode(GPIOA, GPIO_MODE_INPUT,
-		      GPIO_CNF_INPUT_PULL_UPDOWN, GPIO0 | GPIO1 | GPIO2);
-	gpio_set(GPIOA, GPIO0 | GPIO1 | GPIO2);
+	gpio_set_mode(GPIOB, GPIO_MODE_INPUT,
+		      GPIO_CNF_INPUT_PULL_UPDOWN, GPIO10 | GPIO11 | GPIO12);
+	gpio_set(GPIOB, GPIO10 | GPIO11 | GPIO12);
 
-	exti_select_source(EXTI0, GPIOA);
-	exti_set_trigger(EXTI0, EXTI_TRIGGER_BOTH);
-	exti_enable_request(EXTI0);
+	exti_select_source(EXTI10, GPIOB);
+	exti_set_trigger(EXTI10, EXTI_TRIGGER_BOTH);
+	exti_enable_request(EXTI10);
 
-	exti_select_source(EXTI1, GPIOA);
-	exti_set_trigger(EXTI1, EXTI_TRIGGER_BOTH);
-	exti_enable_request(EXTI1);
+	exti_select_source(EXTI11, GPIOB);
+	exti_set_trigger(EXTI11, EXTI_TRIGGER_BOTH);
+	exti_enable_request(EXTI11);
 
-	exti_select_source(EXTI2, GPIOA);
-	exti_set_trigger(EXTI2, EXTI_TRIGGER_BOTH);
-	exti_enable_request(EXTI2);
+	exti_select_source(EXTI12, GPIOB);
+	exti_set_trigger(EXTI12, EXTI_TRIGGER_BOTH);
+	exti_enable_request(EXTI12);
 }
 
 void bemf_hd_reset(void)
@@ -102,12 +104,11 @@ void bemf_hd_reset(void)
 }
 
 /**
- * External interrupt bank 0 handler (phase U)
+ * External interrupt bank 15 to 10 handler (phase U V W)
  */
-void exti0_isr(void)
+void exti15_10_isr(void)
 {
-	bemf_line_state = GPIOA_IDR;
-	OFF(DP_EXT_SDA);
+	bemf_line_state = GPIOB_IDR;
 
 	/*
 	 * Take care of oscillating interrupt triggers and filter them out
@@ -130,13 +131,8 @@ void exti0_isr(void)
 	}
 
 	exti_reset_request(EXTI0);
-	ON(DP_EXT_SDA);
 
 }
-
-/**
- * External interrupt bank 1 handler (phase V)
- */
 void exti1_isr(void)
 {
 	bemf_line_state = GPIOA_IDR;

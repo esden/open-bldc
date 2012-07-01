@@ -26,7 +26,7 @@
  */
 #define CONTROL_PROCESS_ALIGN_TIME 200
 
-#include <cmsis/stm32.h>
+#include "types.h"
 
 /**
  * Control process state machine states

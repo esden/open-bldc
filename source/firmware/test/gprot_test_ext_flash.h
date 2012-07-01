@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009-2011 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __VECTOR_TABLE_H
-#define __VECTOR_TABLE_H
+#ifndef __GPROT_H
+#define __GPROT_H
 
-#endif /* __VECTOR_TABLE_H */
+void gprot_init();
+void gprot_get_version_process(void);
+
+#endif /* __GPROT_H */

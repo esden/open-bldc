@@ -40,5 +40,6 @@
 /** @} */
 
 void gprot_init();
+void run_gprot_get_version_process(void);
 
 #endif /* __GPROT_H */

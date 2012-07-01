@@ -19,17 +19,14 @@
 #ifndef __MACRO_UTILS_H
 #define __MACRO_UTILS_H
 
-#define BIT(NR)					\
-	(0x00000001 << NR)
+#define OFF(PORT_PIN)					\
+	gpio_set(PORT_PIN##_PORT, PORT_PIN##_PIN)
 
-#define OFF(PORT_PIN)				\
-	PORT_PIN##_PORT->BSRR |= BIT(PORT_PIN##_PIN)
-
-#define ON(PORT_PIN)				\
-	PORT_PIN##_PORT->BRR |= BIT(PORT_PIN##_PIN)
+#define ON(PORT_PIN)					\
+	gpio_clear(PORT_PIN##_PORT, PORT_PIN##_PIN)
 
 #define TOGGLE(PORT_PIN) {						\
-		if ((PORT_PIN##_PORT->IDR & BIT(PORT_PIN##_PIN)) != 0) { \
+		if (gpio_get(PORT_PIN##_PORT, PORT_PIN##_PIN) != 0) {	\
 			ON(PORT_PIN);					\
 		}else{							\
 			OFF(PORT_PIN);					\

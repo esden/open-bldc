@@ -26,13 +26,8 @@
  * Implements the main() function of the motor controller.
  */
 
-#include <stm32/rcc.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/gpio.h>
-#include <stm32/tim.h>
-
 #include "types.h"
+#include "driver/mcu.h"
 #include "driver/led.h"
 #include "gprot.h"
 #include "driver/usart.h"
@@ -53,15 +48,6 @@
 bool demo;
 
 /**
- * Initialize STM32 system specific subsystems.
- */
-static void system_init(void)
-{
-	/* Initialize the microcontroller system. Initialize clocks. */
-	SystemInit();
-}
-
-/**
  * Main function of the motor controller.
  */
 int main(void)
@@ -69,16 +55,16 @@ int main(void)
 	int demo_counter;
 	int demo_dir;
 
-	system_init();
+	mcu_init();
 	led_init();
-	debug_pins_init();
+	//debug_pins_init();
 	gprot_init();
 	usart_init();
 	sys_tick_init();
 	cpu_load_process_init();
 	comm_process_init();
-	sensor_process_init();
-	adc_init();
+	//sensor_process_init();
+	//adc_init();
 	pwm_init();
 	comm_tim_init();
 	control_process_init();
@@ -97,11 +83,12 @@ int main(void)
 		}
 
 		run_control_process();
+		run_gprot_get_version_process();
 
-		if (*sensor_process_trigger) {
-			*sensor_process_trigger = false;
-			run_sensor_process();
-		}
+		//if (*sensor_process_trigger) {
+		//	*sensor_process_trigger = false;
+		//	run_sensor_process();
+		//}
 
 		if (demo) {
 			if (demo_counter == 0) {

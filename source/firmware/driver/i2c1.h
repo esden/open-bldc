@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2011 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __USART_H
-#define __USART_H
+#ifndef __I2C1_H
+#define __I2C1_H
 
-void usart_init(void);
-/*@unused@*/ void usart_enable_send(void);
-/*@unused@*/ void usart_disable_send(void);
+void i2c1_init(void);
+void i2c1_write_byte(u8 addr, u8 data);
+u8 i2c1_read_byte(u8 addr);
+void i2c1_write_data(u8 addr, u8 *data, int size);
+void i2c1_end_transaction(void);
+void i2c1_ack_poll(u8 addr);
 
-#endif /* __USART_H */
+#endif /* __I2C1_H */

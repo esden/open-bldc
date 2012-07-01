@@ -25,27 +25,15 @@
  *
  */
 
-#include <stm32/rcc.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/gpio.h>
-#include <stm32/tim.h>
+#include <libopencm3/stm32/f1/gpio.h>
 
 #include "types.h"
+#include "driver/mcu.h"
 #include "driver/led.h"
 #include "driver/sys_tick.h"
 
 static void sys_tick_timer_callback(int id);
 static void sys_tick_timer_callback_one_shot(int id);
-
-/**
- * Initialize the STM32
- */
-static void system_init(void)
-{
-	/* Initialize the microcontroller system. Initialize clocks. */
-	SystemInit();
-}
 
 /**
  * Callback from the soft sys tick timer
@@ -82,7 +70,7 @@ int main(void)
 {
 	u32 timer;
 
-	system_init();
+	mcu_init();
 	led_init();
 	sys_tick_init();
 

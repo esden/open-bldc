@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2009-2011 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,5 +127,25 @@ void gprot_get_version_process(void)
 		gpc_send_string(FIRMWARE_VERSION, sizeof(FIRMWARE_VERSION));
 		gpc_send_string(FIRMWARE_COPYRIGHT, sizeof(FIRMWARE_COPYRIGHT));
 		gpc_send_string(FIRMWARE_LICENSE, sizeof(FIRMWARE_LICENSE));
+
+		for (i=0; i<EXT_FLASH_SIZE; i++) {
+			if (((ext_flash_get_byte(i) >> 4) & 0x0F) < 10) {
+				dat[0] = ((ext_flash_get_byte(i) >> 4) & 0x0F) + '0';
+			} else {
+				dat[0] = ((ext_flash_get_byte(i) >> 4) & 0x0F) + 'A' - 10;
+			}
+
+			if (((ext_flash_get_byte(i) >> 0) & 0x0F) < 10) {
+				dat[1] = ((ext_flash_get_byte(i) >> 0) & 0x0F) + '0';
+			} else {
+				dat[1] = ((ext_flash_get_byte(i) >> 0) & 0x0F) + 'A' - 10;
+			}
+
+			dat[2] = ' ';
+
+			gpc_send_string(dat, 3);
+		}
+
+		gpc_send_string("\n", 1);
 	}
 }

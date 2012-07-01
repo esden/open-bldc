@@ -19,8 +19,7 @@
 #ifndef CAN_H
 #define CAN_H
 
-void can_init(void);
-void usb_lp_can1_rx0_irq_handler(void);
-int can_transmit(uint32_t id, const uint8_t *buf, uint8_t len);
+void can_setup(void);
+int can_trans(uint32_t id, const uint8_t *buf, uint8_t len);
 
 #endif /* CAN_HW_H */

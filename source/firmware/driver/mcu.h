@@ -1,6 +1,6 @@
 /*
  * Open-BLDC - Open BrushLess DC Motor Controller
- * Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+ * Copyright (C) 2011 by Piotr Esden-Tempski <piotr@esden.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __USART_H
-#define __USART_H
+#ifndef __MCU_H
+#define __MCU_H
 
-void usart_init(void);
-/*@unused@*/ void usart_enable_send(void);
-/*@unused@*/ void usart_disable_send(void);
+void mcu_init(void);
 
-#endif /* __USART_H */
+#endif /* __MCU_H */

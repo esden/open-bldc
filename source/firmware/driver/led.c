@@ -26,8 +26,8 @@
  * Implementation of LED indicator subsystem.
  */
 
-#include <stm32/rcc.h>
-#include <stm32/gpio.h>
+#include <libopencm3/stm32/f1/rcc.h>
+#include <libopencm3/stm32/f1/gpio.h>
 
 #include "driver/led.h"
 
@@ -36,24 +36,25 @@
  */
 void led_init(void)
 {
-	GPIO_InitTypeDef gpio;
 
 	/* GPIOA, GPIOB clock enable */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB |
-			       RCC_APB2Periph_GPIOA, ENABLE);
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN);
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPBEN);
 
 	/* GPIOA: Amber and Green LED pin as output push-pull */
-	GPIO_WriteBit(GPIOA, GPIO_Pin_6 | GPIO_Pin_7, Bit_SET);
-	gpio.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
-	gpio.GPIO_Mode = GPIO_Mode_Out_OD;
-	gpio.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &gpio);
+        gpio_set(GPIOA, GPIO6);
+        gpio_set(GPIOA, GPIO7);
+        gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ,
+                      GPIO_CNF_OUTPUT_OPENDRAIN, GPIO6);
+        gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ,
+                      GPIO_CNF_OUTPUT_OPENDRAIN, GPIO7);
 
 	/* GPIOB: Blue and Red LED pin as output push-pull */
-	GPIO_WriteBit(GPIOB, GPIO_Pin_0 | GPIO_Pin_1, Bit_SET);
-	gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
-	gpio.GPIO_Mode = GPIO_Mode_Out_OD;
-	gpio.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &gpio);
+        gpio_set(GPIOB, GPIO0);
+        gpio_set(GPIOB, GPIO1);
+        gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ,
+                      GPIO_CNF_OUTPUT_OPENDRAIN, GPIO0);
+        gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ,
+                      GPIO_CNF_OUTPUT_OPENDRAIN, GPIO1);
 
 }

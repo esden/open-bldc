@@ -101,7 +101,7 @@
  * @endverbatim
  */
 
-#include <stm32/tim.h>
+#include <libopencm3/stm32/timer.h>
 
 #include "pwm_utils.h"
 #include "pwm/pwm.h"

@@ -25,23 +25,11 @@
  *
  */
 
-#include <stm32/rcc.h>
-#include <stm32/flash.h>
-#include <stm32/misc.h>
-#include <stm32/gpio.h>
-#include <stm32/tim.h>
+#include <libopencm3/stm32/f1/gpio.h>
 
 #include "types.h"
+#include "driver/mcu.h"
 #include "driver/led.h"
-
-/**
- * Initialize the STM32
- */
-static void system_init(void)
-{
-	/* Initialize the microcontroller system. Initialize clocks. */
-	SystemInit();
-}
 
 /**
  * Crude delay implementation.
@@ -114,7 +102,7 @@ int main(void)
 {
 	int i, j, led_id;
 
-	system_init();
+	mcu_init();
 	led_init();
 
 	led_id = 0;

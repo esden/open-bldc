@@ -27,7 +27,7 @@
  * This implementation uses it as a coarce soft timer source.
  */
 
-#include <cmsis/stm32.h>
+#include <libopencm3/stm32/systick.h>
 
 #include "types.h"
 #include "sys_tick.h"
@@ -68,13 +68,19 @@ void sys_tick_init(void)
 	int i;
 
 	/* Setup SysTick Timer for 1uSec Interrupts */
-	(void)SysTick_Config(72000000 / 100000);
+	systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB);
+	systick_set_reload(72000000 / 100000);
+	systick_interrupt_enable();
 
 	for (i = 0; i < SYS_TICK_TIMER_NUM; i++) {
 		sys_tick_timers[i].callback = NULL;
 		sys_tick_timers[i].start_time = 0;
 		sys_tick_timers[i].delta_time = 0;
 	}
+
+	/* Start counting. */
+	systick_counter_enable();
+
 }
 
 /**

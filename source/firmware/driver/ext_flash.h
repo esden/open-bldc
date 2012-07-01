@@ -16,13 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __EXCEPTIONS_H
-#define __EXCEPTIONS_H
+#ifndef __EXT_FLASH_H
+#define __EXT_FLASH_H
 
-void nmi_exception(void);
-void hard_fault_exception(void);
-void mem_manage_exception(void);
-void bus_fault_exception(void);
-void usage_fault_exception(void);
+#define EXT_FLASH_SIZE 128
 
-#endif /* __EXCEPTIONS_H */
+void ext_flash_init(void);
+int ext_flash_store(void);
+int ext_flash_read(void);
+s16 ext_flash_get_byte(u8 addr);
+int ext_flash_set_byte(u8 addr, u8 data);
+
+#endif /* __EXT_FLASH_H */

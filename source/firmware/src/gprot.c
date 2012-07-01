@@ -50,6 +50,13 @@
 #include "main.h"
 
 /**
+ * version strings
+ */
+#define FIRMWARE_VERSION "\n" PROJECT_NAME " " TARGET " firmware " VERSION VERSION_SUFFIX ", build " BUILDDATE "\n"
+#define FIRMWARE_COPYRIGHT COPYRIGHT "\n"
+#define FIRMWARE_LICENSE LICENSE "\n"
+
+/**
  * Commutate once trigger flag
  */
 #define GPROT_FLAG_PWM_COMM (1 << 0)
@@ -90,11 +97,17 @@ static s16 gprot_pwm_power = CP__SST_POWER;
  */
 static u16 gprot_flag_reg_old;
 
+/**
+ * Version request trigger flag.
+ */
+static bool gprot_get_version_triggered = false;
+
 /* Private function declarations */
 static void gprot_trigger_output(void *data);
 static void gprot_register_changed(void *data, u8 addr);
 static void gprot_update_flags(void);
 static void gprot_update_pwm_power(void);
+static void gprot_get_version(void *data);
 
 /* Function implementations */
 /**
@@ -106,6 +119,7 @@ static void gprot_update_pwm_power(void);
 void gprot_init()
 {
 	(void)gpc_init(gprot_trigger_output, NULL, gprot_register_changed, NULL);
+	(void)gpc_set_get_version_callback(gprot_get_version, NULL);
 
 	gprot_flag_reg = 0;
 	gprot_flag_reg_old = 0;
@@ -125,6 +139,31 @@ void gprot_trigger_output(void *data)
 {
 	data = data;
 	usart_enable_send();
+}
+
+/**
+ * Callback from libgovernor indicating a get version event.
+ *
+ * @param data Passthrough data to the callback.
+ */
+void gprot_get_version(void *data)
+{
+	data = data;
+
+	gprot_get_version_triggered = true;
+}
+
+/**
+ * Userspace process handling the get version event.
+ */
+void run_gprot_get_version_process(void)
+{
+	if (gprot_get_version_triggered) {
+		gprot_get_version_triggered = false;
+		gpc_send_string(FIRMWARE_VERSION, sizeof(FIRMWARE_VERSION));
+		gpc_send_string(FIRMWARE_COPYRIGHT, sizeof(FIRMWARE_COPYRIGHT));
+		gpc_send_string(FIRMWARE_LICENSE, sizeof(FIRMWARE_LICENSE));
+	}
 }
 
 /**

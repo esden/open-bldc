@@ -25,24 +25,15 @@
  *
  */
 
-#include <stm32/rcc.h>
 #include <stm32/flash.h>
 #include <stm32/misc.h>
 #include <stm32/gpio.h>
 #include <stm32/tim.h>
 
 #include "types.h"
+#include "driver/mcu.h"
 #include "driver/led.h"
 #include "driver/debug_pins.h"
-
-/**
- * Initialize the STM32
- */
-static void system_init(void)
-{
-	/* Initialize the microcontroller system. Initialize clocks. */
-	SystemInit();
-}
 
 /**
  * Crude delay implementation.
@@ -123,7 +114,7 @@ int main(void)
 {
 	int i, j, dp_id;
 
-	system_init();
+	mcu_init();
 	led_init();
 	debug_pins_init();
 

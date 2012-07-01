@@ -33,10 +33,10 @@
 
 #include "bemf_hardware_detect.h"
 
-#include <stm32/misc.h>
-#include <stm32/exti.h>
-#include <stm32/rcc.h>
-#include <stm32/gpio.h>
+#include <libopencm3/stm32/nvic.h>
+#include <libopencm3/stm32/exti.h>
+#include <libopencm3/stm32/f1/rcc.h>
+#include <libopencm3/stm32/f1/gpio.h>
 
 #include "driver/led.h"
 #include "driver/debug_pins.h"
@@ -58,60 +58,43 @@ u16 bemf_line_state;
 #    define BEMF_HD_LED_FALLING() ((void)0)
 #endif
 
+#define BEMF_U_LINE GPIO10
+#define BEMF_V_LINE GPIO11
+#define BEMF_W_LINE GPIO12
+
 /**
  * Initialize the hardware based BEMF detection peripherals
  */
 void bemf_hd_init(void)
 {
-	NVIC_InitTypeDef nvic;
-	EXTI_InitTypeDef exti;
-	GPIO_InitTypeDef gpio;
 
 	bemf_hd_reset();
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA |
-			       RCC_APB2Periph_AFIO, ENABLE);
+	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPBEN |
+				                  RCC_APB2ENR_AFIOEN);
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+	nvic_enable_irq(NVIC_EXTI15_10_IRQ);
 
-	nvic.NVIC_IRQChannel = EXTI0_IRQn;
-	nvic.NVIC_IRQChannelPreemptionPriority = 0;
-	nvic.NVIC_IRQChannelSubPriority = 0;
-	nvic.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&nvic);
-
-	nvic.NVIC_IRQChannel = EXTI1_IRQn;
-	NVIC_Init(&nvic);
-
-	nvic.NVIC_IRQChannel = EXTI2_IRQn;
-	NVIC_Init(&nvic);
-
-	/* GPIOA: EXTI Pin 0, 1, 2 as interrupt input
-	 * Pin 0 -> BEMF/I_Sense of PHASE A
-	 * Pin 1 -> BEMF/I_Sense of PHASE B
-	 * Pin 2 -> BEMF/I_Sense of PHASE C
+	/* GPIOB: EXTI Pin 10, 11, 12 as interrupt input
+	 * Pin 10 -> BEMF/I_Sense of PHASE A
+	 * Pin 11 -> BEMF/I_Sense of PHASE B
+	 * Pin 12 -> BEMF/I_Sense of PHASE C
 	 */
-	gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
-	gpio.GPIO_Mode = GPIO_Mode_IPU;
-	gpio.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &gpio);
+	gpio_set_mode(GPIOB, GPIO_MODE_INPUT,
+		      GPIO_CNF_INPUT_PULL_UPDOWN, GPIO10 | GPIO11 | GPIO12);
+	gpio_set(GPIOB, GPIO10 | GPIO11 | GPIO12);
 
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);
+	exti_select_source(EXTI10, GPIOB);
+	exti_set_trigger(EXTI10, EXTI_TRIGGER_BOTH);
+	exti_enable_request(EXTI10);
 
-	exti.EXTI_Line = EXTI_Line0;
-	exti.EXTI_Mode = EXTI_Mode_Interrupt;
-	exti.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-	exti.EXTI_LineCmd = ENABLE;
-	EXTI_Init(&exti);
+	exti_select_source(EXTI11, GPIOB);
+	exti_set_trigger(EXTI11, EXTI_TRIGGER_BOTH);
+	exti_enable_request(EXTI11);
 
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource1);
-	exti.EXTI_Line = EXTI_Line1;
-	EXTI_Init(&exti);
-
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource2);
-	exti.EXTI_Line = EXTI_Line2;
-	EXTI_Init(&exti);
-
+	exti_select_source(EXTI12, GPIOB);
+	exti_set_trigger(EXTI12, EXTI_TRIGGER_BOTH);
+	exti_enable_request(EXTI12);
 }
 
 void bemf_hd_reset(void)
@@ -121,12 +104,11 @@ void bemf_hd_reset(void)
 }
 
 /**
- * External interrupt bank 0 handler (phase U)
+ * External interrupt bank 15 to 10 handler (phase U V W)
  */
-void exti0_irq_handler(void)
+void exti15_10_isr(void)
 {
-	bemf_line_state = GPIOA->IDR;
-	OFF(DP_EXT_SDA);
+	bemf_line_state = GPIOB_IDR;
 
 	/*
 	 * Take care of oscillating interrupt triggers and filter them out
@@ -148,17 +130,12 @@ void exti0_irq_handler(void)
 		comm_tim_update_next_prev();
 	}
 
-	EXTI_ClearITPendingBit(EXTI_Line0);
-	ON(DP_EXT_SDA);
+	exti_reset_request(EXTI0);
 
 }
-
-/**
- * External interrupt bank 1 handler (phase V)
- */
-void exti1_irq_handler(void)
+void exti1_isr(void)
 {
-	bemf_line_state = GPIOA->IDR;
+	bemf_line_state = GPIOA_IDR;
 	OFF(DP_EXT_SDA);
 
 	/*
@@ -181,7 +158,7 @@ void exti1_irq_handler(void)
 		comm_tim_update_next_prev();
 	}
 
-	EXTI_ClearITPendingBit(EXTI_Line1);
+	exti_reset_request(EXTI1);
 	ON(DP_EXT_SDA);
 
 }
@@ -189,9 +166,9 @@ void exti1_irq_handler(void)
 /**
  * External interrupt bank 2 handler (phase W)
  */
-void exti2_irq_handler(void)
+void exti2_isr(void)
 {
-	bemf_line_state = GPIOA->IDR;
+	bemf_line_state = GPIOA_IDR;
 	OFF(DP_EXT_SDA);
 
 	/*
@@ -214,7 +191,7 @@ void exti2_irq_handler(void)
 		comm_tim_update_next_prev();
 	}
 
-	EXTI_ClearITPendingBit(EXTI_Line2);
+	exti_reset_request(EXTI2);
 	ON(DP_EXT_SDA);
 
 }

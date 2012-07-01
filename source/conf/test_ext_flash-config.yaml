@@ -1,6 +1,6 @@
 #
 # Open-BLDC - Open BrushLess DC Motor Controller
-# Copyright (C) 2009-2010 by Piotr Esden-Tempski <piotr@esden.net>
+# Copyright (C) 2009-2011 by Piotr Esden-Tempski <piotr@esden.net>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +18,6 @@
 
 import_config: ../conf/clogic-v1_1-board-config.yaml
 
-CAN:
+USART:
   defines:
-    PRESCALER: 12
-    SJW_TQ: CAN_SJW_1tq
-    BS1_TQ: CAN_BS1_3tq
-    BS2_TQ: CAN_BS2_4tq
-    ERR_RESUME: DISABLE
-    USE_EXT_ID: no
-    DEFAULT_ADDR: 1
-    SEND: yes
+    BAUD: 230400

@@ -19,21 +19,17 @@
 #ifndef __PWM_UTILS_H
 #define __PWM_UTILS_H
 
-#define PWM_PHASE_A TIM_Channel_1
-#define PWM_PHASE_B TIM_Channel_2
-#define PWM_PHASE_C TIM_Channel_3
-
 /* Channel output on/off manipulation */
-#define PWM_HI_ON TIM_CCx_Enable
-#define PWM_HI_OFF TIM_CCx_Disable
-#define PWM_LO_ON TIM_CCxN_Enable
-#define PWM_LO_OFF TIM_CCxN_Disable
+#define PWM_HI_ON TIM_CCER_CC1P
+#define PWM_HI_OFF 0x00000000
+#define PWM_LO_ON TIM_CCER_CC1NP
+#define PWM_LO_OFF 0x00000000
 
 #define pwm_enable(A_HI, A_LO, B_HI, B_LO, C_HI, C_LO)		\
-	TIM1->CCER = (TIM1->CCER & 0xFAAA) |			\
-		     ((A_HI | A_LO) << 0) |			\
-		     ((B_HI | B_LO) << 4) |			\
-		     ((C_HI | C_LO) << 8)
+	TIM1_CCER = (TIM1_CCER & 0xFAAA) |			\
+		    ((A_HI | A_LO) << 0) |			\
+		    ((B_HI | B_LO) << 4) |			\
+		    ((C_HI | C_LO) << 8)
 
 #define pwm_enable_all()					\
 	pwm_enable(PWM_HI_ON, PWM_LO_ON,			\
@@ -46,18 +42,18 @@
 		   PWM_HI_OFF, PWM_LO_OFF)
 
 /* Configure channels */
-#define pwm_conf_mode_pwm TIM_OCMode_PWM1
-#define pwm_conf_mode_npwm TIM_OCMode_PWM2
-#define pwm_conf_mode_off TIM_OCMode_Timing
-#define pwm_conf_mode_low TIM_ForcedAction_InActive
-#define pwm_conf_mode_high TIM_ForcedAction_Active
+#define pwm_conf_mode_pwm TIM_OCM_PWM1
+#define pwm_conf_mode_npwm TIM_OCM_PWM2
+#define pwm_conf_mode_off TIM_OCM_FROZEN
+#define pwm_conf_mode_low TIM_OCM_FORCE_LOW
+#define pwm_conf_mode_high TIM_OCM_FORCE_HIGH
 
 #define pwm_conf(AMODE, BMODE, CMODE)				\
-	TIM1->CCMR1 = (TIM1->CCMR1 & 0x8F8F) |			\
-		      AMODE |					\
-		      (BMODE << 8);				\
-	TIM1->CCMR2 = (TIM1->CCMR2 & 0xFF8F) |			\
-		      CMODE
+	TIM1_CCMR1 = (TIM1_CCMR1 & 0x8F8F) |			\
+		     AMODE |					\
+		     (BMODE << 8);				\
+	TIM1_CCMR2 = (TIM1_CCMR2 & 0xFF8F) |			\
+		     CMODE
 
 #define pwm_conf_all_active()					\
 	pwm_conf(pwm_conf_mode_high,				\

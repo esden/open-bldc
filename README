@@ -1,5 +1,9 @@
 This project aims to create a fully open-source Brushless Drive Controller.
 
+Where is the hardware
+---------------------
+Hardware got split out into open-bldc-hardware repository.
+
 Current design
 --------------
 The current design uses an STM32 microcontroller, Allegro halsensor based

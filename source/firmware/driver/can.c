@@ -33,7 +33,7 @@
 #include <libopencm3/stm32/f1/rcc.h>
 #include <libopencm3/stm32/f1/gpio.h>
 #include <libopencm3/stm32/can.h>
-#include <libopencm3/stm32/nvic.h>
+#include <libopencm3/stm32/f1/nvic.h>
 
 #include "driver/can.h"
 
@@ -96,7 +96,9 @@ void can_setup(void)
 		     CAN_BTR_SJW_1TQ,
 		     CAN_BTR_TS1_3TQ,
 		     CAN_BTR_TS2_4TQ,
-		     12))             /* BRP+1: Baud rate prescaler */
+		     12,
+		     false,
+		     false))             /* BRP+1: Baud rate prescaler */
 	{
 		ON(LED_RED);
 		OFF(LED_GREEN);

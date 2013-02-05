@@ -30,7 +30,7 @@
  * peripheral handling code together with the commutation handling part.
  */
 
-#include <libopencm3/stm32/nvic.h>
+#include <libopencm3/stm32/f1/nvic.h>
 #include <libopencm3/stm32/f1/rcc.h>
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/stm32/f1/gpio.h>
